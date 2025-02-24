@@ -146,6 +146,7 @@ public class HooksSettingsGlobal {
         if(context == null)
             return;
 
+        //We should make this instance base all of this ?
         synchronized (lock) {
             if(settingsMap.isEmpty()) {
                 internalInitReMappedSettings(context);
@@ -153,8 +154,16 @@ public class HooksSettingsGlobal {
                 if(DebugUtil.isDebug())
                     Log.d(TAG, "Got Hooks Count=" + ListUtil.size(hooks));
 
+                List<String> collections = GetSettingExCommand.getCollections(context, Process.myUid());
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, "Collections Size=" + ListUtil.size(collections));
+
                 if(ListUtil.isValid(hooks)) {
                     for(XLuaHook hook : hooks) {
+                        //We can also intercept the setting names or ?
+                        if(!collections.contains(hook.getCollection()))
+                            continue;
+
                         try {
                             String hookId = hook.getObjectId();
                             String[] settings = hook.getSettings();

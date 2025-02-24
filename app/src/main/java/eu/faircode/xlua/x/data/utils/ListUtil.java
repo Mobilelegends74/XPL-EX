@@ -1,5 +1,6 @@
 package eu.faircode.xlua.x.data.utils;
 
+import androidx.collection.LongSparseArray;
 import androidx.core.util.Predicate;
 
 import java.util.ArrayList;
@@ -194,6 +195,8 @@ public class ListUtil {
             //Make read only ?
         }
     }
+
+    public static <T> boolean isValid(LongSparseArray<T> sArray) { return sArray != null && !sArray.isEmpty(); }
 
     //Not all needed but fuck it I like it xD
     public static boolean isValid(ArrayList<?> collection) { return collection != null && !collection.isEmpty(); }

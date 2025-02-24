@@ -7,7 +7,7 @@ import eu.faircode.xlua.x.ui.core.view_registry.SharedRegistry;
 import eu.faircode.xlua.x.xlua.settings.test.SharedViewControl;
 
 public interface IStateManager {
-    SharedViewControl getSharedViewControl();
+    //SharedViewControl getSharedViewControl();
     SharedRegistry getSharedRegistry();
     FragmentManager getFragmentMan();
     Fragment getAsFragment();

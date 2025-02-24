@@ -53,7 +53,7 @@ public class SettingHolder extends UiBindingsController implements IValueDescrip
     public boolean hasValue(boolean treatEmptyAsNull) { return treatEmptyAsNull ? !TextUtils.isEmpty(value) : value != null; }
 
     @Override
-    public String getObjectId() { return SharedRegistry.sharedSettingName(getName()); }
+    public String getObjectId() { return UINotifier.settingName(getName()); }
 
     @Override
     public void setId(String id) { }

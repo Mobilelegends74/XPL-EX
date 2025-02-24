@@ -58,7 +58,9 @@ public class PrefManager {
     public static String nameForChecked() { return nameForChecked(true, null); }
     public static String nameForChecked(boolean global) { return nameForChecked(global, null); }
     public static String nameForChecked(boolean global, String pkg) {
-        return global || pkg == null ? SETTING_SETTINGS_CHECKED : Str.combine(SETTING_SETTINGS_CHECKED, pkg);
+        return global || Str.isEmpty(pkg) ?
+                SETTING_SETTINGS_CHECKED :
+                Str.combine(SETTING_SETTINGS_CHECKED, pkg);
     }
 
     public static PrefManager create() { return new PrefManager(); }
@@ -167,28 +169,51 @@ public class PrefManager {
     public List<String> getStringList(String key) { return getStringList(key, null, false); }
     public List<String> getStringList(String key, List<String> defaultValue) { return getStringList(key, defaultValue, defaultValue != null); }
     public List<String> getStringList(String key, List<String> defaultValue, boolean putIfMissing) {
-        if(preferences == null || Str.isEmpty(key))
-            return defaultValue;
+        try {
+            if(preferences == null || Str.isEmpty(key)) {
+                Log.e(TAG, "Preferences is NULL or Key is Null or Empty... (getStringList)");
+                return defaultValue;
+            }
 
-        if(!preferences.contains(key)) {
-            if(putIfMissing)
-                preferences.edit().putString(key, Str.joinList(defaultValue)).apply();
-            return defaultValue;
+            if(!preferences.contains(key)) {
+                if(putIfMissing) {
+                    String val = Str.joinList(defaultValue);
+                    if(!Str.isEmpty(val))
+                        preferences.edit().putString(key, val).apply();
+                }
+
+                return defaultValue;
+            }
+
+            return Str.splitToList(preferences.getString(key, Str.EMPTY));
+        }catch (Exception e) {
+            Log.e(TAG, "Error with Getting String List! Key=" + key + " Error=" + e);
+            return ListUtil.emptyList();
         }
-
-        return Str.splitToList(preferences.getString(key, Str.EMPTY));
     }
 
     public List<String> putStringList(String key, List<String> value) {
-        if(preferences == null || Str.isEmpty(key))
+        try {
+            if(preferences == null || Str.isEmpty(key))
+                return value;
+
+            if(!ListUtil.isValid(value)) {
+                if(preferences.contains(key)) {
+                    preferences.edit().remove(key).apply();
+                    return ListUtil.emptyList();
+                }
+            }
+
+            String val = Str.joinList(value);
+            if(Str.isEmpty(val))
+                return ListUtil.emptyList();
+
+            preferences.edit().putString(key, val).apply();
             return value;
-
-        if(!ListUtil.isValid(value))
-            if(preferences.contains(key))
-                preferences.edit().remove(key).apply();
-
-        preferences.edit().putString(key, Str.joinList(value)).apply();
-        return value;
+        }catch (Exception e) {
+            Log.e(TAG, "Error Putting String List! Key=" + key + " Error=" + e);
+            return ListUtil.emptyList();
+        }
     }
 
     public int getInteger(String key) { return getInteger(key, -1, false); }

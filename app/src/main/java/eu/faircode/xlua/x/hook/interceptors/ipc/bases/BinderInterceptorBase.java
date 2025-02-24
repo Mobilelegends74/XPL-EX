@@ -7,9 +7,10 @@ import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XParam;
 import eu.faircode.xlua.utilities.StringUtil;
 import eu.faircode.xlua.x.hook.interceptors.ipc.holders.InterfaceBinderData;
+import eu.faircode.xlua.x.xlua.LibUtil;
 
 public class BinderInterceptorBase implements IBinderInterceptor {
-    private static final String TAG = "XLua.BinderInterceptorBase";
+    private static final String TAG = LibUtil.generateTag(BinderInterceptorBase.class);
     protected String interfaceName;
     protected String settingName;
 

@@ -66,7 +66,7 @@ public class SettingsIntentCallData {
 
                 if(pOne != null) {
                     this.method = param.tryGetArgument(1, null);
-                    this.authority = param.tryGetArgument(2, null);
+                    this.arg = param.tryGetArgument(2, null);
                     this.extras = param.tryGetArgument(3, null);
                     if(getResult)
                         this.result = param.tryGetResult(null);

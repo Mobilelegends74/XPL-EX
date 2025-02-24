@@ -77,8 +77,9 @@ public class UserClientAppContext implements IValidator {
     public boolean kill = false;
 
     public UserClientAppContext bindShared(SharedRegistry sharedRegistry) {
-        if(this.sharedRegistry == null && sharedRegistry != null)
+        if(this.sharedRegistry == null && sharedRegistry != null) {
             this.sharedRegistry = sharedRegistry;
+        }
 
         return this;
     }
@@ -87,7 +88,10 @@ public class UserClientAppContext implements IValidator {
         if(Str.isEmpty(appPackageName) || isGlobal())
             return false;
 
-        return sharedRegistry != null ? sharedRegistry.isChecked(SharedRegistry.STATE_TAG_KILL, appPackageName) : kill;
+        if(sharedRegistry == null)
+            return kill;
+
+        return sharedRegistry.isChecked(SharedRegistry.STATE_TAG_KILL, appPackageName);
     }
 
     public boolean isKill(SharedRegistry sharedRegistry) {

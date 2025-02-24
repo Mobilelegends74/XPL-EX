@@ -3,6 +3,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import eu.faircode.xlua.R;
 import eu.faircode.xlua.XUtil;
 import eu.faircode.xlua.databinding.SettingsExGroupBinding;
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.ui.core.UINotifier;
 import eu.faircode.xlua.x.ui.core.UserClientAppContext;
 import eu.faircode.xlua.x.ui.core.view_registry.ChangedStatesPacket;
@@ -35,6 +37,7 @@ import eu.faircode.xlua.x.ui.core.interfaces.IListAdapter;
 import eu.faircode.xlua.x.ui.core.interfaces.IStateManager;
 import eu.faircode.xlua.x.ui.core.util.CoreUiUtils;
 import eu.faircode.xlua.x.ui.dialogs.MessageDialog;
+import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.settings.GroupStats;
 import eu.faircode.xlua.x.xlua.settings.SettingHolder;
 import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
@@ -77,13 +80,11 @@ public class OptimizedSettingGroupAdapter
             IStateChanged,
             UINotifier.IUINotification {
 
+        private static final String TAG = LibUtil.generateTag(GroupViewHolder.class);
+
         private ContainersListManager containersListManager;
-
-
-        private OptimizedContainerAdapter containerAdapter;
-        private final RecyclerView.RecycledViewPool sharedPool;
         private boolean isInitialized = false;
-        private UserClientAppContext userContext;
+        private final UserClientAppContext userContext;
 
         private final GroupStats groupStats = new GroupStats();
 
@@ -93,9 +94,7 @@ public class OptimizedSettingGroupAdapter
                                RecyclerView.RecycledViewPool sharedPool,
                                UserClientAppContext userContext) {
             super(binding, events, stateManager);
-            this.sharedPool = sharedPool;
             this.userContext = userContext;
-            //initializeRecyclerView();
             initializeViews();
         }
 
@@ -122,9 +121,7 @@ public class OptimizedSettingGroupAdapter
             onGroupChange(null);
             sharedRegistry.putGroupChangeListener(this, item.getGroupName());
             ensureEventsSubscribed();
-
             updateExpandedStateForGroup(state.isExpanded);
-
             wireGroupEvents(true);
         }
 
@@ -275,22 +272,19 @@ public class OptimizedSettingGroupAdapter
             }
         }
 
-        public List<IIdentifiableObject> getAllSettings() {
-            List<SettingsContainer> containers = currentItem.getContainers();
-            List<IIdentifiableObject> objects = new ArrayList<>(containers.size());
-            for(SettingsContainer container : containers) objects.addAll(container.getSettings());
-            return objects;
-        }
-
         @Override
         public void onGroupChange(ChangedStatesPacket packet) {
             if(currentItem != null && binding != null) {
-                /* ENSURE our CheckBox is ALWAYS aligned */
-                /* From parent we can pre-init the View States for Saved Settings in local settings .. */
-                updateStats(true, getContext());
-                CheckBoxState
-                        .from(getAllSettings(), SharedRegistry.STATE_TAG_SETTINGS, sharedRegistry)
-                        .updateCheckBox(binding.cbSettingGroupEnabled, this);
+                try {
+                    /* ENSURE our CheckBox is ALWAYS aligned */
+                    /* From parent we can pre-init the View States for Saved Settings in local settings .. */
+                    updateStats(true, getContext());
+                    CheckBoxState
+                            .from(getAllSettings(), SharedRegistry.STATE_TAG_SETTINGS, sharedRegistry)
+                            .updateCheckBox(binding.cbSettingGroupEnabled, this);
+                }catch (Exception e) {
+                    Log.e(TAG, "Failed to Invoke On Group Change! Error=" + e);
+                }
             }
         }
 
@@ -326,6 +320,27 @@ public class OptimizedSettingGroupAdapter
                     updateStats(true, getContext());
                 }
             }
+        }
+
+        public List<IIdentifiableObject> getAllSettings() {
+            if(currentItem == null)
+                return ListUtil.emptyList();
+
+            List<SettingsContainer> containers = currentItem.getContainers();
+            if(!ListUtil.isValid(containers))
+                return ListUtil.emptyList();
+
+            List<IIdentifiableObject> settings = new ArrayList<>();
+            for(SettingsContainer container : containers) {
+                List<SettingHolder> settingHolders = container.getSettings();
+                if(ListUtil.isValid(settingHolders)) {
+                    for(SettingHolder setting : settingHolders)
+                        if(setting != null && !settings.contains(setting))
+                            settings.add(setting);
+                }
+            }
+
+            return settings;
         }
     }
 }

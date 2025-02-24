@@ -15,6 +15,7 @@ import java.util.Map;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.string.StrBuilder;
+import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.ui.core.interfaces.IDiffFace;
 import eu.faircode.xlua.x.ui.core.view_registry.IIdentifiableObject;
 import eu.faircode.xlua.x.xlua.LibUtil;
@@ -91,7 +92,7 @@ public class SettingsContainer extends NameInformationTypeBase implements IDiffF
         return names;
     }
 
-    public List<SettingHolder> getSettings() { return new ArrayList<>(settings.values()); }
+    public List<SettingHolder> getSettings() { return settings.isEmpty() ? ListUtil.emptyList() : ListUtil.copyToArrayList(settings.values()); }
     public void ensureDescription(String description) { if(this.description == null && !TextUtils.isEmpty(description)) this.description = description; }
 
     public SettingsContainer(SettingHolder singleSetting) {

@@ -192,7 +192,10 @@
   { "name": "unique.gsf.id", "description": "Google Services Framework ID", "defaultValue": "FMZIYEVGXZDCENRO" },
   { "name": "unique.network.ssid", "description": "Wifi SSID", "defaultValue": "Starbucks Free-Wifi" },
   { "name": "unique.network.bssid", "description": "Wifi BSSID", "defaultValue": "00:00:00:00:00:00" },
+  { "name": "unique.google.app.set.id", "description": "This is Googles way of Giving each App a Unique ID, if the App has been Re-Installed or the ID has not been accessed in 13 Months for that app it will then reset. This is used for Anti Fraud and once again Tracking, No clearing app data does nothing.", "defaultValue": "00:00:00:00:00:00" },
 
+
+  //SETTING_UNIQUE_GOOGLE_APP_SET_ID
 
   //Ps tbh we can just just set main IDs then have a resolver ? no ?
   //REGION

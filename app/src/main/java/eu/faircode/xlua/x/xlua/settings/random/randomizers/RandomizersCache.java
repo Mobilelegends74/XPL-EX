@@ -451,6 +451,8 @@ public class RandomizersCache {
     public static final String SETTING_UNIQUE_FACEBOOK_ID = "unique.facebook.advertising.id";
     public static final String SETTING_UNIQUE_GOOGLE_ID = "unique.google.advertising.id";
 
+    public static final String SETTING_UNIQUE_GOOGLE_APP_SET_ID = "unique.google.app.set.id";
+
     //unique.facebook.advertising.id
 
     public static final Class<?> SETTING_UNIQUE_UUID_TYPE = RandomUUID.class;

@@ -86,8 +86,9 @@ public class SettingSharedRegistry extends SharedRegistry {
     public static String getAppPacketTag(String packageName) { return packageName + "_packet"; }
 
     public void bindToUserContext(UserClientAppContext ctx) {
-        if(ctx != null)
+        if(ctx != null) {
             ctx.bindShared(this);
+        }
     }
 
     public boolean hasRandomizers() { return !randomizers.isEmpty(); }
@@ -154,6 +155,9 @@ public class SettingSharedRegistry extends SharedRegistry {
         List<SettingHolder> settings = container.getSettings();
         if(DebugUtil.isDebug())
             Log.d(TAG, Str.fm("Settings Count [%s] For Container [%s]", ListUtil.size(settings), container.getContainerName()));
+
+        if(!ListUtil.isValid(settings))
+            return ListUtil.emptyList();
 
         List<SettingHolder> enabled = new ArrayList<>();
         for(SettingHolder setting : settings)

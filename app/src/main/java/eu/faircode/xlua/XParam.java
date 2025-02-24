@@ -38,6 +38,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -87,6 +88,7 @@ import eu.faircode.xlua.utilities.StringUtil;
 import eu.faircode.xlua.utilities.MockUtils;
 import eu.faircode.xlua.x.hook.interceptors.pkg.PackageInfoInterceptor;
 import eu.faircode.xlua.x.process.ProcessUtils;
+import eu.faircode.xlua.x.runtime.RuntimeUtils;
 //import eu.faircode.xlua.x.hook.handlers.settings.CallData;
 
 public class XParam {
@@ -176,6 +178,7 @@ public class XParam {
         this.useDefault = useDefault;
         this.packageName = packageName;
     }
+
 
     @SuppressWarnings("unused")
     public GroupedMap getGroupedMap(String category) {
@@ -287,6 +290,60 @@ public class XParam {
         return MockUtils.NOT_BLACKLISTED;
     }
 
+    //   public void putAll(ArrayMap<? extends K, ? extends V> arrayMap)
+
+    private boolean isGoodEntry(String key, String value, String badKey, String replaceSetting) {
+        if(key == null || value == null)
+            return true;
+
+        /*if(key.equalsIgnoreCase(badKey)) {
+            String replaceValue = getSetting(replaceSetting);
+            if(replaceValue == null)
+                return false;
+
+            setArgument(0, replaceValue);
+            setOldResult(value);
+            setNewResult(replaceValue);
+            return fa;
+        }*/
+
+        return true;
+    }
+
+    //public static final List<Character> GOOD = Arrays.asList('a', 'b', 'c', 'd', 'e', 'f', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0');
+    @SuppressWarnings("unused")
+    public boolean ensurePutIsSafe(boolean isPutAll, String badKey, String replaceSetting) {
+         if(!isPutAll) {
+
+             Object firstParam = getArgument(0);
+             Object secondParam = getArgument(1);
+             if(!(firstParam instanceof String) || !(secondParam instanceof String))
+                 return false;
+
+             String key = (String) firstParam;
+             if(badKey.equalsIgnoreCase(key)) {
+                 //Add check in for class caller
+                 String value = (String) secondParam;
+                 if(value.length() == 16) {
+                     //Mostly assume its an Android ID then
+
+                     String replaceValue = getSetting(replaceSetting);
+                     if(replaceValue == null)
+                         return false;
+
+                     setArgument(1, replaceValue);
+                     setOldResult(value);
+                     setNewResult(replaceValue);
+                     return true;
+                 }
+             }
+         } else {
+
+         }
+
+         return false;
+    }
+
     @SuppressWarnings("unused")
     public boolean interceptRemoveExternalDeviceIds() { return InputDeviceInterceptor.removeExternalDevices(this); }
 
@@ -389,6 +446,18 @@ public class XParam {
     @SuppressWarnings("unused")
     public boolean ensureIpcIsSafe(boolean getResult) { return BinderInterceptor.intercept(this, getResult); }
 
+
+    @SuppressWarnings("unused")
+    public void handleIntentInterfaceExtra(boolean isIntent) {
+        //Intent intent = new Intent("com.google.android.gms.ads.identifier.service.START");
+        //            intent.setPackage("com.google.android.gms");
+        try {
+            String arg = tryGetArgument(0, Str.EMPTY);
+            Log.d(TAG, "BinderInterceptor , But het I am doing Arg: From Intent:" + String.valueOf(isIntent) + " Arg=" + arg + " Stack=" + Str.ensureNoDoubleNewLines(RuntimeUtils.getStackTraceSafeString(new Exception())));
+        }catch (Throwable e) {
+
+        }
+    }
 
     @SuppressWarnings("unused")
     public void isNullError(Object h) {

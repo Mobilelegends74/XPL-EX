@@ -38,12 +38,16 @@ public class CheckBoxState {
     }
 
     public int getColor(Context context) {
-        if(color == -1 && context != null) color = context.getResources().getColor(checked > 0 && checked == total ? R.color.colorAccent : android.R.color.darker_gray, null);
+        if(color == -1 && context != null)
+            color = context.getResources()
+                    .getColor(checked > 0 && checked == total ?
+                            R.color.colorAccent :
+                            android.R.color.darker_gray, null);
         return color;
     }
 
     CheckBoxState(int checked, int total) {
-        isChecked = checked > 0;
+        this.isChecked = checked > 0;
         this.checked = checked;
         this.total = total;
     }
@@ -60,6 +64,7 @@ public class CheckBoxState {
     public static <T extends IIdentifiableObject> CheckBoxState from(List<T> objects, String tag, SharedRegistry registry) {
         if(ObjectUtils.anyNull(objects, tag, registry))
             return DEFAULT;
+
         int checked = registry.getEnabledCount(objects, tag);
         return new CheckBoxState(checked, objects.size());
     }

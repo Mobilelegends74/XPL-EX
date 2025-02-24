@@ -2,6 +2,8 @@ package eu.faircode.xlua.x.xlua.settings.random.randomizers.unique;
 
 import java.util.UUID;
 
+import eu.faircode.xlua.utilities.RandomStringGenerator;
+import eu.faircode.xlua.x.runtime.BuildInfo;
 import eu.faircode.xlua.x.xlua.settings.random.RandomElement;
 import eu.faircode.xlua.x.xlua.settings.random.RandomizerSessionContext;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
@@ -17,11 +19,19 @@ public class RandomUUID extends RandomElement {
                 RandomizersCache.SETTING_UNIQUE_OPEN_ANON_ID,
                 RandomizersCache.SETTING_UNIQUE_BOOT_ID,
                 RandomizersCache.SETTING_UNIQUE_FACEBOOK_ID,
-                RandomizersCache.SETTING_UNIQUE_GOOGLE_ID);
+                RandomizersCache.SETTING_UNIQUE_GOOGLE_ID,
+                RandomizersCache.SETTING_UNIQUE_GOOGLE_APP_SET_ID);
     }
 
     @Override
     public void randomize(RandomizerSessionContext context) {
-        context.pushValue(context.stack.pop(), UUID.randomUUID().toString());
+        String setting = context.stack.pop();
+        if(setting == null)
+            return;
+
+        String result = setting.equalsIgnoreCase(RandomizersCache.SETTING_UNIQUE_OPEN_ANON_ID) && BuildInfo.isMiuiOrHyperOs() ?
+                RandomStringGenerator.generateRandomHexString(16).toLowerCase()
+                : UUID.randomUUID().toString();
+        context.pushValue(setting, result);
     }
 }

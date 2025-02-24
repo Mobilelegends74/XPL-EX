@@ -75,71 +75,80 @@ public class UiRandomUtils {
             SettingsContainer container,
             SettingSharedRegistry sharedRegistry) {
 
-        if(!sharedRegistry.hasRandomizers() || container == null) {
-            Log.e(TAG, "Invalid Input for [initRandomizer], Make sure Adapters, Lists and Objects are Not Null or Empty!");
-            return;
-        }
+        try {
+            if(sharedRegistry == null) {
+                Log.e(TAG, "Invalid Input for [initRandomizer], Shared Registry is null...");
+                return;
+            }
 
-        if(DebugUtil.isDebug())
-            Log.d(TAG, Str.fm("Initializing Randomizer Spinner, Adapter Count Before=%s  Randomizers Count=%s  Setting Container=%s", adapterRandomizer.getCount(), sharedRegistry.getRandomizersMap().size(), container.getContainerName()));
+            if(!sharedRegistry.hasRandomizers() || container == null) {
+                Log.e(TAG, "Invalid Input for [initRandomizer], Make sure Adapters, Lists and Objects are Not Null or Empty!");
+                return;
+            }
 
-        adapterRandomizer.clear();
-        IRandomizer targetRandomizer = sharedRegistry.getRandomizer(container.getSettings());
-        if(DebugUtil.isDebug())
-            Log.d(TAG, Str.fm("Starting Spinner Logic Loop Target Randomizer=%s  Setting Container=%s", Str.noNL(targetRandomizer) , container.getContainerName()));
+            if(DebugUtil.isDebug())
+                Log.d(TAG, Str.fm("Initializing Randomizer Spinner, Adapter Count Before=%s  Randomizers Count=%s  Setting Container=%s", adapterRandomizer.getCount(), sharedRegistry.getRandomizersMap().size(), container.getContainerName()));
+
+            adapterRandomizer.clear();
+            IRandomizer targetRandomizer = sharedRegistry.getRandomizer(container.getSettings());
+            if(DebugUtil.isDebug())
+                Log.d(TAG, Str.fm("Starting Spinner Logic Loop Target Randomizer=%s  Setting Container=%s", Str.noNL(targetRandomizer) , container.getContainerName()));
 
 
-        //PS we can add the "null" fillers here
-        //So other spots do not need to Consider it
+            //PS we can add the "null" fillers here
+            //So other spots do not need to Consider it
 
-        if(targetRandomizer == null || !targetRandomizer.hasOptions()) {
-            adapterRandomizer.add(RandomNullElement.create());
-            adapterRandomizer.addAll(sharedRegistry.getRandomizersMap().values());
+            if(targetRandomizer == null || !targetRandomizer.hasOptions()) {
+                adapterRandomizer.add(RandomNullElement.create());
+                adapterRandomizer.addAll(sharedRegistry.getRandomizersMap().values());
 
-            if(targetRandomizer != null && !(targetRandomizer instanceof RandomNullElement)) {
-                for(int i = 0; i < adapterRandomizer.getCount(); i++) {
-                    IRandomizer aRan = adapterRandomizer.getItem(i);
-                    if(!(aRan instanceof RandomNullElement) && targetRandomizer.equals(aRan)) {
-                        spSelector.setSelection(i);
-                        if(DebugUtil.isDebug())
-                            Log.d(TAG, "Set Randomizer Adapter Position to=" + i + " Display Name=" + aRan.getDisplayName());
+                if(targetRandomizer != null && !(targetRandomizer instanceof RandomNullElement)) {
+                    for(int i = 0; i < adapterRandomizer.getCount(); i++) {
+                        IRandomizer aRan = adapterRandomizer.getItem(i);
+                        if(!(aRan instanceof RandomNullElement) && targetRandomizer.equals(aRan)) {
+                            spSelector.setSelection(i);
+                            if(DebugUtil.isDebug())
+                                Log.d(TAG, "Set Randomizer Adapter Position to=" + i + " Display Name=" + aRan.getDisplayName());
 
-                        break;
+                            break;
+                        }
                     }
                 }
             }
-        }
-        else if(targetRandomizer.hasOptions()) {
-            String targetValue = null;
-            boolean allSame = true;
-            for(SettingHolder holder : getSettingHolders(container.getSettings(), sharedRegistry)) {
-                if(targetValue != null) {
-                    if(!targetValue.equalsIgnoreCase(holder.getNewValue())) {
-                        allSame = false;
-                        break;
-                    }
-                } else {
-                    targetValue = holder.getNewValue();
-                }
-            }
-
-            adapterRandomizer.addAll(targetRandomizer.getOptions());
-            if(targetValue != null && allSame) {
-                for(int i = 0; i < adapterRandomizer.getCount(); i++) {
-                    IRandomizer op = adapterRandomizer.getItem(i);
-                    if(op == null || op instanceof RandomOptionNullElement)
-                        continue;
-
-                    String val = op.getRawValue();
-                    if(targetValue.equalsIgnoreCase(val)) {
-                        spSelector.setSelection(i);
-                        if(DebugUtil.isDebug())
-                            Log.d(TAG, "Set Randomizer Adapter Option Position to=" + i + " Val=" + val + " Display Name=" + op.getDisplayName());
-
-                        break;
+            else if(targetRandomizer.hasOptions()) {
+                String targetValue = null;
+                boolean allSame = true;
+                for(SettingHolder holder : getSettingHolders(container.getSettings(), sharedRegistry)) {
+                    if(targetValue != null) {
+                        if(!targetValue.equalsIgnoreCase(holder.getNewValue())) {
+                            allSame = false;
+                            break;
+                        }
+                    } else {
+                        targetValue = holder.getNewValue();
                     }
                 }
+
+                adapterRandomizer.addAll(targetRandomizer.getOptions());
+                if(targetValue != null && allSame) {
+                    for(int i = 0; i < adapterRandomizer.getCount(); i++) {
+                        IRandomizer op = adapterRandomizer.getItem(i);
+                        if(op == null || op instanceof RandomOptionNullElement)
+                            continue;
+
+                        String val = op.getRawValue();
+                        if(targetValue.equalsIgnoreCase(val)) {
+                            spSelector.setSelection(i);
+                            if(DebugUtil.isDebug())
+                                Log.d(TAG, "Set Randomizer Adapter Option Position to=" + i + " Val=" + val + " Display Name=" + op.getDisplayName());
+
+                            break;
+                        }
+                    }
+                }
             }
+        }catch (Exception e) {
+            Log.e(TAG, "Failed to Init Randomizer, Container=" + container.getContainerName() + " Error=" + e);
         }
     }
 

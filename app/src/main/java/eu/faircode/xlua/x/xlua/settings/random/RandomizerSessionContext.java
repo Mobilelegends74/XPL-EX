@@ -16,6 +16,7 @@ import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.string.StrBuilder;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.ui.core.UINotifier;
 import eu.faircode.xlua.x.ui.core.view_registry.SharedRegistry;
 import eu.faircode.xlua.x.ui.fragments.SettingExFragment;
 import eu.faircode.xlua.x.ui.fragments.SettingFragmentUtils;
@@ -418,7 +419,7 @@ public class RandomizerSessionContext {
 
     private IRandomizer getRandomizerInternal(String settingName, SharedRegistry sharedRegistry) {
         if(settingName == null) return null;
-        IRandomizer randomizer = sharedRegistry.getSharedObject(settingName);
+        IRandomizer randomizer = sharedRegistry.getSharedObject(UINotifier.settingName(settingName));
         return randomizer == null ? randomizers.get(settingName) : randomizer;
     }
 

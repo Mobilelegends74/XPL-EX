@@ -39,8 +39,10 @@ import eu.faircode.xlua.x.ui.core.interfaces.IGenericElementEvent;
 import eu.faircode.xlua.x.ui.core.util.CoreUiUtils;
 import eu.faircode.xlua.x.ui.dialogs.HooksDialog;
 import eu.faircode.xlua.x.ui.dialogs.SettingDeleteDialog;
+import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.database.A_CODE;
 import eu.faircode.xlua.x.xlua.hook.AppAssignmentInfo;
+import eu.faircode.xlua.x.xlua.hook.PackageHookContext;
 import eu.faircode.xlua.x.xlua.settings.GroupStats;
 import eu.faircode.xlua.x.xlua.settings.SettingHolder;
 import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
@@ -57,7 +59,7 @@ import eu.faircode.xlua.x.xlua.settings.test.interfaces.IUIViewControl;
 public class OptimizedContainerAdapter
         extends EnhancedListAdapter<SettingsContainer, SettingsExItemContainerBinding, OptimizedContainerAdapter.ContainerViewHolder> {
 
-    private UserClientAppContext userContext;
+    private final UserClientAppContext userContext;
     public OptimizedContainerAdapter(Context context,
                                      IGenericElementEvent<SettingsContainer, SettingsExItemContainerBinding> events,
                                      IStateManager stateManager,
@@ -84,6 +86,8 @@ public class OptimizedContainerAdapter
             AdapterView.OnItemSelectedListener,
             IStateChanged, UINotifier.IUINotification {
 
+        private static final String TAG = LibUtil.generateTag(ContainerViewHolder.class);
+
         private final SettingsListManager settingsManager;
         private final UserClientAppContext userContext;
         private final GroupStats groupStats = new GroupStats();
@@ -109,7 +113,10 @@ public class OptimizedContainerAdapter
 
             SharedRegistry.ItemState state = sharedRegistry.getItemState(SharedRegistry.STATE_TAG_CONTAINERS, item.getContainerName());
 
-            CheckBoxState.from(currentItem.getSettings(), SharedRegistry.STATE_TAG_SETTINGS, sharedRegistry)
+            CheckBoxState.from(
+                    currentItem.getSettings(),
+                            SharedRegistry.STATE_TAG_SETTINGS,
+                            sharedRegistry)
                     .updateCheckBox(binding.cbSettingContainerEnabled, null);
 
             Context context = binding.getRoot().getContext();
@@ -211,7 +218,7 @@ public class OptimizedContainerAdapter
                 case R.id.ivBtWildcard:
                     ListUtil.forEachVoid(settingShared.getSettingsForContainer(currentItem), (o, i) -> {
                         //Check if it has a Randomizer
-                        String newValue = "%random%";
+                        String newValue = PackageHookContext.RANDOM_VALUE;
                         o.setNewValue(newValue);
                         o.ensureUiUpdated(newValue);
                         o.setNameLabelColor(context);
@@ -288,7 +295,7 @@ public class OptimizedContainerAdapter
 
         @Override
         protected void onViewDetached() {
-            wireContainerEvents(false);
+            //wireContainerEvents(false);
             settingsManager.clear();
             if(currentItem != null) {
                 sharedRegistry.putGroupChangeListener(null, currentItem.getObjectId());
@@ -331,6 +338,10 @@ public class OptimizedContainerAdapter
 
         private void wireContainerEvents(boolean wire) {
             if (binding != null) {
+                //binding.spSettingContainerRandomizer.setOnItemSelectedListener(wire ? this : null);
+                binding.spSettingContainerRandomizer.setOnItemSelectedListener(this);
+
+
                 binding.cbSettingContainerEnabled.setOnCheckedChangeListener(wire ? this : null);
 
                 binding.ivBtSettingContainerDelete.setOnClickListener(wire ? this : null);
@@ -355,8 +366,6 @@ public class OptimizedContainerAdapter
                 binding.tvSettingContainerNameNice.setOnClickListener(wire ? this : null);
                 binding.tvSettingContainerNameFull.setOnClickListener(wire ? this : null);
                 binding.ivExpanderSettingContainer.setOnClickListener(wire ? this : null);
-
-                binding.spSettingContainerRandomizer.setOnItemSelectedListener(wire ? this : null);
 
                 binding.ivBtWildcard.setOnClickListener(wire ? this : null);
                 binding.ivBtWildcard.setOnLongClickListener(wire ? this : null);
@@ -397,16 +406,31 @@ public class OptimizedContainerAdapter
         }
 
         @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) { handleSpinnerUpdate(adapterView.getContext()); }
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            Log.d(TAG, "[onItemSelected] Item=" + currentItem.getContainerName());
+            handleSpinnerUpdate(adapterView.getContext());
+        }
 
         @Override
-        public void onNothingSelected(AdapterView<?> adapterView) { handleSpinnerUpdate(adapterView.getContext()); }
+        public void onNothingSelected(AdapterView<?> adapterView) {
+            Log.d(TAG, "[onNothingSelected] Item=" + currentItem.getContainerName());
+            handleSpinnerUpdate(adapterView.getContext());
+        }
 
         public void handleSpinnerUpdate(Context context) {
             //Check then updates spinner ??
+            if(DebugUtil.isDebug())
+                Log.d(TAG, "Spinner Update Randomizer Event has been Invoked!");
+
             final SettingSharedRegistry settingShared = sharedRegistry.asSettingShared();
             Spinner spinner = binding.spSettingContainerRandomizer;
             IRandomizer randomizer = (IRandomizer) spinner.getSelectedItem();
+            if(randomizer == null)
+                return;
+
+            if(DebugUtil.isDebug())
+                Log.d(TAG, "Randomizer Selected=" + randomizer.getDisplayName() + " IsOption=" + randomizer.isOption() +  " Current Item=" + currentItem.getContainerName());
+
             if(randomizer.isOption()) {
                 if(!(randomizer instanceof RandomOptionNullElement)) {
                     RandomizerSessionContext.create()
@@ -418,24 +442,32 @@ public class OptimizedContainerAdapter
                                     sharedRegistry);
                 }
             } else {
-                for(SettingHolder holder : settingShared.getSettingsForContainer(currentItem, false))
-                    sharedRegistry.pushSharedObject(holder.getObjectId(), randomizer);
+                ListUtil.forEachVoid(settingShared.getSettingsForContainer(currentItem, false),
+                        (e, s) -> sharedRegistry.pushSharedObject(e.getObjectId(), randomizer));
             }
         }
 
         public void updateSpinner(Context context, Spinner spinner) {
-            if(!ObjectUtils.anyNull(context, spinner, currentItem)) {
-                String tag = currentItem.getName() + "_spin_array";
-                ArrayAdapter<IRandomizer> adapter = sharedRegistry.getSharedObject(tag);
-                if(adapter == null) {
-                    adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item);
-                    sharedRegistry.pushSharedObject(tag, adapter);
-                }
-
-                spinner.setAdapter(adapter);    //We can make this faster using a single time init state, store index local
-                //We can also init once store something in data like style, then all we need to do is find the index selected
-                UiRandomUtils.initRandomizer(adapter, spinner, currentItem, sharedRegistry.asSettingShared());
+            if(ObjectUtils.anyNull(context, spinner, context)) {
+                Log.e(TAG, "Invalid Input! [updateSpinner]");
+                return;
             }
+
+            String tag = currentItem.getName() + "_spin_array";
+            ArrayAdapter<IRandomizer> adapter = sharedRegistry.getSharedObject(tag);
+            if(adapter == null) {
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, "Randomizer Spinner Adapter is null for:" + currentItem.getName());
+
+                adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item);
+                sharedRegistry.pushSharedObject(tag, adapter);
+            } else {
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, "Randomizer Spinner Adapter was Found for:" + currentItem.getName());
+            }
+
+            UiRandomUtils.initRandomizer(adapter, spinner, currentItem, sharedRegistry.asSettingShared());
+            spinner.setAdapter(adapter);    //We can make this faster using a single time init state, store index local
         }
 
         @Override

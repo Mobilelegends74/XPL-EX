@@ -187,7 +187,7 @@ public class HookRepository {
                     for(XLuaHook depHook : depDefinitions) {
                         putHook(depHook);   //Some extra func invoke ?
                         if(DebugUtil.isDebug())
-                            Log.d(TAG, Str.fm("[3.6] Appended Dependency Group [%] Hook [%s] required by [%s] Filter. Definition Count for Dependency [%s]",
+                            Log.d(TAG, Str.fm("[3.6] Appended Dependency Group [%s] Hook [%s] required by [%s] Filter. Definition Count for Dependency [%s]",
                                     dependency,
                                     depHook.getObjectId(),
                                     filter.getGroupName(),

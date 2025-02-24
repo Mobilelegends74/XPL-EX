@@ -16,12 +16,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.lifecycle.LifecycleOwner;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.R;
@@ -34,19 +34,24 @@ import eu.faircode.xlua.x.xlua.settings.SettingHolder;
 import eu.faircode.xlua.x.xlua.settings.data.SettingPacket;
 
 public class SettingsProgressDialog extends AppCompatDialogFragment {
-
     private static final String TAG = LibUtil.generateTag(SettingsProgressDialog.class);
 
     private Context context;
     private Context context2;
-
-    public Context getContext() { return context == null ? context2 : context; }
-
     private TextView tvProgressData;
     private ProgressBar pbProgress;
     private UINotifier notifier;
-
     private Map<SettingHolder, SettingPacket> data;
+    private final AtomicBoolean isProcessing = new AtomicBoolean(false);
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+
+    public static SettingsProgressDialog create() {
+        return new SettingsProgressDialog();
+    }
+
+    public Context getContext() {
+        return context == null ? context2 : context;
+    }
 
     public SettingsProgressDialog setNotifier(UINotifier notifier) {
         this.notifier = notifier;
@@ -62,12 +67,16 @@ public class SettingsProgressDialog extends AppCompatDialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
-        LayoutInflater inflater = Objects.requireNonNull(getActivity()).getLayoutInflater();
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.hookdeplyload, null);
+
         pbProgress = view.findViewById(R.id.pbDeployHooks);
         tvProgressData = view.findViewById(R.id.tvDeployHookName);
-        builder.setView(view).setTitle(getString(R.string.title_deploy_settings));
+
+        builder.setView(view)
+                .setTitle(getString(R.string.title_deploy_settings))
+                .setPositiveButton(android.R.string.ok, null);
 
         AlertDialog dialog = builder.create();
         dialog.setCancelable(false);
@@ -84,128 +93,120 @@ public class SettingsProgressDialog extends AppCompatDialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        new Thread(this::updateTextView).start();
+        if (!isProcessing.get()) {
+            isProcessing.set(true);
+            new Thread(this::processSettings).start();
+        }
     }
 
     @Override
-    public void onCancel(@NonNull DialogInterface dialog) { }
+    public void onDetach() {
+        super.onDetach();
+        mainHandler.removeCallbacksAndMessages(null);
+        context = null;
+        context2 = null;
+    }
 
-    @Override
-    public void onDismiss(@NonNull DialogInterface dialog) { }
+    private void processSettings() {
+        if (data == null || getContext() == null) {
+            dismissSafely();
+            return;
+        }
 
-
-    private void updateTextView() {
         List<String> succeeded = new ArrayList<>();
         List<String> failed = new ArrayList<>();
 
-        if(DebugUtil.isDebug())
-            Log.d(TAG, "Sending Settings Size=" + data.size());
-
-        for(Map.Entry<SettingHolder, SettingPacket> entry : data.entrySet()) {
-            SettingPacket packet = entry.getValue();
-
-            new Handler(Looper.getMainLooper()).post(() -> tvProgressData.setText(packet.name));
-
-            A_CODE code = PutSettingExCommand.call(context, packet);
-            if(DebugUtil.isDebug())
-                Log.d(TAG, "Send Setting Packet, Name=" + packet.name + " Result=" + code + " Value=" + packet.value + " UID=" + packet.getUid() + " Category=" + packet.getCategory());
-
-            SettingHolder holder = entry.getKey();
-            if (code == A_CODE.SUCCESS) {
-                holder.setValue(holder.getNewValue(), true);
-                holder.setNameLabelColor(getContext());
-                holder.notifyUpdate(notifier);
-                succeeded.add(holder.getName());
-            } else {
-                failed.add(holder.getName());
+        try {
+            if (DebugUtil.isDebug()) {
+                Log.d(TAG, "Sending Settings Size=" + data.size());
             }
-        }
 
-        final StrBuilder sb = StrBuilder.create();
-        sb.appendLine(context.getText(R.string.msg_succeeded_count));
-        sb.newLine();
-        for(String s : succeeded)
-            sb.appendLine(s);
+            for (Map.Entry<SettingHolder, SettingPacket> entry : data.entrySet()) {
+                if (!isAdded()) {
+                    return;
+                }
 
-        if(!failed.isEmpty()) {
-            sb.appendLine(context.getText(R.string.msg_failed_count));
-            sb.newLine();
-            for(String f : failed)
-                sb.appendLine(f);
-        }
+                SettingPacket packet = entry.getValue();
+                updateProgress(packet.name);
 
-        new Handler(Looper.getMainLooper()).post(() -> {
-            tvProgressData.setText(sb.toString());
-            pbProgress.setVisibility(View.INVISIBLE);
-            getDialog().setCancelable(true);
-            getDialog().setCanceledOnTouchOutside(true);
-        });
+                A_CODE code = PutSettingExCommand.call(getContext(), packet);
+                if (DebugUtil.isDebug()) {
+                    Log.d(TAG, "Send Setting Packet, Name=" + packet.name +
+                            " Result=" + code + " Value=" + packet.value +
+                            " UID=" + packet.getUid() + " Category=" + packet.getCategory());
+                }
 
-        final CountDownLatch latch = new CountDownLatch(1);
-        // Signal that the callback is done
-        new Handler(Looper.getMainLooper()).post(latch::countDown);
-
-        try { latch.await(); } catch (InterruptedException ignored) {  }
-
-
-
-        /*final String pkgName = app.getPackageName();
-        Log.i(TAG, pkgName + " " + groupName + "=" + assign);
-        final ArrayList<String> hookIds = new ArrayList<>();
-        for (final XLuaHook hook : hooks) {
-            if (hook.isAvailable(pkgName, collection) && (groupName == null || groupName.equals(hook.getGroup()))) {
-                hookIds.add(hook.getId());
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        tvHookStuff.setText(hook.getId());
-                    }
-                });
-
-                if (assign) app.addAssignment(new LuaAssignment(hook));
-                else app.removeAssignment(new LuaAssignment(hook));
-
-                //try { Thread.sleep(50); } catch (InterruptedException ignored) { }
-            }
-        }
-
-        final XResult res = XLuaCall.assignHooks(context, app.getUid(), pkgName, hookIds, !assign, app.getForceStop());
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                if (res.succeeded()) {
-                    tvHookStuff.setText(R.string.msg_deploy_succeeded);
+                SettingHolder holder = entry.getKey();
+                if (code == A_CODE.SUCCESS) {
+                    holder.setValue(holder.getNewValue(), true);
+                    holder.setNameLabelColor(getContext());
+                    holder.notifyUpdate(notifier);
+                    succeeded.add(holder.getName());
                 } else {
-
-                    try { Thread.sleep(2500); } catch (InterruptedException ignored) { }
-                    getDialog().setCancelable(true); // Allow the user to close the dialog manually
-                    getDialog().setCanceledOnTouchOutside(true); // Allow the user to close the dialog by touching outside
-
+                    failed.add(holder.getName());
                 }
             }
-        });
 
-        // Use CountDownLatch to wait for callback to finish
-        final CountDownLatch latch = new CountDownLatch(1);
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                if (callback != null) {
-                    HookDeployResult result = new HookDeployResult();
-                    result.context = context;
-                    result.result = res;
-                    result.assign = assign;
-                    result.groupName = groupName;
-                    result.position = position;
-                    callback.onFinish(result);
+            showResults(succeeded, failed);
+        } catch (Exception e) {
+            Log.e(TAG, "Error processing settings", e);
+            mainHandler.post(() -> {
+                if (isAdded()) {
+                    tvProgressData.setText(R.string.msg_error_processing);
+                    dismissSafely();
                 }
-                latch.countDown(); // Signal that the callback is done
+            });
+        }
+    }
+
+    private void updateProgress(final String progressText) {
+        mainHandler.post(() -> {
+            if (isAdded() && tvProgressData != null) {
+                tvProgressData.setText(progressText);
             }
         });
+    }
 
-        try { latch.await(); } catch (InterruptedException ignored) {  }
-        // Only dismiss the dialog if the operation succeeded
-        if (!operationFailed) dismissAllowingStateLoss();*/
+    private void showResults(List<String> succeeded, List<String> failed) {
+        if (!isAdded()) return;
 
+        final StrBuilder sb = new StrBuilder();
+        sb.appendLine(getString(R.string.msg_succeeded_count));
+        sb.newLine();
+        for (String s : succeeded) {
+            sb.appendLine(s);
+        }
+
+        if (!failed.isEmpty()) {
+            sb.appendLine(getString(R.string.msg_failed_count));
+            sb.newLine();
+            for (String f : failed) {
+                sb.appendLine(f);
+            }
+        }
+
+        mainHandler.post(() -> {
+            if (isAdded()) {
+                if (tvProgressData != null) {
+                    tvProgressData.setText(sb.toString());
+                }
+                if (pbProgress != null) {
+                    pbProgress.setVisibility(View.GONE);
+                }
+                dismissSafely();
+            }
+        });
+    }
+
+    private void dismissSafely() {
+        mainHandler.postDelayed(() -> {
+            try {
+                if (isAdded()) {
+                    dismissAllowingStateLoss();
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error dismissing dialog", e);
+            }
+        }, 2000); // Give user time to see results before dismissing
     }
 }

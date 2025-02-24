@@ -17,8 +17,10 @@ import java.util.Stack;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
+import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.PrefManager;
+import eu.faircode.xlua.x.data.utils.ArrayUtils;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.data.utils.ObjectUtils;
 import eu.faircode.xlua.x.ui.core.UINotifier;
@@ -118,9 +120,20 @@ public class SharedRegistry implements ISessionObject {
 
     public void removeSharedObject(String id) { SHARED_OBJECTS.remove(id); }
 
-    public <T> T getSharedObject(String id) { return ObjectUtils.tryCast(SHARED_OBJECTS.get(id)); }
+    public <T> T getSharedObject(String id) {
+        T val =  ObjectUtils.tryCast(SHARED_OBJECTS.get(id));
+        if(DebugUtil.isDebug())
+            Log.d(TAG, "Getting Shared Object with the ID=" + id + " Value=" + Str.toStringOrNull(val));
 
-    public <T> void pushSharedObject(String id, T obj) { SHARED_OBJECTS.put(id, obj); }
+        return val;
+    }
+
+    public <T> void pushSharedObject(String id, T obj) {
+        if(DebugUtil.isDebug())
+            Log.d(TAG, "Pushing Shared Object with the ID=" + id + " Value=" + Str.toStringOrNull(obj));
+
+        SHARED_OBJECTS.put(id, obj);
+    }
 
     public void pin(boolean pinThis) { this.pinThis = pinThis; }    //improve
 
@@ -267,11 +280,11 @@ public class SharedRegistry implements ISessionObject {
 
     public <T extends IIdentifiableObject> int getEnabledCount(List<T> objects, String tag) {
         int count = 0;
-        if(objects == null || TextUtils.isEmpty(tag))
+        if(!ListUtil.isValid(objects) || Str.isEmpty(tag))
             return count;
 
         LongSparseArray<Byte> tagStates = stateMap.get(tag);
-        if(tagStates == null || tagStates.isEmpty())
+        if(!ArrayUtils.isValid(tagStates))
             return count;
 
         for(IIdentifiableObject o : objects) {
@@ -279,7 +292,6 @@ public class SharedRegistry implements ISessionObject {
                 long hash = RegistryUtils.hashStringToLong_cache(o.getObjectId());
                 if(tagStates.get(hash, (byte)0) != 0)
                     count++;
-
             }
         }
 

@@ -51,7 +51,7 @@ public class AppAssignmentsMap {
     }
 
     public void refresh(Context context) {
-        if(context != null && !HookApp.isGlobalApp(app)) {
+        if(app != null && context != null && !HookApp.isGlobalApp(app)) {
             clear();
             List<AssignmentPacket> assignments = GetAssignmentsCommand.get(context, true, getAppUid(), getAppPackageName(), 0);
             if(DebugUtil.isDebug())
@@ -72,7 +72,10 @@ public class AppAssignmentsMap {
         }
     }
 
-    public void clear() { map.clear(); assignmentCache.clear(); }
+    public void clear() {
+        map.clear();
+        assignmentCache.clear();
+    }
 
     private AppAssignmentInfo internalGetFirst(List<String> settings) {
         for(String name : settings) {

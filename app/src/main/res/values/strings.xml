@@ -59,7 +59,7 @@
     <string name="menu_whats_new_button" translatable="false">Whats New!</string>
 
     <string name="whats_new" translatable="false">
-        Whats new in 1.5.X Update XPL-EX (ObbedCode) v3534534534
+        Whats new in 1.5.X Update XPL-EX (ObbedCode) v2
 
         <![CDATA[<br><br>]]>This is my Art! Enjoy love all, smile, be happy, enjoy what you do!
         <![CDATA[<br>]]>Free, Open Source, No Analytics, No Servers, offline ...
@@ -77,18 +77,32 @@
         <![CDATA[<br>]]><![CDATA[<a href="https://xdaforums.com/t/app-vdinfos.4097379/">XDA</a>]]>
         <![CDATA[<br>]]><![CDATA[<a href="https://github.com/VD171/VD-Infos">GitHub</a>]]>
 
-        <![CDATA[<br><br>]]> 1.5.1.6 XPL151R
+        <![CDATA[<br><br>]]> 1.5.1.9 XPL151R
+        <![CDATA[<br>]]>• Improved AppSetId Hook
+        <![CDATA[<br>]]>• Improved Google Advertising ID Hook
+        <![CDATA[<br>]]>• Added new Android ID Hook (cache)
+        <![CDATA[<br>]]>• Improved Android ID Content Resolver Hook
+        <![CDATA[<br>]]>• Fixed the Direct Content Resolver Hook
+        <![CDATA[<br>]]>• Fixed Collection Filtering for Hooks Dialog Number
+        <![CDATA[<br>]]>• Fixed Global Check Bug
+        <![CDATA[<br>]]>• Fixed Check Box Not Saving Bug
+        <![CDATA[<br>]]>• Fixed View Expander Bugs (Issues were mostly caused by Saved Results Dialog)
+        <![CDATA[<br>]]>• Fixed Drop Down Randomizer Selection Bug
+        <![CDATA[<br>]]>• Fixed Setting Color Bugs
+        <![CDATA[<br>]]>• Fixed Some other Internal Bugs
+        <![CDATA[<br>]]>• Randomizer for OAID uses Xiaomi Format now
+
+        <![CDATA[<br><br>]]> 1.5.1.8 XPL151R (Skipped a couple Versions...)
         <![CDATA[<br>]]>• Improved and Finalized the Database Folder Finder and Mover Api!
         <![CDATA[<br>]]>• Improved and Finalized the Access Control Code Api
         <![CDATA[<br>]]>• Improved and Finalized the File Transfer Api (Copy and Move)
         <![CDATA[<br>]]>• Fixed bugs and Optimized some Code
-        <![CDATA[<br>]]>• Added Re-Implemented build.prop Properties Interception now! (ToDo)
+        <![CDATA[<br>]]>• Added Re-Implemented build.prop Properties Interception now!
         <![CDATA[<br>]]>• Added Startup Checks for Database and Command Bridge Service
         <![CDATA[<br>]]>• Improved and Finalized the Hook Loader
         <![CDATA[<br>]]>• Added Import and Export (Settings, Hooks, Definitions, etc...) and Drop Old Tables
-        <![CDATA[<br>]]>• Added Huawei Device ID Related Hooks (ToDo)
-        <![CDATA[<br>]]>• Added Hooks for AppSetId (Another Unique ID Introduced into Android 2021) (ToDo)
-        <![CDATA[<br>]]>• Improved the Facebook ID Hooks (ToDo)
+        <![CDATA[<br>]]>• Added Hooks for AppSetId (Another Unique ID Introduced into Android 2021) (Will make them even stronger in the future)
+        <![CDATA[<br>]]>• -> Check out the Demo App that shows you your AppSetId Via Telegram Announcement Channel!
         <![CDATA[<br>]]>• Added DUMP options to some of the Commands (Internal)
         <![CDATA[<br>]]>• Added more UI Feedback!
         <![CDATA[<br>]]>• Fixed Some Setting Names, typos and Bugs
@@ -221,6 +235,7 @@
     <string name="save_setting_success" translatable="false">Settings were saved! </string>
     <string name="save_setting_error" translatable="false">Failed to save Settings! </string>
 
+    <string name="msg_error_processing"  translatable="false">An error occurred while processing settings. Please try again.</string>
 
     <string name="text_backup_name" translatable="false">Backup Name:</string>
     <string name="text_enter_backup_name" translatable="false">Enter backup name</string>
@@ -255,6 +270,8 @@
     <string name="result_prefix_debug" translatable="false">Debug</string>
     <string name="result_prefix_force_stop" translatable="false">App Force Closed!</string>
     <string name="result_prefix_cleared_app_data" translatable="false">AppData Cleared!</string>
+    <string name="result_settings_update" translatable="false">Updated %s Settings! Failed Count %s</string>
+    <string name="result_settings_update_empty" translatable="false">No Settings were saved! Nothing needs to be Saved!</string>
 
     <string name="search_log_hint" translatable="false">Search Logs...</string>
     <string name="search_config_hint" translatable="false">Search Configs...</string>

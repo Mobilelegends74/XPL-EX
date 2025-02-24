@@ -2,6 +2,7 @@ package eu.faircode.xlua.x.data.utils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.collection.LongSparseArray;
 
 import org.json.JSONArray;
 
@@ -460,6 +461,10 @@ public class ArrayUtils {
             result[i] = Boolean.TRUE.equals(list.get(i));
         }
         return result;
+    }
+
+    public static <T> boolean isValid(LongSparseArray<T> sArray) {
+        return sArray != null && !sArray.isEmpty();
     }
 
     /**

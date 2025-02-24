@@ -725,7 +725,7 @@ public class Str {
     public static List<String> splitToList(String str) { return splitToList(str, ","); }
     public static List<String> splitToList(String str, String delimiter) {
         if(Str.isEmpty(str))
-            return new ArrayList<>();
+            return ListUtil.emptyList();
 
         if(!str.contains(delimiter))
             return ListUtil.toSingleList(str);
@@ -736,29 +736,26 @@ public class Str {
 
         List<String> list = new ArrayList<>();
         for(String p : split)
-            if(!Str.isEmpty(p) && !list.contains(p))
+            if(!isEmpty(p) && !list.contains(p))
                 list.add(p);
 
         return list;
     }
 
-    public static String joinArray(String[] arr) { return joinArray(arr, ","); }
+    public static String joinArray(String[] arr) { return joinArray(arr, COMMA); }
     public static String joinArray(String[] arr, String delimiter) {
-        if(arr == null) return "";
-
-        if(DebugUtil.isDebug())
-            Log.d("XLua.Str", "Joining String Array Length=" + arr.length + " Delimiter=" + delimiter);
+        if(!ArrayUtils.isValid(arr))
+            return EMPTY;
 
         StringBuilder sb = new StringBuilder();
-        int sz = arr.length - 1;
-        for(int i = 0; i < arr.length; i++) {
-            String l = arr[i];
-            //if(!isValidNotWhitespaces(l)) continue;
-            if(TextUtils.isEmpty(l)) continue;
-            sb.append(l);
-            if(i != sz) {
+        for (String l : arr) {
+            if (isEmpty(l))
+                continue;
+
+            if (sb.length() > 0)
                 sb.append(delimiter);
-            }
+
+            sb.append(l);
         }
 
         return sb.toString();
@@ -801,15 +798,20 @@ public class Str {
 
     public static boolean isSpecialChar(char c) { return c == '\n' || c == '\t' || c == '\b' || c == ' ' || c == '\r'; }
 
-    public static String joinList(List<String> list) { return joinList(list, ","); }
+    public static String joinList(List<String> list) { return joinList(list, COMMA); }
     public static String joinList(List<String> list, String delimiter) {
-        if(list.isEmpty()) return "";
+        if(!ListUtil.isValid(list))
+            return EMPTY;
+
         StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < list.size(); i++) {
-            String l = list.get(i);
-            if(TextUtils.isEmpty(l)) continue;
-            if(sb.length() > 0) sb.append(delimiter);
-            sb.append(l);
+        for(String s : list) {
+            if(isEmpty(s))
+                continue;
+
+            if(sb.length() > 0)
+                sb.append(delimiter);
+
+            sb.append(s);
         }
 
         return sb.toString();

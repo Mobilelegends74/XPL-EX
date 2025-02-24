@@ -3,6 +3,8 @@ package eu.faircode.xlua.x.ui.fragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import eu.faircode.xlua.DebugUtil;
 import  eu.faircode.xlua.R;
 
 import eu.faircode.xlua.databinding.SettingsExFragmentBinding;
@@ -27,7 +30,6 @@ import eu.faircode.xlua.databinding.SettingsExGroupBinding;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.PrefManager;
 import eu.faircode.xlua.x.data.utils.ListUtil;
-import eu.faircode.xlua.x.runtime.RuntimeUtils;
 import eu.faircode.xlua.x.ui.activities.SettingsExActivity;
 import eu.faircode.xlua.x.ui.adapters.settings.OptimizedSettingGroupAdapter;
 import eu.faircode.xlua.x.ui.core.RecyclerDynamicSizeAdjuster;
@@ -58,6 +60,7 @@ import eu.faircode.xlua.x.xlua.commands.query.GetSettingsExCommand;
 import eu.faircode.xlua.x.xlua.database.A_CODE;
 import eu.faircode.xlua.x.xlua.database.ActionFlag;
 import eu.faircode.xlua.x.xlua.database.ActionPacket;
+import eu.faircode.xlua.x.xlua.hook.PackageHookContext;
 import eu.faircode.xlua.x.xlua.identity.UserIdentity;
 import eu.faircode.xlua.x.xlua.settings.SettingHolder;
 import eu.faircode.xlua.x.xlua.settings.SettingsGroup;
@@ -65,10 +68,7 @@ import eu.faircode.xlua.x.xlua.settings.data.SettingPacket;
 import eu.faircode.xlua.x.xlua.settings.random.RandomizerSessionContext;
 import eu.faircode.xlua.x.xlua.settings.random.interfaces.IRandomizer;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
-import eu.faircode.xlua.x.xlua.settings.test.EventTrigger;
-import eu.faircode.xlua.x.xlua.settings.test.SharedSpace;
 import eu.faircode.xlua.x.xlua.settings.test.SharedViewControl;
-import eu.faircode.xlua.x.xlua.settings.test.interfaces.IUIViewControl;
 
 /**
  * Ensure system takes but some data ?
@@ -93,25 +93,13 @@ public class SettingExFragment
         ListFragment<SettingsGroup, SettingsExFragmentBinding, SettingsExGroupBinding>
         implements
         IListChange<SettingPacket>,
-        IUIViewControl,
         CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = LibUtil.generateTag(SettingExFragment.class);
     public static SettingExFragment newInstance(UserClientAppContext context) { return ListFragmentUtils.newInstance(SettingExFragment.class, context); }
 
-    private SharedViewControl sharedViewControl;
     private boolean isViewOpen = true;
     private final SettingSharedRegistry sharedRegistry = new SettingSharedRegistry();
-
-    @Override
-    public SharedViewControl getSharedViewControl() {
-        if(this.sharedViewControl == null) this.sharedViewControl = new SharedViewControl().setTag(SettingsExActivity.SHARED_TAG).setFragment(this);
-        return sharedViewControl;
-    }
-
-    @Override
-    public void setSharedViewControl(SharedViewControl sharedViewControl) { this.sharedViewControl = sharedViewControl; }
-
 
     @Override
     public SharedRegistry getSharedRegistry() { return sharedRegistry; }
@@ -121,46 +109,21 @@ public class SettingExFragment
         return this;
     }
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.createViewModel(SettingsExGroupViewModel.class, true);
         super.onCreate(savedInstanceState);
-
-        try {
-            sharedRegistry.refreshAssignments(requireContext(), getUserContext());
-            sharedRegistry.bindToUserContext(getUserContext());
-            PrefManager prefManager = sharedRegistry.ensurePrefsOpen(getContext(), PrefManager.SETTINGS_NAMESPACE);
-            if(prefManager != null) {
-                List<String> checked = prefManager.getStringList(
-                        PrefManager.nameForChecked(true),
-                        ListUtil.emptyList(),
-                        false);
-
-                try {
-                    String pkgName = getAppPackageName();
-                    if(pkgName != null && !UserIdentity.GLOBAL_NAMESPACE.equalsIgnoreCase(pkgName))
-                        ListUtil.addAllIfValid(checked,
-                                prefManager.getStringList(PrefManager.nameForChecked(false, pkgName),
-                                        ListUtil.emptyList(),
-                                        false));    //Error is jere "addAllIfValid"
-                }catch (Exception e) {
-                    Log.e(TAG, Str.fm("Error onCreate, error pushing Final Checked! Error=" + e));
-                }
-
-                if(ListUtil.isValid(checked))
-                    for(String setting : checked)
-                        sharedRegistry.setChecked(SharedRegistry.STATE_TAG_SETTINGS, RandomizerSessionContext.sharedSettingName(setting), true);
-            }
-        }catch (Exception e) {
-            Log.e(TAG, Str.fm("Error onCreate, Error=" + e + " Stack=" + RuntimeUtils.getStackTraceSafeString(e)));
-        }
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         super.ensureHasUserContext();
-        super.setAdapter(new OptimizedSettingGroupAdapter(requireContext(), null, this, getUserContext().bindShared(sharedRegistry)));
+        SettingFragmentUtils.initializeFragment(sharedRegistry, tryGetContext(), getUserContext());
+        super.setAdapter(new OptimizedSettingGroupAdapter(requireContext(), null, this,
+                getUserContext()
+                        .bindShared(sharedRegistry)));
 
         super.initApplicationView(
                 binding.ivAppIslandAppIcon,
@@ -208,7 +171,7 @@ public class SettingExFragment
         RecyclerDynamicSizeAdjuster.create().startTopViewAdjuster(binding.cvAppIsland, binding.rvSettings, binding.swipeRefreshSettings);
         updateExpanded();
 
-        initCheckboxes();
+        initAppIslandKillCheckbox();
 
         super.startObserver();
         super.wire();
@@ -222,14 +185,11 @@ public class SettingExFragment
         binding.btAppIslandProfileDialog.setOnClickListener(this);
     }
 
-    public void initCheckboxes() {
+    public void initAppIslandKillCheckbox() {
         UserClientAppContext ctx = getUserContext();
         if(ctx != null) {
             binding.cbForceStop.setEnabled(!ctx.isGlobal());
-            if(!ctx.isGlobal()) {
-                binding.cbForceStop.setChecked(ctx.kill);
-                sharedRegistry.setChecked(SharedRegistry.STATE_TAG_KILL, getUserContext().appPackageName, ctx.kill);
-            }
+            binding.cbForceStop.setChecked(!ctx.isGlobal() && ctx.isKill());
         }
     }
 
@@ -280,6 +240,8 @@ public class SettingExFragment
     public void onClick(View v) {
         int id = CoreUiLog.getViewIdOnClick(v, TAG);
         final Context context = v.getContext();
+        if(context == null)
+            return;
 
         switch (id) {
             case R.id.tvAppIslandPackageName:
@@ -296,7 +258,7 @@ public class SettingExFragment
                 Map<String, IRandomizer> randomizers = RandomizersCache.getCopy();
                 for(SettingHolder holder : SettingFragmentUtils.filterChecked(SettingFragmentUtils.getSettings(getLiveData()), sharedRegistry)) {
                     if(randomizers.containsKey(holder.getName())) {
-                        String rnd = "%random%";
+                        String rnd = PackageHookContext.RANDOM_VALUE;
                         holder.setNewValue(rnd);
                         holder.ensureUiUpdated(rnd);
                         holder.setNameLabelColor(context);
@@ -325,14 +287,41 @@ public class SettingExFragment
 
                 break;
             case R.id.flSettingsButtonFour:
-                new SettingsProgressDialog()
-                        .setNotifier(sharedRegistry.notifier)
-                        .setData(SettingFragmentUtils.getSettingPackets(
-                                getLiveData(),
-                                getSharedRegistry(),
-                                getUserContext(),
-                                ActionFlag.PUSH), v.getContext())
-                        .show(getFragmentMan(), getString(R.string.title_deploy_settings));
+                new Thread(() -> {
+                    List<String> succeeded = new ArrayList<>();
+                    List<String> failed = new ArrayList<>();
+                    Map<SettingHolder, SettingPacket> data = SettingFragmentUtils.getSettingPackets(
+                            getLiveData(),
+                            getSharedRegistry(),
+                            getUserContext(),
+                            ActionFlag.PUSH);
+
+                    for (Map.Entry<SettingHolder, SettingPacket> entry : data.entrySet()) {
+                        SettingHolder holder = entry.getKey();
+                        if (A_CODE.isSuccessful(PutSettingExCommand.call(context, entry.getValue()))) {
+                            new Handler(Looper.getMainLooper()).post(() -> {
+                                holder.setValue(holder.getNewValue(), true);
+                                holder.setNameLabelColor(context);
+                                holder.notifyUpdate(sharedRegistry.notifier);
+                            });
+
+                            succeeded.add(holder.getName());
+                        } else {
+                            failed.add(holder.getName());
+                        }
+                    }
+
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        if(ListUtil.isValid(succeeded) || ListUtil.isValid(failed))
+                            Snackbar.make(v,
+                                    Str.fm(context.getString(R.string.result_settings_update),
+                                            ListUtil.size(succeeded),
+                                            ListUtil.size(failed)), Snackbar.LENGTH_LONG).show();
+                        else {
+                            Snackbar.make(v, context.getString(R.string.result_settings_update_empty), Snackbar.LENGTH_LONG).show();
+                        }
+                    });
+                }).start();
                 break;
             case R.id.flSettingsButtonTwo:
                 RandomizerSessionContext ctx = new RandomizerSessionContext()
@@ -342,7 +331,10 @@ public class SettingExFragment
                                 context,
                                 sharedRegistry);
 
-                Snackbar.make(v, Str.combineEx(getString(R.string.msg_succeeded_count), " =", String.valueOf(ctx.getRandomizedCount())), Snackbar.LENGTH_LONG)
+                Snackbar.make(v, Str.combineEx(
+                        getString(R.string.msg_succeeded_count),
+                                Str.WHITE_SPACE,
+                                String.valueOf(ctx.getRandomizedCount())), Snackbar.LENGTH_LONG)
                         .show();
                 break;
             case R.id.btAppIslandProfileDialog:
@@ -378,7 +370,13 @@ public class SettingExFragment
                         .show(getFragmentMan(), getString(R.string.title_confirm));
                 break;
             case R.id.btAppIslandSaveChecked:
-                final List<String> checked = SettingFragmentUtils.settingsToNameList(SettingFragmentUtils.filterChecked(SettingFragmentUtils.getSettings(getLiveData()), sharedRegistry));
+                final List<String> checked = SettingFragmentUtils.settingsToNameList(
+                        SettingFragmentUtils.filterChecked(
+                                SettingFragmentUtils.getSettings(getLiveData()), sharedRegistry));
+
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, "AppIsland Save Checked button Invoked, Checked Count=" + ListUtil.size(checked) + " Package=" + getAppPackageName());
+
                 final List<String> options = Arrays.asList(getString(R.string.title_global), getString(R.string.title_app));
                 OptionsListDialog.create()
                         .setTitle(getString(R.string.title_save_options))
@@ -388,12 +386,15 @@ public class SettingExFragment
                         .setDefaultCheck(options.get(1))
                         .setAllowMultiple(false)
                         .onConfirm((c, d) -> {
-                            if(!c.isEmpty())
+                            if(ListUtil.isValid(c))
                                 sharedRegistry
                                         .ensurePrefsOpen(context, PrefManager.SETTINGS_NAMESPACE)
-                                        .putStringList(PrefManager.nameForChecked(options.get(0).equalsIgnoreCase(c.get(0)), getAppPackageName()), checked);
+                                        .putStringList(
+                                                PrefManager.nameForChecked(options.get(0).equalsIgnoreCase(c.get(0)), getAppPackageName()), checked);
 
-                            Snackbar.make(v, c.isEmpty() ? getString(R.string.msg_error_bad_options) : getString(R.string.msg_shared_prefs_saved), Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(v, !ListUtil.isValid(c) ?
+                                    getString(R.string.msg_error_bad_options) :
+                                    getString(R.string.msg_shared_prefs_saved), Snackbar.LENGTH_LONG).show();
                         }).show(getFragmentMan(), getString(R.string.title_save_options));
                 break;
             case R.id.btAppIslandConfigDialog:
@@ -518,20 +519,11 @@ public class SettingExFragment
                         Str.combine(getString(R.string.msg_task_failure), " >> " + code.name(), false) , Snackbar.LENGTH_LONG).show();
     }
 
-    @Override
-    public void onEvent(EventTrigger event) {
-        IUIViewControl.super.onEvent(event);
-        //We can handle refresh events
-        //Or adding shit etc
-    }
-
-    @Override
-    public void onView() {
-        IUIViewControl.super.onView();
-    }
-
-    @Override
-    public void onClean() {
-        IUIViewControl.super.onClean();
+    public Context tryGetContext() {
+        try {
+            return requireContext();
+        }catch (Exception ignored) {
+            return getContext();
+        }
     }
 }

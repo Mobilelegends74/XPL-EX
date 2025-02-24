@@ -13,13 +13,14 @@ import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XParam;
 import eu.faircode.xlua.tools.BytesReplacer;
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.xlua.LibUtil;
 
 //android.os.Binder
 //android.os.BinderProxy
 //android.os.IBinder
 
 public class InterfaceBinderData {
-    private static final String TAG = "XLua.InterfaceBinderData";
+    private static final String TAG = LibUtil.generateTag(InterfaceBinderData.class);
 
     public static InterfaceBinderData create(XParam param, boolean getResult) { return new InterfaceBinderData(param, getResult); }
 
@@ -51,7 +52,9 @@ public class InterfaceBinderData {
             this.data = param.tryGetArgument(1, null);
             this.reply = param.tryGetArgument(2, null);
             this.flags = param.tryGetArgument(3, 0);
-            if(getResult) this.result = param.tryGetResult(false);
+            if(getResult)
+                this.result = param.tryGetResult(false);
+
             cache();
             ensureHasInterfaceName();
         }catch (Exception e) {
@@ -110,7 +113,6 @@ public class InterfaceBinderData {
             byte[] bytes = reply.marshall();
             BytesReplacer bytesReplacer = new BytesReplacer(oldBytes, newBytes);
             byte[] newReplyBytes = bytesReplacer.replace(bytes);
-
             if(DebugUtil.isDebug())
                 Log.d(TAG, "Replacing Parcel [" + interfaceName + "]\n" +
                         "Old String=" + oldString + "\n" +

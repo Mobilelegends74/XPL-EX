@@ -14,6 +14,7 @@ import java.util.Stack;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.ui.core.UINotifier;
 import eu.faircode.xlua.x.ui.core.interfaces.IFragmentController;
 import eu.faircode.xlua.x.ui.core.view_registry.SharedRegistry;
 import eu.faircode.xlua.x.ui.fragments.SettingExFragment;
@@ -288,8 +289,14 @@ public class RandomizerFactory {
     }
 
     private IRandomizer getRandomizer(String settingName, SharedRegistry sharedRegistry) {
-        if(settingName == null) return null;
-        IRandomizer randomizer = sharedRegistry.getSharedObject(settingName);
+        if(settingName == null || sharedRegistry == null)
+            return null;
+        /*
+                        for(SettingHolder holder : settingShared.getSettingsForContainer(currentItem, false))
+                    sharedRegistry.pushSharedObject(holder.getObjectId(), randomizer);
+         */
+        //IRandomizer randomizer = sharedRegistry.getSharedObject()
+        IRandomizer randomizer = sharedRegistry.getSharedObject(UINotifier.settingName(settingName));
         return randomizer == null ? randomizers.get(settingName) : randomizer;
     }
 }

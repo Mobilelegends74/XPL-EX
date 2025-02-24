@@ -40,6 +40,163 @@
     "luaScript": "@id_advertising",
     "settings":[ "unique.google.advertising.id" ]
   },
+
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "AdvertisingIdClient$Info(id,scope)",
+    "author": "OBC",
+    "className": "com.google.android.gms.ads.identifier.AdvertisingIdClient$Info",
+    "parameterTypes": [ "java.lang.String", "int" ],
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "",
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "notify":false,
+    "luaScript": "@id_advertising_constructor",
+    "settings":[ "unique.google.advertising.id" ]
+  },
+
+  /*{
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Test",
+    "name": "Binder.Intent/Test",
+    "author": "OBC",
+    "className": "android.content.Intent",
+    "parameterTypes": [ "java.lang.String" ],
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "Test",
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "notify":false,
+    "luaScript": "@id_intent_1"
+  },
+
+
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Test",
+    "name": "Binder.Intent/Test2",
+    "author": "OBC",
+    "className": "android.content.Intent",
+    "methodName": "setPackage",
+    "parameterTypes": [ "java.lang.String" ],
+    "returnType": "android.content.Intent",
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "Test2",
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "notify":false,
+    "luaScript": "@id_intent_2"
+  },*/
+
+//Intent intent = new Intent("com.google.android.gms.ads.identifier.service.START");
+  //            intent.setPackage("com.google.android.gms");
+
+
+  //com.google.android.gms.appset.internal.IAppSetIdCallback
+  //com.google.android.gms.appset.service.AppSetIdProviderService
+  //https://developers.google.com/android/reference/com/google/android/gms/appset/AppSetIdInfo
+
+  //android.adservices.appsetid.AppSetId.getId
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "AppSetId.getId",
+    "author": "OBC",
+    "className": "android.adservices.appsetid.AppSetId",
+    "methodName": "getId",
+    "parameterTypes": [ ],
+    "returnType": "java.lang.String",
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "This is Googles way of Giving each App a Unique ID, if the App has been Re-Installed or the ID has not been accessed in 13 Months for that app it will then reset. This is used for Anti Fraud and once again Tracking, No clearing app data does nothing.",
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "notify":false,
+    "luaScript": "@id_app_set_id",
+    "settings":[ "unique.google.advertising.id" ]
+  },
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "AppSetId(id, scope)",
+    "author": "OBC",
+    "className": "android.adservices.appsetid.AppSetId",
+    "parameterTypes": [ "java.lang.String", "int" ],
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "This is Googles way of Giving each App a Unique ID, if the App has been Re-Installed or the ID has not been accessed in 13 Months for that app it will then reset. This is used for Anti Fraud and once again Tracking, No clearing app data does nothing.",
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "notify":false,
+    "luaScript": "@id_app_set_id_constructor",
+    "settings":[ "unique.google.advertising.id" ]
+  },
+
+
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "AppSetIdInfo.getId",
+    "author": "OBC",
+    "className": "com.google.android.gms.appset.AppSetIdInfo",
+    "methodName": "getId",
+    "parameterTypes": [ ],
+    "returnType": "java.lang.String",
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "This is Googles way of Giving each App a Unique ID, if the App has been Re-Installed or the ID has not been accessed in 13 Months for that app it will then reset. This is used for Anti Fraud and once again Tracking, No clearing app data does nothing.",
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "notify":false,
+    "luaScript": "@id_app_set_id",
+    "settings":[ "unique.google.advertising.id" ]
+  },
+
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "AppSetIdInfo(id, scope)",
+    "author": "OBC",
+    "className": "com.google.android.gms.appset.AppSetIdInfo",
+    "parameterTypes": [ "java.lang.String", "int" ],
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "This is Googles way of Giving each App a Unique ID, if the App has been Re-Installed or the ID has not been accessed in 13 Months for that app it will then reset. This is used for Anti Fraud and once again Tracking, No clearing app data does nothing.",
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "notify":false,
+    "luaScript": "@id_app_set_id_constructor",
+    "settings":[ "unique.google.advertising.id" ]
+  },
+
+
+
   {
     "builtin": true,
     "collection": "PrivacyEx",
@@ -244,6 +401,50 @@
     "luaScript": "",
     "settings:": ["unique.bluetooth.address"]
   },
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "ID/Settings/Cache(HashMap)/android_id",
+    "author": "OBC",
+    "className": "java.util.HashMap",
+    "methodName": "put",
+    "parameterTypes": [ "java.lang.Object", "java.lang.Object" ],
+    "returnType": "java.lang.Object",
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "",
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "notify":false,
+    "luaScript": "@id_android_id_cache_one",
+    "settings":["unique.android.id"]
+  },
+
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "ID/Settings/Cache(ArrayMap)/android_id",
+    "author": "OBC",
+    "className": "android.util.ArrayMap",
+    "methodName": "put",
+    "parameterTypes": [ "java.lang.Object", "java.lang.Object" ],
+    "returnType": "java.lang.Object",
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "",
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "notify":false,
+    "luaScript": "@id_android_id_cache_one",
+    "settings":["unique.android.id"]
+  },
+
   {
     "builtin": true,
     "collection": "PrivacyEx",
