@@ -19,11 +19,13 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.R;
 import eu.faircode.xlua.databinding.SettingsExItemBinding;
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
 import eu.faircode.xlua.x.ui.core.UINotifier;
 import eu.faircode.xlua.x.ui.core.util.CoreUiUtils;
@@ -34,6 +36,9 @@ import eu.faircode.xlua.x.ui.core.view_registry.SharedRegistry;
 import eu.faircode.xlua.x.ui.core.adapter.ListViewManager;
 import eu.faircode.xlua.x.ui.core.interfaces.IStateManager;
 import eu.faircode.xlua.x.ui.dialogs.TimePairsDialog;
+import eu.faircode.xlua.x.ui.dialogs.wifi.WifiListDialog;
+import eu.faircode.xlua.x.ui.dialogs.wifi.XWifiNetwork;
+import eu.faircode.xlua.x.ui.dialogs.wifi.XWifiUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.settings.SettingHolder;
 import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
@@ -68,7 +73,51 @@ public class SettingsListManager extends ListViewManager<SettingHolder, Settings
     }
 
     private void setupTextInputEx(TextView tvName, EditText textInput, SettingHolder setting) {
-        if(CoreUiUtils.SPECIAL_TIME_SETTINGS.contains(setting.getName()) || CoreUiUtils.SPECIAL_TIME_APP_SETTINGS.contains(setting.getName())) {
+        if(CoreUiUtils.SPECIAL_NETWORK_ALLOW_LIST.equalsIgnoreCase(setting.getName())) {
+
+            setting.setBindings(tvName, textInput, null);
+            setting.setNameLabelColor(context);
+
+            textInput.setFocusable(false);
+            textInput.setFocusableInTouchMode(false);
+            textInput.setClickable(true);
+            textInput.setCursorVisible(false);
+            textInput.setInputType(InputType.TYPE_NULL);
+
+
+            // Optional: Add a dropdown arrow drawable
+            Drawable arrowDrawable = ContextCompat.getDrawable(textInput.getContext(), android.R.drawable.arrow_down_float);
+            textInput.setCompoundDrawablesWithIntrinsicBounds(null, null, arrowDrawable, null);
+            textInput.setOnClickListener(view -> {
+                String newVal = setting.getNewValue();
+                List<XWifiNetwork> items = XWifiUtils.fromBase64String(newVal);
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, "Wifi Networks Saved=" + items.size());
+
+                WifiListDialog.create()
+                        .setList(items)
+                        .setCallback(new WifiListDialog.WifiNetworkCallback() {
+                            @Override
+                            public void onNetworksUpdated(List<XWifiNetwork> updatedNetworks) {
+                                // Save the updated networks list
+                                //saveNetworks(updatedNetworks);
+                                if(!ListUtil.isValid(updatedNetworks))
+                                    return;
+
+                                String newValue = XWifiUtils.toBase64String(updatedNetworks);
+                                if(DebugUtil.isDebug())
+                                    Log.d(TAG, "Networks Being Saved=" + ListUtil.size(updatedNetworks) + " New Value=" + newValue);
+
+                                setting.setNewValue(newValue);
+                                setting.ensureUiUpdated(newValue);
+                                setting.setNameLabelColor(context);
+                                setting.notifyUpdate(stateRegistry.notifier);
+                            }
+                        })
+                        .show(stateManager.getFragmentMan(), context.getString(R.string.title_wifi_networks));
+            });
+        }
+        else if(CoreUiUtils.SPECIAL_TIME_SETTINGS.contains(setting.getName()) || CoreUiUtils.SPECIAL_TIME_APP_SETTINGS.contains(setting.getName())) {
 
             setting.setBindings(tvName, textInput, null);
             setting.setNameLabelColor(context);

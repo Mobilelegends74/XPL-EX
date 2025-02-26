@@ -16,7 +16,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 33
         versionCode 151
-        versionName "1.5.1.9"
+        versionName "1.5.2.0"
         archivesBaseName = "XPL-EX-v$versionName-$versionCode"
     }
 

@@ -33,7 +33,7 @@ public class DatabasePathUtil {
     public static final long MAX_FILE_SIZE = 2L * 1024 * 1024L * 1024L;
 
     public static final String NEW_DIRECTORY = FileApi.buildPath("data", "misc");
-    public static final String OLD_DIRECTORY = FileApi.buildPath("system", "data");
+    public static final String OLD_DIRECTORY = FileApi.buildPath("data", "system");
 
     public static final String NEW_PREFIX = "xplex-";
     public static final String OLD_PREFIX = "xlua";

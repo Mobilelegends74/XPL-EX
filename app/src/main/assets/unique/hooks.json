@@ -609,5 +609,47 @@
     "notify":false,
     "luaScript": "",
     "settings:": ["unique.facebook.advertising.id"]
+  },
+
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.UpTime",
+    "name": "SystemClock.uptimeMillis",
+    "author": "OBC",
+    "className": "android.os.SystemClock",
+    "methodName": "uptimeMillis",
+    "parameterTypes": [ ],
+    "returnType": "long",
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "Spoof how long your System has been running. You can not and will never be able to Control its value, it is determined by XPL-EX that is final.",
+    "enabled":true,
+    "optional":true,
+    "usage":false,
+    "notify":false,
+    "luaScript": "@id_system_clock_uptime"
+  },
+
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.UpTime",
+    "name": "SystemClock.elapsedRealtime",
+    "author": "OBC",
+    "className": "android.os.SystemClock",
+    "methodName": "elapsedRealtime",
+    "parameterTypes": [ ],
+    "returnType": "long",
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "Spoof how long your System has been running. You can not and will never be able to Control its value, it is determined by XPL-EX that is final.",
+    "enabled":true,
+    "optional":true,
+    "usage":false,
+    "notify":false,
+    "luaScript": "@id_system_clock_uptime"
   }
 ]

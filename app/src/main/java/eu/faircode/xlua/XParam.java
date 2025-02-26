@@ -24,9 +24,11 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiSsid;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.InputDevice;
 
@@ -41,9 +43,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 import de.robv.android.xposed.XC_MethodHook;
 import eu.faircode.xlua.api.hook.XLuaHookBase;
@@ -310,6 +314,20 @@ public class XParam {
         return true;
     }
 
+    @SuppressWarnings("unused")
+    public boolean handleUptime() throws Throwable {
+        Object res = getResult();
+        if(!(res instanceof Long))
+            return false;
+
+        long val = (long)res;
+        long newVal = val + ThreadLocalRandom.current().nextLong(10L, 1001L);
+        setResult(newVal);
+        //setOldResult(String.valueOf(val));
+        //setNewResult(String.valueOf(newVal));
+        return true;
+    }
+
     //public static final List<Character> GOOD = Arrays.asList('a', 'b', 'c', 'd', 'e', 'f', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0');
     @SuppressWarnings("unused")
     public boolean ensurePutIsSafe(boolean isPutAll, String badKey, String replaceSetting) {
@@ -338,7 +356,6 @@ public class XParam {
                  }
              }
          } else {
-
          }
 
          return false;
@@ -446,6 +463,20 @@ public class XParam {
     @SuppressWarnings("unused")
     public boolean ensureIpcIsSafe(boolean getResult) { return BinderInterceptor.intercept(this, getResult); }
 
+
+    public boolean filterWifiResults() {
+        try {
+            List<ScanResult> results = (List<ScanResult>) getResult();
+            results.get(0).BSSID = "";
+
+            //WifiSsid ss = WifiSsid.fromBytes(null);
+
+        }catch (Throwable e) {
+            Log.e(TAG, "Error Filtering Wifi List! Error=" + e);
+        }
+
+        return false;
+    }
 
     @SuppressWarnings("unused")
     public void handleIntentInterfaceExtra(boolean isIntent) {

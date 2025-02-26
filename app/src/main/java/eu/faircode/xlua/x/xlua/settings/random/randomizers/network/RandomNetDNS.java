@@ -3,6 +3,7 @@ package eu.faircode.xlua.x.xlua.settings.random.randomizers.network;
 import java.util.List;
 
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.network.NetInfoGenerator;
 import eu.faircode.xlua.x.xlua.settings.random.RandomElement;
 import eu.faircode.xlua.x.xlua.settings.random.RandomizerSessionContext;
@@ -21,9 +22,11 @@ public class RandomNetDNS extends RandomElement {
         String name = context.stack.pop();
         if(!context.wasRandomized(name)) {
             List<String> req = context.resolveRequirements(getRequirements(name));
-            String dnsList = context.getValue(req.get(0));
-            List<String> list = Str.splitToList(dnsList);
-            context.pushSpecial(name, list.get(0));
+            if(ListUtil.isValid(req)) {
+                String dnsList = context.getValue(req.get(0));
+                List<String> list = Str.splitToList(dnsList);
+                context.pushSpecial(name, list.get(0));
+            }
         }
     }
 }

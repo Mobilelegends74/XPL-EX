@@ -317,7 +317,7 @@ public class ConfigDialog extends AppCompatDialogFragment implements ConfigAdapt
             try {
                 boolean hasSelection = getChecked() != null;
                 btnEdit.setEnabled(hasSelection);
-                btnApply.setEnabled(!Str.isEmpty(packageName) && !UserIdentity.GLOBAL_NAMESPACE.equalsIgnoreCase(packageName) && hasSelection);
+                btnApply.setEnabled(!Str.isEmpty(packageName) && hasSelection);
                 btnEdit.setAlpha(hasSelection ? 1.0f : 0.5f);
                 btnApply.setAlpha(hasSelection ? 1.0f : 0.5f);
             }catch (Exception e) {

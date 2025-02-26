@@ -12,8 +12,12 @@ public class RandomSerialNo extends RandomElement {
         //Cant find much on this
         //https://newandroidbook.com/ddb/SonyXperiaXA1UltraDual/getprop.txt
         //https://github.com/erleizh/build.prop/blob/master/OPPO%20R11.txt
-        super("CELL GSM Band Serial");
-        putIndexSettings(RandomizersCache.SETTING_UNIQUE_SIM_SERIAL, 1, 2);
+        //super("CELL GSM Band Serial");
+        super("Serial NO");
+        //putIndexSettings(RandomizersCache.SETTING_UNIQUE_SIM_SERIAL, 1, 2);
+        //putIndexSettings(RandomizersCache.SETTING_UNIQUE_SERIAL_NO, 1, 2);
+        //RandomizersCache.SETTING_UNIQUE_SERIAL_NO
+        putSettings(RandomizersCache.SETTING_UNIQUE_SERIAL_NO);
     }
 
     @Override

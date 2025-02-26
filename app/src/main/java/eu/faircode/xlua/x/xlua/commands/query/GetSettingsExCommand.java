@@ -39,16 +39,21 @@ public class GetSettingsExCommand extends QueryCommandHandlerEx {
 
     @Override
     public Cursor handle(QueryPacket commandData) throws Throwable {
-        if(commandData.isDump()) {
-            return CursorUtil.toMatrixCursor_final(SettingsApi.dumpSettings(
-                    commandData.getDatabase()),
-                    marshall, 0);
-        } else {
-            return CursorUtil.toMatrixCursor_final(SettingsApi.getAllSettings(
-                    commandData.getContext(),
-                    commandData.getDatabase(),
-                    commandData.getUserId(),
-                    commandData.getCategory()), marshall, 0);
+        try {
+            if(commandData.isDump()) {
+                return CursorUtil.toMatrixCursor_final(SettingsApi.dumpSettings(
+                                commandData.getDatabase()),
+                        marshall, 0);
+            } else {
+                return CursorUtil.toMatrixCursor_final(SettingsApi.getAllSettings(
+                        commandData.getContext(),
+                        commandData.getDatabase(),
+                        commandData.getUserId(),
+                        commandData.getCategory()), marshall, 0);
+            }
+        }catch (Exception e) {
+            Log.e(TAG, "Get Settings Command failed! Error=" + e);
+            return null;
         }
     }
 

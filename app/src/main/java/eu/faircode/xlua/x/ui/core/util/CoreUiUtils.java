@@ -55,6 +55,7 @@ public class CoreUiUtils {
 
     public static final String TAG = LibUtil.generateTag(CoreUiUtils.class);
 
+    public static final String SPECIAL_NETWORK_ALLOW_LIST = "network.allowed.list";
 
     public static final List<String> SPECIAL_TIME_SETTINGS = Arrays.asList("file.time.modify.offset", "file.time.access.offset", "file.time.created.offset");
     public static final List<String> SPECIAL_TIME_APP_SETTINGS = Arrays.asList(

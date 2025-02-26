@@ -31,6 +31,7 @@ import eu.faircode.xlua.x.file.FileApi;
 import eu.faircode.xlua.x.file.FileEx;
 import eu.faircode.xlua.x.file.FileUtils;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
+import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.XposedUtility;
 import eu.faircode.xlua.x.xlua.database.DatabasePathUtil;
 import eu.faircode.xlua.x.xlua.database.DatabaseUtils;
@@ -39,7 +40,7 @@ import eu.faircode.xlua.x.xlua.settings.data.SettingInfoPacket;
 
 
 public class SQLDatabase {
-    private static final String TAG = "XLua.XDatabase.ex";
+    private static final String TAG = LibUtil.generateTag(SQLDatabase.class);
 
     public static SQLDatabase create(String databaseFileName, Context context) { return new SQLDatabase(databaseFileName, context, false); }
     public static SQLDatabase create(String databaseFileName, Context context, boolean open) { return new SQLDatabase(databaseFileName, context, open); }

@@ -41,7 +41,7 @@ public class QueryPacket extends BridgePacket {
     public int getUserId() { return getUserId(false); }
     public int getUserId(boolean isCategoryFirst) { return getUserIdentification(isCategoryFirst).getUserId(true); }
 
-    public String getLastSelection() { return selection != null ? selection[selection.length - 1] : null; }
+    public String getLastSelection() { return selection != null && selection.length > 0 ? selection[selection.length - 1] : null; }
 
     public boolean isDump() { return selection != null && ActionPacket.ACTION_DUMP.equalsIgnoreCase(getLastSelection()); }
     public boolean isAll() { return selection != null && ActionPacket.ACTION_ALL.equalsIgnoreCase(getLastSelection()); }

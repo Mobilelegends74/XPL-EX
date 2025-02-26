@@ -226,7 +226,7 @@
   { "name": "network.host.address", "description": "Local Network Host Address your IPV4", "defaultValue": "127.0.0.1" },
   { "name": "network.host.name", "description": "Host name of Network (google.com) or the IPV4 Address", "defaultValue": "google.com" },
   { "name": "network.interfaces.allowed.list", "description": "List of allowed Network Interfaces example:\n'wlan0,p2p0,dummy0'\nwlan0 will always be allowed.\nPutting a '!' Will tell it to block it example:\n'!wlan0,p2p0,dummy0'", "defaultValue": "wlan0" },
-  { "name": "network.allowed.list", "description": "Set to (1) to allow (1 result). A list of either WIFI Macs (BSSID) or Names (SSIDs) that are allowed to be shown in Scan OR Saved Results", "defaultValue": "*" },
+  { "name": "network.allowed.list", "description": "Click me to Modify the List of Allowed networks to be seen by this Application.", "defaultValue": "*" },
 
 
   //CELL Phone

@@ -82,6 +82,7 @@ import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.gpu.RandomSo
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.memory.RandomHardwareMemoryAvailable;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.memory.RandomHardwareMemoryTotal;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.network.RandomDhcpServer;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.network.RandomNetAllowedList;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.network.RandomNetDNS;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.network.RandomNetDNSList;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.network.RandomNetDomains;
@@ -247,8 +248,6 @@ public class RandomizersCache {
     public static final String SETTING_ANDROID_KERNEL_NODE_NAME = "android.kernel.node.name";
     public static final Class<?> SETTING_ANDROID_KERNEL_NODE_NAME_TYPE = RandomAndroidKernelNodeName.class;
 
-
-    //HARDWARE
 
     // Hardware E-Fuse
     public static final String SETTING_HARDWARE_EFUSE = "hardware.efuse";
@@ -436,6 +435,9 @@ public class RandomizersCache {
 
     public static final String SETTING_UNIQUE_SERIAL_NO = "unique.serial.no";
     public static final Class<?> SETTING_UNIQUE_SERIAL_NO_TYPE = RandomSerialNo.class;
+
+    public static final String SETTING_NET_ALLOWED_LIST = "network.allowed.list";
+    public static final Class<?> SETTING_NET_ALLOWED_TYPE = RandomNetAllowedList.class;
 
     public static final String SETTING_UNIQUE_NET_SSID = "unique.network.ssid";
     public static final Class<?> SETTING_UNIQUE_NET_SSID_TYPE = RandomNetSSID.class;

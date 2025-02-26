@@ -59,7 +59,7 @@
     <string name="menu_whats_new_button" translatable="false">Whats New!</string>
 
     <string name="whats_new" translatable="false">
-        Whats new in 1.5.X Update XPL-EX (ObbedCode) v2
+        Whats new in 1.5.X Update XPL-EX (ObbedCode)
 
         <![CDATA[<br><br>]]>This is my Art! Enjoy love all, smile, be happy, enjoy what you do!
         <![CDATA[<br>]]>Free, Open Source, No Analytics, No Servers, offline ...
@@ -76,6 +76,16 @@
         <![CDATA[<br><br>]]> VDInfos. Grabbing your own Device info cool dev
         <![CDATA[<br>]]><![CDATA[<a href="https://xdaforums.com/t/app-vdinfos.4097379/">XDA</a>]]>
         <![CDATA[<br>]]><![CDATA[<a href="https://github.com/VD171/VD-Infos">GitHub</a>]]>
+
+        <![CDATA[<br><br>]]> 1.5.2.0 XPL151R
+        <![CDATA[<br>]]>• Added System UpTime Hooks (x2)
+        <![CDATA[<br>]]>• Fixed Serial NO Randomizer
+        <![CDATA[<br>]]>• Fixed SOME Randomizer Crash Bugs
+        <![CDATA[<br>]]>• Fixed Fixed Database Path
+        <![CDATA[<br>]]>• Configs can be now applied on Globals
+        <![CDATA[<br>]]>• Fixed some other Internal Bugs
+        <![CDATA[<br>]]>• Do not click "network.allowed.list" input not ready !
+
 
         <![CDATA[<br><br>]]> 1.5.1.9 XPL151R
         <![CDATA[<br>]]>• Improved AppSetId Hook
@@ -246,6 +256,11 @@
     <string name="text_delete_old_database" translatable="false">Delete the old Database Table Items, for the Checked to replace with the new Items!</string>
 
     <string name="title_backup" translatable="false">Backup Manager</string>
+
+
+    <string name="title_wifi_networks" translatable="false">Wi-Fi Networks</string>
+    <string name="title_edit_wifi_network" translatable="false">Edit Wi-Fi Network</string>
+    <string name="btn_create_network" translatable="false">Create New Network</string>
 
 
     <string name="msg_error_mismatch_bridge_version" translatable="false">The Service Bridge Version [%s] does not Match the Current App Installed Version [%s]. Make sure you Checked (SettingsStorage) in LSPosed under XPL-EX then Reboot your Device!</string>

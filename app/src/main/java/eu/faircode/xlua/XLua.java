@@ -56,6 +56,7 @@ import eu.faircode.xlua.hooks.XHookUtil;
 //package eu.faircode.xlua;
 
 import java.util.Collection;
+import java.util.concurrent.ThreadLocalRandom;
 
 import eu.faircode.xlua.hooks.LuaHookWrapper;
 import eu.faircode.xlua.hooks.LuaScriptHolder;
@@ -313,70 +314,92 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                             continue;
                         }
 
-                        XposedBridge.hookMethod(member, new XC_MethodHook() {
-                            private final WeakHashMap<Thread, Globals> threadGlobals = new WeakHashMap<>();
+                        //Maybe add MAP.put ?
+                        //PrivacyEx.SystemClock.elapsedRealtime
+                        //PrivacyEx.android.os.SystemClock
+                        String id = hook.getObjectId();
+                        if(id.equalsIgnoreCase("PrivacyEx.SystemClock.elapsedRealtime") ||
+                                id.equalsIgnoreCase("PrivacyEx.SystemClock.uptimeMillis")) {
+                            Log.w(TAG, "Deploying Fast Hook For UpTime: " + hook.getObjectId());
+                            XposedBridge.hookMethod(member, new XC_MethodHook() {
+                                @Override
+                                protected void afterHookedMethod(MethodHookParam param)  {
+                                    Object res = param.getResult();
+                                    if(res instanceof Long) {
+                                        long val = (long)res;
+                                        long newVal = val + ThreadLocalRandom.current().nextLong(10L, 1001L);
+                                        param.setResult(newVal);
+                                    }
+                                }
+                            });
+                        }else {
 
-                            @Override
-                            protected void beforeHookedMethod(MethodHookParam param)  {
-                                execute(param, "before");
-                            }
+                            XposedBridge.hookMethod(member, new XC_MethodHook() {
+                                private final WeakHashMap<Thread, Globals> threadGlobals = new WeakHashMap<>();
 
-                            @Override
-                            protected void afterHookedMethod(MethodHookParam param)  {
-                                execute(param, "after");
-                            }
+                                @Override
+                                protected void beforeHookedMethod(MethodHookParam param)  {
+                                    execute(param, "before");
+                                }
 
-                            private void execute(MethodHookParam param, String function) {
-                                long run = SystemClock.elapsedRealtime();
-                                try {
-                                    LuaHookWrapper luaMember;
-                                    synchronized (threadGlobals) {
-                                        Thread thread = Thread.currentThread();
-                                        if (!threadGlobals.containsKey(thread))
-                                            threadGlobals.put(thread, XHookUtil.getHookGlobals(
-                                                    context,
-                                                    hook,
-                                                    app.settings,
-                                                    app.buildPropSettings,
-                                                    app.buildPropMaps,
-                                                    app.temporaryKey,
-                                                    app.useDefault,
-                                                    app.packageName));
+                                @Override
+                                protected void afterHookedMethod(MethodHookParam param)  {
+                                    execute(param, "after");
+                                }
 
-                                        Globals globals = threadGlobals.get(thread);
-                                        luaMember = LuaHookWrapper
-                                                .createMember(
+                                private void execute(MethodHookParam param, String function) {
+                                    long run = SystemClock.elapsedRealtime();
+                                    try {
+                                        LuaHookWrapper luaMember;
+                                        synchronized (threadGlobals) {
+                                            Thread thread = Thread.currentThread();
+                                            if (!threadGlobals.containsKey(thread))
+                                                threadGlobals.put(thread, XHookUtil.getHookGlobals(
                                                         context,
                                                         hook,
                                                         app.settings,
                                                         app.buildPropSettings,
                                                         app.buildPropMaps,
-                                                        compiledScript,
-                                                        function,
-                                                        param,
-                                                        globals,
                                                         app.temporaryKey,
                                                         app.useDefault,
-                                                        app.packageName);
+                                                        app.packageName));
 
-                                        if(!luaMember.isValid()) {
-                                            if(BuildConfig.DEBUG)
-                                                Log.w(TAG, Str.fm("Lua Member is Not Valid [%s] Most likely not a after or before, function=%s", target.methodName, function));
-                                            return;
+                                            Globals globals = threadGlobals.get(thread);
+                                            luaMember = LuaHookWrapper
+                                                    .createMember(
+                                                            context,
+                                                            hook,
+                                                            app.settings,
+                                                            app.buildPropSettings,
+                                                            app.buildPropMaps,
+                                                            compiledScript,
+                                                            function,
+                                                            param,
+                                                            globals,
+                                                            app.temporaryKey,
+                                                            app.useDefault,
+                                                            app.packageName);
+
+                                            if(!luaMember.isValid()) {
+                                                if(BuildConfig.DEBUG)
+                                                    Log.w(TAG, Str.fm("Lua Member is Not Valid [%s] Most likely not a after or before, function=%s", target.methodName, function));
+                                                return;
+                                            }
                                         }
-                                    }
 
-                                    Varargs result = luaMember.invoke();
-                                    //Log.d(TAG, "Result=" + Str.toStringOrNull(result));
-                                    XReport.usage(hook, result, run, function, context);
-                                }catch (Exception ex) {
-                                    synchronized (threadGlobals) {
-                                        threadGlobals.remove(Thread.currentThread());
+                                        Varargs result = luaMember.invoke();
+                                        //Log.d(TAG, "Result=" + Str.toStringOrNull(result));
+                                        XReport.usage(hook, result, run, function, context);
+                                    }catch (Exception ex) {
+                                        synchronized (threadGlobals) {
+                                            threadGlobals.remove(Thread.currentThread());
+                                        }
+                                        XReport.memberException(context, ex, hook, member, function, param);
                                     }
-                                    XReport.memberException(context, ex, hook, member, function, param);
                                 }
-                            }
-                        });
+                            });
+                        }
+
                     }
                     else
                         Log.e(TAG, Str.fm("Member is NULL, Hook Name=%s Id=%s", hook.getName(), hook.getObjectId()));
