@@ -43,6 +43,53 @@
     "settings":[ "battery.is.power.save.mode.bool" ]
   },
 
+
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "Spoof.Battery",
+    "name": "BatteryManager.getChargingCycleCount",
+    "author": "OBC",
+    "className": "android.os.BatteryManager",
+    "methodName": "getChargingCycleCount",
+    "parameterTypes": [ ],
+    "returnType": "int",
+    "minSdk": 34,
+    "maxSdk": 999,
+    "version": 2,
+    "description": "Amount of Cycles for Charging",
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "notify":false,
+    "luaScript": "@spoof_batterymanager_charging_cycles",
+    "settings":[ "battery.charging.cycles" ]
+  },
+
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "Spoof.Battery",
+    "name": "Intent.getIntExtra/CYCLE_COUNT",
+    "author": "OBC",
+    "className": "android.content.Intent",
+    "methodName": "getIntExtra",
+    "parameterTypes": [ "java.lang.String", "int" ],
+    "returnType": "int",
+    "minSdk": 34,
+    "maxSdk": 999,
+    "version": 2,
+    "description": "Amount of Cycles for Charging",
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "notify":false,
+    "luaScript": "@spoof_battery_cycles_intent",
+    "settings":[ "battery.charging.cycles" ]
+  },
+
+
+
   {
     "builtin": true,
     "collection": "PrivacyEx",

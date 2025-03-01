@@ -77,6 +77,12 @@
         <![CDATA[<br>]]><![CDATA[<a href="https://xdaforums.com/t/app-vdinfos.4097379/">XDA</a>]]>
         <![CDATA[<br>]]><![CDATA[<a href="https://github.com/VD171/VD-Infos">GitHub</a>]]>
 
+        <![CDATA[<br><br>]]> 1.5.2.1 XPL151R
+        <![CDATA[<br>]]>• Improved the ANDROID_ID Cache Hooks
+        <![CDATA[<br>]]>• Improved the VPN Hide (getNetworkInfo) Hook pass RuRu
+        <![CDATA[<br>]]>• Added Charging Cycles Hook (x2)
+        <![CDATA[<br>]]>• Finished "network.allowed.list" Hooks and Settings
+
         <![CDATA[<br><br>]]> 1.5.2.0 XPL151R
         <![CDATA[<br>]]>• Added System UpTime Hooks (x2)
         <![CDATA[<br>]]>• Fixed Serial NO Randomizer

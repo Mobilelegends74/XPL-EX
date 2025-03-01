@@ -288,6 +288,7 @@
   { "name": "battery.percentage.left", "description": "Battery Percentage Level", "defaultValue": "100" },
   { "name": "battery.is.charging.bool", "description": "Is Battery Charging", "defaultValue": "true" },
   { "name": "battery.is.power.save.mode.bool", "description": "Is Battery in Power Save Mode", "defaultValue": "true" },
+  { "name": "battery.charging.cycles", "description": "Battery Charging Cycles", "defaultValue": "100" },
 
   //CLIPBOARD
   { "name": "clipboard.label", "description": "Label that holds the data this inst important", "defaultValue": "l33t" },

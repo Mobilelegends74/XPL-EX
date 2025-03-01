@@ -4,12 +4,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
 
 public class TypeMap {
     public static TypeMap create() { return new TypeMap(); }
 
     private final HashMap<String, List<String>> mTypeMap = new HashMap<>();
+
+    public boolean hasDefinition(XLuaHook hook) {
+        if(hook == null)
+            return false;
+
+        String clazz = hook.getClassName();
+        String method = hook.getMethodName();
+        return (!Str.isEmpty(clazz) && !Str.isEmpty(method)) && hasDefinition(clazz, method);
+    }
 
     public boolean hasDefinition(String className, String methodName) {
         synchronized (mTypeMap) {

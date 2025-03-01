@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import eu.faircode.xlua.logger.XLog;
+import eu.faircode.xlua.x.runtime.HiddenApi;
 
 public class DynamicField {
     private static final String TAG = "ObbedCode.XP.DynamicField";
@@ -25,6 +26,11 @@ public class DynamicField {
     public DynamicField(Class<?> clazz, String fieldName) { this(ReflectUtil.tryGetField(clazz, fieldName, false)); }
     public DynamicField(Field field) {
         this.mField = field;
+    }
+
+    public DynamicField setHiddenApis() {
+        HiddenApi.bypassHiddenApiRestrictions();
+        return this;
     }
 
     public DynamicField bindInstance(Object instance) { this.mInstance = instance; return this; }

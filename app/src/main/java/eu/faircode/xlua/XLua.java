@@ -19,6 +19,7 @@
 
 package eu.faircode.xlua;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.Process;
 import android.os.SystemClock;
 import android.util.Log;
@@ -67,7 +69,12 @@ import eu.faircode.xlua.logger.XReport;
 
 import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.utilities.ReflectUtilEx;
+import eu.faircode.xlua.x.hook.inlined.HashMapHooks;
+import eu.faircode.xlua.x.hook.inlined.UpTimeHooks;
+import eu.faircode.xlua.x.hook.interceptors.cell.SubInfoServiceHook;
+import eu.faircode.xlua.x.runtime.RuntimeUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
+import eu.faircode.xlua.x.xlua.XposedUtility;
 import eu.faircode.xlua.x.xlua.commands.GlobalCommandBridge;
 import eu.faircode.xlua.x.xlua.commands.call.GetBridgeVersionCommand;
 import eu.faircode.xlua.x.xlua.commands.query.GetAssignedHooksExCommand;
@@ -134,6 +141,87 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 });
     }
 
+
+    private void hookSubscriptionManagerService(final XC_LoadPackage.LoadPackageParam lpparam) {
+        try {
+            // Direct hook to the SubscriptionManagerService class
+            Class<?> subManagerService = Class.forName(
+                    "com.android.internal.telephony.subscription.SubscriptionManagerService",
+                    false,
+                    lpparam.classLoader
+            );
+
+            XposedUtility.logI_xposed(TAG, "Successfully found SubscriptionManagerService class");
+
+            // Hook all variants of methods that might handle subscription info
+            String[] methodsToHook = {
+                    "getActiveSubscriptionInfoList",
+                    "getActiveSubscriptionInfo",
+                    "getSubscriptionInfo",
+                    "getSubscriptionInfoInternal",
+                    "getDefaultSubId",
+                    "getPhoneId"
+            };
+
+            for (String methodName : methodsToHook) {
+                XposedBridge.hookAllMethods(subManagerService, methodName, new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        XposedUtility.logI_xposed(TAG, "BEFORE [" + methodName + "] Called with " +
+                                (param.args.length > 0 ? param.args[0] : "no args"));
+                        super.beforeHookedMethod(param);
+                    }
+
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        XposedUtility.logI_xposed(TAG, "AFTER [" + methodName + "] Result: " + param.getResult());
+                        // Here you can modify the result if needed
+                        super.afterHookedMethod(param);
+                    }
+                });
+                XposedUtility.logI_xposed(TAG, "Hooked " + methodName + " method");
+            }
+
+        } catch (ClassNotFoundException e) {
+            XposedUtility.logE_xposed(TAG, "SubscriptionManagerService class not found: " + e.getMessage());
+
+            // Try the alternative approach - hook TelephonyManager directly
+            try {
+                Class<?> telephonyManagerClass = Class.forName("android.telephony.TelephonyManager", false, lpparam.classLoader);
+
+                // Methods that directly access IMEI or subscription info
+                String[] tmMethods = {
+                        "getImei",
+                        "getDeviceId",
+                        "getSubscriberId",
+                        "getSimSerialNumber",
+                        "getActiveSubscriptionInfoList",
+                        "getActiveSubscriptionInfoCount"
+                };
+
+                for (String method : tmMethods) {
+                    XposedBridge.hookAllMethods(telephonyManagerClass, method, new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            XposedUtility.logI_xposed(TAG, "TM BEFORE [" + method + "] Called");
+                            super.beforeHookedMethod(param);
+                        }
+
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            XposedUtility.logI_xposed(TAG, "TM AFTER [" + method + "] Result: " + param.getResult());
+                            super.afterHookedMethod(param);
+                        }
+                    });
+                    XposedUtility.logI_xposed(TAG, "Hooked TelephonyManager." + method);
+                }
+            } catch (Exception te) {
+                XposedUtility.logE_xposed(TAG, "Failed to hook TelephonyManager: " + te);
+            }
+        } catch (Exception e) {
+            XposedUtility.logE_xposed(TAG, "Failed to hook SubscriptionManagerService: " + e);
+        }
+    }
 
     private void hookAndroid(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         // https://android.googlesource.com/platform/frameworks/base/+/master/services/core/java/com/android/server/am/ActivityManagerService.java
@@ -206,6 +294,9 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 return context;
             }
         });
+
+        //XposedUtility.logI_xposed(TAG, "Starting Sub Hooks!");
+        //hookSubscriptionManagerService(lpparam);
     }
 
     public void hookApplication(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
@@ -246,13 +337,14 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     }
 
     public void hookPackage(final XC_LoadPackage.LoadPackageParam lpparam, int uid, final Context context) throws Throwable {
-        PackageHookContext app = PackageHookContext.create(lpparam, uid, context);
+        final PackageHookContext app = PackageHookContext.create(lpparam, uid, context);
         if(DebugUtil.isDebug())
             Log.d(TAG, "Hook Package created App Context=" + app);
 
         Collection<XLuaHook> hooks = GetAssignedHooksExCommand.get(context, true, uid, lpparam.packageName);
         if(DebugUtil.isDebug())
             Log.d(TAG, "Hook Package got Assigned Hooks, Size=" + ListUtil.size(hooks));
+
 
         //String version = GetBridgeVersionCommand.get(context);
         //if(DebugUtil.isDebug())
@@ -314,26 +406,10 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                             continue;
                         }
 
-                        //Maybe add MAP.put ?
-                        //PrivacyEx.SystemClock.elapsedRealtime
-                        //PrivacyEx.android.os.SystemClock
-                        String id = hook.getObjectId();
-                        if(id.equalsIgnoreCase("PrivacyEx.SystemClock.elapsedRealtime") ||
-                                id.equalsIgnoreCase("PrivacyEx.SystemClock.uptimeMillis")) {
-                            Log.w(TAG, "Deploying Fast Hook For UpTime: " + hook.getObjectId());
-                            XposedBridge.hookMethod(member, new XC_MethodHook() {
-                                @Override
-                                protected void afterHookedMethod(MethodHookParam param)  {
-                                    Object res = param.getResult();
-                                    if(res instanceof Long) {
-                                        long val = (long)res;
-                                        long newVal = val + ThreadLocalRandom.current().nextLong(10L, 1001L);
-                                        param.setResult(newVal);
-                                    }
-                                }
-                            });
-                        }else {
-
+                        if (HashMapHooks.attach(hook, member, app) || UpTimeHooks.attach(hook, member)) {
+                            Log.i(TAG, "Inlined Deployed [" + hook.getObjectId() + "]");
+                        }
+                        else {
                             XposedBridge.hookMethod(member, new XC_MethodHook() {
                                 private final WeakHashMap<Thread, Globals> threadGlobals = new WeakHashMap<>();
 

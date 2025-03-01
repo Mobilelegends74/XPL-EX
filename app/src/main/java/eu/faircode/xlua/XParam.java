@@ -71,6 +71,7 @@ import eu.faircode.xlua.x.hook.interceptors.ipc.holders.IntentQueryData;
 import eu.faircode.xlua.x.hook.interceptors.ipc.holders.SettingsIntentCallData;
 import eu.faircode.xlua.x.hook.interceptors.network.DhcpInfoInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.network.LinkPropertiesInterceptor;
+import eu.faircode.xlua.x.hook.interceptors.network.NetworkInfoInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.network.NetworkInterfaceInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.network.WifiInfoInterceptor;
 import eu.faircode.xlua.random.randomizers.RandomMediaCodec;
@@ -90,6 +91,7 @@ import eu.faircode.xlua.utilities.RandomStringGenerator;
 import eu.faircode.xlua.utilities.ReflectUtilEx;
 import eu.faircode.xlua.utilities.StringUtil;
 import eu.faircode.xlua.utilities.MockUtils;
+import eu.faircode.xlua.x.hook.interceptors.network.WifiScanFilter;
 import eu.faircode.xlua.x.hook.interceptors.pkg.PackageInfoInterceptor;
 import eu.faircode.xlua.x.process.ProcessUtils;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
@@ -183,6 +185,11 @@ public class XParam {
         this.packageName = packageName;
     }
 
+
+    @SuppressWarnings("unused")
+    public int getTargetSubIndex() {
+        return tryGetArgument(0, 0);
+    }
 
     @SuppressWarnings("unused")
     public GroupedMap getGroupedMap(String category) {
@@ -313,6 +320,9 @@ public class XParam {
 
         return true;
     }
+
+    @SuppressWarnings("unused")
+    public boolean interceptNetworkInfo(boolean isResult) { return NetworkInfoInterceptor.intercept(this, isResult); }
 
     @SuppressWarnings("unused")
     public boolean handleUptime() throws Throwable {
@@ -632,8 +642,13 @@ public class XParam {
     @SuppressWarnings("unused")
     public Set<BluetoothDevice> filterSavedBluetoothDevices(Set<BluetoothDevice> devices, List<String> allowList) { return ListFilterUtil.filterSavedBluetoothDevices(devices, allowList); }
 
+    //@SuppressWarnings("unused")
+    //public List<ScanResult> filterWifiScanResults(List<ScanResult> results, List<String> allowList) {
+    //    return ListFilterUtil.filterWifiScanResults(results, allowList);
+    //}
+
     @SuppressWarnings("unused")
-    public List<ScanResult> filterWifiScanResults(List<ScanResult> results, List<String> allowList) { return ListFilterUtil.filterWifiScanResults(results, allowList); }
+    public boolean filterWifiScanResults() { return WifiScanFilter.filter(this); }
 
     @SuppressWarnings("unused")
     public List<WifiConfiguration> filterSavedWifiNetworks(List<WifiConfiguration> results, List<String> allowList) { return ListFilterUtil.filterSavedWifiNetworks(results, allowList); }
@@ -1007,8 +1022,27 @@ public class XParam {
     @SuppressWarnings("unused")
     public Integer getSettingInt(String name, int defaultValue) {
         String setting = getSetting(name);
-        if(setting == null) return useDefault ? defaultValue : null;
+        if(setting == null)
+            return useDefault ? defaultValue : null;
         try {
+            if(setting.contains(",")) {
+                try {
+                    String[] parts = setting.split(",");
+                    int one = Str.tryParseInt(parts[0].trim(), defaultValue);
+                    int two = Str.tryParseInt(parts[1].trim(), defaultValue);
+                    int value = RandomGenerator.nextInt(one, two);
+                    synchronized (this.settings) {
+                        this.settings.put(name, String.valueOf(value));
+                        if(DebugUtil.isDebug())
+                            Log.d(TAG, "Generated Int from (" + one + ") to (" + two + ") Value=" + value + " Setting Original Value=" + setting + " Name=" + name);
+                    }
+
+                    return value;
+                }catch (Exception ex) {
+                    Log.e(TAG, "Error Trying to handle Setting with Comma Int! Error=" + ex);
+                }
+            }
+
             return Integer.parseInt(setting);
         }catch (Exception e) {
             return useDefault ? defaultValue : null;

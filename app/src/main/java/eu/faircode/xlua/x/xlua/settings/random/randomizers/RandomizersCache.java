@@ -39,6 +39,7 @@ import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.kernel
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.kernel.RandomAndroidKernelVersion;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.apps.RandomAppCurrentFlag;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.apps.RandomAppTime;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.battery.RandomChargingCycles;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomMCC;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomMNC;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomMSIN;
@@ -419,6 +420,10 @@ public class RandomizersCache {
     public static final String SETTING_UNIQUE_SUB_ID = "unique.gsm.subscription.id";
     public static final Class<?> SETTING_UNIQUE_SUB_ID_TYPE = RandomSubscriptionId.class;
 
+
+    public static final String SETTING_BATTERY_CHARGING_CYCLES = "battery.charging.cycles";
+
+    public static final Class<?> SETTING_BATTERY_CHARGING_CYCLES_TYPE = RandomChargingCycles.class;
 
     public static final String SETTING_CELL_OPERATOR_MCC = "cell.operator.mcc";
     public static final Class<?> SETTING_CELL_OPERATOR_MCC_TYPE = RandomMCC.class;

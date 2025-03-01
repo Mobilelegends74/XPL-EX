@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ArrayUtils;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.process.ProcessUtils;
@@ -137,6 +138,27 @@ public class RuntimeUtils {
         return ArrayUtils.toArray(rest, StackTraceElement.class);
     }
 
+
+    public static boolean hasElementClass(Exception e, String className, int minIterations) {
+        if(e == null || Str.isEmpty(className))
+            return false;
+
+        StackTraceElement[] elements = getStackTraceSafe(e);
+        if(elements == null)
+            return false;
+
+        int min = minIterations > 0 ? Math.min(minIterations, elements.length) : elements.length;
+        for(int i = 0; i < min; i++) {
+            StackTraceElement element = elements[i];
+            if(elements == null)
+                continue;
+
+            if(element.getClassName().equalsIgnoreCase(className))
+                return true;
+        }
+
+        return false;
+    }
 
     public static StackTraceElement[] getStackTraceSafe() { return getStackTraceSafe(null); }
     public static StackTraceElement[] getStackTraceSafe(Throwable thr) {

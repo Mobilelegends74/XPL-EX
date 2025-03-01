@@ -196,6 +196,10 @@ public class ListUtil {
         }
     }
 
+    public static boolean isListType(Object o) {
+        return o != null && (o instanceof Collection || o instanceof List || o instanceof ArrayList);
+    }
+
     public static <T> boolean isValid(LongSparseArray<T> sArray) { return sArray != null && !sArray.isEmpty(); }
 
     //Not all needed but fuck it I like it xD

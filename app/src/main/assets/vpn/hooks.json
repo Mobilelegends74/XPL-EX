@@ -199,7 +199,10 @@
     "notify":false,
     "luaScript": "@spoof_vpn_connectivitymanager_getallnetworkinfo"
   },
-  {
+
+
+
+  /*{
     "builtin": true,
     "collection": "PrivacyEx",
     "group": "Hide.VPN.State",
@@ -218,7 +221,97 @@
     "usage":true,
     "notify":false,
     "luaScript": "@spoof_vpn_connectivitymanager_getnetworkinfo"
+  },*/
+
+
+
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "Hide.VPN.State",
+    "name": "VPN/NetworkInfo(int,int,string,string)",
+    "author": "OBC",
+    "className": "android.net.NetworkInfo",
+    "parameterTypes": [ "int", "int", "java.lang.String", "java.lang.String" ],
+    "minSdk": 1,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "",
+    "optional": true,
+    "usage": true,
+    "notify": false,
+    "luaScript": "@spoof_vpn_networkinfo_one"
   },
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "Hide.VPN.State",
+    "name": "VPN/NetworkInfo(NetworkInfo)",
+    "author": "OBC",
+    "className": "android.net.NetworkInfo",
+    "parameterTypes": [ "android.net.NetworkInfo" ],
+    "minSdk": 1,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "",
+    "optional": true,
+    "usage": true,
+    "notify": false,
+    "luaScript": "@spoof_vpn_networkinfo_one"
+  },
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "Hide.VPN.State",
+    "name": "VPN/NetworkInfo.writeToParcel",
+    "author": "OBC",
+    "className": "android.net.NetworkInfo",
+    "methodName": "writeToParcel",
+    "parameterTypes": [ "android.os.Parcel", "int" ],
+    "returnType": "void",
+    "minSdk": 1,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "",
+    "optional": true,
+    "usage": true,
+    "notify": false,
+    "luaScript": "@spoof_vpn_networkinfo_one"
+  },
+
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "Hide.VPN.State",
+    "name": "VPN/NetworkInfo.createFromParcel",
+    "author": "OBC",
+    "className": "android.net.NetworkInfo",
+    "methodName": "CREATOR:createFromParcel",
+    "parameterTypes": [ "android.os.Parcel" ],
+    "returnType": "android.net.NetworkInfo",
+    "minSdk": 1,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "",
+    "optional": true,
+    "usage": true,
+    "notify": false,
+    "luaScript": "@spoof_vpn_networkinfo_two"
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   {
     "builtin": true,
     "collection": "PrivacyEx",

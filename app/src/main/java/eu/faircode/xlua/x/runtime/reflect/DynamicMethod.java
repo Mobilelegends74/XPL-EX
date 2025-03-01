@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import eu.faircode.xlua.x.runtime.HiddenApi;
+
 public class DynamicMethod {
     private static final String TAG = "ObbedCode.XP.DynamicMethod";
 
@@ -24,6 +26,12 @@ public class DynamicMethod {
     public DynamicMethod bindInstance(Object instance) { this.mInstance = instance; return this; }
 
     public Object getInstance() { return this.mInstance; }
+
+    public DynamicMethod setHiddenApis() {
+        HiddenApi.bypassHiddenApiRestrictions();
+        return this;
+    }
+
 
     public DynamicMethod setAccessible(boolean accessible) {
         try {

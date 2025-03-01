@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -73,6 +74,7 @@ public class WifiNetworkEditDialog extends AppCompatDialogFragment {
         ImageView ivRandomizeBSSID = view.findViewById(R.id.ivRandomizeBSSID);
         ImageView ivRandomizeSignal = view.findViewById(R.id.ivRandomizeSignal);
         ImageView ivRandomizeFrequency = view.findViewById(R.id.ivRandomizeFrequency);
+        CheckBox cbForceShow = view.findViewById(R.id.cbForceShow);
 
         // Set initial values
         if (network != null) {
@@ -88,6 +90,8 @@ public class WifiNetworkEditDialog extends AppCompatDialogFragment {
             if (!network.isRandomFrequency()) {
                 etFrequency.setText(String.valueOf(network.frequency));
             }
+
+            cbForceShow.setChecked(network.forceShow);
         }
 
         // Setup randomize SSID button
@@ -138,6 +142,14 @@ public class WifiNetworkEditDialog extends AppCompatDialogFragment {
             }
         });
 
+        /*cbForceShow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                cbForceShow.setChecked(!isChecked);
+
+            }
+        });*/
+
         // Initial UI update based on checkbox states
         etSignal.setEnabled(!cbRandomSignal.isChecked());
         ivRandomizeSignal.setEnabled(!cbRandomSignal.isChecked());
@@ -182,7 +194,7 @@ public class WifiNetworkEditDialog extends AppCompatDialogFragment {
 
                 // Handle signal
                 if (cbRandomSignal.isChecked()) {
-                    updatedNetwork.signal = -3; // Random
+                    updatedNetwork.signal = XWifiNetwork.RANDOM_INT; // Random
                 } else {
                     try {
                         updatedNetwork.signal = Integer.parseInt(etSignal.getText().toString());
@@ -194,7 +206,7 @@ public class WifiNetworkEditDialog extends AppCompatDialogFragment {
 
                 // Handle frequency
                 if (cbRandomFrequency.isChecked()) {
-                    updatedNetwork.frequency = -3; // Random
+                    updatedNetwork.frequency = XWifiNetwork.RANDOM_INT; // Random
                 } else {
                     try {
                         updatedNetwork.frequency = Integer.parseInt(etFrequency.getText().toString());
@@ -203,6 +215,10 @@ public class WifiNetworkEditDialog extends AppCompatDialogFragment {
                         return;
                     }
                 }
+
+                updatedNetwork.forceShow = cbForceShow.isChecked();
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, "Force Show Flag=" + updatedNetwork.forceShow + " SSID=" + ssid);
 
                 if (callback != null) {
                     callback.onNetworkSaved(updatedNetwork);

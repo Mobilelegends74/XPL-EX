@@ -158,4 +158,10 @@
             android:contentDescription="Randomize Frequency" />
     </LinearLayout>
 
+    <CheckBox
+        android:id="@+id/cbForceShow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Force Show" />
+
 </LinearLayout>

@@ -4,6 +4,7 @@ function after(hook, param)
         return false
     end
 
+    --ToDO, update this as well, ensure it does add it, it just appears to be Disconnected!
     local arrayClass = luajava.bindClass('java.lang.reflect.Array')
     local NetworkInfoClass = luajava.bindClass('android.net.NetworkInfo')
     local lst = luajava.newInstance('java.util.ArrayList')
