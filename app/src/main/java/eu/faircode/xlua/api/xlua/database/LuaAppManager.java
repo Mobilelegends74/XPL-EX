@@ -4,11 +4,12 @@ import android.content.Context;
 import android.os.Process;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import eu.faircode.xlua.XDatabaseOld;
-import eu.faircode.xlua.UberCore888;
+import eu.faircode.xlua.XLegacyCore;
 
 import eu.faircode.xlua.XUtil;
 import eu.faircode.xlua.api.XResult;
@@ -29,7 +30,7 @@ public class LuaAppManager {
     public static boolean initAppAssignments(Context context, XDatabaseOld db, LuaSimplePacket packet) {
         packet.resolveUserID();
         List<String> collection = XLuaHookProvider.getCollections(context, db, packet.getUser());
-        List<String> hookIds = UberCore888.getHookIds(packet.getCategory(), collection);
+        List<String> hookIds = new ArrayList<>();//XLegacyCore.getHookIds(packet.getCategory(), collection);
         XLuaAssignmentDataHelper assignmentData = new XLuaAssignmentDataHelper(packet.getCategory(), packet.getOriginalUser());
 
         try {

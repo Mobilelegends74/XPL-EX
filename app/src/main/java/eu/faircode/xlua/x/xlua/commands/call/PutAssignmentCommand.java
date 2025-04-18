@@ -7,9 +7,7 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import eu.faircode.xlua.DebugUtil;
-import eu.faircode.xlua.UberCore888;
 import eu.faircode.xlua.api.XProxyContent;
-import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.CallCommandHandlerEx;

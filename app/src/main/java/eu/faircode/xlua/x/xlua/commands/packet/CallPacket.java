@@ -32,6 +32,8 @@ public class CallPacket extends BridgePacket {
     public List<String> getExtraStringList(String key) { return BundleUtil.readStringList(extras, key); }
 
 
+    public boolean hasExtra(String key) { return extras != null && extras.containsKey(key); }
+
     public String getCategory() { return getUserIdentification().getCategory(); }
     public int getUid() { return getUserIdentification().getUid(); }
     public int getUserId() { return getUserIdentification().getUserId(true); }

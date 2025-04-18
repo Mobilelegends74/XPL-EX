@@ -39,6 +39,7 @@ public class ActionPacket {
         this.extra = extra;
     }
 
+    //ToDo: Major fix Kill
     public void fromBundle(Bundle b) {
         if(b != null) {
             this.kill = b.getBoolean(FIELD_KILL, false);

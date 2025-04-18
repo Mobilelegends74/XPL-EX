@@ -27,6 +27,7 @@ import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.builders.SimpleReport;
 import eu.faircode.xlua.builders.SimpleReportData;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.xlua.LibUtil;
 
 public class XReport {
@@ -41,37 +42,37 @@ public class XReport {
     private static final Map<String, Map<String, Bundle>> queue = new HashMap<String, Map<String, Bundle>>();
     private static Timer timer = null;
 
-    public static void fieldException(Context context, Exception exception, XLuaHook hook, Field field) { fieldException(context, exception, hook, field, true); }
-    public static void fieldException(Context context, Exception exception, XLuaHook hook, Field field, boolean log) {
+    public static void fieldException(Context context, Exception exception, XHook hook, Field field) { fieldException(context, exception, hook, field, true); }
+    public static void fieldException(Context context, Exception exception, XHook hook, Field field, boolean log) {
         //if(log) XLog.e("Field Hook Exception", exception, true);
         exception(hook,
                 Str.combine(XReportFormat.exception(exception, context), XReportFormat.field(field)),
                 FUNCTION_AFTER, context);
     }
 
-    public static void memberException(Context context, Exception exception, XLuaHook hook, Member member, String function, XC_MethodHook.MethodHookParam param) { memberException(context, exception, hook, member, function, param.args, param.getResult()); }
-    public static void memberException(Context context, Exception exception, XLuaHook hook, Member member, String function, XC_MethodHook.MethodHookParam param, boolean log) { memberException(context, exception, hook, member, function, param.args, param.getResult(), log); }
+    public static void memberException(Context context, Exception exception, XHook hook, Member member, String function, XC_MethodHook.MethodHookParam param) { memberException(context, exception, hook, member, function, param.args, param.getResult()); }
+    public static void memberException(Context context, Exception exception, XHook hook, Member member, String function, XC_MethodHook.MethodHookParam param, boolean log) { memberException(context, exception, hook, member, function, param.args, param.getResult(), log); }
 
-    public static void memberException(Context context, Exception exception, XLuaHook hook, Member member, String function, Object[] args, Object result) { memberException(context, exception, hook, member, function, args, result, true); }
-    public static void memberException(Context context, Exception exception, XLuaHook hook, Member member, String function, Object[] args, Object result, boolean log) {
+    public static void memberException(Context context, Exception exception, XHook hook, Member member, String function, Object[] args, Object result) { memberException(context, exception, hook, member, function, args, result, true); }
+    public static void memberException(Context context, Exception exception, XHook hook, Member member, String function, Object[] args, Object result, boolean log) {
         //if(log) XLog.e("Member Hook Exception", (exception == null ? "null error" : exception) + " Hook ID=" + hook.getId() + " Class=" + hook.getClassName() + " Method=" + hook.getMethodName() + " Collection=" + hook.getCollection() + " Group=" + hook.getGroup(), true);
         exception(hook,
                 Str.combine(XReportFormat.exception(exception, context), XReportFormat.member(member, function,  args, result)),
                 function, context);
     }
 
-    public static void exception(XLuaHook hook, String message, String function, final Context context) {
+    public static void exception(XHook hook, String message, String function, final Context context) {
         SimpleReportData data = new SimpleReportData();
         data.function = function;
         data.exception = message;
         push(hook, EVENT_USE, data, context);
     }
 
-    public static void usage(XLuaHook hook, Varargs result, long startTime, String function, Context context) {
+    public static void usage(XHook hook, Varargs result, long startTime, String function, Context context) {
         if(DebugUtil.isDebug())
-            Log.d(TAG, "Reporting the Usage of Hook Id=" + hook.getObjectId() + " Do Usage=" + String.valueOf(hook.doUsage()));
+            Log.d(TAG, "Reporting the Usage of Hook Id=" + hook.getObjectId() + " Do Usage=" + String.valueOf(Boolean.TRUE.equals(hook.usage)));
 
-        if (!(result.arg1().checkboolean() && hook.doUsage()))
+        if (!(result.arg1().checkboolean() && Boolean.TRUE.equals(hook.usage)))
             return;
 
         SimpleReportData data = new SimpleReportData();
@@ -94,8 +95,8 @@ public class XReport {
         push(hook, EVENT_USE, data, context);
     }
 
-    public static void installException(XLuaHook hook, Throwable exception, Context context) { installException(hook, exception, context, true); }
-    public static void installException(XLuaHook hook, Throwable exception, Context context, boolean log) {
+    public static void installException(XHook hook, Throwable exception, Context context) { installException(hook, exception, context, true); }
+    public static void installException(XHook hook, Throwable exception, Context context, boolean log) {
         //if(log) XLog.e("Hook Install Exception", exception, true);
         SimpleReportData data = new SimpleReportData();
         if(exception != null)
@@ -105,7 +106,7 @@ public class XReport {
         push(hook, EVENT_INSTALL, data, context);
     }
 
-    public static void install(XLuaHook hook, long startInstallTime, Context context) {
+    public static void install(XHook hook, long startInstallTime, Context context) {
         SimpleReportData data = new SimpleReportData();
         data.duration = SystemClock.elapsedRealtime() - startInstallTime;
         data.function = FUNCTION_NONE;
@@ -129,7 +130,7 @@ public class XReport {
         }
     }
 
-    public static void push(XLuaHook hook, String event, SimpleReportData data, Context context) {
+    public static void push(XHook hook, String event, SimpleReportData data, Context context) {
         SimpleReport report = new SimpleReport();
         String hookId = hook.getObjectId();
         if(Str.isEmpty(hookId)) {

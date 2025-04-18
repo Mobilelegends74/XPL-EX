@@ -12,7 +12,7 @@ function after(hook, param)
 	--	return false
 	--end
 
-	--local command = param:joinList(commands)
+	--local command = param:joinStringList(commands)
 	--if command == nil then
 	    --log("(commands) joined into (command) is NULL")
 	--    return false
@@ -29,18 +29,14 @@ function after(hook, param)
     --return true, command, comRes
     local sh = param:createShellContext(true)
     if sh == nil then
-        log("Create Shell Context is NIL")
-        param:isNullError(hook)
         return false
     end
     local rt = param:isCommandBad(sh)
     if rt == nil then
-        log("Is Command Bad Return is NIL")
-        param:isNullError(hook)
         return false
     end
     if rt == true then
-        return true, param:getOldResult(), param:getNewResult(), param:getSettingResult()
+        return true, param:safe(param:getLogOld()), param:safe(param:getLogNew()), param:safe(param:getLogExtra())
     end
     return false
 end

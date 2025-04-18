@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".x.ui.activities.HooksExActivity">
+    <!-- tools:context="eu.faircode.xlua.ActivityProps"> -->
+
+    <ProgressBar
+        android:id="@+id/pbHookz"
+        style="@style/Base.Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/flSettingsButtonThree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:visibility="invisible"
+        android:focusable="true"
+        android:clickable="true"
+        app:layout_constraintBottom_toTopOf="@+id/flSettingsButtonTwo"
+        app:layout_constraintEnd_toEndOf="@+id/flSettingsButtonTwo"
+        app:layout_constraintStart_toStartOf="@+id/flSettingsButtonTwo"
+        app:srcCompat="@drawable/ic_add18" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/flSettingsButtonTwo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/flSettingsButtonOne"
+        app:layout_constraintEnd_toEndOf="@+id/flSettingsButtonOne"
+        app:layout_constraintStart_toStartOf="@+id/flSettingsButtonOne"
+        app:srcCompat="@drawable/ic_file_import" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/flSettingsButtonOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_edit_button" />
+
+
+
+
+
+
+
+    <!-- Refresh drag down -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshHookz"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+        <!-- app:layout_constraintTop_toBottomOf="@id/btnRestrict"> -->
+
+
+
+        <!-- we should be able to remove this ? mayybee we do need just not in ref of adapter app -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvHookz"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="16dp"
+            android:clipToPadding="false"
+
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbars="none" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

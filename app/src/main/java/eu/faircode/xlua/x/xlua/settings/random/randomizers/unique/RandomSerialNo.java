@@ -1,9 +1,11 @@
 package eu.faircode.xlua.x.xlua.settings.random.randomizers.unique;
 
 import eu.faircode.xlua.x.data.utils.random.RandomGenerator;
+import eu.faircode.xlua.x.runtime.BuildInfo;
 import eu.faircode.xlua.x.xlua.settings.random.RandomElement;
 import eu.faircode.xlua.x.xlua.settings.random.RandomizerSessionContext;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
+import eu.faircode.xlua.x.xlua.settings.random.utils.SerialNumberGenerator;
 
 public class RandomSerialNo extends RandomElement {
     public RandomSerialNo() {
@@ -22,6 +24,10 @@ public class RandomSerialNo extends RandomElement {
 
     @Override
     public void randomize(RandomizerSessionContext context) {
-        context.pushSpecial(context.stack.pop(), RandomGenerator.nextStringNumeric(9, 20));
+        if(BuildInfo.isMiuiOrHyperOs()) {
+            context.pushSpecial(context.stack.pop(), SerialNumberGenerator.generateSerial(SerialNumberGenerator.SerialStyle.XIAOMI));
+        } else {
+            context.pushSpecial(context.stack.pop(), SerialNumberGenerator.generateSerial());
+        }
     }
 }

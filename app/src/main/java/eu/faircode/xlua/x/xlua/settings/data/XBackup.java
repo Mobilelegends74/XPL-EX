@@ -16,12 +16,12 @@ import java.util.List;
 
 import eu.faircode.xlua.BuildConfig;
 import eu.faircode.xlua.DebugUtil;
-import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.api.xstandard.interfaces.IJsonSerial;
 import eu.faircode.xlua.utilities.JSONUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ArrayUtils;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.hook.AssignmentPacket;
 
@@ -45,7 +45,7 @@ public class XBackup implements IJsonSerial {
 
     public boolean dropOld = false;
 
-    private final List<XLuaHook> definitions = new ArrayList<>();
+    private final List<XHook> definitions = new ArrayList<>();
     private final List<XScript> scripts = new ArrayList<>();
     private final List<AssignmentPacket> assignments = new ArrayList<>();
     private final List<SettingPacket> settings = new ArrayList<>();
@@ -57,7 +57,7 @@ public class XBackup implements IJsonSerial {
     // Add these getter methods to XBackup.java
 
     // Getters
-    public List<XLuaHook> getDefinitions() { return definitions; }
+    public List<XHook> getDefinitions() { return definitions; }
     public List<XScript> getScripts() { return scripts; }
     public List<AssignmentPacket> getAssignments() { return assignments; }
     public List<SettingPacket> getSettings() { return settings; }
@@ -80,7 +80,7 @@ public class XBackup implements IJsonSerial {
     public void clearSettings() { settings.clear(); }
 
     // Add/Remove methods (optional, for finer control)
-    public void addDefinition(XLuaHook hook) { if (hook != null) definitions.add(hook); }
+    public void addDefinition(XHook hook) { if (hook != null) definitions.add(hook); }
     public void addScript(XScript script) { if (script != null) scripts.add(script); }
     public void addAssignment(AssignmentPacket assignment) { if (assignment != null) assignments.add(assignment); }
     public void addSetting(SettingPacket setting) { if (setting != null) settings.add(setting); }
@@ -107,10 +107,10 @@ public class XBackup implements IJsonSerial {
             this.appVersion = from.appVersion;
             this.date = from.date;
             this.dropOld = from.dropOld;
-            ListUtil.addAllIfValid(this.definitions, from.definitions, true);
-            ListUtil.addAllIfValid(this.scripts, from.scripts, true);
-            ListUtil.addAllIfValid(this.assignments, from.assignments, true);
-            ListUtil.addAllIfValid(this.settings, from.settings, true);
+            ListUtil.addAll(this.definitions, from.definitions, true);
+            ListUtil.addAll(this.scripts, from.scripts, true);
+            ListUtil.addAll(this.assignments, from.assignments, true);
+            ListUtil.addAll(this.settings, from.settings, true);
             if(DebugUtil.isDebug())
                 Log.d(TAG, Str.fm("Backup Copied!\n > From:([%s])\n > This:([%s])",
                         Str.toStringOrNull(Str.noNL(from.dumpLog())),
@@ -190,7 +190,7 @@ public class XBackup implements IJsonSerial {
             // Handle definition array
             if (ListUtil.isValid(definitions)) {
                 JSONArray definitionArray = new JSONArray();
-                for (XLuaHook hook : definitions) {
+                for (XHook hook : definitions) {
                     try {
                         if (hook == null)
                             continue;
@@ -331,8 +331,8 @@ public class XBackup implements IJsonSerial {
                         try {
                             JSONObject hookObj = definitionArray.optJSONObject(i);
                             if (hookObj != null) {
-                                XLuaHook hook = new XLuaHook();
-                                hook.fromJSONObject(hookObj);
+                                XHook hook = XHook.create(hookObj);
+                                //hook.fromJSONObject(hookObj);
                                 definitions.add(hook);
                             }
                         } catch (Exception e) {

@@ -1,11 +1,15 @@
 package eu.faircode.xlua.x.xlua.database;
 
 import android.content.Context;
+import android.os.Environment;
 import android.os.Process;
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -46,6 +50,11 @@ public class DatabasePathUtil {
             .setGroupMode(ModePermission.READ_WRITE_EXECUTE)
             .setOtherMode(ModePermission.NONE)
             .build();
+
+    public static void deleteAndroidDirectories() {
+        internalTryDelete("data");
+        internalTryDelete("obb");
+    }
 
     public static FileEx getDatabaseDirectory(Context context) {
         if (context != null && XposedUtil.isVirtualXposed())
@@ -187,4 +196,60 @@ public class DatabasePathUtil {
     public static void logI(String msg) { XposedUtility.logI_xposed(TAG, msg); }
     public static void logE(String msg) { XposedUtility.logE_xposed(TAG, msg); }
     public static void logW(String msg) { XposedUtility.logW_xposed(TAG, msg); }
+
+
+    //ToDo: Asap move this crap code
+    private static void internalTryDelete(String scope) {
+        List<String> paths = Arrays.asList(
+                Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/" + scope + "/eu.faircode.xlua",
+                "/storage/emulated/0/\\342\\200\\213Android/" + scope + "/eu.faircode.xlua",
+                "/storage/emulated/0/​Android/" + scope + "/eu.faircode.xlua",
+                "/storage/emulated/0/\u200BAndroid/" + scope + "/eu.faircode.xlua");
+
+        for(String p : paths) {
+            makeDirectoryDeletable(p);
+            forceDeleteDirectory(p);
+        }
+    }
+
+    public static boolean makeDirectoryDeletable(String targetPath) {
+        try {
+            String currentUid = String.valueOf(Process.myUid());
+            String[] chownCommand = {"chown", "-R", currentUid + ":" + currentUid, targetPath};
+            java.lang.Process chownProcess = Runtime.getRuntime().exec(chownCommand);
+
+            // Wait for chown to complete
+            int chownExitValue = chownProcess.waitFor();
+            // Then change permissions to 777 (rwxrwxrwx)
+            String[] chmodCommand = {"chmod", "-R", "777", targetPath};
+            java.lang.Process chmodProcess = Runtime.getRuntime().exec(chmodCommand);
+
+            // Wait for chmod to complete
+            int chmodExitValue = chmodProcess.waitFor();
+
+            // Return success if either operation was successful
+            boolean success = chownExitValue == 0 || chmodExitValue == 0;
+            return success;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+    public static boolean forceDeleteDirectory(String targetPath) {
+        try {
+            // Create the process
+            String[] command = {"rm", "-rf", targetPath};
+            java.lang.Process process = Runtime.getRuntime().exec(command);
+
+            // Wait for the process to complete
+            int exitValue = process.waitFor();
+            // Check if the directory still exists
+            File checkDir = new File(targetPath);
+            boolean exists = checkDir.exists();
+            return exitValue == 0 && !exists;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

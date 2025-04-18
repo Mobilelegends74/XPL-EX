@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import eu.faircode.xlua.DebugUtil;
+import eu.faircode.xlua.XParam;
 import eu.faircode.xlua.api.properties.MockPropConversions;
 import eu.faircode.xlua.api.xlua.XLuaQuery;
 import eu.faircode.xlua.api.xmock.XMockQuery;
@@ -59,7 +60,7 @@ public class PackageHookContext {
         settings.putAll(GetSettingsExCommand.getAsMap(
                 context,
                 true,
-                UserIdentity.DEFAULT_USER,
+                UserIdentity.DEFAULT_USER,  //We need to get User ID
                 UserIdentity.GLOBAL_NAMESPACE,
                 GetSettingsExCommand.FLAG_ONE));
 
@@ -69,6 +70,33 @@ public class PackageHookContext {
                 uid,
                 packageName,
                 GetSettingsExCommand.FLAG_ONE));
+
+
+        if(!this.settings.isEmpty()) {
+            boolean forceWhiteList = Str.toBoolean(this.settings.get(RandomizersCache.SETTING_XP_FORCE_IS_WHITE_LIST), true);
+            String forceOptions = this.settings.get(RandomizersCache.SETTING_XP_DEFAULTS);
+            if(!Str.isEmpty(forceOptions)) {
+                String decoded = Str.fromBase64String(forceOptions, Str.CHAR_SET_UTF_8);
+                if(!Str.isEmpty(decoded) && !decoded.equalsIgnoreCase(forceOptions)) {
+                    List<String> list = Str.splitToList(decoded, Str.NEW_LINE);
+                    if(DebugUtil.isDebug())
+                        Log.d(TAG, Str.fm("Parsing (%s) Force Settings, is White List (%s)",
+                                ListUtil.size(list),
+                                forceWhiteList));
+
+                    if(ListUtil.isValid(list)) {
+                        for(String s : list) {
+                            String trimmed = Str.trimOriginal(s);
+                            if(!Str.isEmpty(trimmed)) {
+                                this.settings.put(XParam.generateSettingForceName(trimmed), String.valueOf(forceWhiteList));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //search_settings_hint
 
         initRandomizers(context);
         //final Map<String, Integer> propSettings = MockPropConversions.toMap(XMockQuery.getModifiedProperties(context, uid, pName));

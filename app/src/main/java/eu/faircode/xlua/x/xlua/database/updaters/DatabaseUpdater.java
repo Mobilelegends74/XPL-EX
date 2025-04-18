@@ -289,8 +289,8 @@ public class DatabaseUpdater<T extends IIdentifiableObject & ICursorType & IJson
                 database.setTransactionSuccessful();
             } finally {
                 database.endTransaction(true, false);
-                ListUtil.addAllIfValid(this.push, failed, true);
-                ListUtil.addAllIfValid(this.all, success, false);
+                ListUtil.addAll(this.push, failed, true);
+                ListUtil.addAll(this.all, success, false);
 
                 StrBuilder sb2 = StrBuilder.create().ensureOneNewLinePer(true);
                 for(String rem : removed) {

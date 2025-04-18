@@ -254,9 +254,31 @@ public class RandomSecureProvider extends RandomProviderBase implements IRandomi
 
     @Override
     public long nextLong(long origin, long bound) {
-        if (origin > bound) { long temp = origin; origin = bound; bound = temp; }
-        if (bound <= 0) return nextLong();
-        return origin + Math.abs(getSecureRandom().nextLong()) % (bound - origin);
+        if (origin > bound) {
+            long temp = origin;
+            origin = bound;
+            bound = temp;
+        }
+
+        if (bound <= origin) {
+            return origin;
+        }
+
+        long range = bound - origin;
+        // Handle edge cases for very large ranges
+        if (range > 0) {
+            // For positive ranges, use a method that avoids the Long.MIN_VALUE issue
+            long bits, val;
+            do {
+                bits = getSecureRandom().nextLong() >>> 1; // Eliminate sign bit
+                val = bits % range;
+            } while (bits - val + (range - 1) < 0); // Ensure no modulo bias
+
+            return origin + val;
+        } else {
+            // For ranges that span the entire Long range (very unlikely)
+            return getSecureRandom().nextLong();
+        }
     }
 
     @Override

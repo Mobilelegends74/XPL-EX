@@ -59,7 +59,7 @@ public class BundleUtil {
         return obj.toBundle();
     }
 
-    public static Bundle createFromStringList(String keyName, List<String> list) {
+    public static Bundle createFromStringList(String keyName, Collection<String> list) {
         if(Str.isEmpty(keyName))
             return null;
 
@@ -67,6 +67,7 @@ public class BundleUtil {
         b.putStringArrayList(keyName, new ArrayList<>(list));
         return b;
     }
+
 
     public static Bundle createFromStringArray(String keyName, List<String> lst) { return createFromStringArray(keyName, lst.toArray(new String[0])); }
     public static Bundle createFromStringArray(String keyName, String[] arr) {

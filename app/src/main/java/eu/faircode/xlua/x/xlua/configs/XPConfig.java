@@ -10,12 +10,10 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.WeakHashMap;
 
@@ -28,7 +26,6 @@ import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.ui.core.view_registry.IIdentifiableObject;
 import eu.faircode.xlua.x.xlua.IBundleData;
 import eu.faircode.xlua.x.xlua.LibUtil;
-import eu.faircode.xlua.x.xlua.PacketBase;
 import eu.faircode.xlua.x.xlua.commands.PkgInfo;
 import eu.faircode.xlua.x.xlua.commands.call.AssignHooksCommand;
 import eu.faircode.xlua.x.xlua.commands.call.GetSettingExCommand;
@@ -43,7 +40,6 @@ import eu.faircode.xlua.x.xlua.database.TableInfo;
 import eu.faircode.xlua.x.xlua.database.sql.SQLQueryBuilder;
 import eu.faircode.xlua.x.xlua.hook.AssignmentPacket;
 import eu.faircode.xlua.x.xlua.hook.AssignmentsPacket;
-import eu.faircode.xlua.x.xlua.identity.IIdentification;
 import eu.faircode.xlua.x.xlua.identity.UserIdentity;
 import eu.faircode.xlua.x.xlua.identity.UserIdentityIO;
 import eu.faircode.xlua.x.xlua.interfaces.ICursorType;
@@ -90,8 +86,8 @@ public class XPConfig extends PkgInfo implements IJsonType, IDatabaseEntry, IPar
         c.author = Str.combine(INTERNAL_AUTHOR_PREFIX, profile.getCategory(), false);
         c.version = INTERNAL_VERSION;
 
-        ListUtil.addAllIfValid(c.hooks, hookIds);
-        ListUtil.addAllIfValid(c.settings, settings);
+        ListUtil.addAll(c.hooks, hookIds);
+        ListUtil.addAll(c.settings, settings);
 
         return c;
     }
@@ -102,8 +98,8 @@ public class XPConfig extends PkgInfo implements IJsonType, IDatabaseEntry, IPar
         config.type = type;
         config.author = author;
         config.version = version;
-        ListUtil.addAllIfValid(config.settings, settings, true);
-        ListUtil.addAllIfValid(config.hooks, hookIds, true);
+        ListUtil.addAll(config.settings, settings, true);
+        ListUtil.addAll(config.hooks, hookIds, true);
         return config;
     }
 
@@ -193,8 +189,8 @@ public class XPConfig extends PkgInfo implements IJsonType, IDatabaseEntry, IPar
             version = obj.optString(FIELD_VERSION);
             author = obj.optString(FIELD_AUTHOR);
 
-            ListUtil.addAllIfValid(settings, XPConfigUtils.jsonToSettings(obj.optString(FIELD_SETTINGS)), true);
-            ListUtil.addAllIfValid(hooks, XPConfigUtils.jsonToHooks(obj.optString(FIELD_HOOKS)), true);
+            ListUtil.addAll(settings, XPConfigUtils.jsonToSettings(obj.optString(FIELD_SETTINGS)), true);
+            ListUtil.addAll(hooks, XPConfigUtils.jsonToHooks(obj.optString(FIELD_HOOKS)), true);
         }
     }
 
@@ -224,11 +220,11 @@ public class XPConfig extends PkgInfo implements IJsonType, IDatabaseEntry, IPar
 
             // Parse settings from JSON string
             String settingsJson = cv.getAsString(FIELD_SETTINGS);
-            ListUtil.addAllIfValid(settings, XPConfigUtils.jsonToSettings(settingsJson), true);
+            ListUtil.addAll(settings, XPConfigUtils.jsonToSettings(settingsJson), true);
 
             // Parse hooks from JSON string
             String hooksJson = cv.getAsString(FIELD_HOOKS);
-            ListUtil.addAllIfValid(hooks, XPConfigUtils.jsonToHooks(hooksJson), true);
+            ListUtil.addAll(hooks, XPConfigUtils.jsonToHooks(hooksJson), true);
         }
     }
 
@@ -249,8 +245,8 @@ public class XPConfig extends PkgInfo implements IJsonType, IDatabaseEntry, IPar
             author = CursorUtil.getString(c, FIELD_AUTHOR, Str.EMPTY);
             version = CursorUtil.getString(c, FIELD_VERSION, Str.EMPTY);
 
-            ListUtil.addAllIfValid(settings, XPConfigUtils.jsonToSettings(CursorUtil.getString(c, FIELD_SETTINGS)), true);
-            ListUtil.addAllIfValid(hooks, XPConfigUtils.jsonToHooks(CursorUtil.getString(c, FIELD_HOOKS)), true);
+            ListUtil.addAll(settings, XPConfigUtils.jsonToSettings(CursorUtil.getString(c, FIELD_SETTINGS)), true);
+            ListUtil.addAll(hooks, XPConfigUtils.jsonToHooks(CursorUtil.getString(c, FIELD_HOOKS)), true);
         }
     }
 
@@ -270,11 +266,11 @@ public class XPConfig extends PkgInfo implements IJsonType, IDatabaseEntry, IPar
 
         // Read settings JSON and convert back to list
         String settingsJson = in.readString();
-        ListUtil.addAllIfValid(settings, XPConfigUtils.jsonToSettings(settingsJson), true);
+        ListUtil.addAll(settings, XPConfigUtils.jsonToSettings(settingsJson), true);
 
         // Read hooks JSON and convert back to list
         String hooksJson = in.readString();
-        ListUtil.addAllIfValid(hooks, XPConfigUtils.jsonToHooks(hooksJson), true);
+        ListUtil.addAll(hooks, XPConfigUtils.jsonToHooks(hooksJson), true);
     }
 
     @Override
@@ -305,11 +301,11 @@ public class XPConfig extends PkgInfo implements IJsonType, IDatabaseEntry, IPar
 
         // Parse settings JSON string from bundle
         String settingsJson = b.getString(FIELD_SETTINGS, Str.EMPTY);
-        ListUtil.addAllIfValid(settings, XPConfigUtils.jsonToSettings(settingsJson), true);
+        ListUtil.addAll(settings, XPConfigUtils.jsonToSettings(settingsJson), true);
 
         // Parse hooks JSON string from bundle
         String hooksJson = b.getString(FIELD_HOOKS, Str.EMPTY);
-        ListUtil.addAllIfValid(hooks, XPConfigUtils.jsonToHooks(hooksJson), true);
+        ListUtil.addAll(hooks, XPConfigUtils.jsonToHooks(hooksJson), true);
     }
 
     @Override

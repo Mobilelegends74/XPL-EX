@@ -19,26 +19,6 @@ public class DynamicType {
         return interfaceClass.isAssignableFrom(clazz);
     }
 
-    private static Class<?> boxType(Class<?> type) {
-        if (type == boolean.class)
-            return Boolean.class;
-        else if (type == byte.class)
-            return Byte.class;
-        else if (type == char.class)
-            return Character.class;
-        else if (type == short.class)
-            return Short.class;
-        else if (type == int.class)
-            return Integer.class;
-        else if (type == long.class)
-            return Long.class;
-        else if (type == float.class)
-            return Float.class;
-        else if (type == double.class)
-            return Double.class;
-        return type;
-    }
-
     /*public static <T> T ensureTypeConversion(Object value, Class<?> targetType) {
         if(value == null) return null;
         try {
@@ -138,5 +118,90 @@ public class DynamicType {
             }catch (Exception ignored) { }
         }
         return null;
+    }
+
+    public static Class<?> boxType(Class<?> type) {
+        if (type == boolean.class)
+            return Boolean.class;
+        else if (type == byte.class)
+            return Byte.class;
+        else if (type == char.class)
+            return Character.class;
+        else if (type == short.class)
+            return Short.class;
+        else if (type == int.class)
+            return Integer.class;
+        else if (type == long.class)
+            return Long.class;
+        else if (type == float.class)
+            return Float.class;
+        else if (type == double.class)
+            return Double.class;
+        return type;
+    }
+
+    public static Object coerceValue(Class<?> returnType, Object value) {
+        // TODO: check for null primitives
+        Class<?> valueType = value.getClass();
+        if(valueType == Double.class || valueType == Float.class || valueType == Long.class || valueType == Integer.class || valueType == String.class) {
+            Class<?> boxReturnType = boxType(returnType);
+            if(boxReturnType == Double.class || boxReturnType == Float.class || boxReturnType == Long.class || boxReturnType == Integer.class || boxReturnType == String.class) {
+                switch (boxReturnType.getName()) {
+                    case "java.lang.Integer":
+                        return
+                                valueType == Double.class ? ((Double) value).intValue() :
+                                        valueType == Float.class ? ((Float) value).intValue() :
+                                                valueType == Long.class ? ((Long) value).intValue() :
+                                                        valueType == String.class ? Str.tryParseInt(String.valueOf(value)) : value;
+                    case "java.lang.Double":
+                        return
+                                valueType == Integer.class ? Double.valueOf((Integer) value) :
+                                        valueType == Float.class ? Double.valueOf((Float) value) :
+                                                valueType == Long.class ? Double.valueOf((Long) value) :
+                                                        valueType == String.class ? Str.tryParseDouble(String.valueOf(value)) : value;
+                    case "java.lang.Float":
+                        return
+                                valueType == Integer.class ? Float.valueOf((Integer) value) :
+                                        valueType == Double.class ? ((Double) value).floatValue() :
+                                                valueType == Long.class ? ((Long) value).floatValue() :
+                                                        valueType == String.class ? Str.tryParseFloat(String.valueOf(value)) : value;
+                    case "java.lang.Long":
+                        return
+                                valueType == Integer.class ? Long.valueOf((Integer) value) :
+                                        valueType == Double.class ? ((Double) value).longValue() :
+                                                valueType == Float.class ? ((Float) value).longValue() :
+                                                        valueType == String.class ? Str.tryParseLong(String.valueOf(value)) : value;
+                    case "java.lang.String":
+                        return
+                                valueType == Integer.class ? Integer.toString((int) value) :
+                                        valueType == Double.class ? Double.toString((double) value) :
+                                                valueType == Float.class ? Float.toString((float) value) :
+                                                        valueType == Long.class ? Long.toString((long) value) : value;
+                }
+            }
+        }
+
+
+        // Lua 5.2 auto converts numbers into floating or integer values
+        if (Integer.class.equals(value.getClass())) {
+            if (long.class.equals(returnType)) return (long) (int) value;
+            else if (float.class.equals(returnType)) return (float) (int) value;
+            else if (double.class.equals(returnType))
+                return (double) (int) value;
+        } else if (Double.class.equals(value.getClass())) {
+            if (float.class.equals(returnType))
+                return (float) (double) value;
+        } else if (value instanceof String && int.class.equals(returnType)) {
+            return Integer.parseInt((String) value);
+        }
+        else if (value instanceof String && long.class.equals(returnType)) {
+            return Long.parseLong((String) value);
+        }
+        else if (value instanceof String && float.class.equals(returnType))
+            return Float.parseFloat((String) value);
+        else if (value instanceof String && double.class.equals(returnType))
+            return Double.parseDouble((String) value);
+
+        return value;
     }
 }

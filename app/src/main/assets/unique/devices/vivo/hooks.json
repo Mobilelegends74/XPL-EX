@@ -17,6 +17,6 @@
     "usage":true,
     "notify":false,
     "luaScript": "",
-    "settings:": ["unique.open.anon.advertising.id"]
+    "settings": ["unique.open.anon.advertising.id"]
   }
 ]

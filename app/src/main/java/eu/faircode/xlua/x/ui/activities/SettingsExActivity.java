@@ -12,6 +12,7 @@ import eu.faircode.xlua.R;
 import eu.faircode.xlua.x.ui.core.acitivty.ListBaseActivity;
 import eu.faircode.xlua.x.ui.dialogs.HelpDialog;
 import eu.faircode.xlua.x.ui.fragments.SettingExFragment;
+import eu.faircode.xlua.x.xlua.database.DatabasePathUtil;
 
 public class SettingsExActivity extends ListBaseActivity {
     public static final String SHARED_TAG = "x_settings_x";
@@ -38,7 +39,6 @@ public class SettingsExActivity extends ListBaseActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         bindMenuSearch(menu.findItem(R.id.menu_search_settings));
-
         MenuItem help = menu.findItem(R.id.menu_help_settings);
         if(help != null) {
             help.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -51,7 +51,6 @@ public class SettingsExActivity extends ListBaseActivity {
                 }
             });
         }
-
         return super.onPrepareOptionsMenu(menu);
     }
 

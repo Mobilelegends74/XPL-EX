@@ -10,7 +10,9 @@ import java.util.Map;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.data.utils.TryRun;
 import eu.faircode.xlua.x.ui.core.UserClientAppContext;
+import eu.faircode.xlua.x.ui.dialogs.LogDialog;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.query.GetAssignmentsCommand;
 import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
@@ -35,27 +37,57 @@ public class AppAssignmentsMap {
     public AppAssignmentsMap(int uid, String packageName) { this.app = new HookApp(uid, packageName); }
 
     public AppAssignmentInfo get(SettingsContainer container) {
-        List<String> settings = HooksSettingsGlobal.settingHoldersToNames(container);
-        if(container == null || HookApp.isGlobalApp(app) || !ListUtil.isValid(settings))
-            return AppAssignmentInfo.DEFAULT;
+        return TryRun.get(() -> {
+            if(container == null)
+                return AppAssignmentInfo.DEFAULT;
 
-        AppAssignmentInfo info = internalGetFirst(settings);
-        if(info == null) {
-            info = AppAssignmentInfo.create(container.getName(), app, this);
-            info.refreshSettingAssignmentsFromMap(null, settings);
-            for(String name : settings)
-                this.assignmentCache.put(name, info);
-        }
+            List<String> settings = HooksSettingsGlobal.settingHoldersToNames(container);
+            if(DebugUtil.isDebug())
+                Log.d(TAG, Str.fm("get(container:%s::%s) Settings Count (%s)(%s) Is Global (%s) Assignment Cache Count (%s)",
+                        container.getContainerName(),
+                        container.getName(),
+                        ListUtil.size(settings),
+                        Str.joinList(settings),
+                        HookApp.isGlobalApp(app),
+                        ListUtil.size(this.assignmentCache)));
 
-        return info;
+            if(HookApp.isGlobalApp(app) || !ListUtil.isValid(settings))
+                return AppAssignmentInfo.DEFAULT;
+
+            AppAssignmentInfo info = internalGetFirst(settings);
+            if(info == null) {
+                info = AppAssignmentInfo.create(container.getName(), app, this);
+                info.refreshSettingAssignmentsFromMap(null, settings);
+                for(String name : settings)
+                    this.assignmentCache.put(name, info);
+            }
+
+            if(DebugUtil.isDebug())
+                Log.d(TAG, Str.fm("Returning from get(container:%s::%s) Settings Count (%s)(%s) Is Global (%s) Assignment Cache Count (%s) Info=%s",
+                        container.getContainerName(),
+                        container.getName(),
+                        ListUtil.size(settings),
+                        Str.joinList(settings),
+                        HookApp.isGlobalApp(app),
+                        ListUtil.size(this.assignmentCache),
+                        info.getPrefix()));
+
+            return info;
+        });
     }
 
     public void refresh(Context context) {
         if(app != null && context != null && !HookApp.isGlobalApp(app)) {
             clear();
             List<AssignmentPacket> assignments = GetAssignmentsCommand.get(context, true, getAppUid(), getAppPackageName(), 0);
-            if(DebugUtil.isDebug())
-                Log.d(TAG, "Got Assignments Count=" + ListUtil.size(assignments));
+            if(DebugUtil.isDebug()) {
+                TryRun.silent(() -> {
+                    Log.d(TAG, "Got Assignments Count=" + ListUtil.size(assignments) + " AppPkg=" + getAppPackageName() + " AppUid=" + getAppUid());
+                    for(AssignmentPacket a : assignments) {
+                        Log.d(TAG, "A=" + a.hookId + " App=" + getAppPackageName() + " Uid=" + getAppUid() + " Count=" + assignments.size());
+                    }
+                });
+            }
 
             if(ListUtil.isValid(assignments))
                 for(AssignmentPacket assignment : assignments)
@@ -64,6 +96,7 @@ public class AppAssignmentsMap {
     }
 
     public boolean isAssigned(String hookId) { return Boolean.TRUE.equals(map.get(hookId)); }
+
     public void setAssigned(String hookId, boolean isAssigned) {
         if(!Str.isEmpty(hookId)) {
             map.put(hookId, isAssigned);
@@ -78,10 +111,29 @@ public class AppAssignmentsMap {
     }
 
     private AppAssignmentInfo internalGetFirst(List<String> settings) {
-        for(String name : settings) {
-            AppAssignmentInfo info = this.assignmentCache.get(name);
-            if(info != null)
-                return info;
+        if(DebugUtil.isDebug()) {
+            TryRun.silent(() -> {
+                for(Map.Entry<String, AppAssignmentInfo> entry : this.assignmentCache.entrySet()) {
+                    AppAssignmentInfo a = entry.getValue();
+                    if(a == null)
+                        continue;
+
+                    Log.d(TAG, "KEY=" + entry.getKey() + " Value=" + Str.toStringOrNull(entry.getValue()) + " Extra=" + entry.getValue().name + " Settings=" + Str.joinList(settings));
+                    for(Map.Entry<String, Boolean> e : a.assignments.entrySet()) {
+                        Log.d(TAG, "K1=" + entry.getKey() + " E=" + a.name + " A=" + a.app + " Settings=(" + Str.joinList(settings) + ") K2=" + e.getKey() + " Flag=" + String.valueOf(e.getValue()));
+                    }
+                }
+            });
+        }
+
+        if(ListUtil.isValid(settings)) {
+            for(String name : settings) {
+                if(!Str.isEmpty(name)) {
+                    AppAssignmentInfo info = this.assignmentCache.get(name);
+                    if(info != null)
+                        return info;
+                }
+            }
         }
 
         return null;

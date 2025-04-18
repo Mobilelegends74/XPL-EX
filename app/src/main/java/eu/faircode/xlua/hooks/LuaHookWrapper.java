@@ -15,6 +15,7 @@ import java.util.Map;
 import de.robv.android.xposed.XC_MethodHook;
 import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.XParam;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 
 public class LuaHookWrapper {
     public final Globals globals;
@@ -25,7 +26,7 @@ public class LuaHookWrapper {
 
     public LuaHookWrapper(
             Context context,
-            XLuaHook hook,
+            XHook hook,
             Map<String, String> settings,
             Map<String, Integer> propSettings,
             Map<String, String> propMaps,
@@ -49,7 +50,7 @@ public class LuaHookWrapper {
 
     public LuaHookWrapper(
             Context context,
-            XLuaHook hook,
+            XHook hook,
             Map<String, String> settings,
             Map<String, Integer> propSettings,
             Map<String, String> propMaps,
@@ -77,7 +78,7 @@ public class LuaHookWrapper {
 
     public static LuaHookWrapper createMember(
             Context context,
-            XLuaHook hook,
+            XHook hook,
             Map<String, String> settings,
             Map<String, Integer> propSettings,
             Map<String, String> propMaps,
@@ -93,7 +94,7 @@ public class LuaHookWrapper {
 
     public static LuaHookWrapper createField(
             Context context,
-            XLuaHook hook,
+            XHook hook,
             Map<String, String> settings,
             Map<String, Integer> propSettings,
             Map<String, String> propMaps, Prototype compiledScript,

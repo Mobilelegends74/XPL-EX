@@ -8,6 +8,10 @@
     "oldIds": ["cpu.platform.name"]
   },
   {
+    "id": "battery.charge.percent",
+    "oldIds": ["battery.percentage.left"]
+  },
+  {
     "id": "soc.board.manufacturer",
     "oldIds": ["cpu.soc.manufacturer"]
   },
@@ -39,7 +43,6 @@
     "id": "soc.cpu.abi.list.32",
     "oldIds": ["cpu.abilist32"]
   },
-
   {
     "id": "soc.cpu.abi.list.64",
     "oldIds": ["cpu.abilist64"]
@@ -81,47 +84,45 @@
     "oldIds": ["memory.available"]
   },
   {
-    "id": "region.parent.control.tz",
-    "oldIds": ["zone.parent.control.tz"]
+    "id": "zone.parent.control.tz",
+    "oldIds": ["region.parent.control.tz"]
   },
   {
-    "id": "region.country",
-    "oldIds": ["zone.country"]
+    "id": "zone.country.name",
+    "oldIds": ["region.country"]
   },
   {
-    "id": "region.country.iso",
-    "oldIds": ["zone.country.iso"]
+    "id": "zone.country.iso2",
+    "oldIds": ["region.country.iso"]
   },
   {
-    "id": "region.country.code",
-    "oldIds": ["zone.region"]
+    "id": "zone.country.code",
+    "oldIds": ["region.country.code", "region.region"]
   },
   {
-    "id": "region.language",
-    "oldIds": ["zone.language"]
+    "id": "zone.language.name",
+    "oldIds": ["region.language"]
   },
   {
-    "id": "region.language.iso",
-    "oldIds": ["zone.language.iso"]
+    "id": "zone.language.iso",
+    "oldIds": ["region.language.iso"]
   },
   {
-    "id": "region.language.tag",
-    "oldIds": ["zone.language.tag"]
+    "id": "zone.language.tag",
+    "oldIds": ["region.language.tag"]
   },
   {
-    "id": "region.timezone",
-    "oldIds": ["zone.timezone"]
+    "id": "zone.timezone.offset",
+    "oldIds": ["region.timezone"]
   },
   {
-    "id": "region.timezone.id",
-    "oldIds": ["zone.timezone.id"]
+    "id": "zone.timezone.id",
+    "oldIds": ["region.timezone.id"]
   },
   {
-    "id": "region.timezone.display.label",
-    "oldIds": ["zone.timezone.display.name"]
+    "id": "zone.timezone.display.name",
+    "oldIds": ["region.timezone.display.label"]
   },
-
-
   {
     "id": "cell.phone.type.[1,2]",
     "oldIds": ["gsm.phone.type", "cell.phone.type.1", "cell.phone.type.2"]
@@ -210,9 +211,6 @@
     "id": "cell.location.cid",
     "oldIds": ["gsm.cell.location.cid"]
   },
-
-
-
   {
     "id": "apps.allow.list",
     "oldIds": ["applications.allow.list"]

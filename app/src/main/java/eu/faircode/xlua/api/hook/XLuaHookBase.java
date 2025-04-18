@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 
 import eu.faircode.xlua.hooks.XHookUtil;
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.data.utils.ArrayUtils;
 import eu.faircode.xlua.x.hook.filter.kinds.FileFilterContainer;
 import eu.faircode.xlua.x.hook.filter.kinds.IPCBinderFilterContainer;
 import eu.faircode.xlua.x.hook.filter.kinds.IPCCallFilterContainer;
@@ -158,13 +159,16 @@ public class XLuaHookBase {
         if (Build.VERSION.SDK_INT < this.minSdk || Build.VERSION.SDK_INT > this.maxSdk)
             return false;
 
-        if (packageName == null)
+        //We can add further device checks
+        if (Str.isEmpty(packageName))
             return true;
 
-        if (this.excludePackages == null)
+        if (!ArrayUtils.isValid(this.excludePackages))
             return true;
 
         boolean included = true;
+
+        //Using Linq
         for (String excluded : this.excludePackages)
             if (Pattern.matches(excluded, packageName)) {
                 included = false;
@@ -175,8 +179,7 @@ public class XLuaHookBase {
 
     public void resolveClassName(Context context) {
         String rName = XHookUtil.resolveClassName(context, this.className);
-        if(rName == null)
-            return;
+        if(rName == null) return;
         this.resolvedClassName = rName;
     }
 

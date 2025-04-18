@@ -60,6 +60,10 @@
     "luaScript": "@spoof_meminfo_one",
     "settings":["hardware.memory.total", "hardware.memory.available"]
   },
+
+
+
+
   {
     "builtin": false,
     "collection": "PrivacyEx",
@@ -67,7 +71,7 @@
     "name": "ActivityManager.getMemoryInfo",
     "author": "OBC",
     "className": "android.app.ActivityManager",
-    "methodName": "getMemoryInfo",
+    "methodName": "getMemoryInfo|getMemoryInfoInternal",
     "parameterTypes": [ "android.app.ActivityManager$MemoryInfo" ],
     "returnType": "void",
     "minSdk": 4,
@@ -80,8 +84,8 @@
     "notify":false,
     "luaScript": "@spoof_activitymanager_getmemoryinfo",
     "settings":["hardware.memory.total", "hardware.memory.available"]
-  },
-  {
+  }
+  /*{
     "builtin": false,
     "collection": "PrivacyEx",
     "group": "Hardware.Spoof.Memory",
@@ -101,8 +105,10 @@
     "notify":false,
     "luaScript": "@spoof_memoryinfo_writetoparcel",
     "settings":["hardware.memory.total", "hardware.memory.available"]
-  },
-  {
+  }*/
+
+
+  /*{
     "collection": "PrivacyEx",
     "group": "Hardware.Spoof.Memory",
     "name": "Runtime.maxMemory",
@@ -141,5 +147,5 @@
     "notify":false,
     "luaScript": "@spoof_runtime_totalmemory",
     "settings":["memory.available"]
-  }
+  }*/
 ]

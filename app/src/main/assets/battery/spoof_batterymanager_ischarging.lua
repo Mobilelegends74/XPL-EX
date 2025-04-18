@@ -4,16 +4,7 @@ function after(hook, param)
         return false
     end
 
-    local setting = param:getSetting("battery.is.charging.bool", "false")
-    if setting == nil then
-        return false
-    end
-
-    local fake = true
-    if setting == 'true' then
-        fake = true
-    end
-
+    local fake = param:getSettingBool("battery.is.charging.bool", false)
 	param:setResult(fake)
-	return true, tostring(res), tostring(fake)
+	return true, param:safe(res), param:safe(fake)
 end

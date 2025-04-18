@@ -13,6 +13,11 @@ public class RandomGSFID extends RandomElement {
 
     @Override
     public void randomize(RandomizerSessionContext context) {
-        context.pushSpecial(context.stack.pop(), RandomGenerator.nextStringNumeric(16));
+        //Was 16 Char Length
+        String setting = context.stack.pop();
+        if(setting == null)
+            return;
+
+        context.pushSpecial(setting, RandomGenerator.nextStringNumeric(19));
     }
 }

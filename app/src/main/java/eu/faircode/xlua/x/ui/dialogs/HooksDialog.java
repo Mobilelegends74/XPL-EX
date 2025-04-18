@@ -9,9 +9,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import eu.faircode.xlua.R;
-import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.ui.core.dialog.CheckableDialog;
 import eu.faircode.xlua.x.ui.core.view_registry.SharedRegistry;
 import eu.faircode.xlua.x.xlua.LibUtil;
@@ -23,7 +23,7 @@ import eu.faircode.xlua.x.xlua.hook.AssignmentsPacket;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.x.xlua.hook.HookGroupOrganizer;
 
-public class HooksDialog extends CheckableDialog<XLuaHook> {
+public class HooksDialog extends CheckableDialog<XHook> {
     private static final String TAG = LibUtil.generateTag(HooksDialog.class);
 
     public static HooksDialog create() { return new HooksDialog(); }
@@ -40,13 +40,13 @@ public class HooksDialog extends CheckableDialog<XLuaHook> {
     private String packageName;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    public List<XLuaHook> getItems() {
+    public List<XHook> getItems() {
         return items;
     }
 
-    public List<XLuaHook> getEnabled() {
-        List<XLuaHook> enabled = new ArrayList<>();
-        for(XLuaHook hook : items) {
+    public List<XHook> getEnabled() {
+        List<XHook> enabled = new ArrayList<>();
+        for(XHook hook : items) {
             if(this.viewRegistry != null && this.viewRegistry.isChecked(SharedRegistry.STATE_TAG_SETTINGS, hook.getObjectId())) {
                 enabled.add(hook);
             }
@@ -55,16 +55,16 @@ public class HooksDialog extends CheckableDialog<XLuaHook> {
         return enabled;
     }
 
-    public static List<String> toHookIds(List<XLuaHook> hooks) {
+    public static List<String> toHookIds(List<XHook> hooks) {
         List<String> ids = new ArrayList<>(hooks.size());
-        for(XLuaHook h : hooks)
+        for(XHook h : hooks)
             ids.add(h.getObjectId());
 
         return ids;
     }
 
     @Override
-    protected void onFinishedPush(List<XLuaHook> enabled, List<XLuaHook> disabled) {
+    protected void onFinishedPush(List<XHook> enabled, List<XHook> disabled) {
         if (!enabled.isEmpty()) {
             executor.submit(() -> AssignHooksCommand.call(context,
                     AssignmentsPacket.create(app.uid, app.packageName, toHookIds(enabled), false, app.forceStop)));
@@ -99,9 +99,9 @@ public class HooksDialog extends CheckableDialog<XLuaHook> {
         HookGroupOrganizer groupHolder = new HookGroupOrganizer();
         this.viewRegistry = new SharedRegistry();
 
-        List<XLuaHook> allHooks =  GetHooksCommand.getHooks(context, true, false);
+        List<XHook> allHooks =  GetHooksCommand.getHooks(context, true, false);
         groupHolder.collectApp(this.app, allHooks, context, viewRegistry);
-        ListUtil.addAllIfValid(items, groupHolder.getHooksForSettings(setting_names), true);
+        ListUtil.addAll(items, groupHolder.getHooksForSettings(setting_names), true);
 
         if(DebugUtil.isDebug())
             Log.d(TAG, Str.fm("Refresh Finished for Hooks Dialog, " +

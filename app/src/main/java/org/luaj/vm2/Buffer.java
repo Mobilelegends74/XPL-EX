@@ -245,5 +245,4 @@ public final class Buffer {
 			offset = newOffset;
 		}
 	}
-
 }

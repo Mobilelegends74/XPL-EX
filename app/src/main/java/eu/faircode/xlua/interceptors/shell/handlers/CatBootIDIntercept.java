@@ -6,7 +6,6 @@ import eu.faircode.xlua.api.xstandard.interfaces.ICommandIntercept;
 import eu.faircode.xlua.interceptors.UserContextMaps;
 import eu.faircode.xlua.interceptors.shell.CommandInterceptor;
 import eu.faircode.xlua.interceptors.shell.ShellInterception;
-import eu.faircode.xlua.utilities.MemoryUtil;
 
 public class CatBootIDIntercept extends CommandInterceptor implements ICommandIntercept {
     private static final String CAT_BOOT_ID_INTERCEPT_SETTING = "intercept.shell.boot_id.bool";
@@ -39,9 +38,9 @@ public class CatBootIDIntercept extends CommandInterceptor implements ICommandIn
                 result.setNewValue(newValue);
                 result.setIsMalicious(true);
 
-                result.param.setOldResult("N/A");
-                result.param.setNewResult(newValue);
-                result.param.setSettingResult("cat boot_id");
+                result.param.setLogOld("N/A");
+                result.param.setLogNew(newValue);
+                result.param.setLogExtra("cat boot_id");
                 return true;
             }
         }

@@ -59,15 +59,17 @@ public class StrBuilder {
 
     private void ensureNoDoubleNewLine() {
         if(ensureNoMoreThanOneNewLine) {
-            int len = mSb.length();
-            if(len > 2) {
-                char one = mSb.charAt(len - 1);
-                char two = mSb.charAt(len - 2);
-                //White space check ???
-                if(one == '\n' && two == '\n') {
-                    String cleaned = Str.trim(mSb.toString(), "\n", true, true).replaceAll("\n\n", "");
-                    mSb = new StringBuilder(cleaned);
-                    mSb.append("\n");   //Just one new Line
+            if(mSb != null) {
+                int len = mSb.length();
+                if(len > 2) {
+                    char one = mSb.charAt(len - 1);
+                    char two = mSb.charAt(len - 2);
+                    //White space check ???
+                    if(one == '\n' && two == '\n') {
+                        String cleaned = Str.trim(mSb.toString(), "\n", true, true).replaceAll("\n\n", "");
+                        mSb = new StringBuilder(cleaned);
+                        mSb.append("\n");   //Just one new Line
+                    }
                 }
             }
         }
@@ -610,9 +612,14 @@ public class StrBuilder {
     @NonNull
     @Override
     public String toString() {
-        String s = mSb.toString();
-        if(s.endsWith("\n")) return s.substring(0, s.length() - 1);
-        return s;
+        if(mSb != null) {
+            String s = mSb.toString();
+            if(s.endsWith("\n"))
+                return s.substring(0, s.length() - 1);
+            return s;
+        } else {
+            return null;
+        }
     }
 
     public String toString(boolean ensureNoDoubleNewLines) {

@@ -4,29 +4,22 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import eu.faircode.xlua.UberCore888;
 import eu.faircode.xlua.api.XProxyContent;
-import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.utilities.BundleUtil;
-import eu.faircode.xlua.utilities.JSONUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.data.utils.ObjectUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.CallCommandHandlerEx;
 import eu.faircode.xlua.x.xlua.commands.packet.CallPacket;
-import eu.faircode.xlua.x.xlua.commands.query.GetHooksCommand;
 import eu.faircode.xlua.x.xlua.hook.AppProviderUtils;
 import eu.faircode.xlua.x.xlua.hook.AssignmentApi;
 import eu.faircode.xlua.x.xlua.hook.AssignmentPacket;
-import eu.faircode.xlua.x.xlua.identity.UserIdentityIO;
 
 public class InitAssignments extends CallCommandHandlerEx {
     private static final String TAG = LibUtil.generateTag(InitAssignments.class);

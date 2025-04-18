@@ -4,7 +4,6 @@ function after(hook, param)
         return false
     end
 
-    log("Intent=" .. argOne)
     if argOne ~= 'android.os.extra.CYCLE_COUNT' then
         return false
     end

@@ -276,14 +276,12 @@ public class ConfigDialog extends AppCompatDialogFragment implements ConfigAdapt
                 if(checked != null && !Str.isEmpty(checked.name) && !Str.isEmpty(packageName) && !UserIdentity.GLOBAL_NAMESPACE.equalsIgnoreCase(packageName)) {
                     if(DebugUtil.isDebug())
                         Log.d(TAG, "Apply, Config=" + Str.toStringOrNull(checked));
-
                     if(A_CODE.isSuccessful(PutSettingExCommand.putConfig(context, uid, packageName, checked.name))) {
                         List<SettingPacket> changed = checked.applySettings(context, uid, packageName, true);
                         checked.applyAssignments(context, uid, packageName, true);
                         if(kill) ForceStopAppCommand.stop(context, uid, packageName);
                         if(baseView != null)
                             Snackbar.make(baseView, getString(R.string.msg_finished_applying_config), Snackbar.LENGTH_LONG).show();
-
                         if(onChange != null)
                             onChange.onItemsChange(changed);
                     }

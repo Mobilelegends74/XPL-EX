@@ -5,7 +5,6 @@ import android.os.Process;
 import android.system.Os;
 import android.system.OsConstants;
 import android.system.StructStat;
-import android.text.TextUtils;
 import android.util.Log;
 
 
@@ -578,6 +577,7 @@ public class FileApi {
 
     private static void executeCommand(String command) {
         try {
+            //ToDO: Update this to use array ? what if the file has a space in the path!
             Runtime.getRuntime().exec(command).waitFor();
         }catch (Exception e) {
             if(DebugUtil.isDebug())
@@ -630,7 +630,7 @@ public class FileApi {
                     }
 
                     if(isDir && recurse) {
-                        ListUtil.addAllIfValid(files, find(file, searchTerm, true, false, ignoreFiles, stopOnFirstResult));
+                        ListUtil.addAll(files, find(file, searchTerm, true, false, ignoreFiles, stopOnFirstResult));
                         if(stopOnFirstResult && !files.isEmpty())
                             return files;
                     }

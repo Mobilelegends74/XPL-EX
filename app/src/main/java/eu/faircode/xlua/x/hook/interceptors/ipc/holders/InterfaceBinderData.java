@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -13,6 +14,9 @@ import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XParam;
 import eu.faircode.xlua.tools.BytesReplacer;
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.data.utils.ArrayUtils;
+import eu.faircode.xlua.x.runtime.HiddenApi;
+import eu.faircode.xlua.x.runtime.reflect.DynamicMethod;
 import eu.faircode.xlua.x.xlua.LibUtil;
 
 //android.os.Binder
@@ -45,12 +49,108 @@ public class InterfaceBinderData {
     public boolean isInterfaceName(String targetInterface) { return interfaceName.equalsIgnoreCase(targetInterface); }
     public boolean isCode(int targetCode) { return code == targetCode; }
 
+    private static Method mthInt = null;
+    private static Method mthLong = null;
+
+    static {
+        try {
+            HiddenApi.bypassHiddenApiRestrictions();
+            Method[] methods = Parcel.class.getDeclaredMethods();
+            for(Method m : methods) {
+                if(m.getName().equals("obtain")) {
+                    int pCount = m.getParameterCount();
+                    if(pCount < 1)
+                        continue;
+
+                    Class<?>[] params = m.getParameterTypes();
+                    if(!ArrayUtils.isValid(params) || params.length != 1)
+                        continue;
+
+                    if(params[0] == long.class || params[0] == Long.class) {
+                        if(mthLong == null) {
+                            mthLong = m;
+                            m.setAccessible(true);
+                            continue;
+                        }
+                    }
+
+                    if(params[0] == int.class || params[0] == Integer.class) {
+                        if(mthInt == null) {
+                            mthInt = m;
+                            m.setAccessible(true);
+                            continue;
+                        }
+                    }
+
+                    if(mthInt != null && mthLong != null)
+                        break;
+                }
+            }
+
+        }catch (Exception e) {
+            Log.e(TAG, "Failed to Static Init, Error=" + e);
+        }
+    }
+
+    public static Parcel obtain(int p) {
+        try {
+            return (Parcel) mthInt.invoke(null, p);
+        }catch (Exception e) {
+            Log.e(TAG, "Failed to obtain Parcel(int): Error=" + e);
+            return null;
+        }
+    }
+
+    public static Parcel obtain(long p) {
+        try {
+            return (Parcel) mthLong.invoke(null, p);
+
+           // DynamicMethod mth = new DynamicMethod(Parcel.class, "obtain", Long.class);
+           // mth.setHiddenApis();
+           // mth.setAccessible(true);
+           // return (Parcel) mth.tryStaticInvoke(p);
+
+            //static protected final Parcel obtain(long obj)
+            //Method methodObtain = Parcel.class.getDeclaredMethod("obtain", long.class);
+            //methodObtain.setAccessible(true);
+            //return (Parcel) methodObtain.invoke(null, p);
+        }catch (Exception e) {
+            Log.e(TAG, "Failed to obtain Parcel(long): Error=" + e);
+            return null;
+        }
+    }
+
     public InterfaceBinderData(XParam param, boolean getResult) {
         try {
             this.interfaceName = getInterfaceDescriptor(param.getThis());
             this.code = param.tryGetArgument(0, 0);
-            this.data = param.tryGetArgument(1, null);
-            this.reply = param.tryGetArgument(2, null);
+
+            //this.data = param.tryGetArgument(1, null);
+            //this.reply = param.tryGetArgument(2, null);
+
+            Object vOne = param.getArgument(1);
+            if(vOne instanceof Long) {
+                this.data = obtain((long) vOne);
+            }
+            else if(vOne instanceof Integer) {
+                this.data = obtain((int)vOne);
+            }
+            else if(vOne instanceof Parcel) {
+                this.data = (Parcel) vOne;
+            }
+
+
+            Object vTwo = param.getArgument(2);
+            if(vTwo instanceof Long) {
+                this.reply = obtain((long) vTwo);
+            }
+            else if(vTwo instanceof Integer) {
+                this.reply = obtain((int)vTwo);
+            }
+            else if(vTwo instanceof Parcel) {
+                this.reply = (Parcel) vTwo;
+            }
+
             this.flags = param.tryGetArgument(3, 0);
             if(getResult)
                 this.result = param.tryGetResult(false);
@@ -93,8 +193,44 @@ public class InterfaceBinderData {
         return this;
     }
 
+    public InterfaceBinderData readDataException() {
+        if(data != null) data.readException();
+        return this;
+    }
+
     public InterfaceBinderData readReplyException() {
         if(reply != null) reply.readException();
+        return this;
+    }
+
+    public InterfaceBinderData replaceDataString(String oldString, String newString) { return replaceDataString(oldString, newString, StandardCharsets.UTF_16); }
+    public InterfaceBinderData replaceDataString(String oldString, String newString, Charset set) {
+        int oldDataPosition = getDataPosition();
+        try {
+            byte[] oldBytes = oldString.getBytes(set);
+            byte[] newBytes = newString.getBytes(set);
+            if(set == StandardCharsets.UTF_16) {
+                //We need to skip the first (2) bytes the UTF_16 (BOM)
+                oldBytes = Arrays.copyOfRange(oldBytes, 2, oldBytes.length);
+                newBytes = Arrays.copyOfRange(newBytes, 2, newBytes.length);
+            }
+
+            byte[] bytes = data.marshall();
+            BytesReplacer bytesReplacer = new BytesReplacer(oldBytes, newBytes);
+            byte[] newDataBytes = bytesReplacer.replace(bytes);
+            if(DebugUtil.isDebug())
+                Log.d(TAG, "Replacing Data Parcel [" + interfaceName + "]\n" +
+                        "Old String=" + oldString + "\n" +
+                        "New String=" + newString + "\n" +
+                        "Old Bytes=" + Str.bytesToHex(oldBytes) + "\n" +
+                        "New Bytes=" + Str.bytesToHex(newBytes));
+
+            data.unmarshall(newDataBytes, 0, newDataBytes.length);
+        }catch (Exception e) {
+            Log.e(TAG, "Error Replacing String in Data Parcel, Old String: " + oldString + " New String: " + newString + " Error: " + e);
+        } finally {
+            setDataPosition(oldDataPosition);
+        }
         return this;
     }
 
@@ -114,7 +250,7 @@ public class InterfaceBinderData {
             BytesReplacer bytesReplacer = new BytesReplacer(oldBytes, newBytes);
             byte[] newReplyBytes = bytesReplacer.replace(bytes);
             if(DebugUtil.isDebug())
-                Log.d(TAG, "Replacing Parcel [" + interfaceName + "]\n" +
+                Log.d(TAG, "Replacing Reply Parcel [" + interfaceName + "]\n" +
                         "Old String=" + oldString + "\n" +
                         "New String=" + newString + "\n" +
                         "Old Bytes=" + Str.bytesToHex(oldBytes) + "\n" +
@@ -127,6 +263,10 @@ public class InterfaceBinderData {
             setReplyPosition(oldReplyPosition);
         }
         return this;
+    }
+
+    public String readDataString() {
+        return data != null ? data.readString() : null;
     }
 
     public String readReplyString() {
@@ -167,6 +307,7 @@ public class InterfaceBinderData {
                 return Str.EMPTY;
             }
         }
+
         return Str.EMPTY;
     }
 }

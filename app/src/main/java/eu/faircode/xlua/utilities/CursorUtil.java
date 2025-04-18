@@ -17,6 +17,7 @@ import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.api.xstandard.interfaces.IJsonSerial;
 import eu.faircode.xlua.logger.XLog;
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.data.string.StrBuilder;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
@@ -25,6 +26,22 @@ import eu.faircode.xlua.x.xlua.interfaces.IParcelType;
 
 public class CursorUtil {
     private static final String TAG = LibUtil.generateTag(CursorUtil.class);
+
+
+    public static String toString(Cursor c, boolean useNewLine) {
+        StrBuilder sb = StrBuilder.create().ensureDelimiter(useNewLine ? Str.NEW_LINE : Str.WHITE_SPACE);
+        if(c == null) {
+            sb.append("Cursor is Null!");
+        } else {
+            sb.append(Str.fm("Cursor Count: %s", c.getCount()));
+            sb.append(Str.fm("Cursor Column Count: %s", c.getColumnCount()));
+            sb.append(Str.fm("Cursor Column Names: (%s)", c.getColumnCount() > 8 ? "too many..." : Str.joinArray(c.getColumnNames())));
+            sb.append(Str.fm("Cursor Position: %s", c.getPosition()));
+            sb.append(Str.fm("Cursor Hash Code: %s", c.hashCode()));
+        }
+
+        return sb.toString();
+    }
 
     // Vivo OAID Cursor Structure
     // URI: content://com.vivo.vms.IdProvider/IdentifierId/OAID

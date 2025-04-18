@@ -12,12 +12,13 @@ import java.util.List;
 
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.R;
-import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.ui.core.dialog.CheckableDialog;
 import eu.faircode.xlua.x.ui.core.view_registry.IIdentifiableObject;
 import eu.faircode.xlua.x.ui.core.view_registry.SharedRegistry;
+import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.call.GetSettingExCommand;
 import eu.faircode.xlua.x.xlua.commands.call.PutSettingExCommand;
 import eu.faircode.xlua.x.xlua.commands.query.GetHooksCommand;
@@ -28,7 +29,7 @@ import eu.faircode.xlua.x.xlua.identity.UserIdentity;
 import eu.faircode.xlua.x.xlua.settings.data.SettingPacket;
 
 public class CollectionsDialog extends CheckableDialog<CollectionsDialog.XCollection> {
-    private static final String TAG = "XLua.CollectionsDialog";
+    private static final String TAG = LibUtil.generateTag(CollectionsDialog.class);
 
     public static class XCollection implements IIdentifiableObject {
         public String id;
@@ -93,14 +94,14 @@ public class CollectionsDialog extends CheckableDialog<CollectionsDialog.XCollec
         this.viewRegistry = new SharedRegistry();
         this.TAG_ITEMS = SharedRegistry.STATE_TAG_COLLECTIONS;
 
-        List<XLuaHook> allHooks =  GetHooksCommand.getHooks(context, true, true);
+        List<XHook> allHooks =  GetHooksCommand.getHooks(context, true, true);
         List<String> collections = GetSettingExCommand.getCollections(context, Process.myUid());
         if(DebugUtil.isDebug())
             Log.d(TAG, Str.fm("Got Hooks Count=%s Collections=%s]", allHooks.size(), Str.joinList(collections)));
 
         List<String> added = new ArrayList<>();
-        for(XLuaHook hook : allHooks) {
-            String collection = hook.getCollection();
+        for(XHook hook : allHooks) {
+            String collection = hook.collection;
             if(!TextUtils.isEmpty(collection)) {
                 if(!added.contains(collection)) {
                     XCollection obj = new XCollection();

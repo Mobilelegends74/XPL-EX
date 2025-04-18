@@ -57,7 +57,7 @@ public class XSecurity {
     }
 
     public static boolean isSystemProcess(int callingUserId) {
-        if(callingUserId == Process.SYSTEM_UID) {
+        if(callingUserId == Process.SYSTEM_UID || callingUserId == Process.PHONE_UID) {
             if(DebugUtil.isDebug())
                 Log.i(TAG, "Caller is SYSTEM_UID id=" + callingUserId);
             return true;

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import eu.faircode.xlua.utilities.BundleUtil;
 import eu.faircode.xlua.x.data.string.StrBuilder;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.xlua.PacketBase;
@@ -30,7 +29,7 @@ public class AssignmentsPacket extends PacketBase {
     public AssignmentsPacket(int uid, String packageName, List<String> hookIds, boolean delete, boolean kill) {
         setUserIdentity(UserIdentity.fromUid(uid, packageName));
         setActionPacket(ActionPacket.create(delete ? ActionFlag.DELETE : ActionFlag.PUSH, kill));
-        ListUtil.addAllIfValid(this.hookIds, hookIds);
+        ListUtil.addAll(this.hookIds, hookIds);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class AssignmentsPacket extends PacketBase {
     public void populateFromBundle(Bundle b) {
         if(b != null) {
             super.populateFromBundle(b);
-            ListUtil.addAllIfValid(this.hookIds, b.getStringArrayList("hooks"));
+            ListUtil.addAll(this.hookIds, b.getStringArrayList("hooks"));
         }
     }
 

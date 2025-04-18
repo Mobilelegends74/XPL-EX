@@ -1,11 +1,10 @@
 function after(hook, param)
     local res = param:getResult()
-    if res ~= nil then
-        local fake = param:getSetting("unique.open.anon.advertising.id", "84630630-u4ls-k487-f35f-h37afe0pomwq")
-        if fake ~= nil then
-            param:setResult(fake)
-            return true, res, fake
-        end
+    local nme = "unique.open.anon.advertising.id"
+    if param:isForceSetting(nme, res) then
+        local fake = param:getSetting(nme)
+        param:setResult(fake)
+        return true, param:safe(res), param:safe(fake)
     end
     return false
  end

@@ -7,33 +7,28 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import eu.faircode.xlua.DebugUtil;
-import eu.faircode.xlua.UberCore888;
+import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.api.XProxyContent;
-import eu.faircode.xlua.api.XResult;
-import eu.faircode.xlua.api.hook.LuaHookPacket;
-import eu.faircode.xlua.api.hook.XLuaHook;
-import eu.faircode.xlua.api.xlua.call.PutHookCommand;
-import eu.faircode.xlua.api.xlua.provider.XLuaHookProvider;
-import eu.faircode.xlua.api.xstandard.command.CallPacket_old;
+import eu.faircode.xlua.utilities.BundleUtil;
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.data.utils.ObjectUtils;
+import eu.faircode.xlua.x.runtime.RuntimeUtils;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.ResultRequest;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.CallCommandHandlerEx;
 import eu.faircode.xlua.x.xlua.commands.packet.CallPacket;
 import eu.faircode.xlua.x.xlua.database.A_CODE;
 import eu.faircode.xlua.x.xlua.database.DatabaseHelpEx;
-import eu.faircode.xlua.x.xlua.database.sql.SQLDatabase;
-import eu.faircode.xlua.x.xlua.hook.AssignmentApi;
-import eu.faircode.xlua.x.xlua.hook.AssignmentPacket;
-import eu.faircode.xlua.x.xlua.hook.AssignmentsPacket;
-//Hook is straight up just ID and DEF
-//Couldnt make my life any easier
-
 
 public class PutHookExCommand extends CallCommandHandlerEx {
     private static final String TAG = LibUtil.generateTag(PutHookExCommand.class);
 
     public static final String COMMAND_NAME = "putHookExCommand";
     public static final String FIELD_DATA = "raw";
+    public static final String FIELD_FLAG = "flag";
+    public static final String FIELD_EXCEPTION = "exception";
+
 
     public PutHookExCommand() {
         name = COMMAND_NAME;
@@ -42,53 +37,102 @@ public class PutHookExCommand extends CallCommandHandlerEx {
 
     @Override
     public Bundle handle(CallPacket commandData) throws Throwable {
-        String json = commandData.getExtraString(FIELD_DATA);
-        if(json == null || Str.isEmpty(json)) {
-            Log.e(TAG, "Failed to put Hook, JSON Data is null or empty!");
-            return A_CODE.FAILED.toBundle();
-        }
-
         try {
-            //Init Cache ?
-            if(!DatabaseHelpEx.ensureTableIsReady_locked(XLuaHook.TABLE_INFO, commandData.getDatabase())) {
-                Log.e(TAG, "Failed to Prepare Database! Table=" + XLuaHook.TABLE_NAME);
-                return A_CODE.FAILED.toBundle();
+            ResultRequest res = ResultRequest.create(commandData.extras, false);
+            if(!res.isValid()) {
+                res.exception = "Hook Object from the Caller is Null or Invalid!";
+                res.flag = false;
+                return res.toBundle();
             }
 
-            XLuaHook val = new XLuaHook();
-            val.fromJSONObject(new JSONObject(json));
             if(DebugUtil.isDebug())
-                Log.d(TAG, Str.fm("Pushing (%s) Hook: %s",
-                        val.getObjectId(),
-                        Str.toStringOrNull(Str.ensureNoDoubleNewLines(json))));
+                Log.d(TAG, Str.fm("Executing Put Hook Command on Hook [%s] Flag [%s]",
+                        res.hook.getObjectId(),
+                        res.flag));
 
-            boolean result = DatabaseHelpEx.insertItem(commandData.getDatabase(), XLuaHook.TABLE_NAME, val);
-            if(DebugUtil.isDebug())
-                Log.d(TAG, Str.fm("Hook [%s] was Pushed ? (%s)\nHook=%s",
-                        val.getObjectId(),
-                        result,
-                        Str.ensureNoDoubleNewLines(Str.toStringOrNull(val))));
+            if(!DatabaseHelpEx.ensureTableIsReady_locked(XHook.TABLE_INFO, commandData.getDatabase())) {
+                res.exception = "Failed to Ensure Database is Ready!";
+                res.flag = false;
+                Log.e(TAG, res.exception);
+                return res.toBundle();
+            } else {
+                boolean isDelete = res.flag;
+                if(!isDelete) {
+                    boolean updated = DatabaseHelpEx.updateOrInsertItem(
+                            commandData.getDatabase(),
+                            XHook.TABLE_NAME,
+                            null,
+                            res.hook, true);
+                    if(!updated) {
+                        res.exception = Str.fm("Failed to Insert or Update [%s] to the Database!", res.hook.getObjectId());
+                        res.flag = false;
+                        Log.e(TAG, res.exception);
+                        return res.toBundle();
+                    }
+                } else {
+                    boolean removed = DatabaseHelpEx.deleteItem(
+                            res.hook.createSnake()
+                                    .table(XHook.TABLE_NAME)
+                                    .asSnake()
+                                    .database(commandData.getDatabase()));
+                    if(!removed) {
+                        res.exception = Str.fm("Failed to Remove [%] from the Database!", res.hook.getObjectId());
+                        res.flag = false;
+                        Log.e(TAG, res.exception);
+                        return res.toBundle();
+                    }
+                }
 
-            if(result) {
-                UberCore888.updateHookCache(commandData.getContext(), val, val.getObjectId());
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, Str.fm("Put Hook Command Action was Executed Successfully! Delete=%s Hook=%s",
+                            res.flag,
+                            res.hook.getObjectId()));
+
+                boolean updatedCache = XLegacyCore.updateHookCache(
+                        commandData.getContext(),
+                        isDelete ? null : res.hook,
+                        res.hook.getObjectId());
+                if(!updatedCache) {
+                    res.exception = Str.fm("Failed to Remove [%] from the Cache?! Was Delete [%s]", res.hook.getObjectId(), res.flag);
+                    res.flag = false;
+                    Log.e(TAG, res.exception);
+                    return res.toBundle();
+                } else {
+                    res.flag = true;
+                    res.hook = XLegacyCore.getHook(res.hook.getObjectId());
+                    return res.toBundle();
+                }
             }
-
-            return A_CODE.result(result).toBundle();
         }catch (Exception e) {
-            Log.e(TAG, "Error Putting Hooks, Error=" + e);
-            return A_CODE.FAILED.toBundle();
+            ResultRequest res = new ResultRequest();
+            res.flag = false;
+            res.exception = Str.fm("Failed to Execute Put Hook Command ! Error=%s  Stack=%s",
+                    e.toString(),
+                    RuntimeUtils.getStackTraceSafeString(e));
+            Log.e(TAG, res.exception);
+            return res.toBundle();
         }
     }
 
-    public static A_CODE put(Context context, XLuaHook hook) {
+
+    public static ResultRequest putEx(Context context, XHook hook, boolean delete) {
+        if(ObjectUtils.anyNull(context, hook))
+            return ResultRequest.create(hook, false);
         try {
-            Bundle send = new Bundle();
-            send.putString(FIELD_DATA, hook.toJSON());
-            Bundle result = XProxyContent.luaCall(context, COMMAND_NAME, send);
-            return A_CODE.fromBundle(result);
+            ResultRequest req = ResultRequest.create(hook, delete);
+            Bundle result = XProxyContent.luaCall(context, COMMAND_NAME, req.toBundle());
+            req.fromBundle(result, delete);
+            if(!req.flag)
+                throw new Exception(req.exception);
+
+            return req;
         }catch (Exception e) {
-            Log.e(TAG, "Failed to Put, Error=" + e);
-            return A_CODE.FAILED;
+            Log.e(TAG, Str.fm("Failed to Update Hook [%s] Delete=%s Error=%s",
+                    hook == null ? "null" : hook.getObjectId(),
+                    delete,
+                    e));
+
+            return ResultRequest.create(hook, e.toString());
         }
     }
 }

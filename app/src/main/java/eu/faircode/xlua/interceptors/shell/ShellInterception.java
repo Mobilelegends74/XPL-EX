@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,8 @@ import eu.faircode.xlua.XParam;
 import eu.faircode.xlua.interceptors.UserContextMaps;
 import eu.faircode.xlua.interceptors.shell.util.CommandOutputHelper;
 import eu.faircode.xlua.utilities.ShellUtils;
+import eu.faircode.xlua.x.data.utils.ArrayUtils;
+import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.process.ProcessUtils;
 
 
@@ -33,6 +36,7 @@ public class ShellInterception {
     private String mNewValue = null;
     private boolean mIsMalicious = false;
     private String originalOutput = null;
+    private boolean isEcho = false;
 
     public String getNewValue() { return mNewValue; }
     public boolean isMalicious() { return mIsMalicious; }
@@ -54,7 +58,32 @@ public class ShellInterception {
         return ShellUtils.echo(this.getNewValue());
     }
 
-    public boolean hasCommand(String command) {
+    public boolean hasCommand(String command) { return hasCommand(command, true); }
+    public boolean hasCommand(String command, boolean ignoreCase) {
+        if(DebugUtil.isDebug())
+            Log.d(TAG, "Checking Command: " + command + "   To See if it has a Target Command: " + Str.joinArray(commandLine, Str.WHITE_SPACE));
+
+        if(Str.isEmpty(command))
+            return false;
+
+        command = ignoreCase ? command.toLowerCase() : command;
+        for(String com : commandLine) {
+            if(com == null)
+                continue;
+
+            String comAfter = ignoreCase ? com.toLowerCase() : com;
+            if((comAfter.startsWith(File.separator) && comAfter.endsWith(command)) || comAfter.equals(command)) {
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, "Found Target Command [" + command + "] Result=[" + com + "] Full=" + Str.joinArray(commandLine, Str.WHITE_SPACE));
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean hasCommandEx(String command) {
         if(DebugUtil.isDebug())
             Log.d(TAG, "Checking Command: " + command + "   To See if it has a Target Command: " + Str.joinArray(commandLine, " "));
 
@@ -95,22 +124,25 @@ public class ShellInterception {
     public String getCommandOutput() {
         if(originalOutput == null) {
             if(process == null) {
-                try { this.process = (Process) param.getResult();
-                }catch (Throwable e) { Log.e(TAG, "Failed to Get the Command Execution Result Value! Error: " + e); }
+                try {
+                    this.process = (Process) param.getResult();
+                }catch (Throwable e) {
+                    Log.e(TAG, "Failed to Get the Command Execution Result Value! Error: " + e);
+                }
             }
-            originalOutput = process == null ? "" : ProcessUtils.getProcessOutput(process);
+            originalOutput = process == null ? Str.EMPTY : ProcessUtils.getProcessOutput(process);
         }
 
         return originalOutput;
     }
 
-    private static boolean isEchoCommand(String command) {
+    /*private static boolean isEchoCommand(String command) {
         int index = command.indexOf("echo");
         boolean hasEch = index != -1 && index < 14;
         if(DebugUtil.isDebug())
             Log.d(TAG, "Command is a Echo Command ? =" + (hasEch) + " Skipping if true as this May be our Command! >> " + command);
         return hasEch;
-    }
+    }*/
 
     public ShellInterception(XParam param, boolean isProcessBuilder, UserContextMaps maps) {
         if(DebugUtil.isDebug())
@@ -125,14 +157,16 @@ public class ShellInterception {
                 if(DebugUtil.isDebug())
                     Log.d(TAG, "Parsing Command Process Builder: Command=" + Str.joinList(commands, " "));
 
-                String[] args = new String[commands.size()];
-                for(int i = 0; i < commands.size(); i++)
-                    args[i] = commands.get(i);
+                List<String> parsed = new ArrayList<>();
+                for(String part : commands)
+                    for(String p : Str.breakCommandString(part))
+                        parsed.add(p);
 
+                isEcho = Str.isAnyEndsWithList(parsed, "echo", true, 3);
                 if(DebugUtil.isDebug())
-                    Log.d(TAG, "Parsing Command Array from Process Builder: Command=" + Str.joinArray(args, " "));
+                    Log.d(TAG, "Parsed Command Array from Process Builder: Command=" + Str.joinList(parsed, " "));
 
-                parseArray(args);
+                this.commandLine = parsed.toArray(new String[0]);
             }else {
                 Object paramOne = param.getArgument(0);
                 if(DebugUtil.isDebug())
@@ -140,11 +174,19 @@ public class ShellInterception {
 
                 if(paramOne instanceof String) {
                     String arg = (String)paramOne;
-                    parseString(arg);
+                    List<String> parsed = Str.breakCommandString(arg);
+                    isEcho = Str.isAnyEndsWithList(parsed, "echo", true, 3);
+                    this.commandLine = parsed.toArray(new String[0]);
                 }
                 else if(paramOne instanceof String[]) {
                     String[] args = (String[]) paramOne;
-                    parseArray(args);
+                    List<String> parsed = new ArrayList<>();
+                    for(String part : args)
+                        for(String p : Str.breakCommandString(part))
+                            parsed.add(p);
+
+                    isEcho = Str.isAnyEndsWithList(parsed, "echo", true, 3);
+                    this.commandLine = parsed.toArray(new String[0]);
                 }
             }
         }catch (Exception e) {
@@ -152,11 +194,13 @@ public class ShellInterception {
             isValid = false;
         }
 
+        isValid = ArrayUtils.isValid(this.commandLine);
+
         if(DebugUtil.isDebug())
             Log.d(TAG, "[init] Command Is Valid ? " + (isValid) + " Command Line=" + Str.joinArray(this.commandLine, " "));
     }
 
-    private void parseString(String arg) {
+    /*private void parseString(String arg) {
         try {
             if(TextUtils.isEmpty(arg) || isEchoCommand(arg)) {
                 isValid = false;
@@ -169,9 +213,12 @@ public class ShellInterception {
 
             List<String> parts = new ArrayList<>();
             for(String s : args) {
-                if(TextUtils.isEmpty(s) || s.equals(" ")) continue;
+                if(TextUtils.isEmpty(s) || s.equals(" "))
+                    continue;
                 String c = s.trim();
-                if(TextUtils.isEmpty(c)) continue;
+                if(TextUtils.isEmpty(c))
+                    continue;
+
                 if(c.contains(" ")) {
                     //Split again ? damn
                     String[] subParts = c.split(" ");
@@ -241,6 +288,6 @@ public class ShellInterception {
             Log.e(TAG, "Failed to Parse Command String Array: Error: " + e);
             isValid = false;
         }
-    }
+    }*/
 }
 

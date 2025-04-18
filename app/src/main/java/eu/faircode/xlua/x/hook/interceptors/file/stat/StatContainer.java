@@ -8,12 +8,17 @@ import eu.faircode.xlua.XParam;
 import eu.faircode.xlua.interceptors.shell.ShellInterception;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.string.StrBuilder;
+import eu.faircode.xlua.x.xlua.LibUtil;
 
 public class StatContainer {
-    private static final String TAG = "XLua.StatContainer";
+    private static final String TAG = LibUtil.generateTag(StatContainer.class);
 
     public String file;
     public final StatMockSettings fakeSettings;
+
+    public static final String NIO_TAG_LAST_ACCESS = "lastAccessTime";
+    public static final String NIO_TAG_LAST_MODIFIED = "lastModifiedTime";
+    public static final String NIO_TAG_CREATED = "creationTime";
 
     public StatContainer(String file, XParam param) {
         this.file = file;
@@ -56,9 +61,9 @@ public class StatContainer {
             result.setIsMalicious(true);
             result.setNewValue(newOutput);
 
-            result.param.setOldResult(output);
-            result.param.setNewResult(newOutput);
-            result.param.setSettingResult("stat >> " + file);
+            result.param.setLogOld(output);
+            result.param.setLogNew(newOutput);
+            result.param.setLogExtra("stat >> " + file);
             return true;
         }catch (Exception e) {
             Log.e(TAG, "Failed to Intercept STAT command output, File=" + file + " Output=" + output + " Error=" + e + " Stack=" + Log.getStackTraceString(e));
@@ -80,9 +85,9 @@ public class StatContainer {
                 if(DebugUtil.isDebug())
                     Log.d(TAG, "File.lastModified(" + this.file + ") Original=" + original + " Original MILLIS=" + result + " New=" + newValue + " New MILLIS=" + StatUtils.stringToLastModified(newValue));
 
-                param.setOldResult(original);
-                param.setNewResult(newValue);
-                param.setSettingResult("lastModified >> " + file);
+                param.setLogOld(original);
+                param.setLogNew(newValue);
+                param.setLogExtra("lastModified >> " + file);
 
                 param.setResult(StatUtils.stringToLastModified(newValue));
                 if(DebugUtil.isDebug()) Log.d(TAG, fakeSettings.toString());

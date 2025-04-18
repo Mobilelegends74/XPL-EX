@@ -74,7 +74,7 @@ public class LinkPropertiesInterceptor {
             if(DebugUtil.isDebug())
                 Log.d(TAG, "Intercepting LinkProperties, toString=" + res.toString());
 
-            param.setOldResult(res.toString());
+            param.setLogOld(res.toString());
             GroupedMap map = param.getGroupedMap(NetUtils.GROUP_NAME);
             String interfaceName = instance.getInterfaceName();
             List<LinkAddress> addresses = instance.getLinkAddresses();
@@ -256,7 +256,7 @@ public class LinkPropertiesInterceptor {
                 }
             }
 
-            param.setNewResult(instance.toString());
+            param.setLogNew(instance.toString());
             if(isResult) param.setResult(instance);
             return true;
         }catch (Throwable e) {

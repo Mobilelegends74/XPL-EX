@@ -233,14 +233,14 @@
 
   //Region
   //Country
-  { "settingName": "region.country.iso", "propNames": [  "gsm.operator.iso-country", "gsm.sim.operator.iso-country", "ro.product.locale.region", "ro.miui.region", "ro.vendor.miui.cust_variant", "ro.omc.region"  ] },
-  { "settingName": "region.country.code", "propNames": [ "ro.csc.country_code", "persist.sys.country" ] },
+  { "settingName": "zone.country.name", "propNames": [  "gsm.operator.iso-country", "gsm.sim.operator.iso-country", "ro.product.locale.region", "ro.miui.region", "ro.vendor.miui.cust_variant", "ro.omc.region"  ] },
+  { "settingName": "zone.country.name", "propNames": [ "ro.csc.country_code", "persist.sys.country" ] },
   //Language
-  { "settingName": "region.language", "propNames": [ "ro.product.locale.language" ] },
-  { "settingName": "region.language.iso", "propNames": [ "persist.sys.language" ] },
-  { "settingName": "region.language.tag", "propNames": [ "persist.sys.locale", "persist.sys.localenosim", "persist.sys.localedefault" ] },
+  { "settingName": "zone.language.name", "propNames": [ "ro.product.locale.language" ] },
+  { "settingName": "zone.language.iso", "propNames": [ "persist.sys.language" ] },
+  { "settingName": "zone.language.tag", "propNames": [ "persist.sys.locale", "persist.sys.localenosim", "persist.sys.localedefault" ] },
   //TimeZone
-  { "settingName": "region.timezone.id", "propNames": [ "persist.sys.timezone" ] },
+  { "settingName": "zone.timezone.id", "propNames": [ "persist.sys.timezone" ] },
 
   //NETWORK
   { "settingName": "network.dns", "propNames": [ "net.dns", "net.dns1", "net.dns2", "net.dns3", "net.dns4", "dhcp.wlan0.dns1" ] },

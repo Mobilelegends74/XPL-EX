@@ -344,6 +344,8 @@ public class StringUtil {
 
 
     public static byte[] stringToRawBytes(String drmIdString) {
+        if(drmIdString == null)
+            return null;
         // Convert the string back to bytes
         int len = drmIdString.length();
         byte[] data = new byte[len / 2];
@@ -357,6 +359,9 @@ public class StringUtil {
     }
 
     public static String rawBytesToHex(byte[] bytes) {
+        if(bytes == null)
+            return null;
+
         StringBuilder hexString = new StringBuilder();
         for (byte b : bytes) {
             String hex = Integer.toHexString(0xff & b);

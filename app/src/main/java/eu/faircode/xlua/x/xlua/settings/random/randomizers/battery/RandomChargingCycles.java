@@ -14,6 +14,6 @@ public class RandomChargingCycles extends RandomElement {
 
     @Override
     public void randomize(RandomizerSessionContext context) {
-        context.pushSpecial(context.stack.pop(), String.valueOf(RandomGenerator.nextInt(10, 999)));
+        context.pushSpecial(context.stack.pop(), String.valueOf(RandomGenerator.nextInt(10, 9999)));
     }
 }

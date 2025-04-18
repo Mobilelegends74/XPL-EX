@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <!-- Setting Title (NameNice) -->
+    <TextView
+        android:id="@+id/tvSettingTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/cbSettingSelected"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:text="Setting Title"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <!-- Setting Name -->
+    <TextView
+        android:id="@+id/tvSettingName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvSettingTitle"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="4dp"
+        android:layout_toStartOf="@+id/cbSettingSelected"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:text="setting.name"
+        android:textSize="14sp" />
+
+    <!-- Checkbox -->
+    <CheckBox
+        android:id="@+id/cbSettingSelected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:focusable="false" />
+
+</RelativeLayout>

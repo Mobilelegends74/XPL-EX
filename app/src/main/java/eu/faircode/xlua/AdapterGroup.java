@@ -56,6 +56,7 @@ import eu.faircode.xlua.ui.dialogs.HookWarningDialog;
 import eu.faircode.xlua.ui.interfaces.ILoader;
 import eu.faircode.xlua.utilities.SettingUtil;
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.ui.dialogs.HookInfoDialog;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.hook.AssignmentPacket;
@@ -141,7 +142,7 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
                 case R.id.ivException:
                     StringBuilder sb = new StringBuilder();
                     for (AssignmentPacket assignment : app.getAssignments(group.name))
-                        if (assignment.hookObj.getGroup().equals(group.name))
+                        if (assignment.hookObj.group.equals(group.name))
                             if (assignment.exception != null) {
                                 sb.append("<b>");
                                 sb.append(Html.escapeHtml(assignment.hookObj.getObjectId()));
@@ -199,34 +200,34 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
     AdapterGroup(ILoader loader) { this(); this.fragmentLoader = loader; }
 
     @SuppressLint("NotifyDataSetChanged")
-    void set(AppXpPacket app, List<XLuaHook> hooks, Context context) {
+    void set(AppXpPacket app, List<XHook> hooks, Context context) {
         this.app = app;
 
         Map<String, LuaHooksGroup> map = new HashMap<>();
-        for (XLuaHook hook : hooks) {
-            LuaHooksGroup group = map.get(hook.getGroup());
+        for (XHook hook : hooks) {
+            LuaHooksGroup group = map.get(hook.group);
             if(group == null) {
                 group = new LuaHooksGroup();
-                map.put(hook.getGroup(), group);
+                map.put(hook.group, group);
 
                 Resources resources = context.getResources();
-                String name = hook.getGroup().toLowerCase().replaceAll("[^a-z]", "_");
+                String name = hook.group.toLowerCase().replaceAll("[^a-z]", "_");
                 group.id = resources.getIdentifier("group_" + name, "string", context.getPackageName());
-                group.name = hook.getGroup();
-                group.title = (group.id > 0 ? resources.getString(group.id) : hook.getGroup());
+                group.name = hook.group;
+                group.title = (group.id > 0 ? resources.getString(group.id) : hook.group);
                 group.groupId = GroupHelper.getGroupId(group.name);
                 group.hasWarning = HookWarnings.hasWarning(context, group.name);
             }
 
             if(DebugUtil.isDebug())
-                Log.d(LibUtil.generateTag(AdapterGroup.class), "Putting Hook ID [" + hook.getObjectId() + "] Group [" + hook.getGroup() + "] Group 2 =" + group + " app=" + app.packageName + " name=" + group.name);
+                Log.d(LibUtil.generateTag(AdapterGroup.class), "Putting Hook ID [" + hook.getObjectId() + "] Group [" + hook.group + "] Group 2 =" + group + " app=" + app.packageName + " name=" + group.name);
 
             group.hooks.add(hook);
         }
 
         for (String groupId : map.keySet()) {
             for (AssignmentPacket assignment : app.assignments)
-                if (assignment.hookObj.getGroup().equals(groupId)) {
+                if (assignment.hookObj.group.equals(groupId)) {
                     LuaHooksGroup group = map.get(groupId);
                     if(group == null)
                         continue;
@@ -239,7 +240,7 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
                         group.exception = true;
                     if (assignment.installed >= 0)
                         group.installed++;
-                    if (assignment.hookObj.isOptional())
+                    if(assignment.hookObj.optional)
                         group.optional++;
                     if (assignment.restricted)
                         group.used = Math.max(group.used, assignment.used);
@@ -253,7 +254,7 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
             for(LuaHooksGroup g : this.groups) {
                 String name = g.groupId;
                 Log.w(LibUtil.generateTag(AdapterGroup.class), "Found Group [" + name + "] app=" + app.packageName + " Hooks Count=" + g.hooks.size() + " Assignment Count=" + g.assigned);
-                for(XLuaHook h : g.hooks)
+                for(XHook h : g.hooks)
                     Log.d(LibUtil.generateTag(AdapterGroup.class), "Hook: " + h.getObjectId() + " Group=" + g.groupId + " Name=" + g.name + " app=" + app.packageName);
             }
         }

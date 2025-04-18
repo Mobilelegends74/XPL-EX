@@ -11,7 +11,7 @@ function after(hook, param)
 		return false
 	end
 
-    local available = param:getSetting("memory.available")
+    local available = param:getSetting("hardware.memory.available")
     if available == nil then
         return false
     end
@@ -23,8 +23,8 @@ function after(hook, param)
 
     --log("Spoofing totalMemory => [TOTAL]:[" .. available .. "]")
 
-    local fake = param:gigabytesToBytesString(a)
-    param:setResultToLong(fake)
-    --param:setResult(fake)
-	return true, ret, fake
+    local fake = param:gigabytesToBytes(a)
+    --param:setResultToLong(fake)
+    param:setResult(fake)
+	return true, ret, param:safe(fake)
 end

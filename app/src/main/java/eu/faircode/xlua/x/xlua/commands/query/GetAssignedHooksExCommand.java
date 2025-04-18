@@ -9,12 +9,13 @@ import java.util.Collection;
 import java.util.List;
 
 import eu.faircode.xlua.DebugUtil;
-import eu.faircode.xlua.UberCore888;
+import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.api.XProxyContent;
 import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.api.hook.XLuaHookConversions;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.hook.AppProviderUtils;
 import eu.faircode.xlua.x.xlua.hook.AssignmentApi;
@@ -32,6 +33,14 @@ public class GetAssignedHooksExCommand extends QueryCommandHandlerEx {
     private static final String TAG = LibUtil.generateTag(GetAssignedHooksExCommand.class);
 
     public GetAssignedHooksExCommand() { this.name = "getExAssignedHooks"; this.requiresPermissionCheck = false; }
+
+    public static Collection<XHook> get(Context context, boolean marshall, int uid, String packageName) {
+        return XLuaHookConversions.fromCursor(
+                XProxyContent.luaQuery(
+                        context,
+                        marshall ? "getExAssignedHooks2" : "getExAssignedHooks",
+                        UserIdentity.createSnakeQueryUID(uid, packageName)), marshall, true);
+    }
 
     @Override
     public Cursor handle(QueryPacket commandData) throws Throwable {
@@ -51,7 +60,7 @@ public class GetAssignedHooksExCommand extends QueryCommandHandlerEx {
             Log.d(TAG, Str.fm("Got Assignments, UserId=%s UID=%s Category=%s Size=%s", commandData.getUserId(), commandData.getUid(), commandData.getCategory(), ListUtil.size(assignments)));
 
         for(AssignmentPacket assignment : AppProviderUtils.filterAssignments(assignments, false, false))
-            UberCore888.writeHookFromCache(
+            XLegacyCore.writeHookFromCache(
                     result,
                     assignment.hook,
                     String.valueOf(assignment.used),
@@ -86,13 +95,4 @@ public class GetAssignedHooksExCommand extends QueryCommandHandlerEx {
                 marshall ? "getHooks2" : "getHooks", new String[] { all ? "all" : "some" });
     }
      */
-
-
-    public static Collection<XLuaHook> get(Context context, boolean marshall, int uid, String packageName) {
-        return XLuaHookConversions.fromCursor(
-                XProxyContent.luaQuery(
-                        context,
-                        marshall ? "getExAssignedHooks2" : "getExAssignedHooks",
-                        UserIdentity.createSnakeQueryUID(uid, packageName)), marshall, true);
-    }
 }

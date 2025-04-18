@@ -129,6 +129,8 @@ public class ObjectUtils {
         return oneIsNull;
     }
 
+    public static Boolean flipBoolean(Boolean in, Boolean defaultIfNull) { return in == null ? defaultIfNull : !in; }
+
     public static boolean anyNull(Object... objects) {
         for(Object o : objects) {
             if(o == null)

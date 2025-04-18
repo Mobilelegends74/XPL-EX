@@ -3,14 +3,12 @@ package eu.faircode.xlua.x.hook.filter;
 import android.content.Context;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import eu.faircode.xlua.DebugUtil;
-import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.hook.filter.kinds.FileFilterContainer;
@@ -19,21 +17,21 @@ import eu.faircode.xlua.x.hook.filter.kinds.IPCBinderFilterContainer;
 import eu.faircode.xlua.x.hook.filter.kinds.IPCCallFilterContainer;
 import eu.faircode.xlua.x.hook.filter.kinds.IPCQueryFilterContainer;
 import eu.faircode.xlua.x.hook.filter.kinds.ShellFilterContainer;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.query.GetHooksCommand;
-import eu.faircode.xlua.x.xlua.hook.AssignmentPacket;
 
 public class HookRepository {
     private static final String TAG = LibUtil.generateTag(HookRepository.class);
 
     public static HookRepository create() { return new HookRepository(); }
 
-    public final LinkedHashMap<String, XLuaHook> hooks = new LinkedHashMap<>();
+    public final LinkedHashMap<String, XHook> hooks = new LinkedHashMap<>();
     public final LinkedHashMap<String, IFilterContainer> filters = new LinkedHashMap<>();
 
-    public List<XLuaHook> getHooks() { return ListUtil.copyToArrayList(hooks.values()); }
+    public List<XHook> getHooks() { return ListUtil.copyToArrayList(hooks.values()); }
 
-    private void putHook(XLuaHook hook) { if(hook != null) hooks.put(hook.getObjectId(), hook); }
+    private void putHook(XHook hook) { if(hook != null) hooks.put(hook.getObjectId(), hook); }
     private void putInterceptor(IFilterContainer filter) { if(filter != null) filters.put(filter.getGroupName(), filter); }
 
     public HookRepository() {
@@ -49,7 +47,7 @@ public class HookRepository {
                     Str.joinList(ListUtil.copyToList(filters.keySet()))));
     }
 
-    public HookRepository initializeHooks(Context context, Collection<XLuaHook> assignedHooks, Map<String, String> settings) {
+    public HookRepository initializeHooks(Context context, Collection<XHook> assignedHooks, Map<String, String> settings) {
         try {
             //[0] Ensure valid ears https://www.youtube.com/watch?v=tlO3lZhDukU
             if(settings == null)
@@ -59,7 +57,7 @@ public class HookRepository {
                 throw new Exception("No Hooks are Assigned returning...");
 
             //[1] Get (ALL) the Hooks (we want to find the Filter Definitions)
-            Collection<XLuaHook> allHooks = GetHooksCommand.getHooks(context, true, true);
+            Collection<XHook> allHooks = GetHooksCommand.getHooks(context, true, true);
             if(DebugUtil.isDebug())
                 Log.d(TAG, Str.fm("[1] Going through (ALL) (%s) Hook Definitions to Resolve (%s) Filters Definitions. Settings Count=%s, assignment Count=%s ",
                         ListUtil.size(allHooks),
@@ -68,11 +66,11 @@ public class HookRepository {
                         ListUtil.size(assignedHooks)));
 
             if(ListUtil.isValid(allHooks)) {
-               for(XLuaHook hook : allHooks) {
+               for(XHook hook : allHooks) {
                    if(hook == null)
                        continue;
 
-                   String groupName = hook.getGroup();
+                   String groupName = hook.group;
                    if(Str.isEmpty(groupName) || !groupName.toLowerCase().startsWith("intercept"))   //double check
                        continue;
 
@@ -86,8 +84,8 @@ public class HookRepository {
                            Log.d(TAG, Str.fm("[1.1] Filter Group [%s] has Swallowed Hook [%s] as a Definition! Class=%s Method=%s",
                                    groupName,
                                    hook.getObjectId(),
-                                   hook.getClassName(),
-                                   hook.getMethodName()));
+                                   hook.getResolvedClassName(),
+                                   hook.className));
                    }
                }
             }
@@ -99,7 +97,7 @@ public class HookRepository {
                         ListUtil.size(assignedHooks)));
 
             //[2] Go through Assigned Hooks, and Detect Rules for the Filters to bind the Rule to the Target Filter
-            for(XLuaHook hook : assignedHooks) {
+            for(XHook hook : assignedHooks) {
                 if(hook == null)
                     continue;
 
@@ -130,8 +128,8 @@ public class HookRepository {
             //[3] Go through Every Filter, add their Hook Definitions to Hooks if we have (Settings, or Rules)
             for(IFilterContainer filter : filters.values()) {
                 //[3.1] Get the Filter Group Container -> Rules, Definitions, Dependencies
-                List<XLuaHook> rules = filter.getRules();
-                List<XLuaHook> definitions = filter.getFilterBases();
+                List<XHook> rules = filter.getRules();
+                List<XHook> definitions = filter.getFilterBases();
                 List<String> dependencies = filter.getDependencies();
                 if(DebugUtil.isDebug())
                     Log.d(TAG, Str.fm("[3.1] Merging Possible Filter Container [%s] Rules Count=[%s] Definitions=[%s] Dependencies=[%s]",
@@ -142,7 +140,7 @@ public class HookRepository {
 
                 //[3.2] Add the Filter Group Container Target Function (filter) Hook Definitions if Has Definitions AND (Has Rules OR Settings) , this will indicate we need the Hooks
                 if(ListUtil.isValid(definitions) && (ListUtil.isValid(rules) || filter.hasSettings())) {
-                    for(XLuaHook definition : definitions) {
+                    for(XHook definition : definitions) {
                         putHook(definition);
                         if(DebugUtil.isDebug())
                             Log.d(TAG, Str.fm("[3.2] Appended Definition Hook Hook [%s] required by [%s] Filter",
@@ -179,12 +177,12 @@ public class HookRepository {
                     if(dep == null)
                         continue;
 
-                    List<XLuaHook> depDefinitions = dep.getFilterBases();
+                    List<XHook> depDefinitions = dep.getFilterBases();
                     if(!ListUtil.isValid(depDefinitions))
                         continue;
 
                     //[3.6] Append the Hooks that are used within the Dependency Filter
-                    for(XLuaHook depHook : depDefinitions) {
+                    for(XHook depHook : depDefinitions) {
                         putHook(depHook);   //Some extra func invoke ?
                         if(DebugUtil.isDebug())
                             Log.d(TAG, Str.fm("[3.6] Appended Dependency Group [%s] Hook [%s] required by [%s] Filter. Definition Count for Dependency [%s]",

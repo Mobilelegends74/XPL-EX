@@ -18,7 +18,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@spoof_locale_getcountry",
-    "settings": [ "region.country" ]
+    "settings": [ "zone.country.name" ]
   },
   {
     "builtin": true,
@@ -39,7 +39,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@spoof_locale_getdisplaylanguage",
-    "settings": [ "region.language" ]
+    "settings": [ "zone.language.name" ]
   },
   {
     "builtin": true,
@@ -60,7 +60,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@spoof_locale_getdisplayname",
-    "settings": [ "region.language", "region.country" ]
+    "settings": [ "zone.language.name", "zone.country.name" ]
   },
   {
     "builtin": true,
@@ -81,7 +81,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@spoof_locale_getiso3country",
-    "settings": [ "region.country.iso" ]
+    "settings": [ "zone.country.iso2" ]
   },
   {
     "builtin": true,
@@ -102,7 +102,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@spoof_locale_getiso3language",
-    "settings": [ "region.language.iso" ]
+    "settings": [ "zone.language.iso" ]
   },
   {
     "builtin": true,
@@ -123,7 +123,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@spoof_locale_tolanguagetag",
-    "settings": [ "region.language.tag" ]
+    "settings": [ "zone.language.tag" ]
   },
   /*{
   "collection": "PrivacyEx",
@@ -156,6 +156,6 @@
     "usage":true,
     "notify":false,
     "luaScript": "@spoof_locale_tostring",
-    "settings": [ "region.language.iso" ]
+    "settings": [ "zone.language.iso" ]
   }
 ]

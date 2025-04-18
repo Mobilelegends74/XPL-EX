@@ -75,7 +75,9 @@ import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.PrefManager;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.ui.FileDialogUtils;
+import eu.faircode.xlua.x.ui.activities.HooksExActivity;
 import eu.faircode.xlua.x.ui.activities.SettingsExActivity;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.ui.core.UserClientAppContext;
 import eu.faircode.xlua.x.ui.dialogs.BackupDialog;
 import eu.faircode.xlua.x.ui.dialogs.CollectionsDialog;
@@ -92,6 +94,7 @@ import eu.faircode.xlua.x.xlua.commands.call.PutSettingExCommand;
 import eu.faircode.xlua.x.xlua.database.A_CODE;
 import eu.faircode.xlua.x.xlua.database.ActionFlag;
 import eu.faircode.xlua.x.xlua.database.ActionPacket;
+import eu.faircode.xlua.x.xlua.database.DatabasePathUtil;
 import eu.faircode.xlua.x.xlua.hook.AssignmentPacket;
 import eu.faircode.xlua.x.xlua.settings.data.SettingPacket;
 import eu.faircode.xlua.x.xlua.settings.data.XBackup;
@@ -319,6 +322,13 @@ public class ActivityMain extends ActivityBase {
             }
         }));
 
+        drawerArray.add(new DrawerItem(this, R.string.menu_hooks, new DrawerItem.IListener() {
+            @Override
+            public void onClick(DrawerItem item) {
+                menuHooks();
+            }
+        }));
+
 
         // Add after other drawer items
         drawerArray.add(new DrawerItem(this, R.string.menu_import_settings, new DrawerItem.IListener() {
@@ -362,6 +372,8 @@ public class ActivityMain extends ActivityBase {
 
     private boolean invokeNeedsRebootCheck() {
         String result = GetBridgeVersionCommand.get(ActivityMain.this);
+        DatabasePathUtil.deleteAndroidDirectories();
+        //DatabasePathUtil.ensureDataDirectoryIsDeleted(true);
         if(Str.isEmpty(result) || result.equalsIgnoreCase(GetBridgeVersionCommand.DEFAULT)) {
             ErrorDialog.create()
                     .setErrorTitle(getString(R.string.title_error_service_version))
@@ -485,12 +497,15 @@ public class ActivityMain extends ActivityBase {
                                         Log.d(TAG, "Lua Scripts Loaded=" + ListUtil.size(luaScripts));
 
                                     //Resolve the Script
-                                    for(XLuaHook hook : v.getDefinitions()) {
+                                    for(XHook hook : v.getDefinitions()) {
                                         if(hook != null && !Str.isEmpty(hook.getObjectId())) {
-                                            String luaScript = hook.getLuaScript();
+                                            //This is our resolver for Lua Scripts ?? how ? double check this pls
+                                            String luaScript = hook.luaScript;
                                             String resolved = Str.ensureIsNotNullOrDefault(ensureLuaScript(luaScript, luaScripts), Str.EMPTY);
-                                            hook.setScript(resolved);
-                                            PutHookExCommand.put(this, hook);
+                                            //hook.setScript(resolved);
+                                            hook.luaScript = luaScript;
+                                            //ToDo: Make this more advance, perhaps checks ?
+                                            PutHookExCommand.putEx(this, hook, false);
                                         }
                                     }
                                 }
@@ -695,6 +710,12 @@ public class ActivityMain extends ActivityBase {
         }
     }
 
+
+    private void menuHooks() {
+        Intent settingIntent = new Intent(this, HooksExActivity.class);
+        settingIntent.putExtra(UserClientAppContext.FIELD_APP_PACKAGE_NAME,  UserClientAppContext.GLOBAL_NAME_SPACE);
+        startActivity(settingIntent);
+    }
     private void menuHelp() {
         startActivity(new Intent(this, ActivityHelp.class));
     }
@@ -703,10 +724,6 @@ public class ActivityMain extends ActivityBase {
     private void menuCPU() { startActivity(new Intent(this, ActivityCpu.class)); }
     private void menuConfig() { startActivity(new Intent(this, ActivityConfig.class)); }
     private void menuSettings() {
-        //Intent settingIntent = new Intent(this, ActivitySettings.class);
-        //settingIntent.putExtra("packageName", UserIdentityPacket.GLOBAL_NAMESPACE);
-        //startActivity(settingIntent);
-        //startActivity(new Intent(this, ActivitySettings.class));
         Intent settingIntent = new Intent(this, SettingsExActivity.class);
         settingIntent.putExtra(UserClientAppContext.FIELD_APP_PACKAGE_NAME,  UserClientAppContext.GLOBAL_NAME_SPACE);
         startActivity(settingIntent);

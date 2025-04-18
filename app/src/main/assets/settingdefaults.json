@@ -69,6 +69,9 @@
   //{ "name": "android.system.treble.enabled.bool", "description": "Is Treble Enabled on the Device", "defaultValue": "true" },
 
 
+  { "name": "xplex.force.settings.list", "description": "When Certain Fields like (Build.SERIAL) return (unknown) or when Functions such as (IMEI) Related ones that Return (null) because you are Running a New Version of Android that Blocks (IMEI) from Apps, then XPL-EX will use that Value instead of your Setting Value. This is to prevent Detections, but using this List you can Set a list of Settings to Force Use your Value despite it Returning a Default Value From the Function and or Field.", "defaultValue": "" },
+
+
   { "name": "file.time.modify.offset", "description": "Offset of Times to add to the File Modify Time Stamp", "defaultValue": "1DAY" },
   { "name": "file.time.access.offset", "description": "Offset of Times to add to the File Access Time Stamp", "defaultValue": "1DAY" },
   { "name": "file.time.created.offset", "description": "Offset of Times to add to the File Created Time Stamp", "defaultValue": "1DAY" },
@@ -185,7 +188,7 @@
   { "name": "unique.open.anon.advertising.id", "description": "OAID Open Anonymous Advertising ID", "defaultValue": "84630630-u4ls-k487-f35f-h37afe0pomwq" },
   { "name": "unique.app.va.id", "description": "Also Known as VAID, VAID is the ID of the developer's dimension. Generated during application installation, all applications on the same device and the same developer VAID are the same, other situations VAID are different", "defaultValue": "84630630-u4ls-k487-f35f-h37afe0pomwq" },
   { "name": "unique.app.anon.id", "description": "AAID is an ID with a sand tray dimension. Generated during application installation, even the application of the same device and the same developer, AAID is different", "defaultValue": "84630630-u4ls-k487-f35f-h37afe0pomwq" },
-  { "name": "unique.guid.uuid", "description": "GUID_uuid. Android/.GUID_uuid To be honest dosnt seem common", "defaultValue": "c651fde4-6ea1-4a41-882c-59bc2e94571d" },
+  { "name": "unique.guid.uuid", "description": "GUID_uuid. Android/.GUID_uuid", "defaultValue": "c651fde4-6ea1-4a41-882c-59bc2e94571d" },
   { "name": "unique.boot.id", "description": "This is your Boot ID set it to %random% to Randomize each time app close and open, or nothing to always be random each use", "defaultValue": "c651fde4-6ea1-4a41-882c-59bc2e94571d" },
   { "name": "unique.android.id", "description": "Android ID", "defaultValue": "0329184861423674" },
   { "name": "unique.drm.id", "description": "DRM ID", "defaultValue": "slvwoputzjflhwfozqjqtloqpxudqrrxtirqjgxtzairmaftdxruhmflneex" },
@@ -195,24 +198,43 @@
   { "name": "unique.google.app.set.id", "description": "This is Googles way of Giving each App a Unique ID, if the App has been Re-Installed or the ID has not been accessed in 13 Months for that app it will then reset. This is used for Anti Fraud and once again Tracking, No clearing app data does nothing.", "defaultValue": "00:00:00:00:00:00" },
 
 
+  { "name": "settings.xiaomi.extm.uuid", "description": "HyperOS/MI Roms some ID (extm_uuid)", "defaultValue": "a910e261-f054-415b-9a61-bcb05b167e20" },
+  { "name": "settings.xiaomi.mi.health.id", "description": "HyperOS/MI Roms Health ID (mi_health_id)", "defaultValue": "0329184861423674" },
+  { "name": "settings.xiaomi.gcbooster.uuid", "description": "HyperOS/MI Game Turbo Booster UUID (gcbooster_uuid)", "defaultValue": "a910e261-f054-415b-9a61-bcb05b167e20" },
+  { "name": "settings.xiaomi.key.mqs.uuid", "description": "HyperOS/MI Service UUID (key_mqs_uuid)", "defaultValue": "bdb9d790-19ed-4f6c-be94-16afec9fab04" },
+  { "name": "settings.xiaomi.mdm.uuid", "description": "HyperOS/MI Device Management Implementation UUID (mdm_uuid)", "defaultValue": "d8b93329-97df-46c6-90a5-1c080181fca5" },
+  { "name": "settings.xiaomi.op.security.uuid", "description": "HyperOS/MI Security UUID (op_security_uuid)", "defaultValue": "9ab0c4fe-a2be-4af4-9da6-c7caf24ba463" },
+
+  { "name": "settings.boot.count", "description": "The Amount of times the Phone has Been Rebooted / Booted (boot_count)", "defaultValue": "5" },
+  { "name": "settings.mock.location", "description": "Is Mock Location Enabled (mock_location) ?", "defaultValue": "0" },
+  { "name": "settings.usb.mass.storage", "description": "Is USB Mass Storage Enabled (usb_mass_storage_enabled) ?", "defaultValue": "0" },
+  { "name": "settings.device.provisioned", "description": "Is Device Provisioned (device_provisioned) ?", "defaultValue": "0" },
+  { "name": "settings.stay.on.while.plugged", "description": "Stay on While Device Plugged (stay_on_while_plugged)?", "defaultValue": "0" },
+  { "name": "settings.adb.enabled", "description": "Is ADB Enabled (adb_enabled)?", "defaultValue": "0" },
+  { "name": "settings.dev.settings.enabled", "description": "Are Dev Options Settings Enabled (development_settings_enabled)?", "defaultValue": "0" },
+
+
   //SETTING_UNIQUE_GOOGLE_APP_SET_ID
 
   //Ps tbh we can just just set main IDs then have a resolver ? no ?
   //REGION
-  { "name": "region.parent.control.tz", "description": "TimeZone Settings Parent Control, Use this to Control All", "defaultValue": "0" }, //zone.parent.control.tz
-  //REGION Country
-  { "name": "region.country", "description": "Country Name", "defaultValue": "Iceland" },          //zone.country
-  { "name": "region.country.iso", "description": "Country ISO3 ID", "defaultValue": "IS" },        //zone.country.iso
-  { "name": "region.country.code", "description": "Country Code, USA, CN ... No (US) but USA", "defaultValue": "USA" },        //zone.region
-  //REGION Language
-  { "name": "region.language", "description": "Language Name", "defaultValue": "Icelandic" },      //zone.language
-  { "name": "region.language.iso", "description": "Language ISO3 ID", "defaultValue": "IS" },      //zone.language.iso
-  { "name": "region.language.tag", "description": "Language Tag (is-IS) IETF language tag", "defaultValue": "is-IS" }, //zone.language.tag
-  //REGION TimeZone
-  { "name": "region.timezone", "description": "TimeZone Offset like GMT-XXX", "defaultValue": "GMT+0" }, //zone.timezone
-  { "name": "region.timezone.id", "description": "TimeZone ID (Atlantic/Reykjavik)", "defaultValue": "Atlantic/Reykjavik" }, //zone.timezone.id
-  { "name": "region.timezone.display.label", "description": "TimeZone Display Name (Greenwich Mean Time)", "defaultValue": "Greenwich Mean Time" }, //zone.timezone.display.name
 
+
+  { "name": "zone.parent.control.tz", "description": "TimeZone Settings Parent Control, Use this to Control All", "defaultValue": "0" },
+  //REGION Country
+  { "name": "zone.country.name", "description": "Country Name", "defaultValue": "Iceland" },
+  { "name": "zone.country.iso2", "description": "Country ISO 3166-1 alpha-2 code", "defaultValue": "IS" },
+  { "name": "zone.country.code", "description": "Country Code (three-letter)", "defaultValue": "ISL" },
+
+  //REGION Language
+  { "name": "zone.language.name", "description": "Language Name", "defaultValue": "Icelandic" },
+  { "name": "zone.language.iso", "description": "Language ISO 639-1 code", "defaultValue": "is" },
+  { "name": "zone.language.tag", "description": "IETF language tag (BCP 47)", "defaultValue": "is-IS" },
+
+  //REGION TimeZone
+  { "name": "zone.timezone.offset", "description": "TimeZone Offset from UTC", "defaultValue": "GMT+0" },
+  { "name": "zone.timezone.id", "description": "IANA TimeZone Identifier", "defaultValue": "Atlantic/Reykjavik" },
+  { "name": "zone.timezone.display.name", "description": "TimeZone Display Name", "defaultValue": "Greenwich Mean Time" },
 
   //NETWORK
   { "name": "network.parent.control.isp", "description": "Set this and ignore the rest of the Network Properties as this will set everything up", "defaultValue": "Cox" },
@@ -283,11 +305,20 @@
   { "name": "bluetooth.name", "description": "Bluetooth Name Starter", "defaultValue": "Android" },
   { "name": "bluetooth.allowed.bonded.list", "description": "List seperated with a comma (,) of ALLOWED (SAVED/PAIRED/BONDED) Bluetooth Devices that the app can see. Use Device name or Bluetooth MAC", "defaultValue": "*" },
 
+
+
+
+
+
   //BATTERY
-  { "name": "battery.charge.time.remaining", "description": "Battery Charge Time Remaining in Milliseconds", "defaultValue": "0" },
-  { "name": "battery.percentage.left", "description": "Battery Percentage Level", "defaultValue": "100" },
-  { "name": "battery.is.charging.bool", "description": "Is Battery Charging", "defaultValue": "true" },
-  { "name": "battery.is.power.save.mode.bool", "description": "Is Battery in Power Save Mode", "defaultValue": "true" },
+  //{ "name": "battery.charge.time.remaining", "description": "Battery Charge Time Remaining in Milliseconds", "defaultValue": "0" },
+  //{ "name": "battery.percentage.left", "description": "Battery Percentage Level", "defaultValue": "100" },
+  //{ "name": "battery.is.power.save.mode.bool", "description": "Is Battery in Power Save Mode", "defaultValue": "true" },
+
+  { "name": "battery.is.charging.bool", "description": "Is Battery Charging (true or false)", "defaultValue": "true" },
+  { "name": "battery.is.plugged.in.bool", "description": "Is the Battery Plugged in (Is Charger Plugged in, True or False)", "defaultValue": "true" },
+  { "name": "battery.status", "description": "Status of Battery (Charging, Discharging, ....)", "defaultValue": "true" },
+  { "name": "battery.charge.percent", "description": "Battery Charging Cycles", "defaultValue": "100" },
   { "name": "battery.charging.cycles", "description": "Battery Charging Cycles", "defaultValue": "100" },
 
   //CLIPBOARD

@@ -9,8 +9,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
 
-
     <application
+        android:requestLegacyExternalStorage="false"
+
         android:name="ApplicationEx"
         android:allowBackup="false"
         android:appCategory="productivity"
@@ -58,6 +59,17 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ActivityMain" />
+        </activity>
+
+        <activity
+            android:name=".x.ui.activities.HooksExActivity"
+            android:exported="true"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/menu_hooks"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ActivityMain"
+            android:resizeableActivity="true">
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".ActivityMain" />
         </activity>
 
         <activity

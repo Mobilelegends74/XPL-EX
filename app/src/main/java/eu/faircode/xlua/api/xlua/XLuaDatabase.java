@@ -15,7 +15,7 @@ import java.util.Map;
 
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XDatabaseOld;
-import eu.faircode.xlua.UberCore888;
+import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.api.xmock.database.LuaSettingsManager;
 import eu.faircode.xlua.api.xstandard.interfaces.IInitDatabase;
@@ -62,7 +62,7 @@ public class XLuaDatabase implements IInitDatabase {
         //We really do not need any of this bullshit
 
         if(db == null) {
-            db = new XDatabaseOld(UberCore888.DB_NAME_LUA, context, setPerms);
+            db = new XDatabaseOld(XLegacyCore.DB_NAME_LUA, context, setPerms);
             DatabasePathUtil.log("Created XLUA DB =>" + db, false);
             reset(false);
             if(!db.isOpen(true))
@@ -291,7 +291,7 @@ public class XLuaDatabase implements IInitDatabase {
                 DatabasePathUtil.log("Finished Checking XLua Database for Updates....", false);*/
             }
 
-            UberCore888.loadHooks(context, db);
+            //XLegacyCore.loadHooks(context, db);
 
             //Pre-Check ? or can happen after
             //Go through each Hook in the Database of 'hook' and Get the object (we will need the json form)

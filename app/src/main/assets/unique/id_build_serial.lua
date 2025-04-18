@@ -1,13 +1,10 @@
 function after(hook, param)
-	local ret = param:getResult()
-	if ret == nil then
-		return false
-	end
-
-    local fake = param:getSetting("unique.serial.no", "unknown")
-    if fake == nil or fake == 'unknown' then
-        return false
+    local res = param:getResult()
+    local nme = "unique.serial.no"
+    if param:isForceSetting(nme, res) then
+        local fake = param:getSetting(nme)
+        param:setResult(fake)
+        return true, param:safe(res), param:safe(fake)
     end
-    param:setResult(fake)
-    return true, ret, fake
+    return false
 end

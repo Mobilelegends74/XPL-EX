@@ -7,7 +7,7 @@ function before(hook, param)
     end
 
     if argTwo ~= nil then
-        command = command .. ' args=' .. param:joinArray(argTwo)
+        command = command .. ' args=' .. param:joinStringArray(argTwo)
     end
 
     log('[xlog] execv => ' .. command)

@@ -9,11 +9,11 @@ function after(hook, param)
         return false
     end
 
-    if param:hasFunction("gdprForgetMe") == true then
+    if param:hasMethod(param:getThisClazz(), "gdprForgetMe") == true then
         ths:gdprForgetMe(ctx)
     end
 
-    if param:hasFunction("disableThirdPartySharing")  == true then
+    if param:hasMethod(param:getThisClazz(), "disableThirdPartySharing")  == true then
         ths:disableThirdPartySharing(ctx)
     end
 

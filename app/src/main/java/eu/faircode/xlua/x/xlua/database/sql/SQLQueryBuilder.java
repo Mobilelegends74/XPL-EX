@@ -84,7 +84,7 @@ public class SQLQueryBuilder {
 
     public SQLQueryBuilder setWhereArgs(String[] whereArgs) {
         this.whereArgs.clear();
-        ListUtil.addAllIfValid(this.whereArgs, List.of(whereArgs));
+        ListUtil.addAll(this.whereArgs, List.of(whereArgs));
         return this;
     }
 

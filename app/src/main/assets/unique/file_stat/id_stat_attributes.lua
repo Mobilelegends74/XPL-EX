@@ -1,7 +1,7 @@
 function after(hook, param)
-    local res = param:cleanStructStat()
+    local res = param:interceptStatStruct()
     if res ~= nil and res == true then
-        return true, param:getOldResult(), param:getNewResult()
+        return true, param:safe(param:getLogOld()), param:safe(param:getLogNew())
     end
     return false
 end

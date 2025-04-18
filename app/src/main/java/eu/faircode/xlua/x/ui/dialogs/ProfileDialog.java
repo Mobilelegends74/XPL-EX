@@ -75,7 +75,7 @@ public class ProfileDialog extends AppCompatDialogFragment {
         if(DebugUtil.isDebug())
             Log.d(TAG, "Got Known Profiles, Profiles=" + Str.joinList(kp));
 
-        ListUtil.addAllIfValid(this.knownProfiles, kp);
+        ListUtil.addAll(this.knownProfiles, kp);
         if(DebugUtil.isDebug() && knownProfiles.contains("Test"))
             knownProfiles.add("Test");
 
@@ -86,7 +86,7 @@ public class ProfileDialog extends AppCompatDialogFragment {
     public ProfileDialog setApp(Context context, UserClientAppContext app) {
         this.app = app;
         this.identity = UserIdentity.fromUid(app.appUid, app.appPackageName);
-        ListUtil.addAllIfValid(this.paths, GetAppDirectoriesCommand.get(context, this.identity), true);
+        ListUtil.addAll(this.paths, GetAppDirectoriesCommand.get(context, this.identity), true);
         return this;
     }
 
@@ -100,7 +100,7 @@ public class ProfileDialog extends AppCompatDialogFragment {
         if(DebugUtil.isDebug())
             Log.d(TAG, "Settings List=" + ListUtil.size(this.settings));
 
-        ListUtil.addAllIfValid(this.hooks, HookGroupOrganizer.getHookIdsFromSettingPackets(context, this.settings));
+        ListUtil.addAll(this.hooks, HookGroupOrganizer.getHookIdsFromSettingPackets(context, this.settings));
         if(DebugUtil.isDebug())
             Log.d(TAG, "Settings List=" + ListUtil.size(this.settings) + " Hook Count Size=" + ListUtil.size(this.hooks));
 
@@ -245,7 +245,7 @@ public class ProfileDialog extends AppCompatDialogFragment {
 
                     }
 
-                    ListUtil.addAllIfValid(profile.fileBackups, enabledDirs);
+                    ListUtil.addAll(profile.fileBackups, enabledDirs);
                     List<SettingPacket> enabledSettings = new ArrayList<>();
                     for(SettingPacket setting : settings)
                         if(sharedRegistry.isChecked(SharedRegistry.STATE_TAG_SETTINGS, setting.getObjectId()))

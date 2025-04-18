@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import eu.faircode.xlua.DebugUtil;
+import eu.faircode.xlua.api.xlua.provider.XLuaAppProvider;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.xlua.commands.call.GetSettingExCommand;
@@ -31,7 +32,7 @@ public class SettingsApi {
 
     public static final String DATABASE_TABLE_NAME = SettingPacket.TABLE_NAME;
 
-    public static A_CODE single_locked(SQLDatabase db, SettingPacket packet) {
+    public static A_CODE single_locked(SQLDatabase db, SettingPacket packet, Context context, String pkg, int userId) {
         if(DebugUtil.isDebug())
             Log.d(TAG, "Settings Api Action single, Packet=" + Str.toStringOrNull(packet));
 
@@ -62,7 +63,9 @@ public class SettingsApi {
                                 break;
         }
 
-        //Do Is Kill ?
+
+        if(packet.shouldKill() && context != null)
+            XLuaAppProvider.forceStop(context, pkg, userId);
 
         return code;
     }

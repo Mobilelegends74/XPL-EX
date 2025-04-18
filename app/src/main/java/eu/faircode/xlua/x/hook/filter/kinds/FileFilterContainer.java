@@ -11,8 +11,10 @@ import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.TypeMap;
 import eu.faircode.xlua.x.data.utils.ArrayUtils;
+import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.hook.filter.FilterContainerElement;
 import eu.faircode.xlua.x.hook.filter.IFilterContainer;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 
 public class FileFilterContainer extends FilterContainerElement implements IFilterContainer {
     public static IFilterContainer create() { return new FileFilterContainer(); }
@@ -45,12 +47,12 @@ public class FileFilterContainer extends FilterContainerElement implements IFilt
     public FileFilterContainer() { super(GROUP_NAME, DEFINITIONS); }
 
     @Override
-    public boolean hasSwallowedAsRule(XLuaHook hook) {
+    public boolean hasSwallowedAsRule(XHook hook) {
         boolean isRule = super.hasSwallowedAsRule(hook);
         if(isRule) {
-            String method = hook.getMethodName();
-            String[] params = hook.getParameterTypes();
-            if(TextUtils.isEmpty(method) || "allow".equalsIgnoreCase(method) || "block".equalsIgnoreCase(method) || !ArrayUtils.isValid(params)) {
+            String method = hook.methodName;
+            List<String> params = hook.parameterTypes;
+            if(TextUtils.isEmpty(method) || "allow".equalsIgnoreCase(method) || "block".equalsIgnoreCase(method) || !ListUtil.isValid(params)) {
                 factory.removeRule(hook);
                 //Still return true , avoid caller from adding it to list of global hooks but don't add it to our list so block it
             } else {
@@ -68,7 +70,7 @@ public class FileFilterContainer extends FilterContainerElement implements IFilt
     }
 
     @Override
-    public void initializeDefinitions(List<XLuaHook> hooks, Map<String, String> settings) {
+    public void initializeDefinitions(List<XHook> hooks, Map<String, String> settings) {
         super.initializeDefinitions(hooks, settings);
         if(fileRules.isEmpty())
             return;

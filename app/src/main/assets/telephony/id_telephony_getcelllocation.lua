@@ -37,7 +37,7 @@ function after(hook, param)
 
 
 	local cellinfo_cname = "android.telephony.CellLocation"
-	if param:javaMethodExists(cellinfo_class, "getEmpty") then
+	if param:hasMethod(cellinfo_class, "getEmpty") then
 		local cellinfo_class = luajava.bindClass(cellinfo_cname)
 		log("Setting Empty CellLocation") 
 		param:setResult(cellinfo_class:getEmpty())

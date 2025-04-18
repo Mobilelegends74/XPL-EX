@@ -9,10 +9,11 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import eu.faircode.xlua.DebugUtil;
-import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.data.utils.TryRun;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.ui.core.UserClientAppContext;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.call.GetAppInfoCommand;
@@ -40,7 +41,7 @@ public class SettingSharedRegistry extends SharedRegistry {
     public static SettingSharedRegistry create() { return new SettingSharedRegistry(); }
 
     private final Map<String, IRandomizer> randomizers = new WeakHashMap<>();
-    private final Map<String, XLuaHook> hooks = new WeakHashMap<>();
+    private final Map<String, XHook> hooks = new WeakHashMap<>();
 
     private AppAssignmentsMap assignmentsMap;
 
@@ -49,6 +50,12 @@ public class SettingSharedRegistry extends SharedRegistry {
             if(assignmentsMap == null) assignmentsMap = AppAssignmentsMap.create(app);
             HooksSettingsGlobal.init(context);
             assignmentsMap.refresh(context);
+            if(DebugUtil.isDebug())
+                Log.d(TAG, Str.fm("refreshAssignments[%s] => %s, Randomizers Count=%s Hooks Count=%s",
+                        app.appPackageName,
+                        Str.toStringOrNull(assignmentsMap),
+                        ListUtil.size(this.randomizers),
+                        ListUtil.size(this.hooks)));
         }
     }
 
@@ -59,17 +66,27 @@ public class SettingSharedRegistry extends SharedRegistry {
     }
 
     public AppAssignmentInfo getAssignmentInfo(SettingsContainer container, boolean refresh, Context context) {
-        if(container == null || assignmentsMap == null)
-            return AppAssignmentInfo.DEFAULT;
+        if(container != null && assignmentsMap != null) {
+            AppAssignmentInfo info = assignmentsMap.get(container);
+            if(DebugUtil.isDebug())
+                Log.d(TAG, Str.fm("Invoked getAssignmentInfo(%s) Container Name=%s %s Randomizers Count=%s Hooks Count=%s. Assignments Map=%s Info=%s",
+                        refresh,
+                        container.getName(),
+                        Str.joinList(container.getAllNames()),
+                        ListUtil.size(this.randomizers),
+                        ListUtil.size(this.hooks),
+                        assignmentsMap.getAppPackageName(),
+                        Str.toStringOrNull(info)));
 
-        AppAssignmentInfo info = assignmentsMap.get(container);
-        if(info == null)
-            return AppAssignmentInfo.DEFAULT;
+            return TryRun.getOrDefault(() -> {
+                if(info == null) return AppAssignmentInfo.DEFAULT;
+                if(refresh && context != null)
+                    info.refreshSettingAssignmentsFromMap(context, HooksSettingsGlobal.settingHoldersToNames(container));
+                return info;
+            }, AppAssignmentInfo.DEFAULT);
+        }
 
-        if(refresh && context != null)
-            info.refreshSettingAssignmentsFromMap(context, HooksSettingsGlobal.settingHoldersToNames(container));
-
-        return info;
+        return AppAssignmentInfo.DEFAULT;
     }
 
     //ToDo:
@@ -78,7 +95,7 @@ public class SettingSharedRegistry extends SharedRegistry {
 
     private void doDebugTest() {
         if(DebugUtil.isDebug())
-            Log.d(TAG, "Has Randomizer for [unique.bluetooth.address] = " + (randomizers.containsKey("unique.bluetooth.address")));
+            Log.d(TAG, "Has Randomizer for [settings.xiaomi.gcbooster_uuid] = " + (randomizers.containsKey("settings.xiaomi.gcbooster_uuid")));
     }
 
     public static String getHooksGroupTag(String packageName) { return SharedRegistry.STATE_TAG_HOOKS + "_" + packageName; }
@@ -200,9 +217,15 @@ public class SettingSharedRegistry extends SharedRegistry {
         //Crash unexpectedly: java.lang.NullPointerException: Attempt to invoke virtual method
         // 'java.util.List eu.faircode.xlua.x.xlua.hook.HookGroupOrganizer.getHooksForSettings(java.util.List)' on a null object reference
         if(groups != null) {
-            List<XLuaHook> hooksList = groups.getHooksForSettings(setting_names);
+            List<XHook> hooksList = groups.getHooksForSettings(setting_names);
+            if(DebugUtil.isDebug())
+                Log.d(TAG, Str.fm("Initializing Hook Count (%s) For Settings (%s)(%s)",
+                        ListUtil.size(hooksList),
+                        ListUtil.size(setting_names),
+                        Str.joinList(setting_names)));
+
             if(ListUtil.isValid(hooksList)) {
-                for(XLuaHook hook : hooksList) {
+                for(XHook hook : hooksList) {
                     AssignmentState state = new AssignmentState();
                     state.hook = hook;
                     state.enabled = isChecked(tagIdHooks, hook.getObjectId());
@@ -228,8 +251,8 @@ public class SettingSharedRegistry extends SharedRegistry {
     public void refreshHooks(Context context) {
         try {
             hooks.clear();
-            List<XLuaHook> hookList = GetHooksCommand.getHooks(context, true, false);
-            for(XLuaHook hook : hookList)
+            List<XHook> hookList = GetHooksCommand.getHooks(context, true, false);
+            for(XHook hook : hookList)
                 hooks.put(hook.getObjectId(), hook);
 
             groups = new HookGroupOrganizer();

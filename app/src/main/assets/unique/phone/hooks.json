@@ -1,0 +1,22 @@
+[
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "Get.Contacts",
+    "name": "ID/Contacts/Query",
+    "author": "OBC",
+    "className": "Intercept.Intent.Query",
+    "methodName": "com.android.contacts",
+    "parameterTypes": [  ],
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "This will Block ANY Ability to Query ANY Data relating with ANYTHING with Contacts, such as Emails, Blocked Numbers, Numbers, Names etc",
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "notify":false,
+    "luaScript": "",
+    "settings":[ ]
+  }
+]

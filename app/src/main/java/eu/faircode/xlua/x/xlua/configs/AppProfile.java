@@ -13,17 +13,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import eu.faircode.xlua.XParam;
 import eu.faircode.xlua.utilities.CursorUtil;
 import eu.faircode.xlua.utilities.JSONUtil;
-import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.string.StrBuilder;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.xlua.IBundleData;
 import eu.faircode.xlua.x.xlua.PacketBase;
-import eu.faircode.xlua.x.xlua.database.ActionPacket;
 import eu.faircode.xlua.x.xlua.database.TableInfo;
 import eu.faircode.xlua.x.xlua.database.sql.SQLQueryBuilder;
 import eu.faircode.xlua.x.xlua.identity.UserIdentity;
@@ -83,7 +79,7 @@ public class AppProfile extends PacketBase implements IBundleData, IParcelType, 
             this.creationDate = b.getLong(FIELD_CREATED_DATE);
             this.lastApplied = b.getLong(FIELD_LAST_APPLIED);
 
-            ListUtil.addAllIfValid(this.fileBackups, PathDetails.fromEncoded(b.getString(FIELD_FILE_BACKUPS)));
+            ListUtil.addAll(this.fileBackups, PathDetails.fromEncoded(b.getString(FIELD_FILE_BACKUPS)));
 
             this.config = new XPConfig();
             if(b.containsKey(FIELD_CONFIG)) {
@@ -126,7 +122,7 @@ public class AppProfile extends PacketBase implements IBundleData, IParcelType, 
         this.creationDate = in.readLong();
         this.lastApplied = in.readLong();
 
-        ListUtil.addAllIfValid(this.fileBackups, PathDetails.fromEncoded(in.readString()));
+        ListUtil.addAll(this.fileBackups, PathDetails.fromEncoded(in.readString()));
 
         this.config = XPConfig.fromJsonString(in.readString());
     }
@@ -170,7 +166,7 @@ public class AppProfile extends PacketBase implements IBundleData, IParcelType, 
             this.creationDate = CursorUtil.getLong(c, FIELD_CREATED_DATE);
             this.lastApplied = CursorUtil.getLong(c, FIELD_LAST_APPLIED);
 
-            ListUtil.addAllIfValid(this.fileBackups, PathDetails.fromEncoded(CursorUtil.getString(c, FIELD_FILE_BACKUPS)));
+            ListUtil.addAll(this.fileBackups, PathDetails.fromEncoded(CursorUtil.getString(c, FIELD_FILE_BACKUPS)));
 
             this.config = XPConfig.fromJsonString(CursorUtil.getString(c, FIELD_CONFIG));
         }
@@ -235,7 +231,7 @@ public class AppProfile extends PacketBase implements IBundleData, IParcelType, 
             this.creationDate = obj.getLong(FIELD_CREATED_DATE);
             this.lastApplied = obj.getLong(FIELD_LAST_APPLIED);
 
-            ListUtil.addAllIfValid(this.fileBackups, PathDetails.fromEncoded(obj.getString(FIELD_FILE_BACKUPS)));
+            ListUtil.addAll(this.fileBackups, PathDetails.fromEncoded(obj.getString(FIELD_FILE_BACKUPS)));
             this.config = XPConfig.fromJsonString(obj.getString(FIELD_CONFIG));
         }
     }

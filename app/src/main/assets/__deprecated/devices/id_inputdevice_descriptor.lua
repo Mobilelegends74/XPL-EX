@@ -4,7 +4,7 @@ function after(hook, param)
         return false
     end
 
-    local fake = param:generateRandomString(40)
+    local fake = param:randomString(40)
     param:setResult(fake)
     return true, res, fake
 end

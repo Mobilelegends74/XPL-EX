@@ -3,7 +3,7 @@ package eu.faircode.xlua.api.xlua.call;
 import android.content.Context;
 import android.os.Bundle;
 
-import eu.faircode.xlua.UberCore888;
+import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.api.XProxyContent;
 import eu.faircode.xlua.api.xstandard.CallCommandHandler;
 import eu.faircode.xlua.api.xstandard.command.CallPacket_old;
@@ -19,10 +19,12 @@ public class GetGroupsCommand extends CallCommandHandler {
 
     @Override
     public Bundle handle(CallPacket_old commandData) throws Throwable {
-        return BundleUtil.
+        /*return BundleUtil.
                 createFromStringList(
                         "groups",
-                        UberCore888.getGroups(commandData.getContext(), commandData.getDatabase()));
+                        XLegacyCore.getGroups(commandData.getContext(), commandData.getDatabase()));
+    */
+        return null;
     }
 
     public static Bundle invoke(Context context) {

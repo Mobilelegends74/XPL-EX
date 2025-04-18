@@ -2,12 +2,13 @@ package eu.faircode.xlua.api.xmock.database;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.XDatabaseOld;
-import eu.faircode.xlua.UberCore888;
+import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.api.XResult;
 import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.api.settings.LuaSetting;
@@ -134,7 +135,7 @@ public class LuaSettingsManager {
         }
 
         XLog.i("All settings before parsing=" + allSettings.size());
-        Collection<XLuaHook> hooks = UberCore888.getHooks(context, db, true);
+        Collection<XLuaHook> hooks = new ArrayList<>();//XLegacyCore.getHooks(context, db, true);
         for(XLuaHook hook : hooks) {
             String[] settings = hook.getSettings();
             if(settings == null || settings.length < 1)

@@ -7,27 +7,34 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import eu.faircode.xlua.DebugUtil;
+import eu.faircode.xlua.utilities.StreamUtil;
+import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.xlua.LibUtil;
 
 public class ProcessUtils {
-    private static final String TAG = "XLua.ProcessUtils";
+    private static final String TAG = LibUtil.generateTag(ProcessUtils.class);
 
     public static String getProcessOutput(Process process) {
-        StringBuilder sb = new StringBuilder();
+        List<String> blocks = new ArrayList<>();
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\n");
+                blocks.add(line);
             }
         }catch (Exception e) {
             Log.e(TAG, "Error Reading Process Input! " + e);
         }
-        String comm = sb.toString();
-        if(comm.endsWith("\n")) comm = comm.substring(0, comm.length() - 1);
-        if(DebugUtil.isDebug()) Log.i(TAG, "Output Command Read => " + comm);
+
+        String comm = Str.joinList(blocks, Str.NEW_LINE);
+        if(DebugUtil.isDebug())
+            Log.i(TAG, "Output Command Read => " + comm);
+
         return comm;
     }
 

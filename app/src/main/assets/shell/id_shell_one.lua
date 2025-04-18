@@ -17,20 +17,16 @@ function after(hook, param)
 	--return true, arg, comRes
 	local sh = param:createShellContext(false)
 	if sh == nil then
-        log("Create Shell Context is NIL")
-        param:isNullError(hook)
         return false
     end
 
 	local rt = param:isCommandBad(sh)
     if rt == nil then
-        log("Command Bad Return is NIL")
-        param:isNullError(hook)
         return false
     end
 
 	if rt == true then
-        return true, param:getOldResult(), param:getNewResult(), param:getSettingResult()
+        return true, param:safe(param:getLogOld()), param:safe(param:getLogNew()), param:safe(param:getLogExtra())
     end
 	return false
 end

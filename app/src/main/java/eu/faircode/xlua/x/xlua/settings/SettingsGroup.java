@@ -1,7 +1,6 @@
 package eu.faircode.xlua.x.xlua.settings;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.ui.core.interfaces.IDiffFace;
 
@@ -31,7 +29,7 @@ public class SettingsGroup implements IDiffFace {
     public SettingsGroup(String groupName) { this.groupName = groupName; }
     public SettingsGroup(String groupName, List<SettingsContainer> containers) {
         this.groupName = groupName;
-        ListUtil.addAllIfValid(this.containers, containers);
+        ListUtil.addAll(this.containers, containers);
     }
 
     public static List<SettingsGroup> categorizeIntoGroups(List<SettingsContainer> containers) {

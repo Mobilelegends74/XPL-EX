@@ -3,10 +3,13 @@ package eu.faircode.xlua.x.xlua.commands.call;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Process;
+import android.util.Log;
 
+import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.api.XProxyContent;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.ui.core.UserClientAppContext;
+import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.CallCommandHandlerEx;
 import eu.faircode.xlua.x.xlua.commands.packet.CallPacket;
 import eu.faircode.xlua.x.xlua.database.ActionFlag;
@@ -18,8 +21,11 @@ import eu.faircode.xlua.x.xlua.settings.data.SettingPacket;
 import eu.faircode.xlua.x.xlua.settings.data.SettingsApi;
 
 public class PutSettingExCommand extends CallCommandHandlerEx {
+    private static final String TAG = LibUtil.generateTag(PutSettingExCommand.class);
+    public static final String COMMAND_NAME = "putExSettingEx";
+
     public PutSettingExCommand() {
-        name = "putExSettingEx";
+        name = COMMAND_NAME;
         requiresPermissionCheck = true;
     }
 
@@ -27,17 +33,27 @@ public class PutSettingExCommand extends CallCommandHandlerEx {
     public Bundle handle(CallPacket commandData) throws Throwable {
         return SettingsApi.single_locked(
                         commandData.getDatabase(),
-                        commandData.readExtraAs(SettingPacket.class))
+                        commandData.readExtraAs(SettingPacket.class),
+                        commandData.getContext(),
+                        commandData.getCategory(),
+                        commandData.getUserId())
                         .toBundle();
     }
 
     public static A_CODE call(Context context, SettingHolder holder, UserClientAppContext userContext, boolean kill, boolean delete) {
         SettingPacket packet = new SettingPacket(holder, userContext, ActionPacket.create(delete ? ActionFlag.DELETE : ActionFlag.PUSH, kill));
         Bundle b = packet.toBundle();
+        if(DebugUtil.isDebug())
+            Log.d(TAG, Str.fm("Executing Put Setting Call, Pkg=%s  Setting=%s  Action=%s  Kill=%s",
+                    userContext.appPackageName,
+                    holder.getName(),
+                    packet.getActionFlags().name(),
+                    String.valueOf(kill)));
+
         return A_CODE.fromBundle(
                 XProxyContent.luaCall(
                         context,
-                        "putExSettingEx", b));
+                        COMMAND_NAME, b));
     }
 
     public static A_CODE call(Context context, SettingPacket packet) {

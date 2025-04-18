@@ -3,6 +3,7 @@ package eu.faircode.xlua.x.ui.fragments;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 
 import java.util.ArrayList;
@@ -27,10 +28,16 @@ import eu.faircode.xlua.x.xlua.settings.SettingHolder;
 import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
 import eu.faircode.xlua.x.xlua.settings.SettingsGroup;
 import eu.faircode.xlua.x.xlua.settings.data.SettingPacket;
+import eu.faircode.xlua.x.xlua.settings.random.RandomizerSessionContext;
 
 public class SettingFragmentUtils {
     private static final String TAG = LibUtil.generateTag(SettingFragmentUtils.class);
 
+    //ToDO: Organize all these UI Utils shit, example RandomizerSessionContext with the much needed "getAllSettings(Fragment)" function
+
+    // public static List<SettingHolder> getAllSettings(Fragment fragment)
+    //We can also make this templated so as long as it inherts shit
+    public static List<SettingHolder> getAllSettingsFromFragment(Fragment fragment) { return RandomizerSessionContext.getAllSettings(fragment); }
 
     public static void initializeFragment(SettingSharedRegistry sharedRegistry, Context context, UserClientAppContext appCtx) {
         prepareAssignments(sharedRegistry, context, appCtx);
@@ -173,7 +180,7 @@ public class SettingFragmentUtils {
                                 }
                             }*/
 
-                            ListUtil.addAllIfValid(hookIds, HooksSettingsGlobal.getHookIdsForSettings(context, c.getAllNames()));
+                            ListUtil.addAll(hookIds, HooksSettingsGlobal.getHookIdsForSettings(context, c.getAllNames()));
                         } else {
                             for(SettingHolder holder : c.getSettings()) {
                                 if(sharedRegistry.isChecked(SharedRegistry.STATE_TAG_SETTINGS, holder.getObjectId())) {
@@ -190,7 +197,7 @@ public class SettingFragmentUtils {
                                         if(!hookIds.contains(id))
                                             hookIds.add(id);
                                     }*/
-                                    ListUtil.addAllIfValid(hookIds, HooksSettingsGlobal.getHookIdsForSettings(context, c.getAllNames()));
+                                    ListUtil.addAll(hookIds, HooksSettingsGlobal.getHookIdsForSettings(context, c.getAllNames()));
                                 }
                             }
                         }

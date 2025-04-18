@@ -19,7 +19,6 @@
 
 package eu.faircode.xlua;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -28,7 +27,7 @@ import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.os.Environment;
 import android.os.Process;
 import android.os.SystemClock;
 import android.util.Log;
@@ -39,9 +38,14 @@ import org.luaj.vm2.Globals;
 import org.luaj.vm2.Prototype;
 import org.luaj.vm2.Varargs;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -50,15 +54,18 @@ import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import eu.faircode.xlua.loggers.LogHelper;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.file.FileEx;
+import eu.faircode.xlua.x.file.ModePermission;
+import eu.faircode.xlua.x.hook.HookCore;
 import eu.faircode.xlua.x.hook.filter.HookRepository;
 import eu.faircode.xlua.hooks.XHookUtil;
 
 //package eu.faircode.xlua;
 
 import java.util.Collection;
-import java.util.concurrent.ThreadLocalRandom;
 
 import eu.faircode.xlua.hooks.LuaHookWrapper;
 import eu.faircode.xlua.hooks.LuaScriptHolder;
@@ -71,13 +78,13 @@ import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.utilities.ReflectUtilEx;
 import eu.faircode.xlua.x.hook.inlined.HashMapHooks;
 import eu.faircode.xlua.x.hook.inlined.UpTimeHooks;
-import eu.faircode.xlua.x.hook.interceptors.cell.SubInfoServiceHook;
-import eu.faircode.xlua.x.runtime.RuntimeUtils;
+import eu.faircode.xlua.x.hook.interceptors.cell.PhoneServicesHook;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.XposedUtility;
 import eu.faircode.xlua.x.xlua.commands.GlobalCommandBridge;
 import eu.faircode.xlua.x.xlua.commands.call.GetBridgeVersionCommand;
 import eu.faircode.xlua.x.xlua.commands.query.GetAssignedHooksExCommand;
+import eu.faircode.xlua.x.xlua.database.DatabasePathUtil;
 import eu.faircode.xlua.x.xlua.hook.PackageHookContext;
 
 /*
@@ -107,10 +114,8 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
         if ("android".equals(lpparam.packageName))
             hookAndroid(lpparam);
-
         if ("com.android.providers.settings".equals(lpparam.packageName))
             hookSettings(lpparam);
-
         if (!"android".equals(lpparam.packageName) &&
                 !lpparam.packageName.startsWith(BuildConfig.APPLICATION_ID)) {
             hookApplication(lpparam);
@@ -246,6 +251,7 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     XposedBridge.log(TAG + " System ready");
                     Context context = getContext(param.thisObject);
 
+
                     // Store current module version
                     PackageInfo pi = context.getPackageManager().getPackageInfo(BuildConfig.APPLICATION_ID, 0);
                     version = pi.versionCode;
@@ -299,6 +305,8 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         //hookSubscriptionManagerService(lpparam);
     }
 
+
+
     public void hookApplication(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         final int uid = android.os.Process.myUid();
         final boolean tiramisuOrHigher = (Build.VERSION.SDK_INT >= 33);
@@ -326,7 +334,12 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                                     return;
                                 }
 
-                                hookPackage(lpparam, uid, context);
+                                if(lpparam.packageName.equalsIgnoreCase("com.android.phone")) {
+                                    //XposedUtility.logI_xposed(TAG, "!!! Phone App! =" + lpparam.packageName);
+                                    //PhoneServicesHook.deployHook(lpparam, context);
+                                } else {
+                                    hookPackage(lpparam, uid, context);
+                                }
                             }
                         }catch (Throwable ex) {
                             Log.e(TAG, Log.getStackTraceString(ex));
@@ -337,165 +350,8 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     }
 
     public void hookPackage(final XC_LoadPackage.LoadPackageParam lpparam, int uid, final Context context) throws Throwable {
-        final PackageHookContext app = PackageHookContext.create(lpparam, uid, context);
         if(DebugUtil.isDebug())
-            Log.d(TAG, "Hook Package created App Context=" + app);
-
-        Collection<XLuaHook> hooks = GetAssignedHooksExCommand.get(context, true, uid, lpparam.packageName);
-        if(DebugUtil.isDebug())
-            Log.d(TAG, "Hook Package got Assigned Hooks, Size=" + ListUtil.size(hooks));
-
-
-        //String version = GetBridgeVersionCommand.get(context);
-        //if(DebugUtil.isDebug())
-        //    Log.d(TAG, "Command Bridge Version=" + version + " App Version=" + BuildConfig.VERSION_NAME);
-
-        Map<LuaScriptHolder, Prototype> scriptPrototype = new HashMap<>();
-        PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-        for(final XLuaHook hook : HookRepository.create().initializeHooks(context, hooks, app.settings).getHooks()) {
-            try {
-                if(!hook.isAvailable(pInfo.versionCode)) {
-                    Log.w(TAG, "Hook is not compatible with Target SDK: " + hook.getObjectId());
-                    continue;
-                }
-
-                //get time & Compile Script
-                final long install = SystemClock.elapsedRealtime();
-                final Prototype compiledScript = XHookUtil.compileScript(scriptPrototype, hook);
-                final LuaHookResolver target = XHookUtil.resolveTargetHook(context, hook);
-                if(DebugUtil.isDebug())
-                    Log.d(TAG, "Created Target Hook=" + target);
-
-                if(target.isField()) {
-                    final Field field = target.tryGetAsField(true);
-                    if(field != null) {
-                        try {
-                            if (target.paramTypes.length > 0)  throw new NoSuchFieldException("Field with parameters");
-                            long run = SystemClock.elapsedRealtime();
-                            LuaHookWrapper luaField = LuaHookWrapper.createField(
-                                    context,
-                                    hook,
-                                    app.settings,
-                                    app.buildPropSettings,
-                                    app.buildPropMaps,
-                                    compiledScript,
-                                    field,
-                                    app.temporaryKey,
-                                    app.useDefault,
-                                    app.packageName);
-
-                            if(!luaField.isValid()) {
-                                Log.e(TAG, Str.fm("Skipping Field Hook Field: %s is not a After Hook, Field Hooks can not be before Hooks!", field.getName()));
-                                continue;
-                            }
-
-                            Varargs result = luaField.invoke();
-                            XReport.usage(hook, result, run, XReport.FUNCTION_AFTER, context);
-                        }catch (Exception e) {
-                            XReport.fieldException(context, e, hook, field);
-                        }
-                    }
-                }else {
-                    final Member member = target.tryGetAsMember();
-                    if(member != null) {
-                        if(DebugUtil.isDebug())
-                            Log.d(TAG, "Hook Member Name=" + member.getName());
-
-                        if(target.hasMismatchReturn(member)) {
-                            Log.e(TAG, Str.fm("Hook has an Invalid Return Type, Hook id=%s Return Type=%s", hook.getObjectId(), hook.getReturnType()));
-                            continue;
-                        }
-
-                        if (HashMapHooks.attach(hook, member, app) || UpTimeHooks.attach(hook, member)) {
-                            Log.i(TAG, "Inlined Deployed [" + hook.getObjectId() + "]");
-                        }
-                        else {
-                            XposedBridge.hookMethod(member, new XC_MethodHook() {
-                                private final WeakHashMap<Thread, Globals> threadGlobals = new WeakHashMap<>();
-
-                                @Override
-                                protected void beforeHookedMethod(MethodHookParam param)  {
-                                    execute(param, "before");
-                                }
-
-                                @Override
-                                protected void afterHookedMethod(MethodHookParam param)  {
-                                    execute(param, "after");
-                                }
-
-                                private void execute(MethodHookParam param, String function) {
-                                    long run = SystemClock.elapsedRealtime();
-                                    try {
-                                        LuaHookWrapper luaMember;
-                                        synchronized (threadGlobals) {
-                                            Thread thread = Thread.currentThread();
-                                            if (!threadGlobals.containsKey(thread))
-                                                threadGlobals.put(thread, XHookUtil.getHookGlobals(
-                                                        context,
-                                                        hook,
-                                                        app.settings,
-                                                        app.buildPropSettings,
-                                                        app.buildPropMaps,
-                                                        app.temporaryKey,
-                                                        app.useDefault,
-                                                        app.packageName));
-
-                                            Globals globals = threadGlobals.get(thread);
-                                            luaMember = LuaHookWrapper
-                                                    .createMember(
-                                                            context,
-                                                            hook,
-                                                            app.settings,
-                                                            app.buildPropSettings,
-                                                            app.buildPropMaps,
-                                                            compiledScript,
-                                                            function,
-                                                            param,
-                                                            globals,
-                                                            app.temporaryKey,
-                                                            app.useDefault,
-                                                            app.packageName);
-
-                                            if(!luaMember.isValid()) {
-                                                if(BuildConfig.DEBUG)
-                                                    Log.w(TAG, Str.fm("Lua Member is Not Valid [%s] Most likely not a after or before, function=%s", target.methodName, function));
-                                                return;
-                                            }
-                                        }
-
-                                        Varargs result = luaMember.invoke();
-                                        //Log.d(TAG, "Result=" + Str.toStringOrNull(result));
-                                        XReport.usage(hook, result, run, function, context);
-                                    }catch (Exception ex) {
-                                        synchronized (threadGlobals) {
-                                            threadGlobals.remove(Thread.currentThread());
-                                        }
-                                        XReport.memberException(context, ex, hook, member, function, param);
-                                    }
-                                }
-                            });
-                        }
-
-                    }
-                    else
-                        Log.e(TAG, Str.fm("Member is NULL, Hook Name=%s Id=%s", hook.getName(), hook.getObjectId()));
-                }
-
-
-                //LogX.dFS();
-                //if(DebugUtil.isDebug())
-
-
-                //XReport.install();
-                if (BuildConfig.DEBUG)
-                    XReport.install(hook, install, context);
-
-            }catch (Throwable fe) {
-                if (hook.isOptional() && ReflectUtilEx.isReflectError(fe))
-                    XLog.e("Optional Hook=" + hook.getObjectId() + " class=" + fe.getClass().getName(), fe, true);
-                else
-                    XReport.installException(hook, fe, context);
-            }
-        }
+            Log.d(TAG, "Starting Initializing Hooks for App: " + lpparam.packageName + " Uid: " + uid);
+        HookCore.initHooks(lpparam, uid, context);
     }
 }

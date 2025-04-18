@@ -27,7 +27,11 @@ public class RandomOptionString extends RandomElement {
 
     @Override
     public void randomize(RandomizerSessionContext context) {
-        context.pushValue(context.stack.pop(), value);
+        String set = context.stack.pop();
+        if(set == null)
+            return;
+
+        context.pushValue(set, value);
     }
 
     public static IRandomizer[] generate(String... elements) { return generate(true, elements); }

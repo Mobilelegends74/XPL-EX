@@ -74,6 +74,9 @@
     "settings": ["file.last.modified.offset"]
 
   },
+
+
+
   {
     "builtin": true,
     "collection": "PrivacyEx",
@@ -93,5 +96,66 @@
     "notify": false,
     "luaScript": "@id_stat_last_modified",
     "settings": ["file.last.modified.offset"]
+  },
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.File.Stat",
+    "name": "Files.getAttribute(*)/ID/Time",
+    "author": "OBC",
+    "className": "java.nio.file.Files",
+    "methodName": "getAttribute",
+    "parameterTypes": [ "*" ],
+    "returnType": "java.lang.Object",
+    "minSdk": 1,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "",
+    "optional": true,
+    "usage": true,
+    "notify": false,
+    "luaScript": "@id_stat_nio",
+    "settings": ["file.last.modified.offset"]
   }
+  /*{
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.File.Stat",
+    "name": "Files.getAttribute(Path,Attr,Link...)/ID/Time",
+    "author": "OBC",
+    "className": "java.nio.file.Files",
+    "methodName": "getAttribute",
+    "parameterTypes": [ "java.nio.file.Paths", "java.lang.String", "[Ljava.nio.file.LinkOption;" ],
+    "returnType": "java.lang.Object",
+    "minSdk": 1,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "",
+    "optional": true,
+    "usage": true,
+    "notify": false,
+    "luaScript": "@id_stat_nio",
+    "settings": ["file.last.modified.offset"]
+  },
+
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.File.Stat",
+    "name": "Files.getAttribute(Path,Attr)/ID/Time",
+    "author": "OBC",
+    "className": "java.nio.file.Files",
+    "methodName": "getAttribute",
+    "parameterTypes": [ "java.nio.file.Paths", "java.lang.String" ],
+    "returnType": "java.lang.Object",
+    "minSdk": 1,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "",
+    "optional": true,
+    "usage": true,
+    "notify": false,
+    "luaScript": "@id_stat_nio",
+    "settings": ["file.last.modified.offset"]
+  }*/
 ]

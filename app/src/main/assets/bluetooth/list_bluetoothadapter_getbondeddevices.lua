@@ -11,7 +11,7 @@ function after(hook, param)
     if setting == nil then
         return false
     end
-    local allowed = param:stringToList(setting, ",")
+    local allowed = param:stringSplitToList(setting, ",")
     local filtered = param:filterSavedBluetoothDevices(res, allowed)
     local newSz = param:getContainerSize(filtered)
     param:setResult(filtered)

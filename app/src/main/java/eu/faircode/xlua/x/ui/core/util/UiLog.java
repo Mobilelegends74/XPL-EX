@@ -8,30 +8,28 @@ import com.google.android.material.snackbar.Snackbar;
 import eu.faircode.xlua.R;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
 import eu.faircode.xlua.x.ui.core.UserClientAppContext;
+import eu.faircode.xlua.x.ui.dialogs.utils.DialogUtils;
+import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
 
 public class UiLog {
-    private static final String TAG = "XLua.UiLog";
+    private static final String TAG = LibUtil.generateTag(UiLog.class);
 
 
     public static boolean ensureNotGlobal(UserClientAppContext appContext) { return ensureNotGlobal(null, appContext); }
     public static boolean ensureNotGlobal(View view, UserClientAppContext appContext) {
         if(appContext == null) {
-            if(view != null)
-                Snackbar.make(view, view.getResources().getString(R.string.msg_error_generic_null), Snackbar.LENGTH_LONG).show();
-
-            Log.e(TAG, "[ensureNotGlobal] App Context is Null! Stack=" + RuntimeUtils.getStackTraceSafeString());
-            return true;
+            DialogUtils.snack_bar(view, R.string.msg_error_generic_null);
+            Log.e(TAG, "[ensureNotGlobal] App Context is Null! Stack=" + RuntimeUtils.getStackTraceSafeString(new Exception()));
+            return false;
         }
 
         if(appContext.isGlobal()) {
-            if(view != null)
-                Snackbar.make(view, view.getResources().getString(R.string.msg_error_global_limit), Snackbar.LENGTH_LONG).show();
-
-            return true;
+            DialogUtils.snack_bar(view, R.string.msg_error_global_limit);
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     public static boolean ensureHasDataContainer(SettingsContainer container) { return ensureHasDataContainer(null, container); }

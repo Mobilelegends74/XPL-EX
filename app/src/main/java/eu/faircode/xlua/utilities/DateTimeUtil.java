@@ -1,15 +1,32 @@
 package eu.faircode.xlua.utilities;
 
+import android.util.Log;
+
 import java.util.Arrays;
 import java.util.List;
 
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.xlua.LibUtil;
 
 public class DateTimeUtil {
+    private static final String TAG = LibUtil.generateTag(DateTimeUtil.class);
+
     public static long convertToMilliseconds(int year, int month, int day) {
         return 0;//Add
     }
 
+
+    public static long toTimeMillis(String setting, long defaultValue) {
+        try {
+            long[] iTimes = DateTimeUtil.toTimeSpecs(setting);
+            long seconds = iTimes[0];
+            long off = seconds * 1000; // Convert seconds to milliseconds
+            return off;
+        }catch (Exception e) {
+            Log.e(TAG, "Error Converting X Setting to Time! Error=" + e);
+            return defaultValue;
+        }
+    }
 
     public static long[] toTimeSpecs(String input) {
         List<String> symbols = Arrays.asList("NANO", "SECOND", "MINUTE", "HOUR", "DAY");

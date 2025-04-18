@@ -261,7 +261,7 @@ public class XLuaHook extends XLuaHookBase implements IJsonSerial, Parcelable, I
         this.usage = (obj.has("usage") ? obj.getBoolean("usage") : true);
         this.notify = (obj.has("notify") ? obj.getBoolean("notify") : false);
 
-        this.luaScript = obj.getString("luaScript");
+        this.luaScript = obj.optString("luaScript");
 
         if (obj.has("settings")) {
             JSONArray jSettings = obj.getJSONArray("settings");

@@ -41,7 +41,7 @@ public class TimePairsDialog extends AppCompatDialogFragment implements TimeInpu
 
     public TimePairsDialog setTimePairs(List<String> pairs) {
         this.timePairs.clear();
-        ListUtil.addAllIfValid(this.timePairs, pairs);
+        ListUtil.addAll(this.timePairs, pairs);
         return this;
     }
 

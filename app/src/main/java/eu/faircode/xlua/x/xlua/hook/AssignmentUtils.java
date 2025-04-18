@@ -16,7 +16,7 @@ public class AssignmentUtils {
             "PrivacyEx.Filter/Settings$Secure.getString",
             "PrivacyEx.Filter/Settings$Global.getString",
             "PrivacyEx.Filter/ContentResolver/Settings",
-            "PrivacyEx.Filter/BinderProxy.transact(int, Parcel, Parcel, int)",
+
             "PrivacyEx.BlockGuardOs.open/Filter/Filter",
             "PrivacyEx.File.canRead/Filter",
             "PrivacyEx.File.canWrite/Filter",
@@ -30,9 +30,11 @@ public class AssignmentUtils {
             "PrivacyEx.File.listFiles/FileNameFilter/Filter",
             "PrivacyEx.File.listFiles/FileFilter/Filter",
             "PrivacyEx.File.listRoots/Filter",
+
             "PrivacyEx.Filter/ContentResolver.query16",
             "PrivacyEx.Filter/ContentResolver.query26",
             "PrivacyEx.Filter/ContentResolver.query1",
+
             "PrivacyEx.Intercept.Runtime.exec(command)",
             "PrivacyEx.Intercept.Runtime.exec(command, envp)",
             "PrivacyEx.Intercept.Runtime.exec(command, envp, dir)",
@@ -44,7 +46,14 @@ public class AssignmentUtils {
             "PrivacyEx.Intercept.System.getProperty(string)",
             "PrivacyEx.Intercept.System.getProperty(string, string)",
             "PrivacyEx.Intercept.SystemProperties.get(string)",
-            "PrivacyEx.Intercept.SystemProperties.get(string, string)"
+            "PrivacyEx.Intercept.SystemProperties.get(string, string)",
+
+            "PrivacyEx.Filter/BinderProxy.transact(int, Parcel, Parcel, int)",
+            "PrivacyEx.Filter/Binder.onTransact(*)",
+            "PrivacyEx.Filter/Binder.execTransact(*)",
+            "PrivacyEx.Filter/Binder.execTransactInternal(*)",
+            "PrivacyEx.Filter/Binder.execTransactInternal(int, Parcel, Parcel, int, int)",
+            "PrivacyEx.Filter/Binder.execTransact(int, Parcel, Parcel, int)"
     );
 
     public static boolean isSpecialSetting(String name) { return !Str.isEmpty(name) && name.toLowerCase().contains("setting:"); }

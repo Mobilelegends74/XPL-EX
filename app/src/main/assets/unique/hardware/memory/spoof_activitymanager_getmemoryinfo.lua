@@ -16,6 +16,12 @@ function after(hook, param)
         return false
     end
 
-    param:populateMemoryInfo(m, t, a)
+    local totalBytes = param:gigabytesToBytes(t)
+    local availBytes = param:gigabytesToBytes(a)
+
+    m.availMem = availBytes;
+    m.totalMem = totalBytes;
+    m.threshold = totalBytes / 4;
+    m.lowMemory = m.availMem <= m.threshold;
 	return true, "N/A", "total=" .. total .. " avail=" .. avail
 end

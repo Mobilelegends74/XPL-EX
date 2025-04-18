@@ -5,7 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import eu.faircode.xlua.XDatabaseOld;
-import eu.faircode.xlua.UberCore888;
+import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.api.xmock.database.MockConfigManager;
 import eu.faircode.xlua.api.xmock.database.MockPropManager;
 import eu.faircode.xlua.api.xstandard.interfaces.IInitDatabase;
@@ -50,7 +50,7 @@ public class XMockDatabase implements IInitDatabase {
             }
 
             if(db == null) {
-                db = new XDatabaseOld(UberCore888.DB_NAME_MOCK, context, setPerms);
+                db = new XDatabaseOld(XLegacyCore.DB_NAME_MOCK, context, setPerms);
                 XLog.i(true, "Created XMOCK DB: " + db);
                 reset(false);
                 if(!db.isOpen(true))

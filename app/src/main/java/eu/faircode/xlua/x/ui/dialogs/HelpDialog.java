@@ -141,69 +141,73 @@ public class HelpDialog extends AppCompatDialogFragment {
         return builder.create();
     }
 
+    private boolean isSettingHelp = true;
+
+    public HelpDialog setIsSetting(boolean isSetting) {
+        this.isSettingHelp = isSetting;
+        return this;
+    }
+
     private void initializeHelpItems() {
         helpItems.clear();
+        if(isSettingHelp) {
+            // Delete action
+            helpItems.add(new HelpItem(
+                    R.drawable.ic_delete18,
+                    getString(R.string.help_delete_title),
+                    getString(R.string.help_delete_description)));
 
-        // Delete action
-        helpItems.add(new HelpItem(
-                R.drawable.ic_delete18,
-                getString(R.string.help_delete_title),
-                getString(R.string.help_delete_description)
-        ));
+            // Save action
+            helpItems.add(new HelpItem(
+                    R.drawable.ic_save18,
+                    getString(R.string.help_save_title),
+                    getString(R.string.help_save_description)));
 
-        // Save action
-        helpItems.add(new HelpItem(
-                R.drawable.ic_save18,
-                getString(R.string.help_save_title),
-                getString(R.string.help_save_description)
-        ));
+            // Reset action
+            helpItems.add(new HelpItem(
+                    R.drawable.ic_reset18,
+                    getString(R.string.help_reset_title),
+                    getString(R.string.help_reset_description)));
 
-        // Reset action
-        helpItems.add(new HelpItem(
-                R.drawable.ic_reset18,
-                getString(R.string.help_reset_title),
-                getString(R.string.help_reset_description)
-        ));
+            // Randomize action
+            helpItems.add(new HelpItem(
+                    R.drawable.ic_random18,
+                    getString(R.string.help_randomize_title),
+                    getString(R.string.help_randomize_description)));
 
-        // Randomize action
-        helpItems.add(new HelpItem(
-                R.drawable.ic_random18,
-                getString(R.string.help_randomize_title),
-                getString(R.string.help_randomize_description)
-        ));
+            // Super Random action
+            helpItems.add(new HelpItem(
+                    R.drawable.ic_rnd18,
+                    getString(R.string.help_super_random_title),
+                    getString(R.string.help_super_random_description)));
 
-        // Super Random action
-        helpItems.add(new HelpItem(
-                R.drawable.ic_rnd18,
-                getString(R.string.help_super_random_title),
-                getString(R.string.help_super_random_description)
-        ));
+            // Hook Control action
+            helpItems.add(new HelpItem(
+                    R.drawable.ic_hook_control18,
+                    getString(R.string.help_hook_title),
+                    getString(R.string.help_hook_description)));
 
-        // Hook Control action
-        helpItems.add(new HelpItem(
-                R.drawable.ic_hook_control18,
-                getString(R.string.help_hook_title),
-                getString(R.string.help_hook_description)
-        ));
+            helpItems.add(new HelpItem(
+                    android.R.drawable.ic_dialog_alert,
+                    getString(R.string.help_warning_title),
+                    getString(R.string.help_warning_description)));
 
-        helpItems.add(new HelpItem(
-                android.R.drawable.ic_dialog_alert,
-                getString(R.string.help_warning_title),
-                getString(R.string.help_warning_description)
-        ));
+            // Color items
+            helpItems.add(HelpItem.createWithColor(
+                    R.attr.colorUnsavedSetting,
+                    getString(R.string.help_color_unsaved_title),
+                    getString(R.string.help_color_unsaved_description)));
 
-        // Color items
-        helpItems.add(HelpItem.createWithColor(
-                R.attr.colorUnsavedSetting,
-                getString(R.string.help_color_unsaved_title),
-                getString(R.string.help_color_unsaved_description)
-        ));
-
-        helpItems.add(HelpItem.createWithColor(
-                R.attr.colorAccent,
-                getString(R.string.help_color_saved_title),
-                getString(R.string.help_color_saved_description)
-        ));
+            helpItems.add(HelpItem.createWithColor(
+                    R.attr.colorAccent,
+                    getString(R.string.help_color_saved_title),
+                    getString(R.string.help_color_saved_description)));
+        } else {
+            helpItems.add(HelpItem.createWithColor(
+                    R.attr.colorAccent,
+                    getString(R.string.help_color_hook_db_title),
+                    getString(R.string.help_color_hook_db_description)));
+        }
     }
 
     @Override

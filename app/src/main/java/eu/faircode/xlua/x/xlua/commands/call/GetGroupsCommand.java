@@ -5,10 +5,9 @@ import android.os.Bundle;
 
 import java.util.List;
 
-import eu.faircode.xlua.UberCore888;
+import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.api.XProxyContent;
 import eu.faircode.xlua.utilities.BundleUtil;
-import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.xlua.commands.CallCommandHandlerEx;
 import eu.faircode.xlua.x.xlua.commands.packet.CallPacket;
 
@@ -26,7 +25,7 @@ public class GetGroupsCommand extends CallCommandHandlerEx {
         return BundleUtil.
                 createFromStringList(
                         FIELD_GROUP,
-                        UberCore888.getGroupsEx(commandData.getDatabase()));
+                        XLegacyCore.getGroups(XLegacyCore.getCollections(commandData.getDatabase())));
     }
 
     public static List<String> get(Context context) {

@@ -59,7 +59,8 @@
     <string name="menu_whats_new_button" translatable="false">Whats New!</string>
 
     <string name="whats_new" translatable="false">
-        Whats new in 1.5.X Update XPL-EX (ObbedCode)
+        Whats new in 1.5.X Update XPL-EX (ObbedCode) v2
+
 
         <![CDATA[<br><br>]]>This is my Art! Enjoy love all, smile, be happy, enjoy what you do!
         <![CDATA[<br>]]>Free, Open Source, No Analytics, No Servers, offline ...
@@ -76,6 +77,61 @@
         <![CDATA[<br><br>]]> VDInfos. Grabbing your own Device info cool dev
         <![CDATA[<br>]]><![CDATA[<a href="https://xdaforums.com/t/app-vdinfos.4097379/">XDA</a>]]>
         <![CDATA[<br>]]><![CDATA[<a href="https://github.com/VD171/VD-Infos">GitHub</a>]]>
+
+        <![CDATA[<br><br>]]> 1.5.3 XPL153R
+        <![CDATA[<br>]]>• Fixed AppSetId Hook Definitions Setting Names
+        <![CDATA[<br>]]>• Fixed Some Internal Bugs
+        <![CDATA[<br>]]>• Improved and STAT File TimeStamp Interception (Detection, and Logic)
+        <![CDATA[<br>]]>• Added NIO Java File Attributes Time Stamp Hooks
+        <![CDATA[<br>]]>• Fixed Binder Interceptor Setting Linking
+        <![CDATA[<br>]]>• Added AppSetId IPC Binder Hook
+        <![CDATA[<br>]]>• Fixed Force Stop Check not working on Save Settings
+        <![CDATA[<br>]]>• Synced and Improve App Time Stamp ID Spoofing (for now you will need to Enable ID File State for the best results)
+        <![CDATA[<br>]]>• Improved IPC Spoofing (IPC Binder, Query, Call)
+        <![CDATA[<br>]]>• Added Wildcard Hooking for Method and Bypass Hidden Api Restrictions
+        <![CDATA[<br>]]>• Redesigned the Hooking Core and Type Resolver
+        <![CDATA[<br>]]>• Fixed AD ID Constructor Hook (Int to Boolean for Second Argument)
+        <![CDATA[<br>]]>• Improved Type Resolving for Hook Definitions
+        <![CDATA[<br>]]>• Added Ability to Target Multiple Classes with a Hook Definition Delimiting each Target Class with \'|\'
+        <![CDATA[<br>]]>• Removed Storage UUID Hooks (Storage Volume UUIDs are not Unique)
+        <![CDATA[<br>]]>• Added Storage Available Size Hooks (x3) (No you cant Control the Value it is fine let XPL-EX Handle it)
+        <![CDATA[<br>]]>• Added Android User Account Creation Date Hooks
+        <![CDATA[<br>]]>• Added Setting to Control a List of Force to Show Settings versus using Defaults if Returned
+        <![CDATA[<br>]]>• Added Popup Dialog for Long Setting Descriptions
+        <![CDATA[<br>]]>• Fixed Some Bugs in Scripts, Typos Etc
+        <![CDATA[<br>]]>• Added and Improved Xiaomi Hooks
+        <![CDATA[<br>]]>• Added more Java LUA Api Functions
+        <![CDATA[<br>]]>• Improved the String to Long Parsing
+        <![CDATA[<br>]]>• Added more KeyguardManager Hooks (Seems it MAY be for Coosea Devices) (obtainOaid, obtainVaid, obtainOaid)
+        <![CDATA[<br>]]>• Fixed Google Maps API not loading in Apps when STAT Hooks are Enabled
+        <![CDATA[<br>]]>• Improved the File STAT Time Randomization and Setting
+        <![CDATA[<br>]]>• Improved the Call/Settings,Query,File, Prop Filters
+        <![CDATA[<br>]]>• Updated and Improved most of the LUA Scripts to make More Safe when Returning Log Arguments
+        <![CDATA[<br>]]>• Updated and Improved and Cleaned up the XParam API splitting it with XPramExtra, added more API Functions etc (This is API that is exposed to LUA Script from param)
+        <![CDATA[<br>]]>• Improved or Added Query Hooks (Android ID, GSF ID, ...)
+        <![CDATA[<br>]]>• Updated GSF ID Randomizer, align more with Format (Needs 3 More Char Points)
+        <![CDATA[<br>]]>• Fixed bugs and or Improved WifiInfo / Network Info Hooks
+        <![CDATA[<br>]]>• Fixed many of the Hooks not Syncing with their Settings
+        <![CDATA[<br>]]>• Deprecated VM Runtime Memory Hooks (No point in these no benefit)
+        <![CDATA[<br>]]>• Improved the Memory Info Hooks
+        <![CDATA[<br>]]>• Added the Facebook Hooks (ensured they are working)
+        <![CDATA[<br>]]>• Fixed "Contacts" Hook (Always will Return a Empty Cursor) and will Target any and All Queries ensuring NO LEAKS
+        <![CDATA[<br>]]>• Added Email Randomizer for (Accounts) Hook
+        <![CDATA[<br>]]>• Added Region Randomizers (v1)
+        <![CDATA[<br>]]>• Added Battery Information Randomizers
+        <![CDATA[<br>]]>• Improved and Optimized the Battery Hooks
+        <![CDATA[<br>]]>• Added (boot_count) Settings Hook
+        <![CDATA[<br>]]>• Added Hooks to Spoof many System Settings from (SECURE,GLOBAL,SYSTEM) the Collection is (Settings) ENABLE this Collection to use the Hooks!
+        <![CDATA[<br>]]>• Cleaning up Directories /sdcard/Android/data and /sdcard/Android/obb
+        <![CDATA[<br>]]>• Revised the Core System for Hooks, and XHook Class. Major Clean up and Internal Enhancements, and Database Hooks Should Load!
+        <![CDATA[<br>]]>• Added Hooks UI just like the Pro App, EDIT, ADD, DELETE YOU NAME IT !
+
+
+        <![CDATA[<br>]]>• LUAJ Library Fixes! (Yea I guess Im also a DEV for LUAJ)
+        <![CDATA[<br>]]>--> Fixed Byte Array Handling (Was Converting Byte Arrays to Strings) Example DRM Hook using "setResult" Now Fixed!
+        <![CDATA[<br>]]>--> Added Anti Invoking Protections for Certain Java Functions
+        <![CDATA[<br>]]>--> Added Support for Long Values (BigInt) (Finally!!) (May have some bugs but we will fix along the way)
+
 
         <![CDATA[<br><br>]]> 1.5.2.1 XPL151R
         <![CDATA[<br>]]>• Improved the ANDROID_ID Cache Hooks
@@ -251,7 +307,10 @@
     <string name="save_setting_success" translatable="false">Settings were saved! </string>
     <string name="save_setting_error" translatable="false">Failed to save Settings! </string>
 
+
+
     <string name="msg_error_processing"  translatable="false">An error occurred while processing settings. Please try again.</string>
+    <string name="msg_error_no_description"  translatable="false">No Description for this Setting  Container (%s)</string>
 
     <string name="text_backup_name" translatable="false">Backup Name:</string>
     <string name="text_enter_backup_name" translatable="false">Enter backup name</string>
@@ -262,7 +321,12 @@
     <string name="text_delete_old_database" translatable="false">Delete the old Database Table Items, for the Checked to replace with the new Items!</string>
 
     <string name="title_backup" translatable="false">Backup Manager</string>
+    <string name="title_settings_search" translatable="false">Settings Search</string>
 
+
+
+    <string name="title_hook_edit" translatable="false">Edit Hook</string>
+    <string name="title_hook_target" translatable="false">Target Packages</string>
 
     <string name="title_wifi_networks" translatable="false">Wi-Fi Networks</string>
     <string name="title_edit_wifi_network" translatable="false">Edit Wi-Fi Network</string>
@@ -275,11 +339,14 @@
     <string name="msg_error_service" translatable="false">Failed to Contact the Service for a Database Check!\n\nMake sure if you have (SettingsStorage) Selected in LSPosed under XPL-EX.\n\nIf it Un-Checks in LSPosed (that is fine) Just make sure you at least checked it ONCE, then restarted your Device (does not hurt to try again).\n\nFinally if you updated XPL-EX or Installed it, Make sure again you Re-Check SettingsSecure and Reboot your Phone!!!</string>
     <string name="msg_error_service_bridge" translatable="false">Command to check the Service Bridge Update can not be contacted!\n\nMake sure you to Select in LSPosed (SettingsStorage) under XPL-EX again in LSPosed.\n\nThen Reboot your Phone! Command Service Bridge with Commands shall be Updated then!\n\nIf errors still occur please Contact the Dev!</string>
 
+    <string name="msg_error_generic_global" translatable="false">Sorry this Action is not Allowed on Global! </string>
 
     <string name="msg_error_global_limit" translatable="false">Error this Action can not be completed because its Global Context </string>
     <string name="msg_error_generic" translatable="false">Error executing Action! </string>
     <string name="msg_error_generic_null" translatable="false">Error executing Action! NULL PTR </string>
     <string name="msg_error_no_hooks" translatable="false">Error No Hooks for this Action!</string>
+    <string name="msg_error_no_hooks_global" translatable="false">Error No Hooks for this Action! Hooks are Disabled in Global! </string>
+
     <string name="msg_finished_applying_config" translatable="false">Finished Applying Config! </string>
 
     <string name="msg_task_finished_command" translatable="false">Command was executed Successfully!</string>
@@ -294,9 +361,29 @@
     <string name="result_settings_update" translatable="false">Updated %s Settings! Failed Count %s</string>
     <string name="result_settings_update_empty" translatable="false">No Settings were saved! Nothing needs to be Saved!</string>
 
+    <string name="search_settings_hint" translatable="false">Search Settings...</string>
     <string name="search_log_hint" translatable="false">Search Logs...</string>
     <string name="search_config_hint" translatable="false">Search Configs...</string>
     <string name="hint_input_value" translatable="false">Enter Value...</string>
+
+    <string name="hook_button_edit" translatable="false">Edit</string>
+    <string name="hook_button_delete" translatable="false">Delete</string>
+    <string name="hook_button_export" translatable="false">Export</string>
+    <string name="hook_label_name" translatable="false">Name:</string>
+    <string name="hook_label_author" translatable="false">Author:</string>
+    <string name="hook_label_class" translatable="false">Class:</string>
+    <string name="hook_label_method" translatable="false">Method:</string>
+    <string name="hook_label_sdk" translatable="false">SDK:</string>
+    <string name="hook_label_version" translatable="false">Version:</string>
+    <string name="hook_label_description" translatable="false">Description:</string>
+    <string name="hook_label_optional" translatable="false">Optional</string>
+    <string name="hook_label_usage" translatable="false">Usage</string>
+    <string name="hook_label_notify" translatable="false">Notify</string>
+
+    <string name="hook_delete_error" translatable="false">Failed to Delete Hook! Error=%s</string>
+    <string name="hook_delete_success" translatable="false">Successfully Deleted Hook! %s</string>
+    <string name="hook_update_error" translatable="false">Failed to Update Hook! Error=%s</string>
+    <string name="hook_update_success" translatable="false">Successfully Updated Hook! %s</string>
 
 
     <string name="msg_hint_create_profile" translatable="false">Create a Profile for the Targeted Application!</string>
@@ -332,6 +419,7 @@
     <string name="text_time_unit" translatable="false">Time Unit</string>
     <string name="text_enter_time_value" translatable="false">Enter numeric value</string>
 
+    <string name="msg_hint_setting_description" translatable="false">The Description for the Specified Setting Container.</string>
 
     <string name="msg_hint_hook_control" translatable="false">Hooks Control, Enabled=%s Total=%s</string>
     <string name="msg_result_randomized" translatable="false">Settings were Randomized! Ensure to save the new values!</string>
@@ -661,7 +749,7 @@
     <string name="title_config_manager" translatable="false">Config Manager</string>
 
 
-    <string name="menu_hooks" translatable="false">Hook App Control</string>
+    <string name="menu_hooks" translatable="false">Hooks</string>
     <string name="menu_props" translatable="false">Prop Values</string>
     <string name="menu_settings" translatable="false">Setting Values</string>
     <string name="menu_configs" translatable="false">Config Editor</string>
@@ -934,6 +1022,9 @@
     <string name="help_color_saved_description" translatable="false">Settings shown in this color are currently active and have a value assigned.</string>
 
 
+
+    <string name="help_color_hook_db_title" translatable="false">Non Built In (Database Saved) Hooks</string>
+    <string name="help_color_hook_db_description" translatable="false"> Saved Hooks in the Database versus Hooks from the Service Cache. Hooks from the Service Cache are Considered to be built in (Hooks defined and made by me) and once your Edit any of them, it will show with this Color (no need to Save unless you are in the Editing menu click OK. These typically are your Hooks, You Edited or Imported or from your Database.</string>
 
 
     <string-array name="scopes" translatable="false">

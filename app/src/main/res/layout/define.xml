@@ -1,62 +1,348 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:padding="6dp" android:layout_width="match_parent" android:layout_height="match_parent">
-    <ImageView android:id="@+id/ivExpander" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="?attr/expander" android:alpha="0.5" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"/>
-    <TextView android:textAppearance="@android:style/TextAppearance.Medium" android:id="@+id/tvExpander" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/title_hook_script" app:layout_constraintBottom_toBottomOf="@+id/ivExpander" app:layout_constraintStart_toEndOf="@+id/ivExpander" app:layout_constraintTop_toTopOf="@+id/ivExpander"/>
-    <ScrollView android:orientation="vertical" android:id="@+id/scroll" android:layout_width="match_parent" android:layout_height="0dp" android:layout_marginTop="12dp" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/ivExpander" app:layout_constraintBottom_toBottomOf="parent">
-        <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/hCollection" android:layout_width="match_parent" android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent">
-                <EditText android:textAppearance="@android:style/TextAppearance.Small" android:id="@+id/etCollection" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/title_hook_collection" android:hint="@string/title_hook_collection"/>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="6dp">
+
+    <!-- Expander header -->
+    <ImageView
+        android:id="@+id/ivExpander"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="?attr/expander"
+        android:alpha="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvExpander"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_hook_script"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        app:layout_constraintStart_toEndOf="@id/ivExpander"
+        app:layout_constraintTop_toTopOf="@id/ivExpander"
+        app:layout_constraintBottom_toBottomOf="@id/ivExpander"/>
+
+    <!-- FORM: all your metadata fields and checkboxes -->
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fillViewport="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivExpander">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Collection -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hCollection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+                <EditText
+                    android:id="@+id/etCollection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title_hook_collection"
+                    android:textAppearance="@android:style/TextAppearance.Small"/>
             </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/hGroup" android:layout_width="match_parent" android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/hCollection">
-                <EditText android:textAppearance="@android:style/TextAppearance.Small" android:id="@+id/etGroup" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/title_hook_group" android:hint="@string/title_hook_group"/>
+
+            <!-- Group -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hCollection">
+                <EditText
+                    android:id="@+id/etGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title_hook_group"
+                    android:textAppearance="@android:style/TextAppearance.Small"/>
             </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/hName" android:layout_width="match_parent" android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/hGroup">
-                <EditText android:textAppearance="@android:style/TextAppearance.Small" android:id="@+id/etName" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/title_hook_name" android:hint="@string/title_hook_name"/>
+
+            <!-- Name -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hGroup">
+                <EditText
+                    android:id="@+id/etName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title_hook_name"
+                    android:textAppearance="@android:style/TextAppearance.Small"/>
             </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/hAuthor" android:layout_width="match_parent" android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/hName">
-                <EditText android:textAppearance="@android:style/TextAppearance.Small" android:id="@+id/etAuthor" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/title_hook_author" android:hint="@string/title_hook_author"/>
+
+            <!-- Author -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hAuthor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hName">
+                <EditText
+                    android:id="@+id/etAuthor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title_hook_author"
+                    android:textAppearance="@android:style/TextAppearance.Small"/>
             </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/hVersion" android:layout_width="wrap_content" android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/hAuthor">
-                <EditText android:textAppearance="@android:style/TextAppearance.Small" android:id="@+id/etVersion" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="100dp" android:text="@string/title_hook_version" android:hint="@string/title_hook_version" android:inputType="number"/>
+
+            <!-- Version & Description -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hVersion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hAuthor">
+                <EditText
+                    android:id="@+id/etVersion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="100dp"
+                    android:hint="@string/title_hook_version"
+                    android:inputType="number"
+                    android:textAppearance="@android:style/TextAppearance.Small"/>
             </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/hDescription" android:layout_width="match_parent" android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/hVersion">
-                <EditText android:textAppearance="@android:style/TextAppearance.Small" android:id="@+id/etDescription" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/title_hook_description" android:hint="@string/title_hook_description"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hVersion">
+                <EditText
+                    android:id="@+id/etDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title_hook_description"
+                    android:textAppearance="@android:style/TextAppearance.Small"/>
             </com.google.android.material.textfield.TextInputLayout>
-            <CheckBox android:id="@+id/cbEnabled" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/title_hook_enabled" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/hDescription" android:textAppearance="@android:style/TextAppearance.Small"/>
-            <CheckBox android:id="@+id/cbOptional" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/title_hook_optional" app:layout_constraintStart_toEndOf="@+id/cbEnabled" app:layout_constraintTop_toTopOf="@+id/cbEnabled" android:textAppearance="@android:style/TextAppearance.Small"/>
-            <CheckBox android:id="@+id/cbUsage" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/title_hook_usage" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/cbEnabled" android:textAppearance="@android:style/TextAppearance.Small"/>
-            <CheckBox android:id="@+id/cbNotify" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/title_hook_notify" app:layout_constraintStart_toEndOf="@+id/cbUsage" app:layout_constraintTop_toTopOf="@+id/cbUsage" android:textAppearance="@android:style/TextAppearance.Small"/>
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/hClass" android:layout_width="match_parent" android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/cbUsage">
-                <EditText android:textAppearance="@android:style/TextAppearance.Small" android:id="@+id/etClass" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/title_hook_class" android:hint="@string/title_hook_class"/>
+
+            <!-- Checkboxes -->
+            <CheckBox
+                android:id="@+id/cbEnabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_hook_enabled"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hDescription"/>
+
+            <CheckBox
+                android:id="@+id/cbOptional"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_hook_optional"
+                app:layout_constraintStart_toEndOf="@id/cbEnabled"
+                app:layout_constraintTop_toTopOf="@id/cbEnabled"/>
+
+            <CheckBox
+                android:id="@+id/cbUsage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_hook_usage"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cbEnabled"/>
+
+            <CheckBox
+                android:id="@+id/cbNotify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_hook_notify"
+                app:layout_constraintStart_toEndOf="@id/cbUsage"
+                app:layout_constraintTop_toTopOf="@id/cbUsage"/>
+
+            <!-- Class, Method, Params, Return -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hClass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cbUsage">
+                <EditText
+                    android:id="@+id/etClass"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title_hook_class"
+                    android:textAppearance="@android:style/TextAppearance.Small"/>
             </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/hMethod" android:layout_width="match_parent" android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/hClass">
-                <EditText android:textAppearance="@android:style/TextAppearance.Small" android:id="@+id/etMethod" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/title_hook_method" android:hint="@string/title_hook_method"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hMethod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hClass">
+                <EditText
+                    android:id="@+id/etMethod"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title_hook_method"
+                    android:textAppearance="@android:style/TextAppearance.Small"/>
             </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/hParams" android:layout_width="match_parent" android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/hMethod">
-                <EditText android:textAppearance="@android:style/TextAppearance.Small" android:id="@+id/etParams" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/title_hook_params" android:hint="@string/title_hook_params"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hParams"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hMethod">
+                <EditText
+                    android:id="@+id/etParams"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title_hook_params"
+                    android:textAppearance="@android:style/TextAppearance.Small"/>
             </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/hReturn" android:layout_width="match_parent" android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/hParams">
-                <EditText android:textAppearance="@android:style/TextAppearance.Small" android:id="@+id/etReturn" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/title_hook_return" android:hint="@string/title_hook_return"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hReturn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hParams">
+                <EditText
+                    android:id="@+id/etReturn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title_hook_return"
+                    android:textAppearance="@android:style/TextAppearance.Small"/>
             </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/hMinSdk" android:layout_width="wrap_content" android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/hReturn">
-                <EditText android:textAppearance="@android:style/TextAppearance.Small" android:id="@+id/etMinSdk" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="100dp" android:text="@string/title_hook_minsdk" android:hint="@string/title_hook_minsdk" android:inputType="number"/>
+
+            <!-- SDK & APK ranges, Exclude/Target/Settings -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hMinSdk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hReturn">
+                <EditText
+                    android:id="@+id/etMinSdk"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="100dp"
+                    android:inputType="number"
+                    android:hint="@string/title_hook_minsdk"
+                    android:textAppearance="@android:style/TextAppearance.Small"/>
             </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/hMaxSdk" android:layout_width="wrap_content" android:layout_height="wrap_content" app:layout_constraintStart_toEndOf="@+id/hMinSdk" app:layout_constraintTop_toBottomOf="@+id/hReturn">
-                <EditText android:textAppearance="@android:style/TextAppearance.Small" android:id="@+id/etMaxSdk" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="100dp" android:text="@string/title_hook_maxsdk" android:hint="@string/title_hook_maxsdk" android:inputType="number"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hMaxSdk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/hMinSdk"
+                app:layout_constraintTop_toBottomOf="@id/hReturn">
+                <EditText
+                    android:id="@+id/etMaxSdk"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="100dp"
+                    android:inputType="number"
+                    android:hint="@string/title_hook_maxsdk"
+                    android:textAppearance="@android:style/TextAppearance.Small"/>
             </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/hMinApk" android:layout_width="wrap_content" android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/hMaxSdk">
-                <EditText android:textAppearance="@android:style/TextAppearance.Small" android:id="@+id/etMinApk" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="100dp" android:text="@string/title_hook_minapk" android:hint="@string/title_hook_minapk" android:inputType="number"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hMinApk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hMaxSdk">
+                <EditText
+                    android:id="@+id/etMinApk"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="100dp"
+                    android:inputType="number"
+                    android:hint="@string/title_hook_minapk"
+                    android:textAppearance="@android:style/TextAppearance.Small"/>
             </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/hMaxApk" android:layout_width="wrap_content" android:layout_height="wrap_content" app:layout_constraintStart_toEndOf="@+id/hMinApk" app:layout_constraintTop_toBottomOf="@+id/hMinSdk">
-                <EditText android:textAppearance="@android:style/TextAppearance.Small" android:id="@+id/etMaxApk" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="100dp" android:text="@string/title_hook_maxapk" android:hint="@string/title_hook_maxapk" android:inputType="number"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hMaxApk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/hMinApk"
+                app:layout_constraintTop_toBottomOf="@id/hMinSdk">
+                <EditText
+                    android:id="@+id/etMaxApk"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="100dp"
+                    android:inputType="number"
+                    android:hint="@string/title_hook_maxapk"
+                    android:textAppearance="@android:style/TextAppearance.Small"/>
             </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/hExclude" android:layout_width="match_parent" android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/hMaxApk">
-                <EditText android:textAppearance="@android:style/TextAppearance.Small" android:id="@+id/etExclude" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/title_hook_exclude" android:hint="@string/title_hook_exclude"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hExclude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hMaxApk">
+                <EditText
+                    android:id="@+id/etExclude"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title_hook_exclude"
+                    android:textAppearance="@android:style/TextAppearance.Small"/>
             </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/hSettings" android:paddingBottom="36dp" android:layout_width="match_parent" android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/hExclude">
-                <EditText android:textAppearance="@android:style/TextAppearance.Small" android:id="@+id/etSettings" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/title_hook_settings" android:hint="@string/title_hook_settings"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hTarget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hExclude">
+                <EditText
+                    android:id="@+id/etTarget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title_hook_target"
+                    android:textAppearance="@android:style/TextAppearance.Small"/>
             </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="36dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/hTarget">
+                <EditText
+                    android:id="@+id/etSettings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title_hook_settings"
+                    android:textAppearance="@android:style/TextAppearance.Small"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-    <EditText android:textAppearance="@android:style/TextAppearance.Small" android:typeface="monospace" android:id="@+id/etScript" android:visibility="gone" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Script" android:inputType="textMultiLine" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/scroll"/>
+
+    <!-- SCRIPT view: only visible when expanded -->
+    <EditText
+        android:id="@+id/etScript"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Lua Script"
+        android:inputType="textMultiLine"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:typeface="monospace"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvExpander"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,13 +20,14 @@ import eu.faircode.xlua.BuildConfig;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.R;
 import eu.faircode.xlua.XDatabaseOld;
-import eu.faircode.xlua.UberCore888;
+import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.XUtil;
 import eu.faircode.xlua.api.XProxyContent;
 import eu.faircode.xlua.api.xstandard.CallCommandHandler;
 import eu.faircode.xlua.api.xstandard.command.CallPacket_old;
 import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.hooks.XReport;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 
 public class ReportCommand extends CallCommandHandler {
     private static final String TAG = "XLua.ReportCommand";
@@ -69,7 +70,7 @@ public class ReportCommand extends CallCommandHandler {
         Log.i(TAG, "Hook " + hookid + " pkg=" + packageName + ":" + uid + " event=" + event + sb.toString());
 
         // Get hook
-        XLuaHook hook = UberCore888.getHook(hookid);
+        XHook hook = XLegacyCore.getHook(hookid);
         /*if(hook == null) {
             try {
                 Collection<XLuaHook> hooks = XGlobals.getHooks(commandData.getContext(), commandData.getDatabase(), true);
@@ -160,7 +161,7 @@ public class ReportCommand extends CallCommandHandler {
                     try {
                         cursor = db.query("`group`", new String[]{"used"},
                                 "package = ? AND uid = ? AND name = ?",
-                                new String[]{packageName, Integer.toString(uid), hook.getGroup()},
+                                new String[]{packageName, Integer.toString(uid), hook.group},
                                 null, null, null);
                         if (cursor.moveToNext())
                             used = cursor.getLong(0);
@@ -172,7 +173,7 @@ public class ReportCommand extends CallCommandHandler {
                     cv.clear();
                     cv.put("package", packageName);
                     cv.put("uid", uid);
-                    cv.put("name", hook.getGroup());
+                    cv.put("name", hook.group);
                     cv.put("used", time);
                     rows = db.insertWithOnConflict("`group`", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
                     if (rows < 0)
@@ -195,9 +196,9 @@ public class ReportCommand extends CallCommandHandler {
 
             // Notify usage
             if (hook != null && "use".equals(event) && restricted == 1 &&
-                    (hook.doNotify() || (notify && used < 0))) {
+                    (Boolean.TRUE.equals(hook.notify) || (Boolean.TRUE.equals(notify) && used < 0))) {
                 // Get group name
-                String name = hook.getGroup().toLowerCase().replaceAll("[^a-z]", "_");
+                String name = hook.group.toLowerCase().replaceAll("[^a-z]", "_");
                 int resId = resources.getIdentifier("group_" + name, "string", BuildConfig.APPLICATION_ID);
                 String group = (resId == 0 ? hookid : resources.getString(resId));
 
@@ -226,7 +227,7 @@ public class ReportCommand extends CallCommandHandler {
 
                 builder.setAutoCancel(true);
 
-                XUtil.notifyAsUser(ctx, "xlua_use_" + hook.getGroup(), uid, builder.build(), userid);
+                XUtil.notifyAsUser(ctx, "xlua_use_" + hook.group, uid, builder.build(), userid);
             }
 
             // Notify exception

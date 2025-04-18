@@ -10,13 +10,30 @@ import java.lang.reflect.Method;
 
 import eu.faircode.xlua.logger.XLog;
 import eu.faircode.xlua.utilities.ReflectUtilEx;
+import eu.faircode.xlua.x.data.utils.ArrayUtils;
 
 public class LuaHookResolver {
+
+
+    public static class TypeWild {
+        //public TypeWild() { }
+        //public TypeWild()
+        //public String wrapping;
+    }
+
     public final Class<?> clazz;
     public final String methodName;
     public final Class<?>[] paramTypes;
+
+    //public final String returnTypeName;
     public final Class<?> returnType;
+
     public boolean preInit;
+
+    public boolean isWildCardParams() {
+        if(!ArrayUtils.isValid(paramTypes)) return false;
+        return TypeWild.class.equals(paramTypes[0]);
+    }
 
     public boolean isConstructor() {
         return methodName == null || TextUtils.isEmpty(methodName);
@@ -24,6 +41,8 @@ public class LuaHookResolver {
     public boolean isField() {
         return XHookUtil.isField(methodName);
     }
+
+    //public LuaHookResolver(Class<?> clazz, String methodName, )
 
     public LuaHookResolver(Class<?> clazz, String methodName, Class<?>[] paramTypes, Class<?> returnType, boolean preInit) {
         this.clazz = clazz;

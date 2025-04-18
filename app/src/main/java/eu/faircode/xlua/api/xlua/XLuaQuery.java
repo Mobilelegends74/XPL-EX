@@ -20,15 +20,17 @@ import eu.faircode.xlua.api.xlua.query.GetSettingsCommand;
 import eu.faircode.xlua.random.GlobalRandoms;
 import eu.faircode.xlua.random.IRandomizerOld;
 import eu.faircode.xlua.utilities.CursorUtil;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 
 public class XLuaQuery {
     //Clean this class as well as security class
     public static Collection<XLuaApp> getApps(Context context, boolean marshall) { return XLuaAppConversions.fromCursor(GetAppsCommand.invoke(context, marshall), marshall, true); }
-    public static Collection<XLuaHook> getAllHooks(Context context, boolean marshall) {
-        return XLuaHookConversions.fromCursor(GetHooksCommand.invoke(context, marshall, true), marshall, true); }
+    public static Collection<XHook> getAllHooks(Context context, boolean marshall) {
+        return XLuaHookConversions.fromCursor(GetHooksCommand.invoke(context, marshall, true), marshall, true);
+    }
 
 
-    public static Collection<XLuaHook> getHooks(Context context, boolean marshall) { return XLuaHookConversions.fromCursor(GetHooksCommand.invoke(context, marshall), marshall, true); }
+    public static Collection<XHook> getHooks(Context context, boolean marshall) { return XLuaHookConversions.fromCursor(GetHooksCommand.invoke(context, marshall), marshall, true); }
 
     public static Map<String, String> getGlobalSettings(Context context, int uid) { return getSettings(context, uid, UserIdentityPacket.GLOBAL_NAMESPACE, false); }
     public static Map<String, String> getGlobalSettings(Context context, int uid, String packageOrName) { return getSettings(context, uid, packageOrName, false); }

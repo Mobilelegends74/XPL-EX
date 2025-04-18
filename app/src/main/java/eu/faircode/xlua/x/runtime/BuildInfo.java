@@ -12,6 +12,13 @@ public class BuildInfo {
     //Build.VERSION.SDK_INT > Build.VERSION_CODES.M
     //https://apilevels.com/
 
+    //https://juejin.cn/post/7072741392178479140
+    //https://baike.sov5.org/b/ZLABhyYAZd
+    //android.provider.MiuiSettings$Ad => getAaid => ContentResolver.class => Landroid/content/ContentResolver;
+    //android.provider.Settings$Secure
+    //android.provider.MiuiSettings$Ad
+    //$android.provider.MiuiSettings$Secure
+
     public static boolean isMiuiOrHyperOs() {
         boolean checkOne = Str.isValidNotWhitespaces(RuntimeUtils.getProperty("ro.mi.os.version.name"));
         boolean checkTwo = Str.isValidNotWhitespaces(RuntimeUtils.getProperty("ro.miui.ui.version.name"));

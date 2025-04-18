@@ -3,6 +3,26 @@
     "builtin": true,
     "collection": "PrivacyEx",
     "group": "ID.Unique",
+    "name": "Google/AppSetId/Binder.execTransact",
+    "author": "OBC",
+    "className": "Intercept.IPC.Interface",
+    "methodName": "com.google.android.gms.appset.internal.IAppSetIdCallback",
+    "parameterTypes": [ ],
+    "minSdk": 1,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "AppSetId From Google Services, Interface is:com.google.android.gms.appset.internal.IAppSetIdCallback",
+    "enabled": true,
+    "optional": true,
+    "usage": true,
+    "notify": false,
+    "luaScript": "",
+    "settings": [ "intercept.ipc.interface.google.appset", "unique.google.app.set.id"]
+  },
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
     "name": "Google/Ad/BinderProxy.transact",
     "author": "OBC",
     "className": "Intercept.IPC.Interface",
@@ -61,47 +81,6 @@
     "settings":[ "unique.google.advertising.id" ]
   },
 
-  /*{
-    "builtin": true,
-    "collection": "PrivacyEx",
-    "group": "ID.Test",
-    "name": "Binder.Intent/Test",
-    "author": "OBC",
-    "className": "android.content.Intent",
-    "parameterTypes": [ "java.lang.String" ],
-    "minSdk": 4,
-    "maxSdk": 999,
-    "version": 1,
-    "description": "Test",
-    "enabled":true,
-    "optional":true,
-    "usage":true,
-    "notify":false,
-    "luaScript": "@id_intent_1"
-  },
-
-
-  {
-    "builtin": true,
-    "collection": "PrivacyEx",
-    "group": "ID.Test",
-    "name": "Binder.Intent/Test2",
-    "author": "OBC",
-    "className": "android.content.Intent",
-    "methodName": "setPackage",
-    "parameterTypes": [ "java.lang.String" ],
-    "returnType": "android.content.Intent",
-    "minSdk": 4,
-    "maxSdk": 999,
-    "version": 1,
-    "description": "Test2",
-    "enabled":true,
-    "optional":true,
-    "usage":true,
-    "notify":false,
-    "luaScript": "@id_intent_2"
-  },*/
-
 //Intent intent = new Intent("com.google.android.gms.ads.identifier.service.START");
   //            intent.setPackage("com.google.android.gms");
 
@@ -130,7 +109,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_app_set_id",
-    "settings":[ "unique.google.advertising.id" ]
+    "settings":[ "unique.google.app.set.id" ]
   },
   {
     "builtin": true,
@@ -149,10 +128,8 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_app_set_id_constructor",
-    "settings":[ "unique.google.advertising.id" ]
+    "settings":[ "unique.google.app.set.id" ]
   },
-
-
   {
     "builtin": true,
     "collection": "PrivacyEx",
@@ -172,7 +149,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_app_set_id",
-    "settings":[ "unique.google.advertising.id" ]
+    "settings":[ "unique.google.app.set.id" ]
   },
 
   {
@@ -192,11 +169,8 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_app_set_id_constructor",
-    "settings":[ "unique.google.advertising.id" ]
+    "settings":[ "unique.google.app.set.id" ]
   },
-
-
-
   {
     "builtin": true,
     "collection": "PrivacyEx",
@@ -242,8 +216,8 @@
     "name": "ID/Settings/advertising_id",
     "author": "OBC",
     "className": "Intercept.Settings.Call",
-    "methodName": "advertising_id|ad_id|pps_adid|pps_adid_c|ad_adid",
-    "parameterTypes": [ ],
+    "methodName": "*",
+    "parameterTypes": [ "advertising_id", "ad_id", "pps_adid", "pps_adid_c", "ad_adid", "adid" ],
     "minSdk": 4,
     "maxSdk": 999,
     "version": 1,
@@ -262,8 +236,8 @@
     "name": "ID/Settings/AAID",
     "author": "OBC",
     "className": "Intercept.Settings.Call",
-    "methodName": "ad_aaid|aaid|a_aid|pps_aaid_c|pps_aaid|old_aaid|new_aaid",
-    "parameterTypes": [ ],
+    "methodName": "*",
+    "parameterTypes": [ "ad_aaid", "aaid", "a_aid", "pps_aaid_c", "pps_aaid", "old_aaid", "new_aaid" ],
     "minSdk": 4,
     "maxSdk": 999,
     "version": 1,
@@ -276,30 +250,6 @@
     "settings":[ "unique.app.anon.id" ]
   },
 
-
-  {
-    "builtin": true,
-    "collection": "Spoof",
-    "group": "Spoof.Dev.Options.State",
-    "name": "ID/Settings/Developer",
-    "author": "OBC",
-    "className": "Intercept.Settings.Call",
-    "methodName": "development_settings_enabled",
-    "parameterTypes": [  ],
-    "minSdk": 4,
-    "maxSdk": 999,
-    "version": 1,
-    "description": "Shows the Developer options as Disabled",
-    "enabled":true,
-    "optional":true,
-    "usage":true,
-    "notify":false,
-    "luaScript": "",
-    "settings":[ "hide.settings.dev.options.bool" ]
-  },
-
-
-
   {
     "builtin": true,
     "collection": "PrivacyEx",
@@ -307,8 +257,8 @@
     "name": "ID/Settings/OAID",
     "author": "OBC",
     "className": "Intercept.Settings.Call",
-    "methodName": "oaid|pps_oaid|pps_oaid_c|ad_oaid",
-    "parameterTypes": [ ],
+    "methodName": "*",
+    "parameterTypes": [ "oaid", "pps_oaid", "pps_oaid_c", "ad_oaid"],
     "minSdk": 4,
     "maxSdk": 999,
     "version": 1,
@@ -318,7 +268,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "",
-    "settings:": ["unique.open.anon.advertising.id"]
+    "settings": ["unique.open.anon.advertising.id"]
   },
   {
     "builtin": true,
@@ -327,8 +277,8 @@
     "name": "ID/Settings/VAID",
     "author": "OBC",
     "className": "Intercept.Settings.Call",
-    "methodName": "vaid|pps_vaid|pps_vaid_c|ad_vaid",
-    "parameterTypes": [ ],
+    "methodName": "*",
+    "parameterTypes": [ "vaid", "pps_vaid", "pps_vaid_c", "ad_vaid" ],
     "minSdk": 4,
     "maxSdk": 999,
     "version": 1,
@@ -338,8 +288,9 @@
     "usage":true,
     "notify":false,
     "luaScript": "",
-    "settings:": ["unique.app.va.id"]
+    "settings": ["unique.app.va.id"]
   },
+
   {
     "builtin": true,
     "collection": "PrivacyEx",
@@ -348,7 +299,7 @@
     "author": "OBC",
     "className": "android.app.KeyguardManager",
     "methodName": "obtainOaid",
-    "parameterTypes": [ ],
+    "parameterTypes": [ "*" ],
     "returnType": "java.lang.String",
     "minSdk": 4,
     "maxSdk": 999,
@@ -358,18 +309,60 @@
     "optional":true,
     "usage":true,
     "notify":false,
-    "luaScript": "@id_keyguardmanager_oaid",
-    "settings:": ["unique.open.anon.advertising.id"]
+    "luaScript": "@id_oaid_generic",
+    "settings": ["unique.open.anon.advertising.id"]
   },
   {
     "builtin": true,
     "collection": "PrivacyEx",
     "group": "ID.Unique",
-    "name": "ID/Settings/GUID_uuid",
+    "name": "KeyguardManager.obtainVaid",
+    "author": "OBC",
+    "className": "android.app.KeyguardManager",
+    "methodName": "obtainVaid",
+    "parameterTypes": [ "*" ],
+    "returnType": "java.lang.String",
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "",
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "notify":false,
+    "luaScript": "@id_vaid_generic",
+    "settings": ["unique.app.va.id"]
+  },
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "KeyguardManager.obtainAaid",
+    "author": "OBC",
+    "className": "android.app.KeyguardManager",
+    "methodName": "obtainAaid",
+    "parameterTypes": [ "*" ],
+    "returnType": "java.lang.String",
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "",
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "notify":false,
+    "luaScript": "@id_aaid_generic",
+    "settings": ["unique.app.anon.id"]
+  },
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "ID/Call/GUID_uuid",
     "author": "OBC",
     "className": "Intercept.Settings.Call",
-    "methodName": "guid_uuid|uuid|guid",
-    "parameterTypes": [ ],
+    "methodName": "*",
+    "parameterTypes": [ "guid_uuid", "uuid", "guid"],
     "minSdk": 4,
     "maxSdk": 999,
     "version": 1,
@@ -379,17 +372,17 @@
     "usage":true,
     "notify":false,
     "luaScript": "",
-    "settings:": ["unique.android.id"]
+    "settings": ["unique.guid.uuid"]
   },
   {
     "builtin": true,
     "collection": "PrivacyEx",
     "group": "ID.Unique",
-    "name": "ID/Settings/bluetooth_name",
+    "name": "ID/Call/bluetooth_name",
     "author": "OBC",
     "className": "Intercept.Settings.Call",
-    "methodName": "bluetooth_name|btname|bt_name",
-    "parameterTypes": [ ],
+    "methodName": "settings",
+    "parameterTypes": [ "bluetooth_name", "btname", "bt_name" ],
     "minSdk": 4,
     "maxSdk": 999,
     "version": 1,
@@ -399,7 +392,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "",
-    "settings:": ["unique.bluetooth.address"]
+    "settings": ["unique.bluetooth.address"]
   },
   {
     "builtin": true,
@@ -411,15 +404,9 @@
     "methodName": "put",
     "parameterTypes": [ "java.lang.Object", "java.lang.Object" ],
     "returnType": "java.lang.Object",
-    "minSdk": 4,
-    "maxSdk": 999,
-    "version": 1,
-    "description": "",
     "enabled":true,
     "optional":true,
     "usage":true,
-    "notify":false,
-    "luaScript": "@id_android_id_cache_one",
     "settings":["unique.android.id"]
   },
 
@@ -433,37 +420,39 @@
     "methodName": "put",
     "parameterTypes": [ "java.lang.Object", "java.lang.Object" ],
     "returnType": "java.lang.Object",
-    "minSdk": 4,
-    "maxSdk": 999,
-    "version": 1,
-    "description": "",
     "enabled":true,
     "optional":true,
     "usage":true,
-    "notify":false,
-    "luaScript": "@id_android_id_cache_one",
     "settings":["unique.android.id"]
   },
-
   {
     "builtin": true,
     "collection": "PrivacyEx",
     "group": "ID.Unique",
-    "name": "ID/Settings/android_id",
+    "name": "ID/Call/android_id",
     "author": "OBC",
     "className": "Intercept.Settings.Call",
-    "methodName": "android_id",
-    "parameterTypes": [ ],
-    "minSdk": 4,
-    "maxSdk": 999,
+    "methodName": "settings",
+    "parameterTypes": [ "android_id" ],
     "version": 1,
-    "description": "",
     "enabled":true,
     "optional":true,
     "usage":true,
-    "notify":false,
-    "luaScript": "",
     "settings":["unique.android.id"]
+  },
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "ID/Query/android_id",
+    "author": "OBC",
+    "className": "Intercept.Intent.Query",
+    "methodName": "settings",
+    "parameterTypes": [ "android_id" ],
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "settings":[ "unique.android.id" ]
   },
   {
     "builtin": true,
@@ -567,7 +556,7 @@
     "optional":true,
     "usage":true,
     "notify":false,
-    "luaScript": "@id_drm",
+    "luaScript": "@id_newest_drm",
     "settings":[ "unique.drm.id" ]
   },
   {
@@ -577,17 +566,11 @@
     "name": "ID/Query/gsf_id",
     "author": "OBC",
     "className": "Intercept.Intent.Query",
-    "methodName": "gsf_id|android_id",
-    "parameterTypes": [ "com.google.android.gsf.gservices" ],
-    "minSdk": 4,
-    "maxSdk": 999,
-    "version": 1,
-    "description": "",
+    "methodName": "com.google.android.gsf.gservices",
+    "parameterTypes": [ "gsf_id", "android_id" ],
     "enabled":true,
     "optional":true,
     "usage":true,
-    "notify":false,
-    "luaScript": "",
     "settings":[ "unique.gsf.id" ]
   },
   {
@@ -597,8 +580,8 @@
     "name": "ID/Query/Facebook",
     "author": "OBC",
     "className": "Intercept.Intent.Query",
-    "methodName": "aid|adid|ad_id|addid|advertising_id|pps_adid|pps_adid_c",
-    "parameterTypes": [ "com.facebook.katana.provider.AttributionIdProvider" ],
+    "methodName": "com.facebook.katana.provider.AttributionIdProvider|com.facebook.wakizashi.provider.PlatformProvider",
+    "parameterTypes": [ "aid", "androidid" ],
     "minSdk": 4,
     "maxSdk": 999,
     "version": 1,
@@ -608,7 +591,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "",
-    "settings:": ["unique.facebook.advertising.id"]
+    "settings": ["unique.facebook.advertising.id", "unique.google.advertising.id"]
   },
 
   {
@@ -630,9 +613,30 @@
     "usage":false,
     "notify":false,
     "luaScript": "@id_system_clock_uptime"
-  },
+  }
 
-  {
+ /* {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.UpTime",
+    "name": "SystemClock.uptimeMillis",
+    "author": "OBC",
+    "className": "android.os.SystemClock",
+    "methodName": "uptimeMillis",
+    "parameterTypes": [ ],
+    "returnType": "long",
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "Spoof how long your System has been running. You can not and will never be able to Control its value, it is determined by XPL-EX that is final.",
+    "enabled":true,
+    "optional":true,
+    "usage":false,
+    "notify":false,
+    "luaScript": "@id_system_clock_uptime"
+  }*/
+
+ /* {
     "builtin": true,
     "collection": "PrivacyEx",
     "group": "ID.UpTime",
@@ -651,5 +655,5 @@
     "usage":false,
     "notify":false,
     "luaScript": "@id_system_clock_uptime"
-  }
+  }*/
 ]

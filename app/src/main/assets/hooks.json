@@ -507,7 +507,8 @@
   // https://developer.android.com/guide/topics/providers/contacts-provider.html API 5
   // https://developer.android.com/reference/android/provider/BlockedNumberContract.html API 24
   // https://android.googlesource.com/platform/frameworks/opt/telephony/+/master/src/java/com/android/internal/telephony/IccProvider.java
-  {
+
+  /*{
     "collection": "Privacy",
     "group": "Get.Contacts",
     "name": "ContentResolver.query1/contacts",
@@ -614,7 +615,7 @@
     "returnType": "android.database.Cursor",
     "minSdk": 26,
     "luaScript": "@contentresolver_query"
-  },
+  },*/
   // Get location
   // https://developer.android.com/reference/android/os/Bundle.html
   // https://developer.android.com/reference/android/location/Location.html
@@ -1858,6 +1859,10 @@
     "optional": true,
     "luaScript": "@fabric_with_kits"
   },
+
+
+
+
   {
     "collection": "Privacy",
     "group": "Use.Analytics",
@@ -1888,9 +1893,6 @@
     "optional": true,
     "luaScript": "@firebase_setenabled"
   },
-
-
-
 
   // logPayment is not hooked to prevent problems with payments
   {

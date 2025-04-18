@@ -3,5 +3,5 @@ function after(hook, param)
     if res == nil or res == false then
         return false
     end
-    return true, param:getOldResult(), param:getNewResult()
+    return true, param:safe(param:getLogOld()), param:safe(param:getLogNew())
 end

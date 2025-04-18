@@ -1,4 +1,6 @@
 <resources>
+    <attr name="colorDisabledHook" format="reference" />
+
     <attr name="expander" format="reference" />
     <attr name="hookError" format="reference" />
     <attr name="hookInstalled" format="reference" />
@@ -41,6 +43,8 @@
     <attr name="newWindowIcon" format="reference" />
     <attr name="diceIcon" format="reference" />
     <attr name="addIcon" format="reference" />
+    <attr name="importFile" format="reference" />
+
     <attr name="fingerPrintIcon" format="reference" />
 
 
@@ -54,10 +58,15 @@
     </style>
 
 
+    <!-- Define the color values in colors.xml -->
+    <!-- Add these to your colors.xml file: -->
+    <!-- <color name="lightDisabledHook">#757575</color> Dark grey for light theme -->
+    <!-- <color name="darkDisabledHook">#9E9E9E</color> Lighter grey for dark theme -->
 
     <style name="AppThemeLight" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowDisablePreview">true</item>
 
+        <item name="colorDisabledHook">@color/lightDisabledHook</item>
 
         <item name="colorButtonBackground">@color/darkColorPrimaryButton</item>
         <item name="colorButtonText">@color/darkColorPrimaryButtonText</item>
@@ -96,6 +105,7 @@
         <item name="addIcon">@drawable/ic_add_black24</item>
         <item name="fingerPrintIcon">@drawable/ic_finger_black24</item>
 
+        <item name="importFile">@drawable/ic_file_open_black24</item>
 
         <item name="colorSettingSaved">@color/lightColorSettingSaved</item>
         <item name="colorTextOne">@color/lightColorTextOne</item>
@@ -116,6 +126,9 @@
 
     <style name="AppThemeDark" parent="Theme.AppCompat">
         <item name="android:windowDisablePreview">true</item>
+
+        <!-- Add the disabled hook color for dark theme -->
+        <item name="colorDisabledHook">@color/darkDisabledHook</item>
 
         <item name="colorButtonBackground">@color/lightColorPrimaryButton</item>
         <item name="colorButtonText">@color/lightColorPrimaryButtonText</item>
@@ -148,6 +161,8 @@
         <item name="diceIcon">@drawable/ic_dice1_white24</item>
         <item name="addIcon">@drawable/ic_add_white24</item>
         <item name="fingerPrintIcon">@drawable/ic_finger_white24</item>
+
+        <item name="importFile">@drawable/ic_file_open_white24</item>
 
 
         <item name="wildcardButton">@drawable/ic_wildcard_one_white24</item>

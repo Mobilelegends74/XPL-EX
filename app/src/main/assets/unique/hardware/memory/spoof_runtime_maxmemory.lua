@@ -22,8 +22,8 @@ function after(hook, param)
     end
 
     --log("Spoofing maxMemory => [MAX]:[" .. total .. "]")
-    local fake = param:gigabytesToBytesString(t)
-    param:setResultToLong(fake)
-    --param:setResult(fake)
-	return true, ret, fake
+    local fake = param:gigabytesToBytes(t)
+    --param:setResultToLong(fake)
+    param:setResult(fake)
+	return true, ret, param:safe(fake)
 end

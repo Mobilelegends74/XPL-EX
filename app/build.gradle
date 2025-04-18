@@ -16,7 +16,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 33
         versionCode 152
-        versionName "1.5.2.1"
+        versionName "1.5.3"
         archivesBaseName = "XPL-EX-v$versionName-$versionCode"
     }
 
@@ -40,8 +40,6 @@ android {
             }
         }
     }
-
-
 
     buildFeatures {
         viewBinding true

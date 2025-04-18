@@ -1,0 +1,21 @@
+[
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "User.Creation.Time",
+    "name": "UserManager.getUserCreationTime",
+    "author": "OBC",
+    "className": "android.os.UserManager",
+    "methodName": "getUserCreationTime",
+    "parameterTypes": [ "android.os.UserHandle" ],
+    "returnType": "long",
+    "minSdk": 1,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "",
+    "optional": true,
+    "usage": true,
+    "notify": false,
+    "luaScript": "@id_user_manager_user_creation_time"
+  }
+]

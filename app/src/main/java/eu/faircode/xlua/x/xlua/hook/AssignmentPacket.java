@@ -20,6 +20,7 @@ import eu.faircode.xlua.utilities.CursorUtil;
 import eu.faircode.xlua.utilities.ParcelUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.string.StrBuilder;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.xlua.IBundleData;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.PacketBase;
@@ -30,10 +31,12 @@ import eu.faircode.xlua.x.xlua.identity.UserIdentityIO;
 import eu.faircode.xlua.x.xlua.interfaces.IJsonType;
 import eu.faircode.xlua.x.xlua.interfaces.IParcelType;
 
+//TODO FINISH THIS SHIT WHOLE CLASS ?
+
 public class AssignmentPacket extends PacketBase implements IBundleData, IParcelType, IJsonType {
     public static final long NO_VALUE = -1;
 
-    public static AssignmentPacket create(XLuaHook hook) { return new AssignmentPacket(hook); }
+    public static AssignmentPacket create(XHook hook) { return new AssignmentPacket(hook); }
 
     protected boolean isLegacy = false;
 
@@ -47,7 +50,7 @@ public class AssignmentPacket extends PacketBase implements IBundleData, IParcel
 
     public String hookId;
 
-    public XLuaHook hookObj;
+    public XHook hookObj;
 
     public String getHookId() {
         if(!Str.isEmpty(hookId) && hookId.length() > 3)
@@ -102,7 +105,7 @@ public class AssignmentPacket extends PacketBase implements IBundleData, IParcel
 
     public AssignmentPacket() { }
     public AssignmentPacket(Parcel in) { fromParcel(in); }
-    public AssignmentPacket(XLuaHook hook) { setHook(hook); }
+    public AssignmentPacket(XHook hook) { setHook(hook); }
 
     public AssignmentPacket(AssignmentLegacy legacy) {
         this.hook = legacy.hook;
@@ -114,7 +117,7 @@ public class AssignmentPacket extends PacketBase implements IBundleData, IParcel
         this.newValue = legacy.newValue;
     }
 
-    public void setHook(XLuaHook hook) {
+    public void setHook(XHook hook) {
         if(hook != null) {
             this.hookObj = hook;
             this.hook = hook.getObjectId();
@@ -128,7 +131,7 @@ public class AssignmentPacket extends PacketBase implements IBundleData, IParcel
             setUserIdentity(getUserIdentityFromParcel(in, isLegacy, !isLegacy));
 
             //this.hook = in.readString();
-            setHook(in.readParcelable(XLuaHook.class.getClassLoader()));
+            setHook(in.readParcelable(XHook.class.getClassLoader()));
 
             this.installed = in.readLong();
             this.used = in.readLong();

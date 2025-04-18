@@ -3,14 +3,53 @@ package eu.faircode.xlua.x.runtime;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import org.lsposed.hiddenapibypass.HiddenApiBypass;
 
 import java.lang.reflect.Method;
 
+import eu.faircode.xlua.x.xlua.LibUtil;
+
 public class HiddenApi {
-    private static final String TAG = "XLua.HiddenApi";
+    private static final String TAG = LibUtil.generateTag(HiddenApi.class);
 
     private static boolean hiddenApiBypassed = false;
+
+    public static Class<?> tryGetRuntimeClass(ClassLoader loader) {
+        try {
+            return Class.forName("dalvik.system.VMRuntime", false, loader);
+        }catch (Exception ignored) {
+            try {
+                Method forName = Class.class.getDeclaredMethod("forName", String.class);
+                Class<?> vmRuntimeClass = (Class<?>) forName.invoke(null, "dalvik.system.VMRuntime", false, loader);
+                return vmRuntimeClass;
+            }catch (Exception e) {
+                Log.w(TAG, "Failed to Find Class [dalvik.system.VMRuntime] for Class Loader! Error=" + e);
+                return null;
+            }
+        }
+    }
+
+    public static boolean bypassHiddenApiRestrictionsClassLoader(ClassLoader loader) { return bypassHiddenApiRestrictionsClassLoader(loader, "L"); }
+    public static boolean bypassHiddenApiRestrictionsClassLoader(ClassLoader loader, @NonNull String... signaturePrefixes) {
+        try {
+            //import dalvik.system.VMRuntime;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                Class<?> vmRuntime = tryGetRuntimeClass(loader);
+                if(vmRuntime == null) throw new ClassNotFoundException("dalvik.system.VMRuntime");
+                Object runtime = HiddenApiBypass.invoke(vmRuntime, null, "getRuntime");
+                HiddenApiBypass.invoke(vmRuntime, runtime, "setHiddenApiExemptions", (Object) signaturePrefixes);
+                return true;
+            } else {
+                return true;
+            }
+        }catch (Throwable e) {
+            Log.e(TAG, "Failed to Bypass Hidden API Restrictions! Error=" + e);
+            HiddenApiBypass.setHiddenApiExemptions("L");
+            return false;
+        }
+    }
 
     @SuppressLint("NewApi")
     public static boolean bypassHiddenApiRestrictions() {

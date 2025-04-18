@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -48,7 +47,7 @@ public class OptionsListDialog extends AppCompatDialogFragment {
 
 
     public OptionsListDialog setChecked(List<String> checked) {
-        ListUtil.addAllIfValid(this.checked, checked, true);
+        ListUtil.addAll(this.checked, checked, true);
         return this;
     }
 

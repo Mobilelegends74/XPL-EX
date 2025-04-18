@@ -37,7 +37,7 @@ public class SQLTable {
     public SQLTable(SQLDatabase database, String tableName, Map<String, SQLTableColumn> columns) {
         this.database = database;
         this.name = tableName;
-        ListUtil.addAllIfValid(this.columns, columns);
+        ListUtil.addAll(this.columns, columns);
     }
 
     public boolean tableRequiresUpdate(List<MapColumn> maps, List<String> primaryKeys) {

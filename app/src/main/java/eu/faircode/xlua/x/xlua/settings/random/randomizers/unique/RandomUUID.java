@@ -20,7 +20,12 @@ public class RandomUUID extends RandomElement {
                 RandomizersCache.SETTING_UNIQUE_BOOT_ID,
                 RandomizersCache.SETTING_UNIQUE_FACEBOOK_ID,
                 RandomizersCache.SETTING_UNIQUE_GOOGLE_ID,
-                RandomizersCache.SETTING_UNIQUE_GOOGLE_APP_SET_ID);
+                RandomizersCache.SETTING_UNIQUE_GOOGLE_APP_SET_ID,
+                RandomizersCache.SETTING_XI_MI_GC_BOOSTER_UUID,
+                RandomizersCache.SETTING_XI_MI_KEY_MQS_UUID,
+                RandomizersCache.SETTING_XI_MI_MDM_UUID,
+                RandomizersCache.SETTING_XI_MI_OP_SEC_UUID,
+                RandomizersCache.SETTING_XI_MI_EXTM_UUID);
     }
 
     @Override
@@ -29,9 +34,14 @@ public class RandomUUID extends RandomElement {
         if(setting == null)
             return;
 
-        String result = setting.equalsIgnoreCase(RandomizersCache.SETTING_UNIQUE_OPEN_ANON_ID) && BuildInfo.isMiuiOrHyperOs() ?
-                RandomStringGenerator.generateRandomHexString(16).toLowerCase()
-                : UUID.randomUUID().toString();
-        context.pushValue(setting, result);
+        if(BuildInfo.isMiuiOrHyperOs()) {
+            if(RandomizersCache.SETTING_UNIQUE_OPEN_ANON_ID.equalsIgnoreCase(setting) ||
+                    RandomizersCache.SETTING_UNIQUE_VA_ID.equalsIgnoreCase(setting)) {
+                context.pushValue(setting, RandomStringGenerator.generateRandomHexString(16).toLowerCase());
+                return;
+            }
+        }
+
+        context.pushValue(setting, UUID.randomUUID().toString());
     }
 }

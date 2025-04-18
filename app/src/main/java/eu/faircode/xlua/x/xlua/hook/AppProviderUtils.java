@@ -1,6 +1,5 @@
 package eu.faircode.xlua.x.xlua.hook;
 
-import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Process;
@@ -12,11 +11,11 @@ import java.util.List;
 import java.util.Map;
 
 import eu.faircode.xlua.DebugUtil;
-import eu.faircode.xlua.UberCore888;
+import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.XUtil;
-import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.call.GetSettingExCommand;
 import eu.faircode.xlua.x.xlua.database.sql.SQLDatabase;
@@ -160,14 +159,14 @@ public class AppProviderUtils {
             if(DebugUtil.isDebug())
                 Log.d(TAG, "Is Single App for Init Assignments, App Pkg=" + app.packageName + " UserId=" + userId);
 
-            ListUtil.addAllIfValid(assignments, filterAssignments(SQLSnake
+            ListUtil.addAll(assignments, filterAssignments(SQLSnake
                     .create(database, AssignmentPacket.TABLE_NAME)
                     .whereColumn(AssignmentPacket.FIELD_USER, userId)
                     .whereColumn(AssignmentPacket.FIELD_CATEGORY, app.packageName)
                     .asSnake()
                     .queryAs(AssignmentPacket.class, true, true)));
         } else {
-            ListUtil.addAllIfValid(assignments, filterAssignments(SQLSnake
+            ListUtil.addAll(assignments, filterAssignments(SQLSnake
                     .create(database, AssignmentPacket.TABLE_NAME)
                     .onlyReturn(AssignmentPacket.FIELD_USER, AssignmentPacket.FIELD_CATEGORY, AssignmentPacket.FIELD_HOOK, AssignmentPacket.FIELD_INSTALLED, AssignmentPacket.FIELD_USED, AssignmentPacket.FIELD_RESTRICTED, AssignmentPacket.FIELD_EXCEPTION)
                     .whereColumn(AssignmentPacket.FIELD_USER, start, ">=")
@@ -196,7 +195,7 @@ public class AppProviderUtils {
                     Log.w(TAG, Str.fm("Package Name %s is the Same but the UID is not, App:%s Assignment:%s  AppUserId:%s is Not...", assignment.getCategory(), app.uid, assignment.getUserId(true), appUserId));
             }
 
-            XLuaHook hook = UberCore888.getHook(assignment.getHookId(), assignment.getCategory(), collections);
+            XHook hook = XLegacyCore.getHook(assignment.getHookId(), assignment.getCategory(), collections);
             if(hook == null) {
                 if(DebugUtil.isDebug())
                     Log.d(TAG, Str.fm("Hook Is NULL for Assignment, Hook=%s  Category=%s  User Id=%s  Collection Size=%s", assignment.getHookId(), assignment.getCategory(), userId, ListUtil.size(collections)));

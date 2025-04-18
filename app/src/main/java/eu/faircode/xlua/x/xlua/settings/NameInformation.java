@@ -147,7 +147,7 @@ public class NameInformation {
             //    parts.brok
             //}
 
-            ListUtil.addAllIfValid(this.childrenNameInformation, childrenNames(this, parts));
+            ListUtil.addAll(this.childrenNameInformation, childrenNames(this, parts));
 
             String org = parts.getOriginalString();
             this.endsWithList = org.endsWith(".list");

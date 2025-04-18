@@ -19,7 +19,7 @@ import java.util.Map;
 import eu.faircode.xlua.BuildConfig;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XDatabaseOld;
-import eu.faircode.xlua.UberCore888;
+import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.api.XResult;
 
 import eu.faircode.xlua.XUtil;
@@ -32,6 +32,7 @@ import eu.faircode.xlua.api.xstandard.database.SqlQuerySnake;
 import eu.faircode.xlua.api.app.XLuaApp;
 import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 
 public class XLuaAppProvider {
     private static final String TAG = "XLua.XAppProvider";
@@ -255,6 +256,7 @@ public class XLuaAppProvider {
     private static void initAppDatabaseSettings(Context context, XDatabaseOld db, Map<String, XLuaApp> apps, int userid) {
         int start = XUtil.getUserUid(userid, 0);
         int end = XUtil.getUserUid(userid, Process.LAST_APPLICATION_UID);
+
         SqlQuerySnake snake = SqlQuerySnake
                 .create(db, LuaAssignment.Table.name)
                 .onlyReturnColumns("package", "uid", "hook", "installed", "used", "restricted", "exception")
@@ -287,16 +289,14 @@ public class XLuaAppProvider {
                     if (app.getUid() != uid)
                         continue;
 
-                    XLuaHook hook = UberCore888.getHook(hookId, pkg, collections);
+                    XHook hook = XLegacyCore.getHook(hookId, pkg, collections);
                     if(hook != null) {
-
-                        LuaAssignmentWriter assignment = new LuaAssignmentWriter(hook);
-                        assignment.setInstalled(c.getLong(colInstalled));
-                        assignment.setUsed(c.getLong(colUsed));
-                        assignment.setRestricted((c.getInt(colRestricted) == 1));
-                        assignment.setException(c.getString(colException));
-
-                        app.addAssignment(assignment);
+                        //LuaAssignmentWriter assignment = new LuaAssignmentWriter(hook);
+                        //assignment.setInstalled(c.getLong(colInstalled));
+                        //assignment.setUsed(c.getLong(colUsed));
+                        //assignment.setRestricted((c.getInt(colRestricted) == 1));
+                        //assignment.setException(c.getString(colException));
+                        //app.addAssignment(assignment);
                     }
 
                     //if(apps.size() == 1) {

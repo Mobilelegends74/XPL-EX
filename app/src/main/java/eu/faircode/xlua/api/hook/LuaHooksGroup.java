@@ -18,6 +18,7 @@ import eu.faircode.xlua.api.hook.assignment.LuaAssignment;
 import eu.faircode.xlua.api.settings.LuaSettingExtended;
 import eu.faircode.xlua.logger.XLog;
 import eu.faircode.xlua.utilities.SettingUtil;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 
 public class LuaHooksGroup {
     public String groupId;
@@ -30,7 +31,7 @@ public class LuaHooksGroup {
     public int optional = 0;
     public long used = -1;
     public int assigned = 0;
-    public List<XLuaHook> hooks = new ArrayList<>();
+    public List<XHook> hooks = new ArrayList<>();
 
     private String titleName = null;
 

@@ -21,6 +21,8 @@
 ******************************************************************************/
 package org.luaj.vm2.lib.jse;
 
+import android.util.Log;
+
 import java.lang.reflect.Array;
 import java.util.Collections;
 import java.util.HashMap;
@@ -178,7 +180,8 @@ public class CoerceLuaToJava {
 			case TARGET_TYPE_CHAR: return new Character( (char) value.toint() );
 			case TARGET_TYPE_SHORT: return new Short( (short) value.toint() );
 			case TARGET_TYPE_INT: return new Integer( (int) value.toint() );
-			case TARGET_TYPE_LONG: return new Long( (long) value.todouble() );
+			//case TARGET_TYPE_LONG: return new Long( (long) value.todouble() );
+			case TARGET_TYPE_LONG: return Long.valueOf(value.tolong()); // ✅ Add or ensure this!
 			case TARGET_TYPE_FLOAT: return new Float( (float) value.todouble() );
 			case TARGET_TYPE_DOUBLE: return new Double( (double) value.todouble() );
 			default: return null;
@@ -308,6 +311,9 @@ public class CoerceLuaToJava {
 		public Object coerce(LuaValue value) {
 			switch ( value.type() ) {
 			case LuaValue.TNUMBER:
+				//START HERE FOR UPDATING SUPPORT, or Search for (LONG_UPDATE)
+				if(value.isLong()) return new Long(value.tolong());
+
 				return value.isint()? (Object)new Integer(value.toint()): (Object)new Double(value.todouble());
 			case LuaValue.TBOOLEAN:
 				return value.toboolean()? Boolean.TRUE: Boolean.FALSE;

@@ -34,6 +34,7 @@ import eu.faircode.xlua.ui.interfaces.IHookTransaction;
 import eu.faircode.xlua.ui.interfaces.IHookTransactionEx;
 import eu.faircode.xlua.ui.transactions.HookTransactionResult;
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 
 public class HookGroup {
     public int id;
@@ -245,10 +246,10 @@ public class HookGroup {
     public static List<HookGroup> getGroups(Context context, AppGeneric application) {
         Map<String, HookGroup> groups = new HashMap<>();
         try {
-            Collection<XLuaHook> hooks = XLuaQuery.getHooks(context, true);
+            Collection<XHook> hooks = XLuaQuery.getHooks(context, true);
 
             //XLuaApp app = XLuaCall.getApp(context, application, true, true);
-            XLuaApp app = null;
+           /* XLuaApp app = null;
             for (XLuaApp a : XLuaQuery.getApps(context, true)) {
                 if(a.getPackageName().equalsIgnoreCase(application.getPackageName())) {
                     app = a;
@@ -265,8 +266,14 @@ public class HookGroup {
             Map<String, LuaSettingExtended> settings = LuaSettingExtended.toMap(XMockQuery.getAllSettings(context, application));
             XLog.i("Hooks Size=" + hooks.size() + " Collection Size=" + collection.size() + " Settings Size=" + settings.size());
             application.setForceStop(app.getForceStop());
-            for (XLuaHook hook : hooks) {
-                if(hook.getManagedSettings().isEmpty() && hook.getSettings() != null) hook.initSettings(settings);
+            for (XHook hook : hooks) {
+
+
+
+                if(hook.getManagedSettings().isEmpty() && hook.getSettings() != null)
+                    hook.initSettings(settings);
+
+
                 HookGroup group;
                 if (groups.containsKey(hook.getGroup())) group = groups.get(hook.getGroup());
                 else {
@@ -275,9 +282,9 @@ public class HookGroup {
                 }
                 if(group == null) continue;
                 group.putHook(hook);
-            }
+            }*/
 
-            for(HookGroup group : groups.values()) group.bindAssignmentsFromApp(app);
+            //for(HookGroup group : groups.values()) group.bindAssignmentsFromApp(app);
         }catch (Exception e) { XLog.e("Failed to create Groups: app=" + application, e, true); }
         XLog.i("Created Groups=" + groups.size());
         List<HookGroup> groupsList = new ArrayList<>(groups.values());

@@ -3,8 +3,10 @@ package eu.faircode.xlua.x.hook.interceptors.file.stat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import eu.faircode.xlua.x.xlua.LibUtil;
+
 public class StatFileParser {
-    private static final String TAG = "XLua.StatFileParser";
+    private static final String TAG = LibUtil.generateTag(StatFileParser.class);
 
     public static class FieldValuePointer {
         public boolean lastWasTime = false;

@@ -12,11 +12,11 @@ import java.util.Map;
 
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XUtil;
-import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.JsonHelperEx;
 import eu.faircode.xlua.x.data.utils.ArrayUtils;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.call.GetHookCommand;
 import eu.faircode.xlua.x.xlua.commands.call.GetSettingExCommand;
@@ -44,9 +44,12 @@ public class HooksSettingsGlobal {
     private static final Map<String, List<String>> settingsMap = new HashMap<>();
     private static final Map<String, String> remappedSettings = new HashMap<>();
 
-    public static XLuaHook getHook(Context context, String hookId) { return GetHookCommand.get(context, hookId); }
-    public static List<XLuaHook> getHooks(Context context) { return GetHooksCommand.getHooks(context, true, false); }
-    public static List<XLuaHook> getAllHooks(Context context) { return GetHooksCommand.getHooks(context, true, true); }
+
+    public static List<XHook> getHooksEx(Context context) { return GetHooksCommand.getHooks(context, true, false); }
+
+    //public static XLuaHook getHook(Context context, String hookId) { return GetHookCommand.get(context, hookId); }
+    //public static List<XLuaHook> getHooks(Context context) { return GetHooksCommand.getHooks(context, true, false); }
+    //public static List<XLuaHook> getAllHooks(Context context) { return GetHooksCommand.getHooks(context, true, true); }
     public static List<String> getCollections(Context context) { return GetSettingExCommand.getCollections(context, Process.myUid()); }
 
     public static List<String> settingHoldersToNames(SettingsContainer container) { return container != null ? settingHoldersToNames(container.getSettings()) : ListUtil.emptyList(); }
@@ -122,13 +125,23 @@ public class HooksSettingsGlobal {
         init(context);
         List<String> all = new ArrayList<>();
         if(DebugUtil.isDebug())
-            Log.d(TAG, Str.fm("Getting Hook Ids for Settings=[%s] Count=%s", Str.joinList(settingNames), ListUtil.size(settingNames)));
+            Log.d(TAG, Str.fm("Getting Hook Ids for Settings=[%s] Count=%s Has Setting First [%s]",
+                    Str.joinList(settingNames),
+                    ListUtil.size(settingNames),
+                    ListUtil.size(settingNames) > 0 && settingsMap.containsKey(settingNames.get(0))));
 
         if(ListUtil.isValid(settingNames)) {
             for(String setting : settingNames)
                 if(!Str.isEmpty(setting))
                     ListUtil.addAllIfValidEx(all, settingsMap.get(setting));
         }
+
+        if(DebugUtil.isDebug())
+            Log.d(TAG, Str.fm("Finished Getting Hook Ids for Settings=[%s] Count=%s All=[%s] All Count=%s",
+                    Str.joinList(settingNames),
+                    ListUtil.size(settingNames),
+                    Str.joinList(all),
+                    ListUtil.size(all)));
 
         return all;
     }
@@ -150,25 +163,32 @@ public class HooksSettingsGlobal {
         synchronized (lock) {
             if(settingsMap.isEmpty()) {
                 internalInitReMappedSettings(context);
-                List<XLuaHook> hooks = GetHooksCommand.getHooks(context, true, true);
-                if(DebugUtil.isDebug())
+                List<XHook> hooks = GetHooksCommand.getHooks(context, true, true);
+                if(DebugUtil.isDebug()) {
                     Log.d(TAG, "Got Hooks Count=" + ListUtil.size(hooks));
+                }
 
                 List<String> collections = GetSettingExCommand.getCollections(context, Process.myUid());
                 if(DebugUtil.isDebug())
-                    Log.d(TAG, "Collections Size=" + ListUtil.size(collections));
+                    Log.d(TAG, "Collections Size=" + ListUtil.size(collections) + " Collections(" + Str.joinList(collections) + ")");
 
                 if(ListUtil.isValid(hooks)) {
-                    for(XLuaHook hook : hooks) {
-                        //We can also intercept the setting names or ?
-                        if(!collections.contains(hook.getCollection()))
+                    for(XHook hook : hooks) {
+
+                        if(!ListUtil.isValid(collections) || hook == null || Str.isEmpty(hook.collection) || !collections.contains(hook.collection))
                             continue;
+
 
                         try {
                             String hookId = hook.getObjectId();
-                            String[] settings = hook.getSettings();
-                            String luaScript = hook.getLuaScript();
-                            if(ArrayUtils.isValid(settings)) {
+                            List<String> settings = hook.settings;
+                            if(DebugUtil.isDebug())
+                                Log.d(TAG, Str.fm("HookId (%s) Settings (%s)(%s)",
+                                        hook,
+                                        ListUtil.size(settings),
+                                        Str.joinList(settings)));
+
+                            if(ListUtil.isValid(settings)) {
                                for(String setting : settings) {
                                    if(Str.isEmpty(setting))
                                        continue;
@@ -176,10 +196,21 @@ public class HooksSettingsGlobal {
                                    String lowered = setting.toLowerCase();
                                    internalAdd(lowered, hookId);
                                    internalAddHook(hook);
+                                   /*if(isXi) {
+                                       if(DebugUtil.isDebug())
+                                           Log.d(TAG, Str.fm("Adding Setting [%s] Hook Id [%s] Lowered [%s] Contains Setting=%s Hook Id Count for Setting=%s",
+                                                   setting,
+                                                   hookId,
+                                                   lowered,
+                                                   settingsMap.containsKey(lowered),
+                                                   ListUtil.size(settingsMap.get(lowered))));
+                                   }*/
                                }
                             }
 
                             try {
+                                //This will cause issues, as some are not direct link any more
+                                String luaScript = hook.luaScript;
                                 if(!Str.isEmpty(luaScript) && luaScript.length() > 5 && luaScript.contains("function") && (luaScript.contains("before") || luaScript.contains("after"))) {
                                     for(Map.Entry<String, Integer> entry : GET_SET_PATTERNS.entrySet()) {
                                         String search = entry.getKey();
@@ -192,6 +223,11 @@ public class HooksSettingsGlobal {
                                                     String lowered = found.toLowerCase();
                                                     internalAdd(lowered, hookId);
                                                     internalAddHook(hook);
+                                                    if(DebugUtil.isDebug())
+                                                        Log.d(TAG, Str.fm("Adding Setting [%s] Hook Id [%s] Lowered [%s] from Lua Script!",
+                                                                found,
+                                                                hookId,
+                                                                lowered));
                                                 }
                                             }
                                         }
@@ -246,12 +282,12 @@ public class HooksSettingsGlobal {
         }
     }
 
-    private static void internalAddHook(Context context, String hookId) { internalAddHook(GetHookCommand.get(context, hookId)); }
-    private static void internalAddHook(XLuaHook hook) {
+    private static void internalAddHook(Context context, String hookId) { internalAddHook(GetHookCommand.getEx(context, hookId)); }
+    private static void internalAddHook(XHook hook) {
         if(hook != null) {
             String id = hook.getObjectId();
-            String group = hook.getGroup();
-            String collection = hook.getCollection();
+            String group = hook.group;
+            String collection = hook.collection;
             if(!Str.isEmpty(id)) {
                 if(!Str.isEmpty(group))
                     groups.put(id, group);

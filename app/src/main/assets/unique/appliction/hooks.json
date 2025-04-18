@@ -1,5 +1,4 @@
 [
-  //android/content/pm/PackageInfo#firstInstallTime
   {
     "builtin": true,
     "collection": "PrivacyEx",
@@ -38,16 +37,17 @@
     "luaScript": "@id_package_info_after_one",
     "settings": ["apps.install.time.offset", "apps.update.time.offset", "apps.sync.times.bool","apps.current.install.time.offset", "apps.current.update.time.offset"]
   },
+
   {
     "builtin": true,
     "collection": "PrivacyEx",
     "group": "Apps.Spoof.TimeStamps",
-    "name": "PackageInfo.CREATOR/Times",
+    "name": "PackageManager(*)/PackageInfo/Times",
     "author": "OBC",
-    "method": "CREATOR:createFromParcel",
-    "className": "android.content.pm.PackageInfo",
-    "parameterTypes": [ "android.os.Parcel" ],
-    "returnType": "android.content.pm.PackageInfo",
+    "className": "android.content.pm.PackageManager",
+    "methodName": "*",
+    "parameterTypes": [ "*" ],
+    "returnType": "*android.content.pm.PackageInfo*",
     "minSdk": 1,
     "maxSdk": 999,
     "version": 1,
@@ -55,7 +55,7 @@
     "optional": true,
     "usage": true,
     "notify": false,
-    "luaScript": "@id_package_info_parcel_one",
+    "luaScript": "@id_package_info_after_two",
     "settings": ["apps.install.time.offset", "apps.update.time.offset", "apps.sync.times.bool","apps.current.install.time.offset", "apps.current.update.time.offset"]
   }
 ]

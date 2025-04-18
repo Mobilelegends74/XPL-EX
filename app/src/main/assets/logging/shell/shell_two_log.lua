@@ -4,7 +4,7 @@ function before(hook, param)
 		return false
 	end
 
-	local command = param:joinArray(arg)
+	local command = param:joinStringArray(arg)
 	if command == nil then
 	    return false
 	end

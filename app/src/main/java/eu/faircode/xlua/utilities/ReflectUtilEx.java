@@ -145,13 +145,13 @@ public class ReflectUtilEx {
                     return field;
                 } catch (NoSuchFieldException ex) {
                     for (Field field : c.getDeclaredFields()) {
-                        if (!name.equals(field.getName()))
+                        if (!name.equalsIgnoreCase(field.getName()))
                             continue;
 
                         if (!field.getType().equals(type))
                             continue;
 
-                        Log.i(TAG, "Resolved field=" + field);
+                        //Log.i(TAG, "Resolved field=" + field);
                         return field;
                     }
                 }
@@ -175,7 +175,6 @@ public class ReflectUtilEx {
         boolean exists = false;
         try {
             Class<?> c = cls;
-            //hmm ?
             while (!c.equals(Object.class))
                 try {
                     if (name == null || TextUtils.isEmpty(name))
@@ -206,7 +205,7 @@ public class ReflectUtilEx {
                         if (!same)
                             continue;
 
-                        Log.i(TAG, "Resolved member=" + member);
+                        //Log.i(TAG, "Resolved member=" + member);
                         return member;
                     }
                     c = c.getSuperclass();

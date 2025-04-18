@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 import eu.faircode.xlua.DebugUtil;
-import eu.faircode.xlua.UberCore888;
+import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.xlua.LibUtil;
@@ -38,7 +38,7 @@ public class GetAssignedHooksLegacyCommand extends QueryCommandHandlerEx {
             Log.d(TAG, Str.fm("Got Assigned Hooks Legacy, Count=%s Collection Count=%s UserInfo=%s", ListUtil.size(assignments), Str.joinList(collection), Str.noNL(Str.toStringOrNull(commandData.getUserIdentification(true)))));
 
         for (AssignmentPacket assignment : assignments)
-            UberCore888.writeHookFromCache(
+            XLegacyCore.writeHookFromCache(
                     result,
                     assignment.hook,
                     String.valueOf(assignment.used),

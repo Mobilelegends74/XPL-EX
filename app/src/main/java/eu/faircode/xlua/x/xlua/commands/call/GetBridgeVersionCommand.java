@@ -6,12 +6,14 @@ import android.util.Log;
 
 import eu.faircode.xlua.BuildConfig;
 import eu.faircode.xlua.DebugUtil;
+import eu.faircode.xlua.XLua;
 import eu.faircode.xlua.api.XProxyContent;
 import eu.faircode.xlua.utilities.BundleUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.CallCommandHandlerEx;
 import eu.faircode.xlua.x.xlua.commands.packet.CallPacket;
+import eu.faircode.xlua.x.xlua.database.DatabasePathUtil;
 import eu.faircode.xlua.x.xlua.hook.AppProviderApi;
 
 

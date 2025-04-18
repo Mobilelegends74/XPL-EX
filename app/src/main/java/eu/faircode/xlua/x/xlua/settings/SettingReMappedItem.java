@@ -44,7 +44,7 @@ public class SettingReMappedItem implements IJsonType {
     public void fromJSONObject(JSONObject obj) throws JSONException {
         if(obj != null) {
             this.name = obj.optString(FIELD_NAME);
-            ListUtil.addAllIfValid(this.oldNames, JsonHelperEx.getStringArrayAsList(obj, FIELD_OLD_NAMES));
+            ListUtil.addAll(this.oldNames, JsonHelperEx.getStringArrayAsList(obj, FIELD_OLD_NAMES));
         }
     }
 

@@ -1,14 +1,10 @@
 function after(hook, param)
-	local ret = param:getResult()
-	if ret == nil then 
-		return false
-	end
-
-    local fake = param:getSetting("unique.bluetooth.address", "00:00:00:00:00:00")
-    if fake == nil then
-        return false
+    local res = param:getResult()
+    local nme = "unique.bluetooth.address"
+    if param:isForceSetting(nme, res) then
+        local fake = param:getSetting(nme)
+        param:setResult(fake)
+        return true, param:safe(res), param:safe(fake)
     end
-
-    param:setResult(fake)
-    return true, ret, fake
+    return false
 end

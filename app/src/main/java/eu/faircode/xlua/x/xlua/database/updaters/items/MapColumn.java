@@ -43,7 +43,7 @@ public class MapColumn implements IJsonType {
         if(obj != null) {
             this.tableName = obj.optString(FIELD_TABLE);
             this.columnName = obj.optString(FIELD_NAME);
-            ListUtil.addAllIfValid(this.oldColumns, JsonHelperEx.getStringArrayAsList(obj, FIELD_OLD_COLUMNS), true);
+            ListUtil.addAll(this.oldColumns, JsonHelperEx.getStringArrayAsList(obj, FIELD_OLD_COLUMNS), true);
         }
     }
 

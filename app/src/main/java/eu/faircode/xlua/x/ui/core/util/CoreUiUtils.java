@@ -4,16 +4,19 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.SearchView;
@@ -27,11 +30,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.FutureTask;
 
+import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ArrayUtils;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.data.utils.NumericUtils;
 import eu.faircode.xlua.x.data.utils.ObjectUtils;
+import eu.faircode.xlua.x.data.utils.TryRun;
 import eu.faircode.xlua.x.hook.interceptors.pkg.PackageInfoInterceptor;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
 import eu.faircode.xlua.x.runtime.reflect.DynamicField;
@@ -47,6 +52,7 @@ import eu.faircode.xlua.x.xlua.hook.data.AssignmentData;
 import eu.faircode.xlua.x.xlua.identity.UserIdentity;
 import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
 import eu.faircode.xlua.x.xlua.settings.interfaces.NameInformationTypeBase;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
 
 public class CoreUiUtils {
     public static final int CIRCLE_DIAMETER = 64;
@@ -55,7 +61,12 @@ public class CoreUiUtils {
 
     public static final String TAG = LibUtil.generateTag(CoreUiUtils.class);
 
-    public static final String SPECIAL_NETWORK_ALLOW_LIST = "network.allowed.list";
+    public static final List<String> TOP_PRI_UN_CHECKED = Arrays.asList(
+            "unique.gsm.imei.",
+            "unique.gsm.meid.",
+            "unique.serial.no",
+            "unique.gsf.id");
+
 
     public static final List<String> SPECIAL_TIME_SETTINGS = Arrays.asList("file.time.modify.offset", "file.time.access.offset", "file.time.created.offset");
     public static final List<String> SPECIAL_TIME_APP_SETTINGS = Arrays.asList(
@@ -70,6 +81,8 @@ public class CoreUiUtils {
             PackageInfoInterceptor.RAND_ALWAYS,
             PackageInfoInterceptor.RAND_ONCE);
 
+
+    public static boolean isSpecialSetting(String settingName) { return Str.isEmpty(settingName) || RandomizersCache.SETTING_XP_DEFAULTS.equalsIgnoreCase(settingName) || RandomizersCache.SETTING_NETWORK_ALLOW_LIST.equalsIgnoreCase(settingName); }
 
     public static int dpToPx(Context context, int dp) {
         float density = context.getResources().getDisplayMetrics().density;
@@ -102,6 +115,33 @@ public class CoreUiUtils {
             }
         } catch (Exception ignored) {
             return defaultText;
+        }
+    }
+
+    public static void setChecked(CheckBox cb, boolean flag) { setChecked(cb, flag, null, false); }
+    public static void setChecked(CheckBox cb, boolean flag, CompoundButton.OnCheckedChangeListener onCheck) { setChecked(cb, flag, onCheck, false); }
+    public static void setChecked(CheckBox cb, boolean flag, CompoundButton.OnCheckedChangeListener onCheck, boolean checkWindowTokenAttached) {
+        if(cb != null) {
+            try {
+                if (Looper.myLooper() != Looper.getMainLooper()) {
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        if (!checkWindowTokenAttached || cb.getWindowToken() != null) {  // Check if view is still attached
+                            if(onCheck != null) cb.setOnCheckedChangeListener(null);
+                            cb.setChecked(flag);
+                            if(onCheck != null) cb.setOnCheckedChangeListener(onCheck);
+                        }
+                    });
+                } else {
+                    if (!checkWindowTokenAttached || cb.getWindowToken() != null) {  // Check if view is still attached
+                        if(onCheck != null) cb.setOnCheckedChangeListener(null);
+                        cb.setChecked(flag);
+                        if(onCheck != null) cb.setOnCheckedChangeListener(onCheck);
+                    } else
+                        throw new Exception("Window Token did not check out");
+                }
+            }catch (Exception e) {
+                Log.e(TAG, "Error Setting The Checked State for Check Box! Error=" + e);
+            }
         }
     }
 
@@ -168,7 +208,7 @@ public class CoreUiUtils {
         }
     }
 
-
+    public static void setTextColor(TextView textView, int color) { setTextColor(textView, color, false); }
     public static void setTextColor(TextView textView, int color, boolean checkWindowTokenAttached) {
         if(textView != null) {
             try {
@@ -190,6 +230,8 @@ public class CoreUiUtils {
         }
     }
 
+    public static void setEditTextText(EditText inputEditText, String text)  { setEditTextText(inputEditText, null, text, false); }
+    public static void setEditTextText(EditText inputEditText, String text, boolean checkWindowTokenAttached)  { setEditTextText(inputEditText, null, text, checkWindowTokenAttached); }
     public static void setEditTextText(EditText inputEditText, TextWatcher textWatcher, String text, boolean checkWindowTokenAttached) {
         if(inputEditText != null) {
             try {
@@ -459,6 +501,85 @@ public class CoreUiUtils {
             //if(onCheckedChanged == null) {
                 //Set OnChecked ToDo
             //}
+        }
+    }
+
+    public static void nullifyViews(final boolean nullify, View... views) {
+        if(DebugUtil.isDebug())
+            Log.d(TAG, Str.fm("Nullify ? (%s) (%s) total views. Stack=%s", nullify, ArrayUtils.safeLength(views), RuntimeUtils.getStackTraceSafeString(new Exception())));
+
+        if(ArrayUtils.isValid(views)) {
+            for (final View v : views) {
+                if(v != null) {
+                    TryRun.onMain(() -> {
+                        Log.d(TAG, "Nullifying View Type=" + v.getClass().getName() + " " + String.valueOf(nullify));
+                        try {
+                            v.setFocusable(!nullify);
+                            v.setFocusableInTouchMode(!nullify);
+
+                            if (v instanceof Spinner) {
+                                Log.d(TAG, "NULLIFYING Spinner! Enabled=" + String.valueOf(!nullify));
+                                Spinner spinner = (Spinner) v;
+                                spinner.setEnabled(!nullify);
+                                spinner.setClickable(!nullify);
+                                if (nullify) spinner.setAdapter(null);
+
+                                //if(nullify)
+                                //    spinner.setOnClickListener(null);
+                            } else if (v instanceof EditText) {
+                                Log.d(TAG, "NULLIFYING EditText! Enabled=" + String.valueOf(!nullify));
+                                EditText editText = (EditText) v;
+                                editText.setEnabled(!nullify);
+                                editText.setClickable(!nullify);
+                                editText.setCursorVisible(!nullify);
+                                editText.setInputType(nullify ? InputType.TYPE_NULL : InputType.TYPE_CLASS_TEXT);
+                                //if(nullify)
+                                //    editText.setOnClickListener(null);
+                            } else if (v instanceof Button) {
+                                Log.d(TAG, "NULLIFYING Button! Enabled=" + String.valueOf(!nullify));
+                                Button button = (Button) v;
+                                button.setEnabled(!nullify);
+                                button.setClickable(!nullify);
+                                //if(nullify)
+                                //    button.setOnClickListener(null);
+
+                                if (nullify)
+                                    button.setAlpha(0.5f);
+                                else
+                                    button.setAlpha(1.0f);
+
+                            } else if (v instanceof ImageView) {
+                                Log.d(TAG, "NULLIFYING ImageView! Enabled=" + String.valueOf(!nullify));
+                                ImageView imageView = (ImageView) v;
+                                imageView.setEnabled(!nullify);
+                                imageView.setClickable(!nullify);
+                                //if(nullify)
+                                //    imageView.setOnClickListener(null);
+
+                                //mageView.setOnClickListener(nullify ? null : );
+                                if (nullify)
+                                    imageView.setAlpha(0.5f);
+                                else
+                                    imageView.setAlpha(1.0f);
+                            }else if(v instanceof TextView) {
+                                Log.d(TAG, "NULLIFYING TextView! Enabled=" + String.valueOf(!nullify));
+                                TextView tv = (TextView) v;
+                                tv.setEnabled(!nullify);
+                                tv.setClickable(!nullify);
+                                //if(nullify)
+                                //    tv.setOnClickListener(null);
+                            } else {
+                                Log.d(TAG, "NULLIFYING Default! " + v.getClass().getName() + " Enabled=" + String.valueOf(!nullify));
+                                // Default handling for all other view types
+                                v.setEnabled(!nullify);
+                                v.setClickable(!nullify);
+                            }
+                        }catch (Exception e) {
+                            Log.e(TAG, "Error Executing Nullify Views Function on (" + ArrayUtils.safeLength(views) + ") " + String.valueOf(nullify) + " Error=" + e);
+                        }
+                    });
+                }
+            }
         }
     }
 }

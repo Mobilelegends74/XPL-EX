@@ -26,7 +26,7 @@ public class DhcpInfoInterceptor {
 
             DhcpInfo value = (DhcpInfo) obj;
             GroupedMap map = param.getGroupedMap(NetUtils.GROUP_NAME);
-            param.setOldResult(value.toString());
+            param.setLogOld(value.toString());
 
             if(DebugUtil.isDebug())
                 Log.d(TAG, "Intercepting DHCP Info=" + value.toString());
@@ -135,7 +135,7 @@ public class DhcpInfoInterceptor {
                 value.leaseDuration = newLease;
             }
 
-            param.setNewResult(value.toString());
+            param.setLogNew(value.toString());
             if(getResult) {
                 param.setResult(value);
             }
@@ -143,9 +143,9 @@ public class DhcpInfoInterceptor {
             if(DebugUtil.isDebug())
                 Log.d(TAG, StrBuilder.create().ensureOneNewLinePer(true)
                         .appendLine("DHCP Info Old=")
-                        .appendLine(param.getOldResult())
+                        .appendLine(param.getLogOld())
                         .appendLine("DHCP Info New=")
-                        .appendLine(param.getNewResult())
+                        .appendLine(param.getLogNew())
                         .toString(true));
 
             return true;

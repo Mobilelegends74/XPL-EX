@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,9 +27,9 @@ import java.util.List;
 import eu.faircode.xlua.BuildConfig;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.R;
-import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.query.GetAssignmentsCommand;
 import eu.faircode.xlua.x.xlua.commands.query.GetHooksCommand;
@@ -52,7 +51,7 @@ public class BackupDialog extends AppCompatDialogFragment {
     private EditText tiBackupName;
     private CheckBox cbDefinitions, cbAllHooks, cbSettings, cbAssignments, cbDeleteOld;
 
-    private final List<XLuaHook> allHooks = new ArrayList<>();
+    private final List<XHook> allHooks = new ArrayList<>();
 
     public interface IOnOperationExportOrApplied {
         void onFinishedSuccessfully(XBackup instance, boolean wasImported);
@@ -69,7 +68,7 @@ public class BackupDialog extends AppCompatDialogFragment {
     }
 
     public BackupDialog setDefinitions(Context context) { return setDefinitions(GetHooksCommand.dump(context, true)); }
-    public BackupDialog setDefinitions(List<XLuaHook> definitions) {
+    public BackupDialog setDefinitions(List<XHook> definitions) {
         if (backup == null)
             backup = new XBackup();
 
@@ -85,11 +84,11 @@ public class BackupDialog extends AppCompatDialogFragment {
     }
 
     public BackupDialog setAllHooks(Context context) { return setAllHooks(GetHooksCommand.getHooks(context, true, true));}
-    public BackupDialog setAllHooks(List<XLuaHook> hooks) {
+    public BackupDialog setAllHooks(List<XHook> hooks) {
         if(DebugUtil.isDebug())
             Log.d(TAG, "Setting All Hooks, Count=" + ListUtil.size(hooks));
 
-        ListUtil.addAllIfValid(this.allHooks, hooks, true);
+        ListUtil.addAll(this.allHooks, hooks, true);
         updateCheckboxCounts();
         return this;
     }

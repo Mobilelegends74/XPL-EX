@@ -27,7 +27,7 @@ public class InputDeviceInterceptor {
             if(DebugUtil.isDebug())
                 Log.d(TAG, "Is Intercepting InputDevice Object! toString=" + inpDevice.toString());
 
-            param.setOldResult(inpDevice.toString());
+            param.setLogOld(inpDevice.toString());
             GroupedMap map = param.getGroupedMap(GroupedMap.MAP_DEVICES);
             if(DebugUtil.isDebug())
                 Log.d(TAG, "Found Devices MAP!");
@@ -47,7 +47,7 @@ public class InputDeviceInterceptor {
                 Log.d(TAG, "Was InputDevice [" + inpDevice.getId() + "] Spoofed ? " + (spoofed) + " toString=" + inpDevice.toString());
 
             if(spoofed) {
-                param.setNewResult(inpDevice.toString());
+                param.setLogNew(inpDevice.toString());
                 if(isResult) param.setResult(inpDevice);
                 return true;
             }
@@ -73,7 +73,7 @@ public class InputDeviceInterceptor {
             if(DebugUtil.isDebug())
                 Log.d(TAG, "Found Devices MAP! For Input Devices List!");
 
-            param.setOldResult("Old Device ID List Size=" + devIds.length);
+            param.setLogOld("Old Device ID List Size=" + devIds.length);
             for(int id : devIds) {
                 try {
                     InputDevice inpDev = InputDevice.getDevice(id);
@@ -96,7 +96,7 @@ public class InputDeviceInterceptor {
                 Log.d(TAG, "Old Device ID List Size=" + devIds.length + " New Device ID List Size=" + filteredIds.size());
 
             if(devIds.length != filteredIds.size()) {
-                param.setNewResult("New Device ID List Size=" + filteredIds.size());
+                param.setLogNew("New Device ID List Size=" + filteredIds.size());
                 int[] copyArray = new int[filteredIds.size()];
                 for(int i = 0; i < filteredIds.size(); i++)
                     copyArray[i] = filteredIds.get(i);

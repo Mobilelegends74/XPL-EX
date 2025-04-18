@@ -17,6 +17,7 @@ import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.TypeMap;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.hook.PackageHookContext;
 
@@ -33,7 +34,7 @@ public class HashMapHooks {
             .add(HashMap.class, "put")
             .add(ArrayMap.class, "put");
 
-    public static boolean attach(XLuaHook hook, Member member, PackageHookContext app) {
+    public static boolean attach(XHook hook, Member member, PackageHookContext app) {
         if(hook == null || member == null || app == null)
             return false;
 
@@ -58,17 +59,15 @@ public class HashMapHooks {
                         if(paramOne instanceof String && paramTwo instanceof String) {
                             String strOne = (String) paramOne;
                             String strTwo = (String) paramTwo;
-                            if(strOne.equalsIgnoreCase("android_id") && strTwo.length() == 16) {
+                            if("android_id".equalsIgnoreCase(strOne) && Str.length(strTwo) == 16) {
                                 String newValue = app.settings.get("unique.android.id");
                                 if(!Str.isEmpty(newValue)) {
                                     //android.provider.Settings$NameValueCache:getStringForUser
                                     boolean found = RuntimeUtils.hasElementClass(new Exception(), CLASS, 5);
-                                    if(DebugUtil.isDebug())
-                                        Log.d(TAG, "Failed to Identify Target Class for Hook: " + id + RuntimeUtils.getStackTraceSafeString(new Exception()));
-
                                     if(found) {
                                         param.args[1] = newValue;
-                                        Log.d(TAG, "Replaced Old Android ID {" + strTwo + "} with new {" + newValue + "}");
+                                        if(DebugUtil.isDebug())
+                                            Log.d(TAG, "Replaced Old Android ID {" + strTwo + "} with new {" + newValue + "}");
                                     }
                                 }
                             }
@@ -85,5 +84,4 @@ public class HashMapHooks {
             return false;
         }
     }
-
 }

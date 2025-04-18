@@ -3,7 +3,7 @@ package eu.faircode.xlua.api.xlua.query;
 import android.content.Context;
 import android.database.Cursor;
 
-import eu.faircode.xlua.UberCore888;
+import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.api.XProxyContent;
 import eu.faircode.xlua.api.xstandard.QueryCommandHandler;
 import eu.faircode.xlua.api.xstandard.command.QueryPacket_old;
@@ -24,10 +24,12 @@ public class GetHooksCommand extends QueryCommandHandler {
     public Cursor handle(QueryPacket_old commandData) throws Throwable {
         String[] selection = commandData.getSelection();
         boolean all = (selection != null && selection.length == 1 && "all".equals(selection[0]));
-        return CursorUtil.toMatrixCursor(
-                UberCore888.getHooks(commandData.getContext(), commandData.getDatabase(), all),
+        /*return CursorUtil.toMatrixCursor(
+                XLegacyCore.getHooks(commandData.getContext(), commandData.getDatabase(), all),
                 marshall,
-                XLuaHook.FLAG_WITH_LUA);
+                XLuaHook.FLAG_WITH_LUA);*/
+
+        return null;
     }
 
     public static Cursor invoke(Context context, boolean marshall) {

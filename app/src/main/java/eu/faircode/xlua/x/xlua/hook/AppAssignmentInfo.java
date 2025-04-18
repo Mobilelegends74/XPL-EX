@@ -40,6 +40,8 @@ public class AppAssignmentInfo {
 
     public int getLabelColor(Context context) { return XUtil.resolveColor(context, count > 0 ? R.attr.colorUnsavedSetting : R.attr.colorTextOne); }
 
+    public boolean isEmpty() { return count < 1; }
+
     public int getCount() { return count; }
     public int getAssignedCount() { return assignedCount; }
 
@@ -65,7 +67,13 @@ public class AppAssignmentInfo {
 
             List<String> hookIds = HooksSettingsGlobal.getHookIdsForSettings(context, settings);
             if(DebugUtil.isDebug())
-                Log.d(TAG, "Refreshing Assignments from Map, Hooks Count=" + ListUtil.size(hookIds));
+                Log.d(TAG, Str.fm("Refreshing (%s)(%s) Settings, with Hook Ids (%s)(%s) Assignment Cache Count (%s) App=%s",
+                        ListUtil.size(settings),
+                        Str.joinList(settings),
+                        ListUtil.size(hookIds),
+                        Str.joinList(hookIds),
+                        ListUtil.size(this.assignments),
+                        Str.toStringOrNull(this.app)));
 
             for(String hookId : hookIds) {
                 if(!Str.isEmpty(hookId)) {
@@ -73,6 +81,12 @@ public class AppAssignmentInfo {
                     this.assignments.put(hookId, isAssigned);
                     if(isAssigned)
                         assignedCount++;
+
+                    if(DebugUtil.isDebug())
+                        Log.d(TAG, Str.fm("Assignment for Hook [%s] is Assigned, Settings (%s)",
+                                hookId,
+                                isAssigned,
+                                Str.joinList(settings)));
                 }
             }
 
@@ -83,7 +97,7 @@ public class AppAssignmentInfo {
     public void refreshSettingAssignments(Context context, List<String> settings) {
         if(isValid()) {
             reset();
-            ListUtil.addAllIfValid(this.assignments, InitAssignments.get(context, HooksSettingsGlobal.getHookIdsForSettings(context, settings), app.uid, app.packageName), false);
+            ListUtil.addAll(this.assignments, InitAssignments.get(context, HooksSettingsGlobal.getHookIdsForSettings(context, settings), app.uid, app.packageName), false);
             count = this.assignments.size();
             for(Map.Entry<String, Boolean> entry : this.assignments.entrySet()) {
                 if(Boolean.TRUE.equals(entry.getValue())) {

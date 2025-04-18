@@ -4,14 +4,12 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
-import eu.faircode.xlua.x.data.utils.MapUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
 
 @SuppressWarnings("CopyConstructorMissesField")
@@ -71,7 +69,7 @@ public class StringPartsBuilder {
     public StringPartsBuilder(StringPartsBuilder source) {
         if(source != null) {
             this.mBlock = StringCharBlock.create(source.mBlock);
-            ListUtil.addAllIfValid(this.mParts, source.mParts);
+            ListUtil.addAll(this.mParts, source.mParts);
             copyNonImportant(source);
         }
     }
@@ -110,7 +108,7 @@ public class StringPartsBuilder {
     public List<String> getLastBrokenParts() { return !mBrokenParts.isEmpty() ? mBrokenParts.get(mBrokenParts.size() - 1).getParts() : null; }
     public List<String> joinAllBrokenParts() {
         List<String> parts = new ArrayList<>();
-        for(StringPartsBuilder ps : mBrokenParts) ListUtil.addAllIfValid(parts, ps.joinAllBrokenParts());
+        for(StringPartsBuilder ps : mBrokenParts) ListUtil.addAll(parts, ps.joinAllBrokenParts());
         return parts;
     }
 

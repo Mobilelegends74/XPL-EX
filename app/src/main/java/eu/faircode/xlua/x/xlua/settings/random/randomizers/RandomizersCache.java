@@ -8,7 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import eu.faircode.xlua.DebugUtil;
+import eu.faircode.xlua.x.ui.core.util.CoreUiUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
+import eu.faircode.xlua.x.xlua.settings.SettingHolder;
+import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
+import eu.faircode.xlua.x.xlua.settings.random.RandomGenericBool;
+import eu.faircode.xlua.x.xlua.settings.random.RandomGenericBoolInt;
 import eu.faircode.xlua.x.xlua.settings.random.interfaces.IRandomizer;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidBuildCodename;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidBuildDescription;
@@ -39,6 +44,8 @@ import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.kernel
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.kernel.RandomAndroidKernelVersion;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.apps.RandomAppCurrentFlag;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.apps.RandomAppTime;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.battery.RandomBatteryPercent;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.battery.RandomBatteryStatus;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.battery.RandomChargingCycles;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomMCC;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomMNC;
@@ -93,10 +100,12 @@ import eu.faircode.xlua.x.xlua.settings.random.randomizers.network.RandomNetHost
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.network.RandomNetNetmask;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.network.RandomNetParentControl;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.network.RandomNetRoutes;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.settings.RandomBootCount;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomAndroidId;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomBSSID;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomBluetoothAddress;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomDRMID;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomEmail;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomGSFID;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomICCID;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomIMEI;
@@ -110,15 +119,94 @@ import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomSubscrip
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomUUID;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomVoicemailId;
 
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionCountryName;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionCountryIso2;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionCountryCode;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionLanguageName;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionLanguageIso;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionLanguageTag;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionTimezoneOffset;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionTimezoneId;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionTimezoneDisplayName;
+
+
 public class RandomizersCache {
     private static final String TAG = LibUtil.generateTag(RandomizersCache.class);
 
+
+    public static boolean isSpecialSetting(SettingsContainer container) { return container != null && isSpecialSetting(container.getContainerName()); }
+    public static boolean isSpecialSetting(String settingName) { return CoreUiUtils.isSpecialSetting(settingName); }
 
     public static final Class<?> SETTING_GENERIC_DATE_EPOC_TYPE = RandomDateEpocSeconds.class;
     public static final Class<?> SETTING_GENERIC_DATE_ZERO_TYPE = RandomDateZero.class;
     public static final Class<?> SETTING_GENERIC_DATE_ONE_TYPE = RandomDateOne.class;
     public static final Class<?> SETTING_GENERIC_DATE_TWO_TYPE = RandomDateTwo.class;
     public static final Class<?> SETTING_GENERIC_DATE_ISO_TYPE = RandomDateISOThree.class;
+
+    public static final String SETTING_XP_FORCE_IS_WHITE_LIST = "xplex.force.settings.list.is.whitelist";
+    public static final String SETTING_XP_DEFAULTS = "xplex.force.settings.list";
+    public static final String SETTING_NETWORK_ALLOW_LIST = "network.allowed.list";
+
+    //public static final Class<?> SETTING_XP_DEFAULTS_TYPE = RandomXPDefaultValue.class;
+
+
+    public static final String SETTING_SETTING_BOOT_COUNT = "settings.boot.count";
+    public static final Class<?> SETTING_SETTING_BOOT_COUNT_TYPE = RandomBootCount.class;
+
+    public static final String SETTING_SETTING_MOCK_LOCATION = "settings.mock.location";
+    public static final String SETTING_SETTING_MASS_STORAGE = "settings.usb.mass.storage";
+    public static final String SETTING_SETTING_DEVICE_PROVISIONED = "settings.device.provisioned";
+    public static final String SETTING_SETTING_STAY_ON_WHILE_PLUGGED = "settings.stay.on.while.plugged";
+    public static final String SETTING_SETTING_ADB_ENABLED = "settings.adb.enabled";
+    public static final String SETTING_SETTING_DEV_SETTINGS_ENABLED = "settings.dev.settings.enabled";
+
+    public static final Class<?> SETTING_GENERIC_BOOL_INT_TYPE = RandomGenericBoolInt.class;
+
+
+    // Parent control
+    public static final String SETTING_ZONE_PARENT = "zone.parent.control.tz";
+    public static final Class<?> SETTING_ZONE_PARENT_TYPE = RandomRegionParent.class;
+
+    // Country settings
+    public static final String SETTING_ZONE_COUNTRY_NAME = "zone.country.name";
+    public static final Class<?> SETTING_ZONE_COUNTRY_NAME_TYPE = RandomRegionCountryName.class;
+
+    public static final String SETTING_ZONE_COUNTRY_ISO2 = "zone.country.iso2";
+    public static final Class<?> SETTING_ZONE_COUNTRY_ISO2_TYPE = RandomRegionCountryIso2.class;
+
+    public static final String SETTING_ZONE_COUNTRY_CODE = "zone.country.code";
+    public static final Class<?> SETTING_ZONE_COUNTRY_CODE_TYPE = RandomRegionCountryCode.class;
+
+    // Language settings
+    public static final String SETTING_ZONE_LANGUAGE_NAME = "zone.language.name";
+    public static final Class<?> SETTING_ZONE_LANGUAGE_NAME_TYPE = RandomRegionLanguageName.class;
+
+    public static final String SETTING_ZONE_LANGUAGE_ISO = "zone.language.iso";
+    public static final Class<?> SETTING_ZONE_LANGUAGE_ISO_TYPE = RandomRegionLanguageIso.class;
+
+    public static final String SETTING_ZONE_LANGUAGE_TAG = "zone.language.tag";
+    public static final Class<?> SETTING_ZONE_LANGUAGE_TAG_TYPE = RandomRegionLanguageTag.class;
+
+    // Timezone settings
+    public static final String SETTING_ZONE_TIMEZONE_OFFSET = "zone.timezone.offset";
+    public static final Class<?> SETTING_ZONE_TIMEZONE_OFFSET_TYPE = RandomRegionTimezoneOffset.class;
+
+    public static final String SETTING_ZONE_TIMEZONE_ID = "zone.timezone.id";
+    public static final Class<?> SETTING_ZONE_TIMEZONE_ID_TYPE = RandomRegionTimezoneId.class;
+
+    public static final String SETTING_ZONE_TIMEZONE_DISPLAY_NAME = "zone.timezone.display.name";
+    public static final Class<?> SETTING_ZONE_TIMEZONE_DISPLAY_NAME_TYPE = RandomRegionTimezoneDisplayName.class;
+
+
+
+
+    public static final String SETTING_XI_MI_HEALTH_ID = "settings.xiaomi.mi.health.id";
+    public static final String SETTING_XI_MI_GC_BOOSTER_UUID = "settings.xiaomi.gcbooster.uuid";
+    public static final String SETTING_XI_MI_KEY_MQS_UUID = "settings.xiaomi.key.mqs.uuid";
+    public static final String SETTING_XI_MI_MDM_UUID = "settings.xiaomi.mdm.uuid";
+    public static final String SETTING_XI_MI_OP_SEC_UUID = "settings.xiaomi.op.security.uuid";
+    public static final String SETTING_XI_MI_EXTM_UUID = "settings.xiaomi.extm.uuid";
 
     /*
         Device
@@ -353,6 +441,10 @@ public class RandomizersCache {
 
 
 
+    //CELL
+
+
+
 
     //
     //GPU
@@ -421,9 +513,22 @@ public class RandomizersCache {
     public static final Class<?> SETTING_UNIQUE_SUB_ID_TYPE = RandomSubscriptionId.class;
 
 
-    public static final String SETTING_BATTERY_CHARGING_CYCLES = "battery.charging.cycles";
+    public static final Class<?> SETTING_GENERIC_BOOL_TYPE = RandomGenericBool.class;
+    //Delete this
+    public static final String SETTING_BATTERY_IS_CHARGING = "battery.is.charging.bool";
+    public static final String SETTING_BATTERY_IS_POWER_SAVE_MODE = "battery.is.power.save.mode.bool";
 
+    public static final String SETTING_BATTERY_CHARGING_CYCLES = "battery.charging.cycles";
     public static final Class<?> SETTING_BATTERY_CHARGING_CYCLES_TYPE = RandomChargingCycles.class;
+
+    public static final String SETTING_BATTERY_PERCENT = "battery.charge.percent";
+    public static final Class<?> SETTING_BATTERY_PERCENT_TYPE = RandomBatteryPercent.class;
+
+    public static final String SETTING_BATTERY_STATUS = "battery.status";
+    public static final Class<?> SETTING_BATTERY_STATUS_TYPE = RandomBatteryStatus.class;
+
+    public static final String SETTING_BATTERY_IS_PLUGGED = "battery.is.plugged.in.bool";
+
 
     public static final String SETTING_CELL_OPERATOR_MCC = "cell.operator.mcc";
     public static final Class<?> SETTING_CELL_OPERATOR_MCC_TYPE = RandomMCC.class;
@@ -436,6 +541,9 @@ public class RandomizersCache {
 
     public static final String SETTING_UNIQUE_GSF_ID = "unique.gsf.id";
     public static final Class<?> SETTING_UNIQUE_GSF_ID_TYPE = RandomGSFID.class;
+
+    public static final String SETTING_EMAIL = "value.email";
+    public static final Class<?> SETTING_EMAIL_TYPE = RandomEmail.class;
 
 
     public static final String SETTING_UNIQUE_SERIAL_NO = "unique.serial.no";

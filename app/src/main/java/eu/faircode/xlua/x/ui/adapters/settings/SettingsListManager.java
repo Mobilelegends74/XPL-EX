@@ -26,6 +26,7 @@ import eu.faircode.xlua.R;
 import eu.faircode.xlua.databinding.SettingsExItemBinding;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.data.utils.TryRun;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
 import eu.faircode.xlua.x.ui.core.UINotifier;
 import eu.faircode.xlua.x.ui.core.util.CoreUiUtils;
@@ -35,14 +36,17 @@ import eu.faircode.xlua.x.ui.core.view_registry.SettingSharedRegistry;
 import eu.faircode.xlua.x.ui.core.view_registry.SharedRegistry;
 import eu.faircode.xlua.x.ui.core.adapter.ListViewManager;
 import eu.faircode.xlua.x.ui.core.interfaces.IStateManager;
+import eu.faircode.xlua.x.ui.dialogs.SettingsSearchDialog;
 import eu.faircode.xlua.x.ui.dialogs.TimePairsDialog;
 import eu.faircode.xlua.x.ui.dialogs.wifi.WifiListDialog;
 import eu.faircode.xlua.x.ui.dialogs.wifi.XWifiNetwork;
 import eu.faircode.xlua.x.ui.dialogs.wifi.XWifiUtils;
+import eu.faircode.xlua.x.ui.fragments.SettingFragmentUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.settings.SettingHolder;
 import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
 import eu.faircode.xlua.x.xlua.settings.random.RandomizerSessionContext;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
 
 public class SettingsListManager extends ListViewManager<SettingHolder, SettingsExItemBinding> {
 
@@ -72,8 +76,50 @@ public class SettingsListManager extends ListViewManager<SettingHolder, Settings
         }
     }
 
+    //TODO: Make this shit cleaner I know you hate UI but still...!!!
     private void setupTextInputEx(TextView tvName, EditText textInput, SettingHolder setting) {
-        if(CoreUiUtils.SPECIAL_NETWORK_ALLOW_LIST.equalsIgnoreCase(setting.getName())) {
+        if(RandomizersCache.SETTING_XP_DEFAULTS.equalsIgnoreCase(setting.getName())) {
+            setting.setBindings(tvName, textInput, null);
+            setting.setNameLabelColor(context);
+
+            //Fix the Index Names
+            textInput.setFocusable(false);
+            textInput.setFocusableInTouchMode(false);
+            textInput.setClickable(true);
+            textInput.setCursorVisible(false);
+            textInput.setInputType(InputType.TYPE_NULL);
+
+            Drawable arrowDrawable = ContextCompat.getDrawable(textInput.getContext(), android.R.drawable.arrow_down_float);
+            textInput.setCompoundDrawablesWithIntrinsicBounds(null, null, arrowDrawable, null);
+
+            textInput.setOnClickListener(view -> {
+                SettingsSearchDialog.create()
+                        .setSettings(SettingFragmentUtils.getAllSettingsFromFragment(this.stateManager.getAsFragment()))
+                        .setCheckedFromValue(setting)
+                        .removeParentSettingFromList()
+                        .setOnFinishListener((a, b) -> {
+                            final String lstString = Str.joinList(b, Str.NEW_LINE);
+                            final String base64 = Str.toBase64String(lstString, Str.CHAR_SET_UTF_8);
+                            if(DebugUtil.isDebug())
+                                Log.d(TAG, Str.fm("Total Settings (%s) were Checked out of (%s) settings",
+                                        ListUtil.size(b),
+                                        ListUtil.size(a)));
+
+                            //ToDo:
+                            //So Pretty I see my flow (almost least this set listener block)
+                            //Use Styles such as this, combining TryRun, Dialog Util sm CoreUiUtils etc etc
+                            //Just like Str we can make a big Class called Ui or Something >:)
+                            setting.setNewValue(base64);
+                            TryRun.onMain(() -> {
+                                setting.ensureUiUpdated(base64);
+                                setting.setNameLabelColor(context);
+                                setting.notifyUpdate(stateRegistry.notifier);
+                            });
+                        })
+                        .show(this.stateManager.getFragmentMan(), context.getString(R.string.title_settings_search));
+            });
+        }
+        else if(RandomizersCache.SETTING_NETWORK_ALLOW_LIST.equalsIgnoreCase(setting.getName())) {
 
             setting.setBindings(tvName, textInput, null);
             setting.setNameLabelColor(context);

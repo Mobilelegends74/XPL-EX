@@ -8,10 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.faircode.xlua.DebugUtil;
-import eu.faircode.xlua.UberCore888;
+import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.database.ActionFlag;
 import eu.faircode.xlua.x.xlua.database.A_CODE;
@@ -41,9 +42,9 @@ public class AssignmentApi {
             List<String> groups = new ArrayList<>();
 
             for(String hookId : packet.hookIds) {
-                XLuaHook hook = UberCore888.getHook(hookId);
-               if(hook != null && !groups.contains(hook.getGroup()))
-                   groups.add(hook.getGroup());
+                XHook hook = XLegacyCore.getHook(hookId);
+               if(hook != null && !groups.contains(hook.group))
+                   groups.add(hook.group);
 
                if(DebugUtil.isDebug())
                    Log.d(TAG, "Got Hook for HookID Assignment, HookId=" + hookId + " Hook Object=" + Str.toStringOrNull(hook) + " UID=" + packet.getUserId(true) + " PKG=" + packet.getCategory());

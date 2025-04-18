@@ -98,7 +98,7 @@ public class ConfigCreateDialog extends AppCompatDialogFragment {
 
     public ConfigCreateDialog setHookIds(List<String> hookIds) {
         if(ListUtil.isValid(hookIds) && config != null)
-           ListUtil.addAllIfValid(this.config.hooks, hookIds, true);
+           ListUtil.addAll(this.config.hooks, hookIds, true);
 
         return this;
     }
@@ -197,7 +197,7 @@ public class ConfigCreateDialog extends AppCompatDialogFragment {
         if (!Str.isEmpty(config.version)) tiConfigVersion.setText(config.version);
 
         flexTags = view.findViewById(R.id.flexTags);
-        ListUtil.addAllIfValid(this.selectedTags, config.getTags(), true);
+        ListUtil.addAll(this.selectedTags, config.getTags(), true);
         setupFlexboxWithTags();
         updateFlexboxWithTags();
 

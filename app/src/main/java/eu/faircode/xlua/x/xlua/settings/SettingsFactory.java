@@ -6,27 +6,24 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import eu.faircode.xlua.DebugUtil;
-import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
-import eu.faircode.xlua.x.data.utils.ArrayUtils;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.data.utils.TryRun;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.ui.core.UserClientAppContext;
-import eu.faircode.xlua.x.ui.core.view_registry.SharedRegistry;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.call.GetSettingExCommand;
 import eu.faircode.xlua.x.xlua.commands.query.GetHooksCommand;
 import eu.faircode.xlua.x.xlua.database.ActionFlag;
 import eu.faircode.xlua.x.xlua.database.ActionPacket;
 import eu.faircode.xlua.x.xlua.database.wrappers.GlobalDatabaseResolver;
-import eu.faircode.xlua.x.xlua.hook.AppXpPacket;
 import eu.faircode.xlua.x.xlua.settings.data.SettingPacket;
 
 public class SettingsFactory {
@@ -108,7 +105,7 @@ public class SettingsFactory {
         }
 
         //ToDo: Try to tie this into the core for hooks & settings
-        List<XLuaHook> all = GetHooksCommand.getHooks(context, true, true);
+        List<XHook> all = GetHooksCommand.getHooks(context, true, true);
         List<String> collections = GetSettingExCommand.getCollections(context, Process.myUid());
         if(DebugUtil.isDebug())
             Log.d(TAG, Str.fm("Getting Hooks Settings, " + "Database Settings Count=%s Current Settings Count=%s  Hooks Count=%s Collections Count=%s Collections=[%s]",
@@ -119,30 +116,31 @@ public class SettingsFactory {
                         Str.joinList(collections)));
 
         if(ListUtil.isValid(all)) {
-            for(XLuaHook hook : all) {
-                if(isGood(hook, collections, app.appPackageName)) {
-                    String[] hookSettings = hook.getSettings();
-                    for(String setting : hookSettings) {
-                        if(Str.isEmpty(setting))
-                            continue;
+            for(XHook hook : all) {
+                TryRun.silent(() -> {
+                    if(isGood(hook, collections, app.appPackageName)) {
+                        for(String setting : hook.settings) {
+                            if(Str.isEmpty(setting))
+                                continue;
 
-                        //Properly resolve the name for the setting hooks
-                        //This is a patch, in reality we need to actually update the hooks etc
-                        //Also need to update system so the containers house all the subjects
-                        //Right now if it has "cell.item" it will contain "cell.item" and "cell.item.2" but "cell.item.1" will be its own "[1]"
-                        String trimmed = GlobalDatabaseResolver.resolveName(context, setting.trim());
-                        if(Str.isEmpty(trimmed))
-                            continue;
+                            //Properly resolve the name for the setting hooks
+                            //This is a patch, in reality we need to actually update the hooks etc
+                            //Also need to update system so the containers house all the subjects
+                            //Right now if it has "cell.item" it will contain "cell.item" and "cell.item.2" but "cell.item.1" will be its own "[1]"
+                            String trimmed = GlobalDatabaseResolver.resolveName(context, setting.trim());
+                            if(Str.isEmpty(trimmed))
+                                continue;
 
-                        SettingPacket packet = current.get(trimmed);
-                        if(packet == null) {
-                            packet = SettingPacket.create(trimmed, null, app, ActionPacket.create(ActionFlag.PUSH, false));
-                            current.put(packet.name, packet);
-                            if(DebugUtil.isDebug())
-                                Log.d(TAG, "Found Setting from Hook not Defined in Database or JSON Defaults! Name=" + packet.name);
+                            SettingPacket packet = current.get(trimmed);
+                            if(packet == null) {
+                                packet = SettingPacket.create(trimmed, null, app, ActionPacket.create(ActionFlag.PUSH, false));
+                                current.put(packet.name, packet);
+                                if(DebugUtil.isDebug())
+                                    Log.d(TAG, "Found Setting from Hook not Defined in Database or JSON Defaults! Name=" + packet.name);
+                            }
                         }
                     }
-                }
+                });
             }
         }
 
@@ -159,7 +157,7 @@ public class SettingsFactory {
     }
 
     //ToDo: Put this somewhere clever nice, utils maybe ?
-    public static boolean isGood(XLuaHook hook, List<String> collections, String pkgName) {
+    public static boolean isGood(XHook hook, List<String> collections, String pkgName) {
         if(hook == null)
             return false;
 
@@ -174,15 +172,15 @@ public class SettingsFactory {
             return false;
         }
 
-        String group = hook.getGroup();
-        if(Str.isEmpty(group))
+        if(Str.isEmpty(hook.group))
             return false;
 
-        if(group.toLowerCase().startsWith("intercept.")) {
+        if(hook.group.toLowerCase().startsWith("intercept.")) {
             return false;
         }
 
-        return ArrayUtils.isValid(hook.getSettings());
+        return ListUtil.isValid(hook.settings);
+        //return ArrayUtils.isValid(hook.getSettings());
     }
 
     public static boolean isGoodSetting(SettingPacket packet) {

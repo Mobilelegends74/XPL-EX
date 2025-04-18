@@ -4,14 +4,13 @@ import android.content.Context;
 import android.util.Log;
 
 import de.robv.android.xposed.XposedBridge;
-import eu.faircode.xlua.UberCore888;
+import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.database.DatabaseUtils;
 import eu.faircode.xlua.x.xlua.database.IDatabaseManager;
 import eu.faircode.xlua.x.xlua.database.sql.SQLDatabase;
 import eu.faircode.xlua.x.xlua.database.updaters.DatabaseUpdater;
-import eu.faircode.xlua.x.xlua.settings.SettingReMappedItem;
 
 public class XLuaDatabaseManager implements IDatabaseManager {
     public static XLuaDatabaseManager create() { return new XLuaDatabaseManager(); }
@@ -55,7 +54,8 @@ public class XLuaDatabaseManager implements IDatabaseManager {
             if(!init && db.isOpen(true)) {
                 init = true;
                 XLuaDatabaseHelp.ensureIsUpdated_legacy(db);
-                UberCore888.loadHooksEx(context, db);
+                XLegacyCore.initializeFromJsons(context, db, true);
+                //XLegacyCore.loadHooksEx(context, db);
                 DatabaseUpdater.ensureUpdated(context, db);
                 //GlobalDatabaseResolver.initEnsureFunctions(context, db);
                 //DatabaseUpdater<SettingReMappedItem.Setting_legacy>

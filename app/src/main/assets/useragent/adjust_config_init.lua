@@ -4,7 +4,7 @@ function after(hook, param)
         return false
     end
 
-    if param:hasFunction("setUserAgent") then
+    if param:hasMethod(param:getThisClazz(), "setUserAgent") then
         local hooked = param:getValue('hooked', ths)
         if hooked then
             return false

@@ -17,6 +17,7 @@ import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.string.StrBuilder;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.ui.core.interfaces.IDiffFace;
+import eu.faircode.xlua.x.ui.core.util.CoreUiUtils;
 import eu.faircode.xlua.x.ui.core.view_registry.IIdentifiableObject;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.hook.data.AssignmentData;
@@ -49,9 +50,16 @@ public class SettingsContainer extends NameInformationTypeBase implements IDiffF
     public static SettingsContainer create(String settingName) { return new SettingsContainer(settingName);  }
     public static SettingsContainer create(NameInformation nameInformation) { return new SettingsContainer(nameInformation); }
 
+    private Boolean _isSpecial = null;
     private String containerName;
     private String description;
     private final LinkedHashMap<Integer, SettingHolder> settings = new LinkedHashMap<>();
+
+    public boolean isSpecial() {
+        //We used Container Name b4
+        if(_isSpecial == null) _isSpecial = Str.isEmpty(getName()) || CoreUiUtils.isSpecialSetting(getName());
+        return _isSpecial;
+    }
 
     //public String assignmentDataString = null;  //ToDO: Replace this with the actual data ? or make functions get actual data ?
 

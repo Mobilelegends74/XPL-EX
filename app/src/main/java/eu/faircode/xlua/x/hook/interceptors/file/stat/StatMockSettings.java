@@ -3,27 +3,20 @@ package eu.faircode.xlua.x.hook.interceptors.file.stat;
 import android.system.StructStat;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XParam;
-import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.random.RandomGenerator;
 import eu.faircode.xlua.x.runtime.reflect.DynamicField;
 import eu.faircode.xlua.x.data.string.StrBuilder;
+import eu.faircode.xlua.x.xlua.LibUtil;
 
 
 public class StatMockSettings {
-    private static final String TAG = "XLua.StatMockSettings";
+    private static final String TAG = LibUtil.generateTag(StatMockSettings.class);
 
     public enum TimeKind {
         ACCESS(0),
@@ -100,7 +93,7 @@ public class StatMockSettings {
     }
 
 
-    public void setTimeZoneOffset(XParam param) { setRomStartSeconds(param.getSetting("region.timezone")); }
+    public void setTimeZoneOffset(XParam param) { setRomStartSeconds(param.getSetting("zone.timezone.offset")); }
     public void setTimeZoneOffset(String settingsValue) {
         if(TextUtils.isEmpty(settingsValue))
             return;
@@ -251,7 +244,6 @@ public class StatMockSettings {
         }
     }
 
-    public void cleanStructure(Object obj) { cleanStructure(obj, null); }
     public void cleanStructure(Object obj, XParam param) {
         if(obj != null) {
             if(DebugUtil.isDebug())
@@ -311,7 +303,8 @@ public class StatMockSettings {
                 if(DebugUtil.isDebug())
                     Log.d(TAG, "Struct STAT modified, Seconds=" + modified[0] +  " Nano Seconds=" + modified[1] + " Time Stamp=" + StatUtils.timespecToString(modified[0], modified[1]));
 
-                String offset = param.getSetting("file.modify.time.offset");
+                //Huh ?
+                //String offset = param.getSetting("file.modify.time.offset");
 
 
                 if(TextUtils.isEmpty(this.lastModifiedTimeStamp))
@@ -340,8 +333,8 @@ public class StatMockSettings {
             }
 
             if(param != null) {
-                param.setOldResult(orgValue.toString());
-                param.setNewResult(newValue.toString());
+                param.setLogOld(orgValue.toString());
+                param.setLogNew(newValue.toString());
             }
 
             if(DebugUtil.isDebug()) {
@@ -355,6 +348,7 @@ public class StatMockSettings {
     }
 
     //We can store settings like "file.timestamp.[FILE].modify.time" or "file.timestamp.[FILE].modify.time.offset"
+    //Can get tricky with nio as it gets a stamp ?
 
     public static void setTimes(Object instance, TimeKind kind, long seconds, long nanoSeconds) {
         if(instance == null) return;

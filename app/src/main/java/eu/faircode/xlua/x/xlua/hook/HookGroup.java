@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.faircode.xlua.api.hook.XLuaHook;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 
 public class HookGroup {
     public int resourceId;
@@ -20,5 +21,5 @@ public class HookGroup {
 
     public boolean isAllAssigned() { return assigned == hooks.size(); }
 
-    public final List<XLuaHook> hooks = new ArrayList<>();
+    public final List<XHook> hooks = new ArrayList<>();
 }

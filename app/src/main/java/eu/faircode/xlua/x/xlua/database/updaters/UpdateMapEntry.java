@@ -39,7 +39,7 @@ public class UpdateMapEntry implements IJsonType {
     public void fromJSONObject(JSONObject obj) throws JSONException {
         if(obj != null) {
             this.id = obj.optString(FIELD_ID);
-            ListUtil.addAllIfValid(this.oldIds, JsonHelperEx.getStringArrayAsList(obj, FIELD_OLD_IDS), true);
+            ListUtil.addAll(this.oldIds, JsonHelperEx.getStringArrayAsList(obj, FIELD_OLD_IDS), true);
         }
     }
 

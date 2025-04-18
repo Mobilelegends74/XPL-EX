@@ -9,24 +9,18 @@ function before(hook, param)
     end
     if string.match(f, "boot_id") then
         local m = param:getArgument(1)
-        log("App is trying to Open boot_id File ... Spoofing....")
         local fake = param:createFakeUUIDFile()
         if fake == nil then
-            log("Error NIL File Object")
             return false
         end
 
         local path = fake:getPath()
         if path == nil then
-            log("Error NIL Path Object")
             return false
         end
 
-        log("Setting Parameter to Point to Path: " .. path)
         param:setArgumentString(0, path)
         return true
     end
-    log("Skipping File=" .. f)
-    param:printStack()
     return false
 end

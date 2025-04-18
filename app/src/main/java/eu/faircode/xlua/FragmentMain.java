@@ -41,9 +41,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -60,29 +58,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import eu.faircode.xlua.api.xlua.XLuaCall;
-import eu.faircode.xlua.api.xlua.XLuaQuery;
-import eu.faircode.xlua.api.hook.HookDatabaseEntry;
-import eu.faircode.xlua.api.hook.LuaHookPacket;
-import eu.faircode.xlua.api.xlua.call.PutHookCommand;
-import eu.faircode.xlua.ui.dialogs.PrivacyGroupWarningDialog;
 import eu.faircode.xlua.ui.interfaces.ILoader;
-import eu.faircode.xlua.utilities.CollectionUtil;
 
-import eu.faircode.xlua.api.hook.XLuaHook;
-import eu.faircode.xlua.api.app.XLuaApp;
-import eu.faircode.xlua.utilities.PrefUtil;
 import eu.faircode.xlua.utilities.UiUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.PrefManager;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.call.GetGroupsCommand;
 import eu.faircode.xlua.x.xlua.commands.call.GetSettingExCommand;
 import eu.faircode.xlua.x.xlua.commands.query.GetAppsCommand;
 import eu.faircode.xlua.x.xlua.commands.query.GetHooksCommand;
 import eu.faircode.xlua.x.xlua.hook.AppXpPacket;
-import me.zhanghai.android.fastscroll.FastScrollerBuilder;
 
 
 public class FragmentMain extends Fragment implements ILoader {
@@ -251,8 +239,8 @@ public class FragmentMain extends Fragment implements ILoader {
                 rvAdapter.setShow(data.show);
 
                 ListUtil.filterCondition(data.hooks,
-                        (o) -> !Str.isEmpty(o.getGroup())
-                                && !o.getGroup().toLowerCase().startsWith("intercept."));
+                        (o) -> !Str.isEmpty(o.group)
+                                && !o.group.toLowerCase().startsWith("intercept."));
 
                 rvAdapter.set(data.collection, data.hooks, data.apps);
 
@@ -359,7 +347,7 @@ public class FragmentMain extends Fragment implements ILoader {
                 all.title = getContext().getString(R.string.title_all);
                 data.groups.add(0, all);
 
-                List<XLuaHook> hooksCopy = GetHooksCommand.getHooks(getContext(), true, false);
+                List<XHook> hooksCopy = GetHooksCommand.getHooks(getContext(), true, false);
                 if(DebugUtil.isDebug())
                     Log.d(TAG, "Hooks loaded=" + ListUtil.size(hooksCopy));
 
@@ -405,7 +393,7 @@ public class FragmentMain extends Fragment implements ILoader {
         String theme;
         List<String> collection = new ArrayList<>();
         List<XUiGroup> groups = new ArrayList<>();
-        List<XLuaHook> hooks = new ArrayList<>();
+        List<XHook> hooks = new ArrayList<>();
         List<AppXpPacket> apps = new ArrayList<>();
         Throwable exception = null;
     }

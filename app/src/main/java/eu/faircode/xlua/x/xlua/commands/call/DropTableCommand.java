@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import eu.faircode.xlua.DebugUtil;
-import eu.faircode.xlua.UberCore888;
 import eu.faircode.xlua.api.XProxyContent;
 import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
@@ -16,10 +15,7 @@ import eu.faircode.xlua.x.xlua.database.A_CODE;
 import eu.faircode.xlua.x.xlua.database.DatabaseHelpEx;
 import eu.faircode.xlua.x.xlua.database.TableInfo;
 import eu.faircode.xlua.x.xlua.database.sql.SQLDatabase;
-import eu.faircode.xlua.x.xlua.hook.AppProviderApi;
 import eu.faircode.xlua.x.xlua.hook.AssignmentPacket;
-import eu.faircode.xlua.x.xlua.identity.UserIdentityIO;
-import eu.faircode.xlua.x.xlua.identity.UserIdentityUtils;
 import eu.faircode.xlua.x.xlua.settings.data.SettingPacket;
 
 public class DropTableCommand extends CallCommandHandlerEx {

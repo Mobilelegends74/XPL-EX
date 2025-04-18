@@ -9,7 +9,7 @@ import eu.faircode.xlua.x.xlua.settings.random.utils.RanUnqUtils;
 public class RandomAndroidId extends RandomElement {
     public RandomAndroidId() {
         super("Unique Android ID");
-        putSettings(RandomizersCache.SETTING_UNIQUE_ANDROID_ID);
+        putSettings(RandomizersCache.SETTING_UNIQUE_ANDROID_ID, RandomizersCache.SETTING_XI_MI_HEALTH_ID);
     }
 
     @Override

@@ -98,6 +98,7 @@ public class UserClientAppContext implements IValidator {
         if(Str.isEmpty(appPackageName) || isGlobal())
             return false;
 
+        //sharedRegistry.setChecked(SharedRegistry.STATE_TAG_KILL, getUserContext().appPackageName, checked);
         bindShared(sharedRegistry);
         return sharedRegistry != null ? sharedRegistry.isChecked(SharedRegistry.STATE_TAG_KILL, appPackageName) : kill;
     }

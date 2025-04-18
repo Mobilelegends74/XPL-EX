@@ -65,8 +65,10 @@ import eu.faircode.xlua.logger.XLog;
 import eu.faircode.xlua.ui.GroupHelper;
 import eu.faircode.xlua.ui.interfaces.ILoader;
 import eu.faircode.xlua.utilities.ViewUtil;
+import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.ui.activities.SettingsExActivity;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.ui.core.UserClientAppContext;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.call.AssignHooksCommand;
@@ -92,7 +94,7 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
     private CharSequence query = null;
     private List<String> collection = new ArrayList<>();
     private boolean dataChanged = false;
-    private List<XLuaHook> hooks = new ArrayList<>();
+    private List<XHook> hooks = new ArrayList<>();
     private final List<AppXpPacket> all = new ArrayList<>();
     private List<AppXpPacket> filtered = new ArrayList<>();
     private final Map<String, Boolean> expanded = new HashMap<>();
@@ -340,8 +342,8 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
             final String pkgName = app.packageName;
             Log.i(TAG, pkgName + " " + groupName + "=" + assign);
             final ArrayList<String> hookIds = new ArrayList<>();
-            for (XLuaHook hook : hooks) {
-                if (hook.isAvailable(pkgName, collection) && (groupName == null || groupName.equals(hook.getGroup()))) {
+            for (XHook hook : hooks) {
+                if (hook.isAvailable(pkgName, collection) && (groupName == null || groupName.equals(hook.group))) {
                     hookIds.add(hook.getObjectId());
                     if(assign)
                         app.addAssignment(AssignmentPacket.create(hook));
@@ -372,11 +374,11 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
         setHasStableIds(true);
     }
 
-    void set(List<String> collection, List<XLuaHook> hooks, List<AppXpPacket> apps) {
+    void set(List<String> collection, List<XHook> hooks, List<AppXpPacket> apps) {
         this.dataChanged = (this.hooks.size() != hooks.size());
         for (int i = 0; i < this.hooks.size() && !this.dataChanged; i++) {
-            XLuaHook hook = this.hooks.get(i);
-            XLuaHook other = hooks.get(i);
+            XHook hook = this.hooks.get(i);
+            XHook other = hooks.get(i);
             if(hook == null || other == null || hook.getObjectId() == null || other.getObjectId() == null) {
                 Log.e(TAG, "Invalid Hook! index=" + i + " set function for adapter ");
                 continue;
@@ -385,7 +387,7 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
             if(BuildConfig.DEBUG)
                 Log.i(TAG, "hook1=" + hook + "   hook2=" + other);
 
-            if (!hook.getGroup().equals(other.getGroup()) || !hook.getObjectId().equals(other.getObjectId()))
+            if (!Str.areEqual(hook.group, other.group) || !hook.getObjectId().equals(other.getObjectId()))
                 this.dataChanged = true;
         }
 
@@ -427,8 +429,8 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
         final List<LuaAssignmentPacket> actions = new ArrayList<>();
         boolean revert = false;
         for (AppXpPacket app : filtered) {
-            for (XLuaHook hook : hooks) {
-                if (group == null || group.equals(hook.getGroup())) {
+            for (XHook hook : hooks) {
+                if (group == null || Str.areEqual(group, hook.group)) {
                     AssignmentPacket assignment = new AssignmentPacket(hook);
                     if (app.hasAssignment(assignment)) {
                         revert = true;
@@ -443,9 +445,9 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
         for (AppXpPacket app : filtered) {
             ArrayList<String> hookIds = new ArrayList<>();
 
-            for (XLuaHook hook : hooks)
+            for (XHook hook : hooks)
                 if (hook.isAvailable(app.packageName, this.collection) &&
-                        (group == null || group.equals(hook.getGroup()))) {
+                        (group == null || group.equals(hook.group))) {
                     AssignmentPacket assignment = new AssignmentPacket(hook);
                     if (revert) {
                         if (app.hasAssignment(assignment)) {
@@ -712,10 +714,10 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
         holder.tvPackage.setText(app.packageName);
         holder.ivPersistent.setVisibility(app.persistent ? View.VISIBLE : View.GONE);
 
-        List<XLuaHook> selectedHooks = new ArrayList<>();
-        for (XLuaHook hook : hooks)
+        List<XHook> selectedHooks = new ArrayList<>();
+        for (XHook hook : hooks)
             if (hook.isAvailable(app.packageName, collection) &&
-                    (group == null || group.equals(hook.getGroup())))
+                    (group == null || group.equals(hook.group)))
                 selectedHooks.add(hook);
 
         // Assignment info

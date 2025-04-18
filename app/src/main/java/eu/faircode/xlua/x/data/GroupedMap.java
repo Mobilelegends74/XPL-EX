@@ -10,6 +10,7 @@ import eu.faircode.xlua.XParam;
 import eu.faircode.xlua.random.IRandomizerOld;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.interfaces.INullableInit;
+import eu.faircode.xlua.x.data.utils.TryRun;
 import eu.faircode.xlua.x.runtime.reflect.DynamicType;
 
 public class GroupedMap {
@@ -112,18 +113,37 @@ public class GroupedMap {
             T defaultValue,
             boolean useModifiedMap,
             boolean pushIfNull) {
-        if(keyName == null || groupName == null) return null;
+        if(keyName == null || groupName == null)
+            return null;
+
         synchronized (mMaps) {
-            internalSetGroupFocus(groupName, useModifiedMap);
-            T val = internalGetValue(keyName, useModifiedMap);
-            if(val == null) {
-                if(pushIfNull || defaultValue != null) {
-                    internalPushValue(keyName, defaultValue, useModifiedMap);
+            TryRun.getOrDefault(() -> {
+                internalSetGroupFocus(groupName, useModifiedMap);
+                if(pushIfNull && !internalHasKeyValue(keyName)) {
+                    if(defaultValue != null)
+                        internalPushValue(keyName, defaultValue, useModifiedMap);
+
                     return defaultValue;
                 }
-            }
-            return val;
+
+                //ToDo, I think the logic for these functions r wrong (pushIfNull || def != null ?)
+
+                Object val = internalGetValueSafe(keyName, useModifiedMap);
+                //T val = internalGetValue(keyName, useModifiedMap);
+                if(val == null) {
+                    if(pushIfNull && defaultValue != null) {
+                        internalPushValue(keyName, defaultValue, useModifiedMap);
+                        return defaultValue;
+                    } else {
+                        return defaultValue;
+                    }
+                }
+
+                return (T)val;
+            }, defaultValue);
         }
+
+        return defaultValue;
     }
 
     public <T> T getValueOrNullableInit(String groupName, String keyName, INullableInit initDelegate) { return getValueOrNullableInit(groupName, keyName, initDelegate, true, false); }
@@ -246,6 +266,26 @@ public class GroupedMap {
         if(mCurrentGroupMap != null) mCurrentGroupMap.put(keyName, value);
     }
 
+    private Object internalGetValueSafe(
+            String keyName,
+            boolean useModifiedMap) {
+        if(DebugUtil.isDebug())
+            Log.d(TAG, "[GetValue] KeyName=" + keyName + " Use Modified=" + useModifiedMap);
+
+        if(useModifiedMap) {
+            if(internalIsModified(keyName)) {
+                String originalKey = internalGetOriginalModifiedKey(keyName);   //Prevents Modifying a Already Modified Value
+                //return DynamicType.tryCast(internalGetValue(originalKey));      //So Return the Modified Object already cached from the Original Key
+                //More Common with Types of Strings like IpAddresses IDs etc
+                return internalGetValue(originalKey);
+            }
+        }
+
+        //return DynamicType.tryCast(internalGetValue(keyName));
+        return internalGetValue(keyName);
+    }
+
+    //ToDO: You need re write not use templates as they fuck stuff up
     private <T> T internalGetValue(
             String keyName,
             boolean useModifiedMap) {

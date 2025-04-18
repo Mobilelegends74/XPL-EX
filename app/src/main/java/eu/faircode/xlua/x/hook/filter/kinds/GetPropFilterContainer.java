@@ -15,6 +15,7 @@ import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.hook.filter.FilterContainerElement;
 import eu.faircode.xlua.x.hook.filter.IFilterContainer;
 import eu.faircode.xlua.x.hook.filter.SettingPair;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.xlua.LibUtil;
 
 public class GetPropFilterContainer extends FilterContainerElement implements IFilterContainer {
@@ -49,27 +50,27 @@ public class GetPropFilterContainer extends FilterContainerElement implements IF
     }
 
     @Override
-    public boolean hasSwallowedAsRule(XLuaHook hook) {
+    public boolean hasSwallowedAsRule(XHook hook) {
         boolean isRule = super.hasSwallowedAsRule(hook);
         if(isRule) {
             if(!hasSettings(hook) || !hasParams(hook)) {
                 factory.removeRule(hook);
             } else {
-                String[] args = hook.getParameterTypes();
-                String[] settings = hook.getSettings();
+                List<String> args = hook.parameterTypes;
+                List<String> settings = hook.settings;
                 if(DebugUtil.isDebug())
                     Log.d(TAG, Str.fm("Parsing Intercept Property Rule [%s] Properties=[%s] Settings=[%s]",
                             hook.getObjectId(),
-                            Str.joinArray(args),
-                            Str.joinArray(settings)));
+                            Str.joinList(args),
+                            Str.joinList(settings)));
 
                 //We just put to the settings KEY="prop:property_name", VALUE="setting.name"
-                for(int i = 0; i < args.length; i++) {
-                    String item = Str.trimOriginal(args[i]);
+                for(int i = 0; i < args.size(); i++) {
+                    String item = Str.trimOriginal(args.get(i));
                     if(Str.isEmpty(item))
                         continue;
 
-                    SettingPair pair = new SettingPair(item, i, settings);
+                    SettingPair pair = new SettingPair(item, i, settings, null);
                     putSettingPair(createPropertySetting(pair.name), pair.settingName);
                     if(DebugUtil.isDebug())
                         Log.d(TAG, Str.fm("Pushed Property, Setting Name=%s Mapped Setting Name=%s",

@@ -39,7 +39,6 @@
     "id": "soc.cpu.abi.list.32",
     "oldIds": ["cpu.abilist32"]
   },
-
   {
     "id": "soc.cpu.abi.list.64",
     "oldIds": ["cpu.abilist64"]
@@ -80,48 +79,51 @@
     "id": "hardware.memory.available",
     "oldIds": ["memory.available"]
   },
-  {
-    "id": "region.parent.control.tz",
-    "oldIds": ["zone.parent.control.tz"]
-  },
-  {
-    "id": "region.country",
-    "oldIds": ["zone.country"]
-  },
-  {
-    "id": "region.country.iso",
-    "oldIds": ["zone.country.iso"]
-  },
-  {
-    "id": "region.country.code",
-    "oldIds": ["zone.region"]
-  },
-  {
-    "id": "region.language",
-    "oldIds": ["zone.language"]
-  },
-  {
-    "id": "region.language.iso",
-    "oldIds": ["zone.language.iso"]
-  },
-  {
-    "id": "region.language.tag",
-    "oldIds": ["zone.language.tag"]
-  },
-  {
-    "id": "region.timezone",
-    "oldIds": ["zone.timezone"]
-  },
-  {
-    "id": "region.timezone.id",
-    "oldIds": ["zone.timezone.id"]
-  },
-  {
-    "id": "region.timezone.display.label",
-    "oldIds": ["zone.timezone.display.name"]
-  },
 
-
+  {
+    "id": "battery.charge.percent",
+    "oldIds": ["battery.percentage.left"]
+  },
+  {
+    "id": "zone.parent.control.tz",
+    "oldIds": ["region.parent.control.tz"]
+  },
+  {
+    "id": "zone.country.name",
+    "oldIds": ["region.country"]
+  },
+  {
+    "id": "zone.country.iso2",
+    "oldIds": ["region.country.iso"]
+  },
+  {
+    "id": "zone.country.code",
+    "oldIds": ["region.country.code", "region.region"]
+  },
+  {
+    "id": "zone.language.name",
+    "oldIds": ["region.language"]
+  },
+  {
+    "id": "zone.language.iso",
+    "oldIds": ["region.language.iso"]
+  },
+  {
+    "id": "zone.language.tag",
+    "oldIds": ["region.language.tag"]
+  },
+  {
+    "id": "zone.timezone.offset",
+    "oldIds": ["region.timezone"]
+  },
+  {
+    "id": "zone.timezone.id",
+    "oldIds": ["region.timezone.id"]
+  },
+  {
+    "id": "zone.timezone.display.name",
+    "oldIds": ["region.timezone.display.label"]
+  },
   {
     "id": "cell.phone.type.1",
     "oldIds": ["gsm.phone.type"]
@@ -146,9 +148,6 @@
     "id": "cell.operator.display.name.1",
     "oldIds": ["gsm.setting.display.name"]
   },
-
-
-
   {
     "id": "cell.operator.mcc.1",
     "oldIds": ["gsm.operator.mcc", "cell.operator.mcc"]
@@ -157,12 +156,10 @@
     "id": "cell.operator.mnc.1",
     "oldIds": ["gsm.operator.mnc", "cell.operator.mnc"]
   },
-
   {
     "id": "apps.allow.list",
     "oldIds": ["apps.allow.listt"]
   },
-
   {
     "id": "cell.sim.type.1",
     "oldIds": ["gsm.sim.type"]
@@ -183,9 +180,6 @@
     "id": "cell.location.cid",
     "oldIds": ["gsm.cell.location.cid"]
   },
-
-
-
   {
     "id": "apps.allow.list",
     "oldIds": ["applications.allow.list"]
@@ -226,8 +220,6 @@
     "id": "unique.gsm.phone.number.1",
     "oldIds": ["unique.gsm.phone.number"]
   },
-
-
   {
     "id": "unique.gsm.subscription.id.1",
     "oldIds": ["unique.gsm.subscription.id"]
@@ -260,10 +252,16 @@
     "id": "unique.gsm.operator.msin.1",
     "oldIds": ["unique.gsm.operator.msin"]
   },
-
-
   {
     "id": "android.etc.build.rom.version.codename",
     "oldIds": ["android.build.type"]
+  },
+  {
+    "id": "settings.xiaomi.mi.health.id",
+    "oldIds": ["settings.xiaomi.mi_health_id"]
+  },
+  {
+    "id": "settings.xiaomi.gcbooster.uuid",
+    "oldIds": ["settings.xiaomi.gcbooster_uuid"]
   }
 ]

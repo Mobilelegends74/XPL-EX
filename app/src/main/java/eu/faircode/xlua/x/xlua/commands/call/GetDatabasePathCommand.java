@@ -4,10 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.util.List;
-
 import eu.faircode.xlua.DebugUtil;
-import eu.faircode.xlua.UberCore888;
 import eu.faircode.xlua.api.XProxyContent;
 import eu.faircode.xlua.utilities.BundleUtil;
 import eu.faircode.xlua.x.xlua.LibUtil;

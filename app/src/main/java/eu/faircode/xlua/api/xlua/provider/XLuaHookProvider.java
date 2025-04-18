@@ -16,7 +16,7 @@ import de.robv.android.xposed.XposedBridge;
 import eu.faircode.xlua.BuildConfig;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XDatabaseOld;
-import eu.faircode.xlua.UberCore888;
+import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.XUiGroup;
 import eu.faircode.xlua.api.XResult;
 import eu.faircode.xlua.api.hook.LuaHookPacket;
@@ -73,8 +73,8 @@ public class XLuaHookProvider {
             }
         }
 
-        if(!UberCore888.updateHookCache(context, hook, id))
-            return res.appendErrorMessage("Failed at Updating Hook Cache, id=" + id, TAG).setFailed();
+        //if(!XLegacyCore.updateHookCache(context, hook, id))
+        //    return res.appendErrorMessage("Failed at Updating Hook Cache, id=" + id, TAG).setFailed();
 
         return LuaHookManager.updateHook(database, hook, id);
     }

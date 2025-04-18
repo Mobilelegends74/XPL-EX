@@ -2,25 +2,30 @@ package eu.faircode.xlua.x;
 
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 
 import java.io.File;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
 
-import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.api.hook.XLuaHook;
+import eu.faircode.xlua.x.data.string.StrBuilder;
 import eu.faircode.xlua.x.data.utils.ArrayUtils;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.data.utils.TryRun;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
+import eu.faircode.xlua.x.ui.core.view_registry.IIdentifiableObject;
 import eu.faircode.xlua.x.xlua.LibUtil;
 
 /*
@@ -40,6 +45,11 @@ public class Str {
     public static final String PERIOD = ".";
     public static final String WHITE_SPACE = " ";
     public static final String FORWARD_SLASH = "/";
+    public static final String PIPE = "|";
+
+    public static final Charset CHAR_SET_UTF_8 = StandardCharsets.UTF_8;
+    public static final Charset CHAR_SET_UTF_16 = StandardCharsets.UTF_16;
+    public static final Charset CHAR_SET_UTF_16_LE = StandardCharsets.UTF_16LE;
 
     private static final Pattern DOUBLE_NEWLINE_PATTERN = Pattern.compile("\n\\s*\n");
 
@@ -75,13 +85,73 @@ public class Str {
     //formattedString.replaceAll("(?m)\\n{2,}", "\n");
 
 
+    public static String replaceAll(String s, String regex, String replaceWith) { return isEmpty(s) || isEmpty(regex) ? s : s.replaceAll(regex, getNonNullString(replaceWith, Str.EMPTY)); }
+
+    public static boolean isNullOrDefaultValue(String s) { return isEmpty(s) ||  areEqualAny(s,"00:00:00:00:00:00", "02:00:00:00:00:00", "unknown", "null", "empty", "default", "private", "<unknown ssid>"); }
+
+
+    public static int length(String s) {
+        return s == null ? -1 : s.length();
+    }
+
+    public static byte[] stringToRawBytes(String str) {
+        if(str == null)
+            return null;
+        // Convert the string back to bytes
+        int len = str.length();
+        byte[] data = new byte[len / 2];
+
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(str.charAt(i), 16) << 4)
+                    + Character.digit(str.charAt(i + 1), 16));
+        }
+
+        return data;
+    }
+
+
+    public static boolean hasAlphabeticChars(String s) {
+        if(!isValid(s))
+            return false;
+
+        char[] chars = s.toCharArray();
+        for(char c : chars)
+            if(Character.isAlphabetic(c))
+                return true;
+
+        return false;
+    }
+
+    public static boolean hasNumericChars(String s) {
+        if(!isValid(s))
+            return false;
+
+        char[] chars = s.toCharArray();
+        for(char c : chars)
+            if(Character.isDigit(c))
+                return true;
+
+        return false;
+    }
+
     //Clean these three
-    public static String cleanDoubleNewLines(String input) { return DOUBLE_NEWLINE_PATTERN.matcher(input).replaceAll("\n"); }
-    public static String noNewLineEnding(String input) { return input.endsWith("\n") ? input.substring(0, input.length() - 1) : input; }
+    public static String cleanDoubleNewLines(String input) { return input == null ? null : DOUBLE_NEWLINE_PATTERN.matcher(input).replaceAll("\n"); }
+
+
+    public static String noNewLineEnding(String input) { return input == null ? null : input.endsWith("\n") ? input.substring(0, input.length() - 1) : input; }
+
     public static String ensureNoDoubleNewLines(String input) {
-        Matcher matcher = DOUBLE_NEWLINE_PATTERN.matcher(input);
-        if(matcher.matches()) return ensureNoDoubleNewLines(matcher.replaceAll("\n"));
-        return input;
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+
+        try {
+            // Replace all occurrences of multiple consecutive newlines with a single newline
+            return input.replaceAll("\\n+", "\n");
+        } catch (Exception e) {
+            Log.e(TAG, "Failed ensuring no double new lines: " + e);
+            return input;
+        }
     }
 
     public static boolean equalsObject(Object o, String compareAgainst) { return equalsObject(o, compareAgainst, true); }
@@ -96,11 +166,30 @@ public class Str {
         return s.replaceAll("\n", replaceString);
     }
 
+    public static String toLowerCase(String s) { return s == null || s.isEmpty() ? s : s.toLowerCase(); }
+
+    public static boolean contains(String s, String c, boolean lowerCase) {
+        if(s == null) return c == null;
+        if(c == null) return false;
+        if(lowerCase) {
+            String loweredS = s.toLowerCase();
+            String loweredC = c.toLowerCase();
+            return loweredS.contains(loweredC);
+        } else {
+            return s.contains(c);
+        }
+    }
+
     public static String fm(String str, Object... objects) { return fm(true, false, str, objects); }
     public static String fm(boolean noDoubleNewLines, String str, Object... objects) { return fm(noDoubleNewLines, false, str, objects); }
     public static String fm(boolean noDoubleNewLines, boolean newLineBetweenEach, String str, Object... objects) {
+        if(!ArrayUtils.isValid(objects) || isEmpty(str))
+            return str;
+
+        if(!str.contains("%s"))
+            return str;
+
         try {
-            if(!ArrayUtils.isValid(objects) || TextUtils.isEmpty(str)) return str;
             Object[] os = new Object[objects.length];
             for(int i = 0; i < objects.length; i++) {
                 Object o = objects[i];
@@ -148,7 +237,7 @@ public class Str {
     public static String isNullAsString(Object v) { return v == null ? "False" : "True"; }
 
     @SuppressWarnings("StringOperationCanBeSimplified")
-    public static String createCopy(String x) { return new String(x); }
+    public static String createCopy(String x) { return x == null ? null : new String(x); }
 
     //Have a T Combine list thing ? T can be like InetAddress (assuming it has a toString)
 
@@ -159,22 +248,26 @@ public class Str {
 
     //Make a ALL version
     public static boolean areEqualsAnyIgnoreCase(String a, String... compareItems) {
-        if(a == null) {
-            for(String c : compareItems) if(c == null) return true;
-            return false;
-        }
+        if(ArrayUtils.isValid(compareItems)) {
+            if(a == null) {
+                for(String c : compareItems) if(c == null) return true;
+                return false;
+            }
 
-        for(String c : compareItems)
-            if(a.equalsIgnoreCase(c))
-                return true;
+            for(String c : compareItems)
+                if(a.equalsIgnoreCase(c))
+                    return true;
+        }
 
         return false;
     }
 
     public static boolean areEqualAny(String a, String... compareItems) {
-        for(String c : compareItems)
-            if(Objects.equals(a, c))
-                return true;
+        if(ArrayUtils.isValid(compareItems)) {
+            for(String c : compareItems)
+                if(Objects.equals(a, c))
+                    return true;
+        }
 
         return false;
     }
@@ -182,6 +275,7 @@ public class Str {
     public static boolean areEqual(String a, String b) { return Objects.equals(a, b); }
     public static boolean areEqualIgnoreCase(String a, String b) { return a == null ? b == null : a.equalsIgnoreCase(b); }
 
+    public static boolean areEqual(String a, String b, boolean caseSensitive) { return areEqual(a, b, caseSensitive, false); }
     public static boolean areEqual(String a, String b, boolean caseSensitive, boolean treatNullAndEmptyAsSame) {
         /*return treatNullAndEmptyAsSame ?
                 (TextUtils.isEmpty(a) && TextUtils.isEmpty(b)) || caseSensitive ? areEqual(a, b) : areEqualIgnoreCase(a, b) :
@@ -223,14 +317,88 @@ public class Str {
             return data.substring(indexOf);
         }
     }
+
+
+
+    public static String[] splitAdvance(String data, String... delimiters) { return splitAdvance(data, false, false, delimiters); }
+    public static String[] splitAdvance(String data, boolean ensureEachLineValid, String... delimiters) { return splitAdvance(data, ensureEachLineValid, false, delimiters); }
+
+
+    /**
+     * Splits the input string using multiple delimiters.
+     * @param data The string to split.
+     * @param ensureEachLineValid If true, only non-blank segments are included.
+     * @param trimEach If true, each segment is trimmed of leading/trailing whitespace.
+     * @param delimiters One or more delimiters to split on.
+     * @return An array of split segments, never null.
+     */
+    public static String[] splitAdvance(String data,
+                                        boolean ensureEachLineValid,
+                                        boolean trimEach,
+                                        String... delimiters) {
+        if (isEmpty(data))
+            return new String[0];
+
+        // If no delimiters provided, return the whole string (post-trim/validation)
+        if (!ArrayUtils.isValid(delimiters)) {
+            String single = trimEach ? data.trim() : data;
+            if (ensureEachLineValid && !isValidNotWhitespaces(single)) return new String[0];
+            return new String[]{ single };
+        }
+
+        // Build a regex that matches any of the delimiters
+        StringBuilder regexBuilder = new StringBuilder();
+        for (String delimiter : delimiters) {
+            if (!isEmpty(delimiter)) {
+                if (regexBuilder.length() > 0)
+                    regexBuilder.append("|");
+
+                regexBuilder.append(Pattern.quote(delimiter));
+            }
+        }
+
+        // If all delimiters were null/empty, fallback
+        if (isEmpty(regexBuilder))
+            return new String[]{ trimEach ? trimOriginal(data) : data };
+
+        String regex = regexBuilder.toString();
+
+        // Perform the split
+        String[] parts = data.split(regex);
+        List<String> result = new ArrayList<>(parts.length);
+        if(ArrayUtils.isValid(parts)) {
+            for (String p : parts) {
+                String item = trimEach ? trimOriginal(p) : p;
+                if (ensureEachLineValid) {
+                    if (!isValidNotWhitespaces(item))
+                        continue;
+
+                    result.add(item);
+                } else {
+                    if (trimEach && isEmpty(item))
+                        continue;
+
+                    result.add(item);
+                }
+            }
+        }
+
+        return result.toArray(new String[0]);
+    }
+
+
     public static String[] split(String data, String delimiter, boolean ensureEachLineValid) { return split(data, delimiter, ensureEachLineValid, false); }
     public static String[] split(String data, String delimiter, boolean ensureEachLineValid, boolean trimEach) {
-        if(data == null || data.isEmpty()) return new String[0];
+        if(data == null || data.isEmpty())
+            return new String[0];
+
         String[] parts = data.split(Pattern.quote(delimiter));
         if(ensureEachLineValid) {
             List<String> partsCleaned = new ArrayList<>();
             for(String p : parts) {
-                if(!isValidNotWhitespaces(p)) continue;
+                if(!isValidNotWhitespaces(p))
+                    continue;
+
                 partsCleaned.add(trimEach ? p.trim() : p);
             }
 
@@ -304,6 +472,9 @@ public class Str {
         return Character.toUpperCase(input.charAt(0)) + input.substring(1);
     }
 
+
+    public static boolean isEmpty(StrBuilder sb) { return sb == null || sb.isEmpty(); }
+    public static boolean isEmpty(StringBuilder sb) { return sb == null || sb.length() <= 0; }
     public static boolean isEmpty(String s) { return s == null || s.isEmpty(); }
     public static boolean isAnyEmpty(String... strings) {
         if(strings != null) {
@@ -314,6 +485,37 @@ public class Str {
         }
 
         return false;
+    }
+
+    /**
+     * Converts a byte array to a hexadecimal string representation.
+     *
+     * @param bytes The byte array to convert
+     * @param addSpaces Whether to add spaces between bytes in the output
+     * @return A hexadecimal string representation of the byte array
+     */
+    public static String bytesToHexString(byte[] bytes, boolean addSpaces) {
+        if (bytes == null || bytes.length == 0)
+            return "";
+
+        StringBuilder hexString = new StringBuilder(bytes.length * (addSpaces ? 3 : 2));
+        String separator = addSpaces ? " " : "";
+
+        for (int i = 0; i < bytes.length; i++) {
+            // Convert each byte to a 2-digit hex value with leading zeros if needed
+            String hex = Integer.toHexString(0xFF & bytes[i]);
+            if (hex.length() == 1)
+                hexString.append('0');
+
+            hexString.append(hex);
+
+            // Add space if not the last byte and spaces are requested
+            if (addSpaces && i < bytes.length - 1) {
+                hexString.append(separator);
+            }
+        }
+
+        return hexString.toString();
     }
 
     public static String combineEx(Object... objects) { return combineEx(false, objects); }
@@ -396,12 +598,62 @@ public class Str {
         }
     }
 
-    public static String toStringOrNull(Object o) {
-        //
+    public static String toObjectId(IIdentifiableObject o) {
+        return
+            TryRun.getOrDefault(() -> {
+                if(o == null) return "null";
+                return o.getObjectId();
+            }, "null");
+    }
+
+    public static String toObjectClassName(Object o) {
         if(o != null) {
-            try {
-                return String.valueOf(o);
-            }catch (Exception ignored) { }
+            return TryRun.get(() -> {
+                if(o instanceof Class<?>) {
+                    return ((Class<?>)o).getName();
+                } else {
+                    return o.getClass().getName();
+                }
+            });
+        }
+        return null;
+    }
+
+
+    public static String toObjectClassNameNonNull(Object o) {
+        if(o != null) {
+            return TryRun.get(() -> {
+                if(o instanceof Class<?>) {
+                    return ((Class<?>)o).getName();
+                } else {
+                    return o.getClass().getName();
+                }
+            });
+        }
+        return "null";
+    }
+
+    public static Character charAt(String s, int index) { return charAt(s, index, '\0'); }
+    public static Character charAt(String s, int index, Character defaultValue) {
+        if(!isValid(s))
+            return defaultValue;
+        if(s.length() <= index || index < 0)
+            return defaultValue;
+
+        return s.charAt(index);
+    }
+
+    public static String toStringOrNull(final Object o) {
+        if(o != null) {
+            return TryRun.get(() -> {
+                if(o instanceof byte[] || o.getClass().equals(Byte[].class))
+                    return bytesToHexString((byte[]) o, true);
+                else if(o instanceof ZipEntry)
+                    return ((ZipEntry)o).getName();
+                else {
+                    return String.valueOf(o);
+                }
+            });
         }
         return "null";
     }
@@ -463,9 +715,134 @@ public class Str {
         }catch (Exception ignored) { return 0.1F; }
     }
 
-    public static Long tryParseLong(String v) {
-        try { return Long.parseLong(v);
-        }catch (Exception ignored) { return 0L; }
+
+    //9223372036854775807
+    public static final int LONG_SIZE = 19; // Maximum number of digits in Long.MAX_VALUE/MIN_VALUE
+    public static final String MAX_LONG = String.valueOf(Long.MAX_VALUE);
+    public static final String MAX_NEGATIVE_LONG = String.valueOf(Long.MIN_VALUE).substring(1); // Remove the negative sign
+
+
+    public static byte toNumericByte(char c) {
+        switch (c) {
+            case '0': return 0;
+            case '1': return 1;
+            case '2': return 2;
+            case '3': return 3;
+            case '4': return 4;
+            case '5': return 5;
+            case '6': return 6;
+            case '7': return 7;
+            case '8': return 8;
+            case '9': return 9;
+        }
+
+        return -1;
+    }
+
+    public static Long tryParseLong(String v) { return tryParseLong(v, false); }
+    public static Long tryParseLong(String v, boolean returnNullIfFailureElseZero) {
+        if (v == null || v.isEmpty()) return returnNullIfFailureElseZero ? null : 0L;
+        try {
+            // First attempt: Try simple parsing if it's a valid number
+            try {
+                return Long.parseLong(v);
+            } catch (NumberFormatException ignored) {
+                // Continue with custom parsing
+            }
+
+            boolean isNegative = false;
+            StringBuilder chs = new StringBuilder();
+            char[] chars = v.toCharArray();
+            boolean foundFirstNonZeroDigit = false;
+
+            // Check for negative sign at the beginning or after non-digit characters
+            for (int i = 0; i < chars.length; i++) {
+                if (chars[i] == '-' && !foundFirstNonZeroDigit && chs.length() == 0) {
+                    // Only consider the negative sign if it's followed by digits
+                    for (int j = i + 1; j < chars.length; j++) {
+                        if (Character.isDigit(chars[j]) && chars[j] != '0') {
+                            isNegative = true;
+                            break;
+                        }
+                        if (chars[j] == '0' && j == chars.length - 1) {
+                            // If there's only zeros after the negative sign
+                            isNegative = true;
+                            break;
+                        }
+                    }
+                    continue;
+                }
+
+                if (Character.isDigit(chars[i])) {
+                    // Skip leading zeros
+                    if (chars[i] == '0' && !foundFirstNonZeroDigit && chs.length() == 0) {
+                        continue;
+                    }
+
+                    if (chars[i] != '0' || chs.length() > 0) {
+                        foundFirstNonZeroDigit = true;
+                    }
+
+                    chs.append(chars[i]);
+
+                    // Break if we've reached the maximum length for a long
+                    if (chs.length() >= LONG_SIZE) {
+                        break;
+                    }
+                }
+            }
+
+            String parsed = chs.toString();
+
+            // Handle empty result (only zeros or no digits)
+            if (parsed.isEmpty()) {
+                // Check if there were any zeros in the input
+                for (char c : chars) {
+                    if (c == '0') {
+                        return isNegative ? -0L : 0L;
+                    }
+                }
+                return returnNullIfFailureElseZero ? null : 0L;
+            }
+
+            // Check if the parsed value exceeds max long
+            if (parsed.length() == LONG_SIZE) {
+                String maxLongValue = isNegative ? MAX_NEGATIVE_LONG : MAX_LONG;
+
+                // Compare each character to determine if we need to truncate
+                for (int i = 0; i < parsed.length(); i++) {
+                    char pChar = parsed.charAt(i);
+                    char mChar = maxLongValue.charAt(i);
+
+                    if (pChar > mChar) {
+                        // If this digit exceeds the max, truncate to the maximum valid value
+                        if (i == 0) {
+                            // If the first digit is already too large, return max/min long
+                            return isNegative ? Long.MIN_VALUE : Long.MAX_VALUE;
+                        }
+
+                        // Try to parse the substring up to this point minus 1 to ensure it's within range
+                        try {
+                            long result = Long.parseLong(parsed.substring(0, i));
+                            return isNegative ? -result : result;
+                        } catch (NumberFormatException e) {
+                            // Fallback to max/min if there's a parsing issue
+                            return isNegative ? Long.MIN_VALUE : Long.MAX_VALUE;
+                        }
+                    } else if (pChar < mChar) {
+                        // If this digit is less than max, the whole number is valid
+                        break;
+                    }
+                    // If equal, continue checking next digit
+                }
+            }
+
+            // Parse the final result
+            long result = Long.parseLong(parsed);
+            return isNegative ? -result : result;
+        } catch (Exception ignored) {
+            return returnNullIfFailureElseZero ? null : 0L;
+        }
     }
 
     public static String bytesToHex(byte[] bys) {
@@ -483,6 +860,89 @@ public class Str {
         }
 
         return hexString.toString().trim();
+    }
+
+    public static String fromBase64String(String s, Charset characterSet) { return TryRun.getOrDefault(() -> new String(Base64.decode(s, Base64.DEFAULT), characterSet), s); }
+
+
+    public static String toBase64String(String s, Charset characterSet) {
+        if(isEmpty(s)) return s;
+        byte[] bytes = s.getBytes(characterSet);
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
+    }
+
+    /**
+     * Safely extracts a substring with extensive error checking.
+     *
+     * Example:
+     *   safeSubstring("Hello World", 6, 11) returns "World"
+     *   safeSubstring("Hello World", 6, 999) returns "World"
+     *   safeSubstring("Hello World", -5, 5) returns "Hello"
+     *   safeSubstring("Hello World", 11, 6) returns "World" (swaps automatically)
+     *   safeSubstring(null, 0, 5) returns null
+     *
+     * @param inputString The input string
+     * @param startIndexInclusive The starting index (inclusive, 0-based) - character at this position is included
+     * @param endIndexExclusive The ending index (exclusive, 0-based) - character at this position is NOT included
+     * @return The substring or the original string if invalid parameters
+     */
+    public static String subString(String inputString, int startIndexInclusive, int endIndexExclusive) {
+        // Check for null or empty string
+        if (inputString == null || inputString.isEmpty()) {
+            return inputString;
+        }
+
+        // Ensure start and end are in correct order (swap if needed)
+        if (startIndexInclusive > endIndexExclusive) {
+            int temp = startIndexInclusive;
+            startIndexInclusive = endIndexExclusive;
+            endIndexExclusive = temp;
+        }
+
+        // Ensure values are within valid range
+        int stringLength = inputString.length();
+        startIndexInclusive = Math.max(0, startIndexInclusive);
+        endIndexExclusive = Math.min(stringLength, endIndexExclusive);
+
+        // If after adjustments, start is still less than end, return substring
+        if (startIndexInclusive < endIndexExclusive) {
+            return inputString.substring(startIndexInclusive, endIndexExclusive);
+        }
+
+        // Return original string if parameters would result in empty string
+        return inputString;
+    }
+
+    /**
+     * Safely extracts a substring from start index to the end of the string.
+     *
+     * Example:
+     *   safeSubstring("Hello World", 6) returns "World"
+     *   safeSubstring("Hello World", -5) returns "Hello World"
+     *   safeSubstring("Hello World", 20) returns ""
+     *   safeSubstring(null, 5) returns null
+     *
+     * @param inputString The input string
+     * @param startIndexInclusive The starting position (inclusive, 0-based) - extracts from this index to the end
+     * @return The substring or the original string if invalid parameters
+     */
+    public static String subString(String inputString, int startIndexInclusive) {
+        // Check for null or empty string
+        if (inputString == null || inputString.isEmpty()) {
+            return inputString;
+        }
+
+        // Ensure start is within valid range
+        int stringLength = inputString.length();
+        startIndexInclusive = Math.max(0, Math.min(stringLength, startIndexInclusive));
+
+        // If after adjustments, start is still less than length, return substring
+        if (startIndexInclusive < stringLength) {
+            return inputString.substring(startIndexInclusive);
+        }
+
+        // Return empty string if start is at or beyond end of string
+        return "";
     }
 
     public static String getFirstString(String str, String delimiter) { return getFirstString(str, delimiter, null); }
@@ -798,8 +1258,100 @@ public class Str {
 
     public static boolean isSpecialChar(char c) { return c == '\n' || c == '\t' || c == '\b' || c == ' ' || c == '\r'; }
 
-    public static String joinList(List<String> list) { return joinList(list, COMMA); }
-    public static String joinList(List<String> list, String delimiter) {
+
+    public static int firstItemThatEndsWithInListIndex(List<String> list, String compare, boolean ignoreCase, int maxCount) {
+        if(!ListUtil.isValid(list) || compare == null)
+            return -1;
+
+        compare = ignoreCase ? compare.toLowerCase() : compare;
+        int sz = maxCount > 0 ? Math.min(ListUtil.size(list), maxCount) : ListUtil.size(list);
+        for(int i = 0; i < sz; i++) {
+            String item = list.get(i);
+            if (item == null)
+                continue;
+
+            if (ignoreCase) {
+                if (compare.endsWith(item.toLowerCase()))
+                    return i;
+            }
+            else if(compare.endsWith(item))
+                return i;
+        }
+
+        return -1;
+    }
+
+    public static boolean isAnyEndsWithList(List<String> list, String compare, boolean ignoreCase, int maxCount) { return firstItemThatEndsWithInListIndex(list, compare, ignoreCase, maxCount) > -1; }
+
+    public static boolean isAnyEqualsList(List<String> list, String compare, boolean ignoreCase, int maxCount) {
+        if(!ListUtil.isValid(list) || compare == null)
+            return false;
+
+        int sz = maxCount > 0 ? Math.min(ListUtil.size(list), maxCount) : ListUtil.size(list);
+        for(int i = 0; i < sz; i++) {
+            String item = list.get(i);
+            if(item == null)
+                continue;
+
+            if(ignoreCase) {
+                if(compare.equalsIgnoreCase(item))
+                    return true;
+            }
+            else if(compare.equals(item))
+                    return true;
+        }
+
+        return false;
+    }
+
+    public static List<String> breakCommandString(String s) {
+        if(Str.isEmpty(s))
+            return ListUtil.emptyList();
+
+        boolean isInQuotes = false;
+        List<String> parts = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        try {
+            char[] chars = s.toCharArray();
+            for(char c : chars) {
+                if(c == '\"' || c == '\'') {
+                    if(isInQuotes) {
+                        isInQuotes = false;
+                        if(sb.length() > 0)
+                            parts.add(sb.toString());
+
+                        sb = new StringBuilder();
+                    } else {
+                        isInQuotes = true;
+                    }
+                }
+                else if(isInQuotes) {
+                    sb.append(c);
+                }
+                else {
+                    if(c == ' ' || c == '\t' || c == '\b' || c == '\r' || c == '\0') {
+                        if(sb.length() > 0)
+                            parts.add(sb.toString());
+
+                        sb = new StringBuilder();
+                        continue;
+                    }
+
+                    sb.append(c);
+                }
+            }
+        }catch (Exception e) {
+            Log.e(TAG, "Error Breaking Command String: Error=" + e + " S=" + s);
+        }
+
+        if(sb.length() > 0)
+            parts.add(sb.toString());
+
+        return parts;
+    }
+
+    public static String joinList(Collection<String> list) { return joinList(list, COMMA); }
+    public static String joinList(Collection<String> list, String delimiter) {
         if(!ListUtil.isValid(list))
             return EMPTY;
 
@@ -808,9 +1360,7 @@ public class Str {
             if(isEmpty(s))
                 continue;
 
-            if(sb.length() > 0)
-                sb.append(delimiter);
-
+            if(sb.length() > 0) sb.append(delimiter);
             sb.append(s);
         }
 
@@ -846,6 +1396,48 @@ public class Str {
             return defaultValue;
         }
     }
+
+    public static boolean endsWithAny(String s, String... stringsToCheckFor) { return endsWithAny(s, false, stringsToCheckFor); }
+    public static boolean endsWithAny(String s, boolean ignoreCase, String... stringsToCheckFor) {
+        if(!isValid(s) || !ArrayUtils.isValid(stringsToCheckFor))
+            return false;
+
+        String str = ignoreCase ?  s.toLowerCase() : s;
+        for(String c : stringsToCheckFor) {
+            if(!isValid(c))
+                continue;
+
+            if(ignoreCase)
+                if(str.endsWith(c.toLowerCase()))
+                    return true;
+                else if(str.endsWith(c))
+                    return true;
+        }
+
+        return false;
+    }
+
+    public static boolean startsWithAny(String s, String... stringsToCheckFor) { return startsWithAny(s, false, stringsToCheckFor); }
+    public static boolean startsWithAny(String s, boolean ignoreCase, String... stringsToCheckFor) {
+        if(!isValid(s) || !ArrayUtils.isValid(stringsToCheckFor))
+            return false;
+
+        String str = ignoreCase ?  s.toLowerCase() : s;
+        for(String c : stringsToCheckFor) {
+            if(!isValid(c))
+                continue;
+
+            if(ignoreCase)
+                if(str.startsWith(c.toLowerCase()))
+                    return true;
+            else if(str.startsWith(c))
+                    return true;
+        }
+
+        return false;
+    }
+
+    public static String ensureNotStartWith(String s, String start) { return (isEmpty(s) || isEmpty(start)) ? s : (s.startsWith(start) ? s.substring(start.length()) : s); }
 
     public static String ensureStartsWith(String s, String start) { return s == null ? start : s.startsWith(start) ? s : s + start; }
     public static String ensureEndsWith(String s, String ending) { return s == null ? ending : s.endsWith(ending) ? s : s + ending; }
@@ -967,10 +1559,58 @@ public class Str {
                 !Character.isISOControl(c);
     }
 
-    /**
-     * Convenience method with default divider char
-     */
-    //public static String withText(String text) {
-    //    return withText(DEFAULT_DIVIDER, text);
-    //}
+    public static String hexDump(ByteBuffer buffer) {
+        // Store original position
+        int originalPosition = buffer.position();
+
+        // Reset to beginning for reading
+        buffer.position(0);
+
+        int width = 16; // bytes per line
+        StringBuilder builder = new StringBuilder();
+        StringBuilder asciiBuilder = new StringBuilder();
+
+        int count = 0;
+        while (buffer.hasRemaining()) {
+            if (count % width == 0) {
+                // Print the offset at the beginning of the line
+                if (count > 0) {
+                    builder.append("  ");
+                    builder.append(asciiBuilder.toString());
+                    builder.append("\n");
+                    asciiBuilder.setLength(0);
+                }
+                builder.append(String.format("%08X: ", count));
+            }
+
+            byte b = buffer.get();
+            builder.append(String.format("%02X ", b & 0xFF));
+
+            // Add to ASCII representation (if printable)
+            if (b >= 32 && b < 127) {
+                asciiBuilder.append((char) b);
+            } else {
+                asciiBuilder.append('.');
+            }
+
+            count++;
+        }
+
+        // Handle the last line
+        int remaining = width - (count % width);
+        if (remaining < width) {
+            for (int i = 0; i < remaining; i++) {
+                builder.append("   ");
+            }
+            builder.append("  ");
+            builder.append(asciiBuilder.toString());
+        }
+
+        //System.out.println(builder.toString());
+
+        // Restore original position
+        buffer.position(originalPosition);
+        return builder.toString();
+    }
+
 }

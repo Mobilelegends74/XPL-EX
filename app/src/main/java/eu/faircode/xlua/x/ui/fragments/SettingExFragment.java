@@ -174,7 +174,7 @@ public class SettingExFragment
         initAppIslandKillCheckbox();
 
         super.startObserver();
-        super.wire();
+        wire();
     }
 
     @Override
@@ -225,9 +225,12 @@ public class SettingExFragment
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
         int id = compoundButton.getId();
+        Log.w(TAG, "On Checked id=" + id);
         switch (id) {
             case R.id.cbForceStop:
-                sharedRegistry.setChecked(SharedRegistry.STATE_TAG_KILL, getUserContext().appPackageName, checked);
+                boolean wasChecked = sharedRegistry.setChecked(SharedRegistry.STATE_TAG_KILL, getUserContext().appPackageName, checked);
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, "Check Event, Checked=" + checked + " Was Checked=" + wasChecked + " Pkg=" + getUserContext().appPackageName);
                 break;
             case R.id.cbUseDefaultValues:
                 //

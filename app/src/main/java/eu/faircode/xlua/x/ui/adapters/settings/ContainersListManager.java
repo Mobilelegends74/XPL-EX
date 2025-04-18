@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -16,9 +15,7 @@ import android.widget.Spinner;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import eu.faircode.xlua.DebugUtil;
@@ -27,6 +24,7 @@ import eu.faircode.xlua.databinding.SettingsExItemContainerBinding;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.data.utils.ObjectUtils;
+import eu.faircode.xlua.x.data.utils.TryRun;
 import eu.faircode.xlua.x.ui.core.UINotifier;
 import eu.faircode.xlua.x.ui.core.UserClientAppContext;
 import eu.faircode.xlua.x.ui.core.adapter.ListViewManager;
@@ -42,6 +40,7 @@ import eu.faircode.xlua.x.ui.core.view_registry.SharedRegistry;
 import eu.faircode.xlua.x.ui.dialogs.HooksDialog;
 import eu.faircode.xlua.x.ui.dialogs.MessageDialog;
 import eu.faircode.xlua.x.ui.dialogs.SettingDeleteDialog;
+import eu.faircode.xlua.x.ui.dialogs.utils.DialogUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.call.PutSettingExCommand;
 import eu.faircode.xlua.x.xlua.database.A_CODE;
@@ -179,24 +178,35 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
 
             SharedRegistry.ItemState state = sharedRegistry.getItemState(SharedRegistry.STATE_TAG_CONTAINERS, item.getContainerName());
 
-            CheckBoxState.from(currentItem.getSettings(), SharedRegistry.STATE_TAG_SETTINGS, sharedRegistry)
+            CheckBoxState.from(
+                    currentItem.getSettings(),
+                            SharedRegistry.STATE_TAG_SETTINGS,
+                            sharedRegistry)
                     .updateCheckBox(binding.cbSettingContainerEnabled, null);
 
-            Context context = binding.getRoot().getContext();
+            Context context = getContext();
 
             updateExpandedStateForContainer(state.isExpanded);
             updateHookCount(context, false, false);
             updateSpinner(context, binding.spSettingContainerRandomizer);
-            updateStats(true, getContext());
+            updateStats(context, true);
 
             sharedRegistry.putGroupChangeListener(this, currentItem.getObjectId());
             sharedRegistry.notifier.subscribeGroup(this);
+
+            Log.d(TAG, "Current Item=" + currentItem.getName() + " Nice Name=" + currentItem.getNameNice() + " Container=" + currentItem.getContainerName() + " IsSpecial=" + currentItem.isSpecial());
+            if(currentItem.isSpecial()) {
+                CoreUiUtils.nullifyViews(
+                        true,
+                        binding.spSettingContainerRandomizer,
+                        binding.ivBtSettingContainerRandomize,
+                        binding.ivBtWildcard);
+            }
 
             wireContainerEvents(true);
         }
 
         private void updateExpandedStateForContainer(boolean isExpanded) {
-            // Show/hide the expanded container content
             CoreUiUtils.setViewsVisibility(
                     binding.ivExpanderSettingContainer,
                     isExpanded,
@@ -211,11 +221,17 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                     binding.spSettingContainerRandomizer,
                     binding.ivBtHookMenu);
 
-            // If expanded, populate the settings list
-            if (isExpanded && currentItem != null && currentItem.hasSettings()) {
-                settingsManager.submitList(currentItem.getSettings());
-            } else {
-                settingsManager.clear();
+            if(isExpanded && currentItem != null) {
+                if(settingsManager != null) {
+                    if(currentItem.hasSettings())
+                        TryRun.onMain(() -> settingsManager.submitList(currentItem.getSettings()));
+                    else
+                        TryRun.onMain(() -> settingsManager.clear());
+                }
+            }  else {
+                if(settingsManager != null) {
+                    TryRun.onMain(() -> settingsManager.clear());
+                }
             }
         }
 
@@ -224,36 +240,64 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                 if (refreshMap)
                     sharedRegistry.asSettingShared().refreshAssignments(context, userContext);
 
-                AppAssignmentInfo info = sharedRegistry.asSettingShared().getAssignmentInfo(currentItem, refresh, context);
-                CoreUiUtils.setTextColor(binding.tvHookCount, info.getLabelColor(context), false);
-                CoreUiUtils.setText(binding.tvHookCount, info.getPrefix(), false);
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, Str.fm("Invoking updateHookCount[%s,%s] For Item %s >> %s >> (%s)",
+                            refresh,
+                            refreshMap,
+                            currentItem.getContainerName(),
+                            currentItem.getName(),
+                            Str.joinList(currentItem.getAllNames())));
+
+                TryRun.onMain(() -> {
+                    AppAssignmentInfo info = sharedRegistry.asSettingShared().getAssignmentInfo(currentItem, refresh, context);
+                    CoreUiUtils.setTextColor(binding.tvHookCount, info.getLabelColor(context), false);
+                    CoreUiUtils.setText(binding.tvHookCount, info.getPrefix(), false);
+                    if(DebugUtil.isDebug())
+                        Log.d(TAG, Str.fm("Finishing updateHookCount[%s,%s] For Item %s >> %s >> (%s), Info=%s",
+                                refresh,
+                                refreshMap,
+                                currentItem.getContainerName(),
+                                currentItem.getName(),
+                                Str.joinList(currentItem.getAllNames()),
+                                info.getPrefix()));
+
+                    if(info.isEmpty()) {
+                        CoreUiUtils.nullifyViews(true,
+                                binding.tvHookCount,
+                                binding.ivBtHookMenu);
+                    }
+                });
+            } else {
+                Log.w(TAG, "Bad Null...");
             }
         }
 
         private void updateSpinner(Context context, Spinner spinner) {
-            if(ObjectUtils.anyNull(context, spinner, context)) {
-                Log.e(TAG, "Invalid Input! [updateSpinner]");
-                return;
+            if(currentItem != null && !currentItem.isSpecial()) {
+                if(ObjectUtils.anyNull(context, spinner, context)) {
+                    Log.e(TAG, "Invalid Input! [updateSpinner]");
+                    return;
+                }
+
+                String tag = currentItem.getName() + "_spin_array";
+                ArrayAdapter<IRandomizer> adapter = sharedRegistry.getSharedObject(tag);
+                if(adapter == null) {
+                    if(DebugUtil.isDebug())
+                        Log.d(TAG, "Randomizer Spinner Adapter is null for:" + currentItem.getName());
+
+                    adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item);
+                    sharedRegistry.pushSharedObject(tag, adapter);
+                } else {
+                    if(DebugUtil.isDebug())
+                        Log.d(TAG, "Randomizer Spinner Adapter was Found for:" + currentItem.getName());
+                }
+
+                spinner.setAdapter(adapter);    //We can make this faster using a single time init state, store index local
+                UiRandomUtils.initRandomizer(adapter, spinner, currentItem, sharedRegistry.asSettingShared());
             }
-
-            String tag = currentItem.getName() + "_spin_array";
-            ArrayAdapter<IRandomizer> adapter = sharedRegistry.getSharedObject(tag);
-            if(adapter == null) {
-                if(DebugUtil.isDebug())
-                    Log.d(TAG, "Randomizer Spinner Adapter is null for:" + currentItem.getName());
-
-                adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item);
-                sharedRegistry.pushSharedObject(tag, adapter);
-            } else {
-                if(DebugUtil.isDebug())
-                    Log.d(TAG, "Randomizer Spinner Adapter was Found for:" + currentItem.getName());
-            }
-
-            spinner.setAdapter(adapter);    //We can make this faster using a single time init state, store index local
-            UiRandomUtils.initRandomizer(adapter, spinner, currentItem, sharedRegistry.asSettingShared());
         }
 
-        public void updateStats(boolean forceUpdate, Context context) {
+        public void updateStats(Context context, boolean forceUpdate) {
             if (currentItem != null && binding != null) {
                 groupStats
                         .update(currentItem, forceUpdate)
@@ -261,6 +305,7 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                         .updateIv(binding.ivActionNeeded);
             }
         }
+
 
         @SuppressLint("NonConstantResourceId")
         @Override
@@ -273,6 +318,13 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
 
             int id = view.getId();
             switch (id) {
+                case R.id.tvSettingContainerDescription:
+                    String desc = currentItem.getDescription();
+                    if(Str.isEmpty(desc))
+                        DialogUtils.snack_bar(view, Str.fm(res.getString(R.string.msg_error_no_description), currentItem.getContainerName()));
+                    else
+                        DialogUtils.showMessage(context, desc);
+                    break;
                 case R.id.tvSettingContainerNameFull:
                 case R.id.tvSettingContainerNameNice:
                 case R.id.ivExpanderSettingContainer:
@@ -280,22 +332,22 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                     break;
                 case R.id.tvHookCount:
                 case R.id.ivBtHookMenu:
-                    if(sharedRegistry.asSettingShared().getAssignmentInfo(
-                            currentItem, false, context).getCount() < 1) {
-                        Snackbar.make(view, view.getResources().getString(R.string.msg_error_no_hooks), Snackbar.LENGTH_LONG).show();
+                    if(settingShared.getAssignmentInfo(currentItem, false, context).isEmpty()) {
+                        DialogUtils.snack_bar(view, R.string.msg_error_no_hooks);
                         return;
                     }
 
-                    if(!UiLog.ensureNotGlobal(view, userContext))
+                    if(UiLog.ensureNotGlobal(view, userContext))
                         HooksDialog.create()
                                 .set(userContext.appUid, userContext.appPackageName,  context, currentItem.getAllNames())
                                 .setDialogEvent(() -> updateHookCount(context, true, true))
                                 .show(manager.getFragmentMan(), res.getString(R.string.title_hooks_assign));
+
                     break;
                 case R.id.ivBtSettingContainerSave:
                     for(SettingHolder holder : settingShared.getSettingsForContainer(currentItem)) {
                         if(holder.isNotSaved()) {
-                            A_CODE code = PutSettingExCommand.call(view.getContext(), holder, userContext, userContext.isKill(), false);
+                            A_CODE code = PutSettingExCommand.call(view.getContext(), holder, userContext, userContext.isKill(sharedRegistry), false);
                             if(code == A_CODE.FAILED)
                                 Snackbar.make(view, res.getString(R.string.save_setting_error), Snackbar.LENGTH_LONG)
                                         .show();
@@ -362,6 +414,9 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                 int id = view.getId();
                 int resId = 0;
                 switch (id) {
+                    case R.id.tvSettingContainerDescription:
+                        resId = R.string.msg_hint_setting_description;
+                        break;
                     case R.id.tvHookCount:
                     case R.id.ivBtHookMenu:
                         resId = R.string.msg_hint_hook_control;
@@ -386,39 +441,37 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                         break;
                 }
 
-                if(resId > 0)
-                    Snackbar.make(view, Str.fm(res.getString(resId), currentItem.data.enabled, currentItem.data.total), Snackbar.LENGTH_LONG).show();
+                DialogUtils.snack_bar_format(view, resId, currentItem.data.enabled, currentItem.data.total);
             }
             return false;
         }
 
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-            if(currentItem == null)
-                return;
+            if(currentItem != null && sharedRegistry != null) {
+                int id = compoundButton.getId();
+                if(id == R.id.cbSettingContainerEnabled) {
+                    /* Update our Checked State Cache */
+                    sharedRegistry.setChecked(SharedRegistry.STATE_TAG_CONTAINERS, currentItem.getContainerName(), isChecked);
 
-            int id = compoundButton.getId();
-            if(id == R.id.cbSettingContainerEnabled) {
-                /* Update our Checked State Cache */
-                sharedRegistry.setChecked(SharedRegistry.STATE_TAG_CONTAINERS, currentItem.getContainerName(), isChecked);
+                    /* Update the Child Settings Check State Cache for each */
+                    sharedRegistry.setCheckedBulk(SharedRegistry.STATE_TAG_SETTINGS, currentItem.getSettings(), isChecked);
 
-                /* Update the Child Settings Check State Cache for each */
-                sharedRegistry.setCheckedBulk(SharedRegistry.STATE_TAG_SETTINGS, currentItem.getSettings(), isChecked);
+                    /* Get State Control for the settings (helps us set our check box color) ... */
+                    CheckBoxState stateControl = CheckBoxState.from(currentItem.getSettings(), SharedRegistry.STATE_TAG_SETTINGS, sharedRegistry);
 
-                /* Get State Control for the settings (helps us set our check box color) ... */
-                CheckBoxState stateControl = CheckBoxState.from(currentItem.getSettings(), SharedRegistry.STATE_TAG_SETTINGS, sharedRegistry);
+                    /*Update Our Check Box Color (no need to set check as its already updated)*/
+                    stateControl.updateCheckBoxColor(binding.cbSettingContainerEnabled);
 
-                /*Update Our Check Box Color (no need to set check as its already updated)*/
-                stateControl.updateCheckBoxColor(binding.cbSettingContainerEnabled);
+                    /*Notify the Children that there was an update*/
+                    stateControl.notifyObjects(currentItem.getSettings(), SharedRegistry.STATE_TAG_CONTAINERS, sharedRegistry);
 
-                /*Notify the Children that there was an update*/
-                stateControl.notifyObjects(currentItem.getSettings(), SharedRegistry.STATE_TAG_CONTAINERS, sharedRegistry);
-
-                /*Notify the Parent that there was an Update
-                 * Since the Update Handler for Groups simply takes all settings for the "CheckBoxState" we don't need specific handlers for it
-                 * Just ensure the settings are fully updated via cache
-                 * */
-                sharedRegistry.notifyGroupChange(currentItem.getGroup(), SharedRegistry.STATE_TAG_CONTAINERS);
+                    /*Notify the Parent that there was an Update
+                     * Since the Update Handler for Groups simply takes all settings for the "CheckBoxState" we don't need specific handlers for it
+                     * Just ensure the settings are fully updated via cache
+                     * */
+                    sharedRegistry.notifyGroupChange(currentItem.getGroup(), SharedRegistry.STATE_TAG_CONTAINERS);
+                }
             }
         }
 
@@ -434,32 +487,36 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
 
         public void handleSpinnerUpdate(Context context) {
             //Check then updates spinner ??
-            if(DebugUtil.isDebug())
-                Log.d(TAG, "Spinner Update Randomizer Event has been Invoked!");
+            if(currentItem != null && !currentItem.isSpecial()) {
+                TryRun.onMain(() -> {
+                    if(DebugUtil.isDebug())
+                        Log.d(TAG, "Spinner Update Randomizer Event has been Invoked!");
 
-            final SettingSharedRegistry settingShared = sharedRegistry.asSettingShared();
-            Spinner spinner = binding.spSettingContainerRandomizer;
-            IRandomizer randomizer = (IRandomizer) spinner.getSelectedItem();
-            if(randomizer == null)
-                return;
+                    final SettingSharedRegistry settingShared = sharedRegistry.asSettingShared();
+                    Spinner spinner = binding.spSettingContainerRandomizer;
+                    IRandomizer randomizer = (IRandomizer) spinner.getSelectedItem();
+                    if(randomizer == null)
+                        return;
 
-            if(DebugUtil.isDebug())
-                Log.d(TAG, "Randomizer Selected=" + randomizer.getDisplayName() + " IsOption=" + randomizer.isOption() +  " Current Item=" + currentItem.getContainerName());
+                    if(DebugUtil.isDebug())
+                        Log.d(TAG, "Randomizer Selected=" + randomizer.getDisplayName() + " IsOption=" + randomizer.isOption() +  " Current Item=" + currentItem.getContainerName());
 
-            if(randomizer.isOption()) {
-                if(!(randomizer instanceof RandomOptionNullElement)) {
-                    RandomizerSessionContext.create()
-                            .updateToOption(
-                                    manager.getAsFragment(),
-                                    settingShared.getSettingsForContainer(currentItem),
-                                    randomizer,
-                                    context,
-                                    sharedRegistry);
-                }
-            } else {
-                ListUtil.forEachVoid(settingShared.getSettingsForContainer(
-                        currentItem, false),
-                        (e, s) -> sharedRegistry.pushSharedObject(e.getObjectId(), randomizer));
+                    if(randomizer.isOption()) {
+                        if(!(randomizer instanceof RandomOptionNullElement)) {
+                            RandomizerSessionContext.create()
+                                    .updateToOption(
+                                            manager.getAsFragment(),
+                                            settingShared.getSettingsForContainer(currentItem),
+                                            randomizer,
+                                            context,
+                                            sharedRegistry);
+                        }
+                    } else {
+                        ListUtil.forEachVoid(settingShared
+                                        .getSettingsForContainer(currentItem, false),
+                                              (e, s) -> sharedRegistry.pushSharedObject(e.getObjectId(), randomizer));
+                    }
+                });
             }
         }
 
@@ -476,6 +533,7 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                 binding.ivBtSettingContainerSave.setOnClickListener(wire ? this : null);
                 binding.ivBtSettingContainerSave.setOnLongClickListener(wire ? this : null);
 
+
                 binding.ivBtSettingContainerReset.setOnClickListener(wire ? this : null);
                 binding.ivBtSettingContainerReset.setOnLongClickListener(wire ? this : null);
 
@@ -489,7 +547,8 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                 binding.tvSettingContainerNameFull.setOnClickListener(wire ? this : null);
                 binding.ivExpanderSettingContainer.setOnClickListener(wire ? this : null);
 
-                binding.spSettingContainerRandomizer.setOnItemSelectedListener(wire ? this : null);
+                boolean res = (currentItem == null || !currentItem.isSpecial()) && wire;
+                binding.spSettingContainerRandomizer.setOnItemSelectedListener(res ? this : null);
 
                 binding.ivActionNeeded.setOnClickListener(wire ? this : null);
 
@@ -497,12 +556,15 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
 
                 binding.ivBtWildcard.setOnClickListener(wire ? this : null);
                 binding.ivBtWildcard.setOnLongClickListener(wire ? this : null);
+
+                binding.tvSettingContainerDescription.setOnClickListener(wire ? this : null);
+                binding.tvSettingContainerDescription.setOnLongClickListener(wire ? this : null);
             }
         }
 
         public void onViewDetached() {
             wireContainerEvents(false);
-            settingsManager.clear();
+            if(settingsManager != null) settingsManager.clear();
             if(currentItem != null) {
                 sharedRegistry.putGroupChangeListener(null, currentItem.getObjectId());
                 sharedRegistry.notifier.unsubscribeGroup(this);
@@ -545,11 +607,16 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                 try {
                     LinearLayout v = binding.getRoot();
                     Context ctx = v.getContext();
-                    if(ctx != null)
-                        return ctx;
-                }catch (Exception ignored) {  }
+                    if(ctx == null)
+                        throw new Exception();
+
+                    return ctx;
+                }catch (Exception ignored) {
+                    return binding.getRoot().getContext();
+                }
             }
-            return binding.getRoot().getContext();
+
+            return null;
         }
 
         @Override
@@ -560,7 +627,8 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
             if(code == UINotifier.CODE_DATA_CHANGED) {
                 if(UINotifier.isSettingPrefix(notifier)) {
                     //Do nothing for now
-                    updateStats(true, getContext());
+                    //Work on this update feature, as more updatey
+                    updateStats(getContext(), true);
                 }
             }
         }

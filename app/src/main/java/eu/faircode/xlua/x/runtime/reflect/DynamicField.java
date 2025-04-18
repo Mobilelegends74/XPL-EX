@@ -53,11 +53,12 @@ public class DynamicField {
     }
 
     public boolean trySetValueInstanceEx(Object instance, Object v) {
+        //I call this when Im setting it to NULL (mApMldMacAddress)
         try {
             mField.set(instance, v);
             return true;
         }catch (Exception e) {
-            XLog.e(TAG, "[trySetValueInstance] Failed: " + e.getMessage());
+            XLog.e(TAG, "[trySetValueInstanceEx] Failed: " + e.getMessage());
             return false;
         }
     }

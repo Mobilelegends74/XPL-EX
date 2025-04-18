@@ -1,11 +1,7 @@
 function after(hook, param)
-    local res = param:isQueryBad(true)
+    local res = param:interceptAndFilterQuery(true)
     if  res ~= nil and res == true then
-        return true, param:getOldResult(), param:getNewResult(), param:getSettingResult()
-    end
-
-    if res == nil then
-        param:isNullError(hook)
+        return true, param:safe(param:getLogOld()), param:safe(param:getLogNew()), param:safe(param:getLogExtra())
     end
     return false
 end

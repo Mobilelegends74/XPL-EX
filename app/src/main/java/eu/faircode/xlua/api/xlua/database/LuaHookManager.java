@@ -11,7 +11,7 @@ import java.util.List;
 
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XDatabaseOld;
-import eu.faircode.xlua.UberCore888;
+import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.XUtil;
 import eu.faircode.xlua.api.XResult;
 import eu.faircode.xlua.api.hook.assignment.LuaAssignment;
@@ -23,6 +23,7 @@ import eu.faircode.xlua.api.xstandard.database.SqlQuerySnake;
 import eu.faircode.xlua.api.hook.assignment.XLuaAssignmentDataHelper;
 import eu.faircode.xlua.api.hook.group.XLuaGroupDataHelper;
 import eu.faircode.xlua.hooks.XReport;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 
 public class LuaHookManager {
     private static final String TAG = "XLua.XHookDatabase";
@@ -62,11 +63,11 @@ public class LuaHookManager {
             int failed = 0;
             int succeeded = 0;
             for(String hookId : packet.getHookIds()) {
-                XLuaHook hook = UberCore888.getHook(hookId);
+                XHook hook = XLegacyCore.getHook(hookId);
 
                 //Add its Group to the group list
-                if (hook != null && !groups.contains(hook.getGroup()))
-                    groups.add(hook.getGroup());
+                if (hook != null && !groups.contains(hook.group))
+                    groups.add(hook.group);
 
                 if(packet.isDelete()) {
                     Log.i(TAG, packageName + ":" + uid + "/" + hookId + " deleted");

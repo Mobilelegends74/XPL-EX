@@ -20,8 +20,8 @@
     <color name="lightColorPrimaryButton">#AA3939</color> <!-- Matches colorPrimary -->
     <color name="lightColorPrimaryButtonText">#FFFFFF</color> <!-- White text -->
 
-
-
+    <color name="lightDisabledHook">#757575</color>
+    <color name="darkDisabledHook">#9E9E9E</color>
 
     <!-- Dark theme -->
     <color name="darkColorDrawerScrim">#997F7F7F</color>

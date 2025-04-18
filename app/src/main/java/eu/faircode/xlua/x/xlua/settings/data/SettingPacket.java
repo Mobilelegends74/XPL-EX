@@ -159,7 +159,11 @@ public class SettingPacket extends PacketBase implements IDatabaseEntry, IBundle
 
     @Override
     public void populateSnake(SQLQueryBuilder snake) {
-        //TODO
+        if(snake != null) {
+            snake.whereColumn(FIELD_USER, this.getUserId(true))
+                    .whereColumn(FIELD_CATEGORY, this.getCategory())
+                    .whereColumn(FIELD_NAME, this.name);
+        }
     }
 
 

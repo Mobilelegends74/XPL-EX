@@ -37,9 +37,8 @@ public class DynamicGetSetPairs {
     }
 
     public <T> boolean setValueInstance(Object instance, Object... args) {
-        T val = args == null || args[0] == null ? null : DynamicType.<T>convertValue(args[0]);
         for(DynamicField f : mFields) {
-            if(f.trySetValueInstanceEx(instance, val))
+            if(f.trySetValueInstanceEx(instance, args == null || args[0] == null ? null : DynamicType.<T>convertValue(args[0])))
                 return true;
         }
 
@@ -74,6 +73,9 @@ public class DynamicGetSetPairs {
     public <T> T getValueInstance(Object instance, Object... args) {
         for(DynamicField f : mFields) {
             Object val = f.tryGetValueInstanceEx(instance);
+            if(val == null)
+                continue;
+
             T v = DynamicType.convertValue(val);
             if(v != null)
                 return v;
@@ -81,6 +83,9 @@ public class DynamicGetSetPairs {
 
         for(DynamicMethod m : mGetMethods) {
             Object val = m.tryInstanceInvokeEx(instance, args);
+            if(val == null)
+                continue;
+
             T v = DynamicType.convertValue(val);
             if(v != null)
                 return v;

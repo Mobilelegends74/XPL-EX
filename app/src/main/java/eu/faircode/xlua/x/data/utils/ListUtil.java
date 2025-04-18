@@ -1,8 +1,10 @@
 package eu.faircode.xlua.x.data.utils;
 
+import androidx.annotation.Nullable;
 import androidx.collection.LongSparseArray;
 import androidx.core.util.Predicate;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -21,9 +24,1220 @@ import java.util.TreeSet;
 
 import eu.faircode.xlua.x.Str;
 
+@SuppressWarnings("all")
 public class ListUtil {
 
 
+
+
+    /**
+     * Clears all elements from any Collection.
+     * Works with any Collection type.
+     *
+     * @param collection The collection to clear
+     * @return True if the operation succeeded, false otherwise
+     */
+    public static boolean clear(@Nullable Object collection) {
+        if (!isCollection(collection)) {
+            return false;
+        }
+
+        try {
+            ((Collection<?>) collection).clear();
+            return true;
+        } catch (Exception ignored) {
+            // Silent fail, might be unmodifiable collection
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Removes duplicate elements from a typed Collection.
+     * Provides better type safety with generics.
+     *
+     * @param <T> The type of elements in the collection
+     * @param collection The collection to process
+     * @return True if duplicates were removed, false otherwise
+     */
+    public static <T> boolean removeDuplicates(@Nullable Collection<T> collection) {
+        if (!isValid(collection)) {
+            return false;
+        }
+
+        try {
+            // Create a set of unique elements (preserves order with LinkedHashSet)
+            Set<T> uniqueItems = new LinkedHashSet<>(collection);
+
+            // If sizes are different, we had duplicates
+            if (uniqueItems.size() != collection.size()) {
+                // Clear the original collection and add unique items
+                collection.clear();
+                collection.addAll(uniqueItems);
+                return true;
+            }
+        } catch (Exception ignored) {
+            // Silent fail, might be unmodifiable collection
+        }
+
+        return false; // No duplicates found or operation failed
+    }
+
+    /**
+     * Removes duplicate elements from a typed List.
+     * Specialized version for List type.
+     *
+     * @param <T> The type of elements in the list
+     * @param list The list to process
+     * @return True if duplicates were removed, false otherwise
+     */
+    public static <T> boolean removeDuplicates(@Nullable List<T> list) {
+        if (!isValid(list)) {
+            return false;
+        }
+
+        try {
+            // Keep track of elements we've seen
+            Set<T> seen = new HashSet<>();
+            int originalSize = list.size();
+
+            // Iterate from the end to safely remove items
+            for (int i = list.size() - 1; i >= 0; i--) {
+                T current = list.get(i);
+
+                // If we've seen this element before, remove it
+                if (current != null && !seen.add(current)) {
+                    list.remove(i);
+                }
+            }
+
+            return list.size() < originalSize; // True if we removed any duplicates
+        } catch (Exception ignored) {
+            // Silent fail, might be unmodifiable list
+        }
+
+        return false; // No duplicates found or operation failed
+    }
+
+    /**
+     * Creates a new collection with duplicates removed from the source collection.
+     * Useful when you don't want to modify the original collection.
+     *
+     * @param <T> The type of elements in the collection
+     * @param source The source collection to process
+     * @return A new collection without duplicates, or null if operation fails
+     */
+    public static <T> Collection<T> createWithoutDuplicates(@Nullable Collection<T> source) {
+        if (source == null) {
+            return null;
+        }
+
+        try {
+            // LinkedHashSet preserves order and removes duplicates
+            return new ArrayList<>(new LinkedHashSet<>(source));
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return null;
+    }
+
+    /**
+     * Creates a new list with duplicates removed from the source list.
+     * Useful when you don't want to modify the original list.
+     *
+     * @param <T> The type of elements in the list
+     * @param source The source list to process
+     * @return A new list without duplicates, or null if operation fails
+     */
+    public static <T> List<T> createWithoutDuplicates(@Nullable List<T> source) {
+        if (source == null) {
+            return null;
+        }
+
+        try {
+            // LinkedHashSet preserves order and removes duplicates
+            return new ArrayList<>(new LinkedHashSet<>(source));
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return null;
+    }
+
+    /**
+     * Removes null elements from any Collection.
+     * Works with any Collection type.
+     *
+     * @param collection The collection to process as an Object
+     * @return True if null elements were removed, false otherwise
+     */
+    public static boolean removeNulls(@Nullable Object collection) {
+        if (!isCollection(collection)) {
+            return false;
+        }
+
+        try {
+            @SuppressWarnings("unchecked")
+            Collection<Object> coll = (Collection<Object>) collection;
+            int originalSize = coll.size();
+
+            // Use Iterator pattern for compatibility with Java 7 and earlier
+            Iterator<Object> iterator = coll.iterator();
+            while (iterator.hasNext()) {
+                Object item = iterator.next();
+                if (item == null) {
+                    iterator.remove();
+                }
+            }
+
+            return coll.size() < originalSize; // True if we removed any nulls
+        } catch (Exception ignored) {
+            // Silent fail, might be unmodifiable collection
+        }
+
+        return false; // No nulls found or operation failed
+    }
+
+    /**
+     * Creates a new set with duplicates removed from the source collection.
+     * Sets automatically handle duplicates, so this effectively just converts to a set.
+     *
+     * @param <T> The type of elements in the collection
+     * @param source The source collection to process
+     * @param preserveOrder If true, uses LinkedHashSet to preserve order
+     * @return A new set without duplicates, or null if operation fails
+     */
+    public static <T> Set<T> createSetWithoutDuplicates(@Nullable Collection<T> source, boolean preserveOrder) {
+        if (source == null) {
+            return null;
+        }
+
+        try {
+            // Choose set implementation based on whether order should be preserved
+            return preserveOrder ? new LinkedHashSet<>(source) : new HashSet<>(source);
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return null;
+    }
+
+    /**
+     * Removes null elements from a collection.
+     * Compatible with Android before SDK 23 and Java 7.
+     *
+     * @param <T> The type of elements in the collection
+     * @param collection The collection to process
+     * @return True if null elements were removed, false otherwise
+     */
+    public static <T> boolean removeNulls(@Nullable Collection<T> collection) {
+        if (!isValid(collection)) {
+            return false;
+        }
+
+        try {
+            int originalSize = collection.size();
+
+            // Use Iterator pattern instead of removeIf (Java 8)
+            Iterator<T> iterator = collection.iterator();
+            while (iterator.hasNext()) {
+                T item = iterator.next();
+                if (item == null) {
+                    iterator.remove();
+                }
+            }
+
+            return collection.size() < originalSize; // True if we removed any nulls
+        } catch (Exception ignored) {
+            // Silent fail, might be unmodifiable collection
+        }
+
+        return false; // No nulls found or operation failed
+    }
+
+    /**
+     * Removes duplicate elements from any Collection.
+     * Works with any Collection type and compatible with pre-Java 8.
+     *
+     * @param collection The collection to process
+     * @return True if duplicates were removed, false otherwise
+     */
+    public static boolean removeDuplicates(@Nullable Object collection) {
+        if (!isCollection(collection)) {
+            return false;
+        }
+
+        try {
+            @SuppressWarnings("unchecked")
+            Collection<Object> coll = (Collection<Object>) collection;
+            if (coll.isEmpty()) {
+                return false; // No duplicates in empty collection
+            }
+
+            // Create a set of unique elements
+            Set<Object> uniqueItems = new LinkedHashSet<>();
+            for (Object item : coll) {
+                uniqueItems.add(item);
+            }
+
+            // If sizes are different, we had duplicates
+            if (uniqueItems.size() != coll.size()) {
+                // Clear the original collection
+                coll.clear();
+
+                // Add unique items one by one instead of using addAll
+                for (Object item : uniqueItems) {
+                    coll.add(item);
+                }
+
+                return true;
+            }
+        } catch (Exception ignored) {
+            // Silent fail, might be unmodifiable collection
+        }
+
+        return false; // No duplicates found or operation failed
+    }
+    /**
+     * Removes both duplicate and null elements from a collection.
+     * Compatible with Android before SDK 23 and Java 7.
+     *
+     * @param <T> The type of elements in the collection
+     * @param collection The collection to process
+     * @return True if duplicates or nulls were removed, false otherwise
+     */
+    public static <T> boolean removeDuplicatesAndNulls(@Nullable Collection<T> collection) {
+        if (!isValid(collection)) {
+            return false;
+        }
+
+        try {
+            // First remove nulls using iterator pattern
+            int originalSize = collection.size();
+            Iterator<T> iterator = collection.iterator();
+            while (iterator.hasNext()) {
+                T item = iterator.next();
+                if (item == null) {
+                    iterator.remove();
+                }
+            }
+
+            // Then remove duplicates
+            Set<T> uniqueItems = new LinkedHashSet<>(collection);
+            if (uniqueItems.size() != collection.size()) {
+                collection.clear();
+
+                // Add items individually to ensure type compatibility
+                for (T item : uniqueItems) {
+                    collection.add(item);
+                }
+            }
+
+            return collection.size() < originalSize; // True if we removed anything
+        } catch (Exception ignored) {
+            // Silent fail, might be unmodifiable collection
+        }
+
+        return false; // Nothing removed or operation failed
+    }
+
+    /**
+     * Creates a new collection with both duplicates and nulls removed.
+     * Useful when you don't want to modify the original collection.
+     *
+     * @param <T> The type of elements in the collection
+     * @param source The source collection to process
+     * @return A new collection without duplicates or nulls, or null if operation fails
+     */
+    public static <T> Collection<T> createWithoutDuplicatesAndNulls(@Nullable Collection<T> source) {
+        if (source == null) {
+            return null;
+        }
+
+        try {
+            // Filter nulls and collect unique items
+            Set<T> uniqueNonNullItems = new LinkedHashSet<>();
+            for (T item : source) {
+                if (item != null) {
+                    uniqueNonNullItems.add(item);
+                }
+            }
+
+            return new ArrayList<>(uniqueNonNullItems);
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return null;
+    }
+
+    /**
+     * Checks if a list contains a specific element.
+     * Provides better type safety with generics.
+     *
+     * @param <T> The type of elements in the collection
+     * @param collection The collection to search in
+     * @param element The element to search for
+     * @return True if the element is found in the collection, false otherwise
+     */
+    public static <T> boolean contains(@Nullable Collection<T> collection, @Nullable T element) {
+        if (!isValid(collection) || element == null) {
+            return false;
+        }
+
+        try {
+            return collection.contains(element);
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return false;
+    }
+
+    public static <T> boolean stringListContains(@Nullable Collection<String> list, @Nullable String element) { return stringListContains(list, element, false, true); }
+    public static <T> boolean stringListContains(@Nullable Collection<String> list, @Nullable String element, boolean ignoreCase) { return stringListContains(list, element, ignoreCase); }
+    public static <T> boolean stringListContains(@Nullable Collection<String> list, @Nullable String element, boolean ignoreCase, boolean equalsCheckOnItems) {
+        if(!isValid(list) || Str.isEmpty(element))
+            return false;
+
+        String comp = ignoreCase ? Str.toLowerCase(element) : element;
+        for(String s : list) {
+            if(Str.isEmpty(s))
+               continue;
+            String secondComp = ignoreCase ? Str.toLowerCase(s) : s;
+            if(equalsCheckOnItems) {
+                if(secondComp.equals(comp))
+                    return true;
+            } else {
+                if(secondComp.contains(comp))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Specialized version for List type.
+     *
+     * @param <T> The type of elements in the list
+     * @param list The list to search in
+     * @param element The element to search for
+     * @return True if the element is found in the list, false otherwise
+     */
+    public static <T> boolean contains(@Nullable List<T> list, @Nullable T element) {
+        if (!isValid(list) || element == null)
+            return false;
+
+        try {
+            return list.contains(element);
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return false;
+    }
+
+    /**
+     * Adds an element to a collection.
+     * Provides better type safety with generics.
+     *
+     * @param <T> The type of elements in the collection
+     * @param collection The collection to modify
+     * @param element The element to add
+     * @return True if the element was added successfully, false otherwise
+     */
+    public static <T> boolean addElement(@Nullable Collection<T> collection, @Nullable T element) {
+        if (collection == null) {
+            return false;
+        }
+
+        try {
+            return collection.add(element);
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return false;
+    }
+
+    /**
+     * Specialized version for List type.
+     *
+     * @param <T> The type of elements in the list
+     * @param list The list to modify
+     * @param element The element to add
+     * @return True if the element was added successfully, false otherwise
+     */
+    public static <T> boolean addElement(@Nullable List<T> list, @Nullable T element) {
+        if (list == null) {
+            return false;
+        }
+
+        try {
+            return list.add(element);
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return false;
+    }
+
+    /**
+     * Sets an element at a specific index in a list.
+     * Provides better type safety with generics.
+     *
+     * @param <T> The type of elements in the list
+     * @param list The list to modify
+     * @param element The element to set
+     * @param index The index at which to set the element
+     * @return True if the operation succeeded, false otherwise
+     */
+    public static <T> boolean setElementAt(@Nullable List<T> list, @Nullable T element, int index) {
+        if (list == null || index < 0 || index >= list.size()) {
+            return false;
+        }
+
+        try {
+            list.set(index, element);
+            return true;
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return false;
+    }
+
+    /**
+     * Removes an element at the specified index from a list.
+     * Provides better type safety with generics.
+     *
+     * @param <T> The type of elements in the list
+     * @param list The list to modify
+     * @param index The index of the element to remove
+     * @return True if the operation succeeded, false otherwise
+     */
+    public static <T> boolean removeElementAt(@Nullable List<T> list, int index) {
+        if (list == null || index < 0 || index >= list.size()) {
+            return false;
+        }
+
+        try {
+            list.remove(index);
+            return true;
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return false;
+    }
+
+    /**
+     * Removes an element at the specified index from a collection by finding the element
+     * at that position and removing it.
+     * Provides better type safety with generics.
+     *
+     * @param <T> The type of elements in the collection
+     * @param collection The collection to modify
+     * @param index The index of the element to remove
+     * @return True if the operation succeeded, false otherwise
+     */
+    public static <T> boolean removeElementAt(@Nullable Collection<T> collection, int index) {
+        if (collection == null || index < 0 || collection.size() <= index) {
+            return false;
+        }
+
+        try {
+            if (collection instanceof List) {
+                ((List<T>) collection).remove(index);
+                return true;
+            } else {
+                // For non-List collections, find the element at that index and remove it
+                int currentIndex = 0;
+                T elementToRemove = null;
+
+                for (T element : collection) {
+                    if (currentIndex == index) {
+                        elementToRemove = element;
+                        break;
+                    }
+                    currentIndex++;
+                }
+
+                if (elementToRemove != null) {
+                    return collection.remove(elementToRemove);
+                }
+            }
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return false;
+    }
+
+    /**
+     * Safely adds an element to a list if the element is not already present.
+     * Provides better type safety with generics.
+     *
+     * @param <T> The type of elements in the list
+     * @param list The list to modify
+     * @param element The element to add
+     * @return True if the element was added, false if it already exists or operation failed
+     */
+    public static <T> boolean addElementIfNotExists(@Nullable List<T> list, @Nullable T element) {
+        if (list == null || element == null) {
+            return false;
+        }
+
+        try {
+            if (!list.contains(element)) {
+                return list.add(element);
+            }
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return false;
+    }
+
+    /**
+     * Safely adds an element to a collection if the element is not already present.
+     * Provides better type safety with generics.
+     *
+     * @param <T> The type of elements in the collection
+     * @param collection The collection to modify
+     * @param element The element to add
+     * @return True if the element was added, false if it already exists or operation failed
+     */
+    public static <T> boolean addElementIfNotExists(@Nullable Collection<T> collection, @Nullable T element) {
+        if (collection == null || element == null) {
+            return false;
+        }
+
+        try {
+            if (!collection.contains(element)) {
+                return collection.add(element);
+            }
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return false;
+    }
+
+    /**
+     * Finds the index of an element in any Collection.
+     * Returns -1 if the element is not found or if the collection is invalid.
+     *
+     * @param collection The collection to search in
+     * @param element The element to search for
+     * @return The index of the first occurrence of the element, or -1 if not found
+     */
+    public static int getIndexOfElement(@Nullable Object collection, @Nullable Object element) {
+        if (!isCollection(collection) || element == null) {
+            return -1;
+        }
+
+        try {
+            Collection<?> c = (Collection<?>) collection;
+
+            // Fast path for Lists
+            if (collection instanceof List) {
+                return ((List<?>) collection).indexOf(element);
+            }
+
+            // For other collection types, iterate and find the element
+            int index = 0;
+            for (Object item : c) {
+                if (element.equals(item)) {
+                    return index;
+                }
+                index++;
+            }
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return -1;
+    }
+
+    /**
+     * Finds the index of an element in a Collection with generics.
+     * Provides better type safety.
+     *
+     * @param <T> The type of elements in the collection
+     * @param collection The collection to search in
+     * @param element The element to search for
+     * @return The index of the first occurrence of the element, or -1 if not found
+     */
+    public static <T> int getIndexOfElement(@Nullable Collection<T> collection, @Nullable T element) {
+        if (!isValid(collection) || element == null) {
+            return -1;
+        }
+
+        try {
+            // Fast path for Lists
+            if (collection instanceof List) {
+                return ((List<T>) collection).indexOf(element);
+            }
+
+            // For other collection types, iterate and find the element
+            int index = 0;
+            for (T item : collection) {
+                if (element.equals(item)) {
+                    return index;
+                }
+                index++;
+            }
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return -1;
+    }
+
+    /**
+     * Finds the index of an element in a List with generics.
+     * Specialized version for List type.
+     *
+     * @param <T> The type of elements in the list
+     * @param list The list to search in
+     * @param element The element to search for
+     * @return The index of the first occurrence of the element, or -1 if not found
+     */
+    public static <T> int getIndexOfElement(@Nullable List<T> list, @Nullable T element) {
+        if (!isValid(list) || element == null) {
+            return -1;
+        }
+
+        try {
+            return list.indexOf(element);
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return -1;
+    }
+
+    /**
+     * Finds the index of an element in a List with generics, using a custom predicate.
+     * Useful when you need to find an element based on complex criteria.
+     *
+     * @param <T> The type of elements in the list
+     * @param list The list to search in
+     * @param predicate The predicate to match elements
+     * @return The index of the first occurrence of the matching element, or -1 if not found
+     */
+    public static <T> int getIndexOfElement(@Nullable List<T> list, @Nullable Predicate<T> predicate) {
+        if (!isValid(list) || predicate == null) {
+            return -1;
+        }
+
+        try {
+            for (int i = 0; i < list.size(); i++) {
+                T item = list.get(i);
+                if (predicate.test(item)) {
+                    return i;
+                }
+            }
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return -1;
+    }
+
+    /**
+     * Finds the index of an element in a Collection with generics, using a custom predicate.
+     * Useful when you need to find an element based on complex criteria.
+     *
+     * @param <T> The type of elements in the collection
+     * @param collection The collection to search in
+     * @param predicate The predicate to match elements
+     * @return The index of the first occurrence of the matching element, or -1 if not found
+     */
+    public static <T> int getIndexOfElement(@Nullable Collection<T> collection, @Nullable Predicate<T> predicate) {
+        if (!isValid(collection) || predicate == null) {
+            return -1;
+        }
+
+        try {
+            int index = 0;
+            for (T item : collection) {
+                if (predicate.test(item)) {
+                    return index;
+                }
+                index++;
+            }
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return -1;
+    }
+
+    /**
+     * Finds the last index of an element in a List with generics.
+     * Similar to getIndexOfElement but starts searching from the end.
+     *
+     * @param <T> The type of elements in the list
+     * @param list The list to search in
+     * @param element The element to search for
+     * @return The last index of the element, or -1 if not found
+     */
+    public static <T> int getLastIndexOfElement(@Nullable List<T> list, @Nullable T element) {
+        if (!isValid(list) || element == null) {
+            return -1;
+        }
+
+        try {
+            return list.lastIndexOf(element);
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return -1;
+    }
+
+    /**
+     * Finds the last index of an element in a Collection with generics.
+     * For non-List collections, this iterates through the entire collection.
+     *
+     * @param <T> The type of elements in the collection
+     * @param collection The collection to search in
+     * @param element The element to search for
+     * @return The last index of the element, or -1 if not found
+     */
+    public static <T> int getLastIndexOfElement(@Nullable Collection<T> collection, @Nullable T element) {
+        if (!isValid(collection) || element == null) {
+            return -1;
+        }
+
+        try {
+            // Fast path for Lists
+            if (collection instanceof List) {
+                return ((List<T>) collection).lastIndexOf(element);
+            }
+
+            // For other collection types, we need to track the last found index
+            int index = 0;
+            int lastFoundIndex = -1;
+
+            for (T item : collection) {
+                if (element.equals(item)) {
+                    lastFoundIndex = index;
+                }
+                index++;
+            }
+
+            return lastFoundIndex;
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return -1;
+    }
+
+    /**
+     * Gets an element at the specified index from a list.
+     * Provides better type safety with generics.
+     *
+     * @param <T> The type of elements in the list
+     * @param list The list to get from
+     * @param index The index of the element to get
+     * @return The element at the specified index, or null if not found
+     */
+    public static <T> T getElementAt(@Nullable List<T> list, int index) {
+        return getElementAt(list, index, null);
+    }
+
+    /**
+     * Gets an element at the specified index from a list with a default value.
+     * Provides better type safety with generics.
+     *
+     * @param <T> The type of elements in the list
+     * @param list The list to get from
+     * @param index The index of the element to get
+     * @param defaultValue The default value to return if element is not found
+     * @return The element at the specified index, or defaultValue if not found
+     */
+    public static <T> T getElementAt(@Nullable List<T> list, int index, @Nullable T defaultValue) {
+        if (list == null || index < 0 || index >= list.size()) {
+            return defaultValue;
+        }
+
+        try {
+            T element = list.get(index);
+            return element != null ? element : defaultValue;
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return defaultValue;
+    }
+
+    /**
+     * Checks if a list contains a specific element.
+     * Returns false if list is invalid or element is not found.
+     *
+     * @param list The list or collection to search in
+     * @param element The element to search for
+     * @return True if the element is found in the list, false otherwise
+     */
+    public static boolean contains(@Nullable Object list, @Nullable Object element) {
+        if (!isCollection(list) || element == null) {
+            return false;
+        }
+
+        try {
+            Collection<?> collection = (Collection<?>) list;
+            return collection.contains(element);
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return false;
+    }
+
+    /**
+     * Adds an element to a list or collection.
+     * Safely handles invalid lists and null elements.
+     *
+     * @param list The list or collection to add to
+     * @param element The element to add
+     * @return True if the element was added successfully, false otherwise
+     */
+    public static boolean addElement(@Nullable Object list, @Nullable Object element) {
+        if (!isCollection(list)) {
+            return false;
+        }
+
+        try {
+            Collection collection = (Collection) list;
+            return collection.add(element);
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return false;
+    }
+
+    /**
+     * Sets an element at a specific index in a list.
+     * Safely handles invalid indices and type mismatches.
+     *
+     * @param list The list to modify
+     * @param element The element to set
+     * @param index The index at which to set the element
+     * @return True if the operation succeeded, false otherwise
+     */
+    public static boolean setElementAt(@Nullable Object list, @Nullable Object element, int index) {
+        if (!isMinimumIndex(list, index)) {
+            return false;
+        }
+
+        try {
+            if (list instanceof List) {
+                ((List) list).set(index, element);
+                return true;
+            }
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return false;
+    }
+
+    /**
+     * Removes an element at the specified index from a list.
+     * Safely handles invalid lists and indices.
+     *
+     * @param list The list to modify
+     * @param index The index of the element to remove
+     * @return True if the operation succeeded, false otherwise
+     */
+    public static boolean removeElementAt(@Nullable Object list, int index) {
+        if (!isMinimumIndex(list, index)) {
+            return false;
+        }
+
+        try {
+            if (list instanceof List) {
+                ((List) list).remove(index);
+                return true;
+            } else if (list instanceof Collection) {
+                // For non-List collections, find the element at that index and remove it
+                Collection collection = (Collection) list;
+                int currentIndex = 0;
+                Object elementToRemove = null;
+
+                for (Object element : collection) {
+                    if (currentIndex == index) {
+                        elementToRemove = element;
+                        break;
+                    }
+                    currentIndex++;
+                }
+
+                if (elementToRemove != null) {
+                    return collection.remove(elementToRemove);
+                }
+            }
+        } catch (Exception ignored) {
+            // Silent fail
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if the object is a Collection.
+     */
+    public static boolean isCollection(Object o) {
+        return o instanceof Collection;
+    }
+
+    /**
+     * Safely gets the size of a Collection.
+     * Returns the size or -1 if not a Collection.
+     */
+    public static int safeLength(Object o) {
+        return isCollection(o) ? ((Collection<?>)o).size() : -1;
+    }
+
+    /**
+     * Generic version that gets the size of a typed Collection.
+     *
+     * @param <T> The type of elements in the collection
+     * @param collection The typed collection
+     * @return The size of the collection or -1 if null
+     */
+    public static <T> int safeLength(Collection<T> collection) {
+        return collection != null ? collection.size() : -1;
+    }
+
+    /**
+     * Checks if the Collection has at least the minimum size.
+     */
+    public static boolean isMinimumSize(Object o, int minimumSize) {
+        return minimumSize >= 0 && isCollection(o) && safeLength(o) >= minimumSize;
+    }
+
+    /**
+     * Generic version that checks if the typed Collection has at least the minimum size.
+     *
+     * @param <T> The type of elements in the collection
+     * @param collection The typed collection
+     * @param minimumSize The minimum size required
+     * @return True if collection has at least minimumSize elements
+     */
+    public static <T> boolean isMinimumSize(Collection<T> collection, int minimumSize) {
+        return minimumSize >= 0 && collection != null && collection.size() >= minimumSize;
+    }
+
+    /**
+     * Checks if the Collection has a valid index at the specified position.
+     */
+    public static boolean isMinimumIndex(Object o, int minimumIndex) {
+        return minimumIndex >= 0 && isCollection(o) && safeLength(o) > minimumIndex;
+    }
+
+    /**
+     * Generic version that checks if the typed Collection has a valid index.
+     *
+     * @param <T> The type of elements in the collection
+     * @param collection The typed collection
+     * @param minimumIndex The index to check
+     * @return True if the index is valid for the collection
+     */
+    public static <T> boolean isMinimumIndex(Collection<T> collection, int minimumIndex) {
+        return minimumIndex >= 0 && collection != null && collection.size() > minimumIndex;
+    }
+
+    /**
+     * Safely gets an element at the specified index from any Collection with type casting.
+     * Uses null as default value if element can't be retrieved.
+     *
+     * @param <T> The type to cast the result to
+     * @param o The collection object
+     * @param index The index to retrieve
+     * @return The element cast to type T, or null if not found
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T getElementAtSafe(Object o, int index) {
+        return getElementAtSafe(o, index, null);
+    }
+
+    /**
+     * Safely gets an element at the specified index from any Collection with type casting.
+     *
+     * @param <T> The type to cast the result to
+     * @param o The collection object
+     * @param index The index to retrieve
+     * @param defaultValue Value to return if element can't be retrieved
+     * @return The element cast to type T, or defaultValue if not found
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T getElementAtSafe(Object o, int index, T defaultValue) {
+        if (!isMinimumIndex(o, index)) return defaultValue;
+
+        try {
+            if (o instanceof List) {
+                // Fast path for Lists that support random access
+                Object result = ((List<?>)o).get(index);
+                return result != null ? (T)result : defaultValue;
+            } else if (isCollection(o)) {
+                // Slower path for other Collections that don't support direct indexing
+                Collection<?> c = (Collection<?>) o;
+                int ix = 0;
+                for (Object val : c) {
+                    if (ix == index) return val != null ? (T)val : defaultValue;
+                    ix++;
+                }
+            }
+            return defaultValue;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * Generic version that safely gets an element from a typed Collection.
+     * Uses null as default value if element can't be retrieved.
+     *
+     * @param <T> The type of elements in the collection
+     * @param collection The typed collection
+     * @param index The index to retrieve
+     * @return The element, or null if not found
+     */
+    public static <T> T getElementAtSafe(Collection<T> collection, int index) {
+        return getElementAtSafe(collection, index, null);
+    }
+
+    /**
+     * Generic version that safely gets an element from a typed Collection.
+     *
+     * @param <T> The type of elements in the collection
+     * @param collection The typed collection
+     * @param index The index to retrieve
+     * @param defaultValue Value to return if element can't be retrieved
+     * @return The element, or defaultValue if not found
+     */
+    public static <T> T getElementAtSafe(Collection<T> collection, int index, T defaultValue) {
+        if (collection == null || index < 0 || index >= collection.size()) {
+            return defaultValue;
+        }
+
+        try {
+            if (collection instanceof List) {
+                // Fast path for Lists
+                return ((List<T>)collection).get(index);
+            } else {
+                // Iterate for non-List collections
+                int ix = 0;
+                for (T val : collection) {
+                    if (ix == index) return val;
+                    ix++;
+                }
+            }
+            return defaultValue;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * Generic version specifically for List type.
+     * Uses null as default value if element can't be retrieved.
+     *
+     * @param <T> The type of elements in the list
+     * @param list The typed list
+     * @param index The index to retrieve
+     * @return The element, or null if not found
+     */
+    public static <T> T getElementAtSafe(List<T> list, int index) {
+        return getElementAtSafe(list, index, null);
+    }
+
+    /**
+     * Generic version specifically for List type.
+     *
+     * @param <T> The type of elements in the list
+     * @param list The typed list
+     * @param index The index to retrieve
+     * @param defaultValue Value to return if element can't be retrieved
+     * @return The element, or defaultValue if not found
+     */
+    public static <T> T getElementAtSafe(List<T> list, int index, T defaultValue) {
+        if (list == null || index < 0 || index >= list.size()) {
+            return defaultValue;
+        }
+
+        try {
+            return list.get(index);
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * Generic method to safely set an element in a List.
+     *
+     * @param <T> The type of elements in the list
+     * @param list The list to modify
+     * @param index The index to set
+     * @param value The value to set
+     * @return True if the operation succeeded
+     */
+    public static <T> boolean setElementAtSafe(List<T> list, int index, T value) {
+        if (list == null || index < 0 || index >= list.size()) {
+            return false;
+        }
+
+        try {
+            list.set(index, value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Generic method to reverse any List.
+     *
+     * @param <T> The type of elements in the list
+     * @param list The list to reverse
+     * @return The reversed list (same instance)
+     */
+    public static <T> List<T> reverseList(List<T> list) {
+        if (list == null || list.size() <= 1) {
+            return list;
+        }
+
+        try {
+            Collections.reverse(list);
+            return list;
+        } catch (Exception e) {
+            return list;
+        }
+    }
+
+    public static List<?> arrayToList(Object o) {
+        if(!ArrayUtils.isArray(o))
+            return new ArrayList<>();
+
+        List lst = new ArrayList<>();
+        try {
+            for(int i = 0; i < ArrayUtils.safeLength(o); i++) {
+                Object val = Array.get(o, i);
+                if(val == null) continue;
+                lst.add(val);
+            }
+        }catch (Exception ignored) { }
+        return lst;
+    }
 
     public static <T> List<T> arrayToList(T[] array) {
         List<T> items = new ArrayList<>();
@@ -38,6 +1252,7 @@ public class ListUtil {
     }
 
 
+    //ToDO: move these into a linq class
     public interface IIndexable<T> {
         boolean isItem(T item, T itemToFind);
     }
@@ -170,6 +1385,19 @@ public class ListUtil {
         }
     }
 
+    public static <T> void forEachVoidNonNull(List<T> items, IIterateVoid<T> event) {
+        if(items == null || items.isEmpty() || event == null)
+            return;
+
+        int i = 0;
+        for(T item : items) {
+            if(item != null) {
+                event.onItem(item, i);
+                i++;
+            }
+        }
+    }
+
 
     public static void clear(Map<?, ?> map) {
         try {
@@ -180,11 +1408,65 @@ public class ListUtil {
         }
     }
 
-    public static <T> T getFirst(List<T> items) {
-        if(items == null || items.isEmpty())
+    public static <T> T getLast(List<T> items) { return getLast(items, null); }
+    public static <T> T getLast(List<T> items, T defaultValue) {
+        if(items == null || items.isEmpty()) return defaultValue;
+        return items.get(items.size() - 1);
+    }
+
+    public static <T> T getLast(Collection<T> c) { return getLast(c, null); }
+    public static <T> T getLast(Collection<T> c, T defaultValue) {
+        if(c != null || c.isEmpty()) return defaultValue;
+        int last = c.size() -1;
+        int ix = 0;
+        for(T o : c) {
+            if(ix == last)
+                return o;
+            ix++;
+        }
+
+        return defaultValue;
+    }
+
+    public static <T> T getFirst(List<T> items) { return getFirst(items, null); }
+    public static <T> T getFirst(List<T> items, T defaultValue) {
+        if(items == null || items.isEmpty()) return defaultValue;
+        return items.get(0);
+    }
+
+    public static <T> T getFirst(Collection<T> items) { return getFirst(items, null); }
+    public static <T> T getFirst(Collection<T> items, T defaultValue) {
+        if(items == null || items.isEmpty()) return defaultValue;
+        for(T o : items)
+            return o;
+
+        return null;
+    }
+
+    public static Object getFirst(Object c) {
+        if(!isCollection(c))
             return null;
 
-        return items.get(0);
+        Collection col = (Collection) c;
+        for(Object o : col)
+            return o;
+
+        return null;
+    }
+
+    public static Object getLast(Object c) {
+        if(!isCollection(c))
+            return null;
+
+        Collection col = (Collection) c;
+        int last = col.size() -1;
+        int ix = 0;
+        for(Object o : col) {
+            if(ix == last) return o;
+            ix++;
+        }
+
+        return null;
     }
 
     public static void clear(Collection<?> collection) {
@@ -437,9 +1719,9 @@ public class ListUtil {
         return list;
     }
 
-    public static <K, V> boolean addAllIfValid(Map<K, V> baseMap, Map<? extends K, ? extends V> newElements)
+    public static <K, V> boolean addAll(Map<K, V> baseMap, Map<? extends K, ? extends V> newElements)
     {
-        return addAllIfValid(baseMap, newElements, false);
+        return addAll(baseMap, newElements, false);
     }
 
     /**
@@ -453,7 +1735,7 @@ public class ListUtil {
      * @param <V>           The type of values in the map.
      * @return True if elements were added successfully, false otherwise.
      */
-    public static <K, V> boolean addAllIfValid(Map<K, V> baseMap, Map<? extends K, ? extends V> newElements, boolean clearOriginal) {
+    public static <K, V> boolean addAll(Map<K, V> baseMap, Map<? extends K, ? extends V> newElements, boolean clearOriginal) {
         if (baseMap == null) {
             return false; // Base map is null
         }
@@ -470,42 +1752,100 @@ public class ListUtil {
         return !newElements.isEmpty(); // Return true if newElements had at least one entry
     }
 
-    public static <T> boolean addAllIfValid(Collection<T> baseList, Collection<T> newElements, boolean clearOriginal) {
+    public static boolean addAllStrings(Collection<String> baseList, Collection<String> newElements) { return addAllStrings(baseList, newElements, false, true, true); }
+    public static boolean addAllStrings(Collection<String> baseList, Collection<String> newElements, boolean clearOriginal) { return addAllStrings(baseList, newElements, clearOriginal, false, true); }
+    public static boolean addAllStrings(Collection<String> baseList, Collection<String> newElements, boolean clearOriginal, boolean ensureNoCopies) { return addAllStrings(baseList, newElements, clearOriginal, ensureNoCopies, true); }
+
+    public static boolean addAllStringsNoCopies(Collection<String> baseList, Collection<String> newElements) { return addAllStrings(baseList, newElements, false, true, true); }
+    public static boolean addAllStringsNoCopies(Collection<String> baseList, Collection<String> newElements, boolean clearOriginal) { return addAllStrings(baseList, newElements, clearOriginal, true, true); }
+
+    public static boolean addAllStrings(Collection<String> baseList, Collection<String> newElements, boolean clearOriginal, boolean ensureNoCopies, boolean checkIfValidStrings) {
         if(baseList == null)
             return false;
-
+        //Be careful as this clears original EVEN if the NEW elements is not Valid! So make sure Callers are aware of this Logic
         if(clearOriginal)
             baseList.clear();
 
         if(!isValid(newElements))
             return false;
 
-        return baseList.addAll(newElements);
+        if(!ensureNoCopies && !checkIfValidStrings) {
+            return baseList.addAll(newElements);
+        } else {
+            boolean leastOneAdded = false;
+            for(String e : newElements) {
+                if(e == null || (checkIfValidStrings && Str.isEmpty(e)))
+                    continue;
+                if(ensureNoCopies && baseList.contains(e))
+                    continue;
+
+                baseList.add(e);
+                leastOneAdded = true;
+            }
+
+            return leastOneAdded;
+        }
     }
 
-    public static <T> boolean addAllIfValid(List<T> baseList, List<T> newElements, boolean clearOriginal) {
+
+    public static <T> boolean addAllNoCopies(Collection<T> baseList, Collection<T> newElements) { return addAll(baseList, newElements, false, true); }
+    public static <T> boolean addAllNoCopies(Collection<T> baseList, Collection<T> newElements, boolean clearOriginal) { return addAll(baseList, newElements, clearOriginal, true); }
+
+    public static <T> boolean addAll(Collection<T> baseList, Collection<T> newElements) { return addAll(baseList, newElements, false, true); }
+    public static <T> boolean addAll(Collection<T> baseList, Collection<T> newElements, boolean clearOriginal) { return addAll(baseList, newElements, clearOriginal, false); }
+    public static <T> boolean addAll(Collection<T> baseList, Collection<T> newElements, boolean clearOriginal, boolean ensureNoCopies) {
         if(baseList == null)
             return false;
 
+        //Be careful as this clears original EVEN if the NEW elements is not Valid! So make sure Callers are aware of this Logic
         if(clearOriginal)
             baseList.clear();
 
         if(!isValid(newElements))
             return false;
 
-        int oldSize = baseList.size();
-        for(T newElement : newElements)
-            if(newElement != null && !baseList.contains(newElement))
-                baseList.add(newElement);
+        if(!ensureNoCopies) {
+            return baseList.addAll(newElements);
+        } else {
+            boolean leastOneAdded = false;
+            for(T e : newElements ) {
+                if(e != null && !baseList.contains(e)) {
+                    baseList.add(e);
+                    leastOneAdded = true;
+                }
+            }
 
-        return oldSize != baseList.size();
+            return leastOneAdded;
+        }
     }
 
-    public static <T> boolean addAllIfValid(Collection<T> baseList, Collection<T> newElements) {
-        if(baseList == null || !isValid(newElements))
+    public static <T> boolean addAll(Collection<T> baseList, T[] newElements)  { return addAll(baseList, newElements, false, false, false); }
+    public static <T> boolean addAll(Collection<T> baseList, T[] newElements, boolean ensureNoCopies) { return addAll(baseList, newElements, ensureNoCopies, false, false); }
+    public static <T> boolean addAll(Collection<T> baseList, T[] newElements, boolean ensureNoCopies, boolean clearOriginal) { return  addAll(baseList, newElements, ensureNoCopies, clearOriginal, false); }
+    public static <T> boolean addAll(Collection<T> baseList, T[] newElements, boolean ensureNoCopies, boolean clearOriginal, boolean skipEmpty) {
+        if(baseList == null || !ArrayUtils.isValid(newElements))
             return false;
 
-        return baseList.addAll(newElements);
+        if(clearOriginal)
+            baseList.clear();
+
+        int originalSize = baseList.size();
+
+        for(T item : newElements) {
+            if(item != null) {
+                if(skipEmpty && item instanceof String) {
+                    if(((String) item).isEmpty())
+                        continue;
+                }
+
+                if(ensureNoCopies && baseList.contains(item))
+                    continue;
+
+                baseList.add(item);
+            }
+        }
+
+        return baseList.size() != originalSize;
     }
 
 
@@ -523,7 +1863,7 @@ public class ListUtil {
     }
 
 
-    public static <T> boolean addAllIfValid(List<T> baseList, List<T> newElements) {
+    public static <T> boolean addAll(List<T> baseList, List<T> newElements) {
         if(baseList == null || !isValid(newElements))
             return false;
 
@@ -533,7 +1873,7 @@ public class ListUtil {
             }
         }
 
-        return ListUtil.isValid(baseList);
+        return isValid(baseList);
     }
 
     public static <T> Collection<T> combine(Collection<T> a, Collection<T> b) { return combine(a, b, true, true); }

@@ -9,7 +9,7 @@ function before(hook, param)
 		return false
 	end
 
-	local command = param:joinList(commands)
+	local command = param:joinStringList(commands)
 	if command == nil then
 	    return false
 	end

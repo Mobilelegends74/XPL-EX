@@ -1,6 +1,5 @@
 package eu.faircode.xlua.x.hook.interceptors.file;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.File;
@@ -13,7 +12,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XParam;
 import eu.faircode.xlua.x.Str;
-import eu.faircode.xlua.x.data.GroupedMap;
 import eu.faircode.xlua.x.data.utils.ArrayUtils;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
 
@@ -96,8 +94,8 @@ public class FileInterceptor {
             if(item != null) {
                 boolean isAllowed = isAllowed(Str.getParentPath(item)) && isAllowed(item);
                 if(!isAllowed) {
-                    param.setOldResult(item + " open(allow)");
-                    param.setOldResult(item + " open(block)");
+                    param.setLogOld(item + " open(allow)");
+                    param.setLogOld(item + " open(block)");
                     param.setResult(new FileNotFoundException(item));
                     return true;
                 }
@@ -119,8 +117,8 @@ public class FileInterceptor {
                 if(Boolean.TRUE.equals(res)) {
                     boolean isAllowed = isAllowed(Str.getParentPath(object.getAbsolutePath())) && isAllowed(object.getAbsolutePath());
                     if(!isAllowed) {
-                        param.setOldResult(object.getAbsolutePath() + " (Exists) => True");
-                        param.setNewResult(object.getAbsolutePath() + " (Exists) => False");
+                        param.setLogOld(object.getAbsolutePath() + " (Exists) => True");
+                        param.setLogNew(object.getAbsolutePath() + " (Exists) => False");
                         param.setResult(false);
                         return true;
                     }

@@ -6,13 +6,13 @@ function after(hook, param)
 
     local res = false
     local name = param:getSetting("account.user.name")
-    if name ~= nil and param:hasField("name") then
+    if name ~= nil and param:hasField(param:getThisClazz(), "name") then
         ths.name = name
         res = true
     end
 
     local serial = param:getSetting("account.user.serial")
-    if serial ~= nil and param:hasField("serialNumber") then
+    if serial ~= nil and param:hasField(param:getThisClazz(), "serialNumber") then
         if param:isNumericString(serial) then
             ths.serialNumber = tonumber(serial)
             res = true
@@ -20,7 +20,7 @@ function after(hook, param)
     end
 
     local gId = param:getSetting("account.user.group.id")
-    if gId ~= nil and param:hasField("profileGroupId") then
+    if gId ~= nil and param:hasField(param:getThisClazz(), "profileGroupId") then
         if param:isNumericString(gId) then
             ths.profileGroupId = tonumber(gId)
             res = true
@@ -28,7 +28,7 @@ function after(hook, param)
     end
 
     local id = param:getSetting("account.user.id")
-    if id ~= nil and param:hasField("id") then
+    if id ~= nil and param:hasField(param:getThisClazz(), "id") then
         if param:isNumericString(id) then
             ths.id = tonumber(id)
             res = true

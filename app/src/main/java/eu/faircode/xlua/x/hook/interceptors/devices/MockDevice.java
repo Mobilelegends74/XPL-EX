@@ -71,7 +71,6 @@ public class MockDevice {
             boolean setFakeName = FIELD_NAME.trySetValueInstanceEx(inputDevice, fakeName);
             boolean setFakeVend = FIELD_VENDOR_ID.trySetValueInstanceEx(inputDevice, fakeVendorId);
             boolean setFakeProd = FIELD_PRODUCT_ID.trySetValueInstanceEx(inputDevice, fakeProductId);
-
             if(DebugUtil.isDebug())
                 Log.d(TAG, "Set Fake Descriptor ? " + (setFakeDesc) + " Set Fake Name ? " + (setFakeName) + " Set Fake Vendor ID ? " + (setFakeVend) + " Set Fake Product ID ? " + (setFakeProd));
 

@@ -41,7 +41,7 @@ public class NetworkInfoInterceptor {
                 Ethernet: eth0
                 VPN: tun0, ppp0
              */
-            param.setOldResult(String.valueOf(instance.getState()));
+            param.setLogOld(String.valueOf(instance.getState()));
             if(!FIELD_STATE.trySetValueInstanceEx(instance, NetworkInfo.State.DISCONNECTED)) {
                 if(DebugUtil.isDebug())
                     Log.d(TAG, "Failed to Forcefully Set the NetworkInfo State for a VPN Interface to :" + String.valueOf(NetworkInfo.State.DISCONNECTED) + " ...");
@@ -52,7 +52,7 @@ public class NetworkInfoInterceptor {
             if(DebugUtil.isDebug())
                 Log.d(TAG, "Successfully Set the VPN NetworkInfo State to Disconnected!");
 
-            param.setNewResult(String.valueOf(NetworkInfo.State.DISCONNECTED));
+            param.setLogNew(String.valueOf(NetworkInfo.State.DISCONNECTED));
             if(getResult) param.setResult(instance);
             return true;
         }catch (Throwable e) {

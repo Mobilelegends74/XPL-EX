@@ -62,7 +62,7 @@ public class RandomZoneDep implements IRandomizerOld {
                 array = GlobalZoneUtil.TIMEZONE_COUNTRIES;
                 break;
             case ZONE_COUNTRY_ISO:
-                settingName = "region.country.isoo";
+                settingName = "region.country.iso";
                 name = "TimeZone Country ISO";
                 id = "%zone_country_iso%";
                 array = GlobalZoneUtil.TIMEZONE_LANGUAGE_ISO;

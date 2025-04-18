@@ -55,7 +55,7 @@ public class AppXpPacket implements IParcelType, IJsonType, Parcelable, IAssignL
     public boolean hasAssignment(AssignmentPacket assignment) { return assignmentIndex(assignment) > -1; }
 
     public void addAssignment(AssignmentPacket assignment) { if(assignment != null) assignments.add(assignment); }
-    public void addAllAssignments(List<AssignmentPacket> assignments) { if(!ListUtil.isValid(assignments)) ListUtil.addAllIfValid(this.assignments, assignments); }
+    public void addAllAssignments(List<AssignmentPacket> assignments) { if(!ListUtil.isValid(assignments)) ListUtil.addAll(this.assignments, assignments); }
     public void removeAssignment(AssignmentPacket assignment) { ListUtil.removeAt(assignments, assignmentIndex(assignment)); }
 
     public int assignmentIndex(AssignmentPacket assignment) { return ListUtil.indexOf(assignments, assignment, (a, b) -> a.hook.equals(b.hook)); }
@@ -66,7 +66,7 @@ public class AppXpPacket implements IParcelType, IJsonType, Parcelable, IAssignL
 
         Collection<AssignmentPacket> filtered = new ArrayList<>();
         for (AssignmentPacket assignment : assignments)
-            if (group.equals(assignment.hookObj.getGroup()))
+            if (group.equals(assignment.hookObj.group))
                 filtered.add(assignment);
 
         return filtered;
@@ -83,7 +83,7 @@ public class AppXpPacket implements IParcelType, IJsonType, Parcelable, IAssignL
             this.persistent = (in.readByte() != 0);
             this.system = (in.readByte() != 0);
             this.forceStop = (in.readByte() != 0);
-            ListUtil.addAllIfValid(assignments, in.createTypedArrayList(AssignmentPacket.CREATOR));
+            ListUtil.addAll(assignments, in.createTypedArrayList(AssignmentPacket.CREATOR));
         }
     }
 
