@@ -1,12 +1,15 @@
 # XPL-EX
 Hooking + Privacy Framework For Android 6.0 +<br>
 
+![photo_2025-04-18_17-47-14](https://github.com/user-attachments/assets/a8ba4b6d-7ba0-4371-9f27-578ae5a16234)
+
+
 XPL-EX
 ------------
 XPL-EX (XPrivacy Lua EX) based on original (XPrivacy Lua) by M66B will prevent most if not all Installed Applications on your Device from tracking and or Identifying you. You have the ability to Define your hook Hook Definitions onto Applications and utilizing LUA Scripts to define the behaviour of the Hook allowing you to have Full Control over your Applications. Powwered by the Community it will forever remain Full Open Source (FOSS), Never bundled with Trackers, Analytics, or Advertisements lastly never ever needing to connect or to communicate to any Server.<br><br>
 
 When Comparing with GrapheneOS like Projects, XPL-EX will give you more Anti Tracking Abilities. Say bye bye to Data Brokers, buying and Selling of useful user Data in their activities.
-> Runnning such Tracking Applications Such as  [Fingerprint Pro](https://play.google.com/store/apps/details?id=com.fingerprintjs.android.fpjs_pro_demo&hl=en_US) will have a very high success Rate at tracking users on GOS and compared to other Solutions as well. XPL-EX was the first too achieve a Visitor Never Found result from FingerprintPro ensuring you are not to be tracked.
+> Running such Tracking Applications Such as  [Fingerprint Pro](https://play.google.com/store/apps/details?id=com.fingerprintjs.android.fpjs_pro_demo&hl=en_US) will have a very high success Rate at tracking users on GOS and compared to other Solutions as well. XPL-EX was the first too achieve a Visitor Never Found result from FingerprintPro ensuring you are not to be tracked.
 
 <br>
 
@@ -18,7 +21,7 @@ Motivation
 ------------
 
 <details>
-<summary>Blah Blah Blah... here </summary>
+<summary>Click here for Blah Blah ....  </summary>
   Some reason I have always been Schizo from a young age. That being Said when Growing up I always wanted an Application for Xposed that would be the ultimate All in One Solutions for manipulating your Device Identifiers from Applications. During these Times many years ago I would Layer as Many Xposed Modules over to Spoof as Many IDs, rendering a lot of instability, all the while these Applications to Spoof your Device Identifiers also had Advertisements and Tracking built into the App how Ironic.<br><br>
 Many years later here I am, following in the path of the Computer, Ive become less paranoid now as I am trying to be a more open person. I still had a vision and when I Seen M66B will Discontinue XPrivacyLua my I seized the moment to use this app for a base of what I visioned.<br>
 Now with the support from the Community, I shall build a Powerful Application that will ensure tracking from Applications, all the while being FOSS, Free, No Analytics, No Ads...<br>
@@ -38,10 +41,11 @@ Installation / Requirements
 
 LSPosed: please make sure that any app you want to restrict is [in the 'scope'](https://github.com/LSPosed/LSPosed/wiki/How-to-use-it#install--activate-modules) of LSposed.
 <br><br>
-API Covered:
+Targeted APIs:
 
 <details>
-  <summary>Identifiers Covered</summary>
+
+<summary style="font-size: 54px;"> Click here to See the Identifier Coverage</summary>
 
 <br><br>These are the list of SOME of the Data that is and can be Spoofed via XPL-EX. Within each Item being Spoofed will also tell you at what Level the Hooks are at.<br>
 
@@ -51,7 +55,7 @@ API Covered:
     - Cache Hook
         - Named Value Cache
     - IPC Hook
-        - Content Resolver
+        - Content Resolver (Call + Query)
 - Advertising ID (Google)
     - Api Hook
         - Constructor & "getId"
@@ -90,15 +94,17 @@ API Covered:
         - Build Field
 - MAC Address, SSID, BSSID, IP Addresses (IPv4 & IPv6) and Network Info
     - Parcel and Constructor
-- IMEI/MEID, SIM Serial, ICC ID, Phone Numbers (LAC & CID)
+- IMEI/MEID, SIM Serial, ICC ID, Phone Numbers (LAC & CID) (Currently Unavailable in the 1.5.3 Version)
     - Service Hook
 - Time Stamps (File and Application Install & Update TimeStamps)
     - STAT (Shell & Apis)
     - File (Android & Java NIO)
 - Sensors (Hide)
-    - For more Constol please Refer to use [Sesnsor Disabler](https://github.com/wardellbagby/sensor-disabler)
+    - For more Constol please Refer to use [Sensor Disabler](https://github.com/wardellbagby/sensor-disabler)
 - UUID Named Files with UUIDs
 - Charging Cycles
+- Boot Count
+
 
 
 <br><br>Many More things as well not yet defined!!!<br><br>
@@ -123,41 +129,66 @@ Modifying your Router Firmware use of course [OpenWRT](https://openwrt.org/)<br>
 
 Demo/Pictures
 ------------
+<img src="https://github.com/user-attachments/assets/52bf2d05-05ae-42a7-aa41-be357c6e88b5" width="311" height="640">
+<img src="https://github.com/user-attachments/assets/ec717fb0-c1f4-47f9-ac36-b6c71bd6538c" width="311" height="640">
+<img src="https://github.com/user-attachments/assets/f06808fa-bb44-4c84-801b-8a0590c6f702" width="311" height="640">
+<img src="https://github.com/user-attachments/assets/c4f7580b-d183-4baf-96e0-fc1ed5877b69" width="311" height="640">
+<img src="https://github.com/user-attachments/assets/06553558-1a92-4db2-b9ea-04fbeab48c7b" width="311" height="640">
+<img src="https://github.com/user-attachments/assets/e20caed3-87cc-4fb6-b65d-0656c9714321" width="311" height="640">
 
 
 Donations
 ------------
 <br>
-BTC:
+
+*BTC:*
+<br>
+bc1q0znz3vqcpg6q9c34w78uk7yqsjz3gu2sh6apg7
 <br><br>
-LTC:
+
+*LTC:*
+<br>
+ltc1qvy7e4k26gwuj0kvuugsc8mextj9vkyu3tlrefy
 <br><br>
-ETH:
+
+*ETH:*
+<br>
+0x4282Bc864B29Dbd62B9A9960A71e8343eDA44707
 <br><br>
-XMR:
+
+*XMR:*
+<br>
+89WiRBYaYcKa947MD8SNNe7Jkag5mvZruRFnVEDmqD5rRonTsEMr7KJ4PeYByDZAGjM2XJUgAsMniLiwcq4vSirDQvf8sT9
 <br><br>
+
+*BCH:*
+<br>
+bitcoincash:qz5scaha4gyh92pjw5z5uhuy33sm2rdh5v0tpw2ggm
+<br><br>
+
 
 Resources
 ------------
 *FAQ, See [here](https://github.com/0bbedCode/XPL-EX/blob/master/FAQ.md) for a list of often asked questions. (XPrivacy-Lua)* <br>
-*API Usage, See [here]()*
+*API Usage, See [here](https://github.com/0bbedCode/XPL-EX/blob/new/APIHELP.md)*
 
+<br>
 
+*Telegram, [Announcement Channel](https://t.me/xpl_ex)*
+<br>
+*Telegram, [Discussion Group](https://t.me/XPL_EX_CHAT)*
+<br><br>
 
-Credtis / Help
+Credits / Help
 ------------
 
 <br>
 
-Original Dev [M66B](https://github.com/M66B)
+*Original Dev [M66B](https://github.com/M66B)*
 <br>
-
-VDInfos Dev [VD-8](https://github.com/VD171/VD-Infos)
+*VDInfos Dev [VD-8](https://github.com/VD171/VD-Infos)*
 <br>
-
-Information Anti Root Detections [Huberth](https://)
-
-
+*Detections research etc. [HUBERTH](https://t.me/HubertHub)*
 
 
 
