@@ -110,8 +110,10 @@ Targeted APIs:
 <br><br>Many More things as well not yet defined!!!<br><br>
 
 
+
 To have a more Fine Tuning over Controlling the List of Applications that Certain apps Can see please refer to use [HMA (HideMyAppList)](https://github.com/Dr-TSNG/Hide-My-Applist)<br>
 To Spoof your GPS Location please use [GPS Setter](https://github.com/jqssun/android-gps-setter)<br>
+For best Android Ad Blocker [AdAway](https://adaway.org/)<br>
 For great Firewall Solution stronger than as Simple Permission Based Firewall (cough cough *GOS*) use [InviZible](https://github.com/Gedsh/InviZible)<br>
 For the best App Manager (Block Services, Startup and Much More) use [AppManager](https://github.com/MuntashirAkon/AppManager)<br>
 To Freeze and or Disable Apps / Block use [Hail](https://github.com/aistra0528/Hail)<br>
@@ -120,6 +122,7 @@ To Turn off All Sensors on the Device at Once use [Sensors Off](https://github.c
 To Check Information on your Apps including Tracking SDK and Libraries use [LibChecker](https://github.com/LibChecker/LibChecker)<br>
 For the best Secure Chatting App (Signal Fork) [Molly](https://molly.im/)<br>
 Modifying your Router Firmware use of course [OpenWRT](https://openwrt.org/)<br>
+
 
 </details>
 

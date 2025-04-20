@@ -31,8 +31,7 @@ public class BackupDialogUtils {
         try {
             Intent intent = Intent.createChooser(
                     FileDialogUtils.createOpenFileIntent(),
-                    activity.getString(R.string.title_select_file)
-            );
+                    activity.getString(R.string.title_select_file));
             activity.startActivityForResult(intent, REQUEST_OPEN_BACKUP);
         } catch (Exception e) {
             if (DebugUtil.isDebug()) {

@@ -114,11 +114,7 @@ public class ConfUtils {
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("application/json");
         // Add fallback MIME types
-        String[] mimeTypes = {
-                "application/json",
-                "text/plain",
-                "text/json"
-        };
+        String[] mimeTypes = { "application/json", "text/plain", "text/json" };
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         intent.putExtra(Intent.EXTRA_TITLE, defaultName + ".json");
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);

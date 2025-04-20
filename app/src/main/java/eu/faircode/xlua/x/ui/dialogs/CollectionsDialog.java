@@ -86,8 +86,7 @@ public class CollectionsDialog extends CheckableDialog<CollectionsDialog.XCollec
     }
 
     public CollectionsDialog set(Context context) {
-        if(context == null)
-            return this;
+        if(context == null) return this;
 
         this.title = context.getString(R.string.menu_collections);
         this.useOriginalState = false;

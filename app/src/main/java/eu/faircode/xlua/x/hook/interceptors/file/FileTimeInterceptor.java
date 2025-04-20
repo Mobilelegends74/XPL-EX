@@ -151,8 +151,12 @@ public class FileTimeInterceptor {
          */
         //RandomDateHelper.generateSecondsInMilliseconds(5, 2000);
 
-        boolean res = file.startsWith("/data/user_de") && file.contains("/com.google.android.gms/app_chimera/") && file.endsWith(".apk");
-        if(res && DebugUtil.isDebug()) Log.d(TAG, "GMS Core Chimera APK! File=" + file + " Stack=" + RuntimeUtils.getStackTraceSafeString(new Exception()));
+        //File.lastModified(/data/app/~~O7rUjcoz9oKfxIKK4-I29A==/com.google.android.gms-Y_u0GvzA9Xzdd9pTsctOlw==/split_MeasurementDynamite_installtime.apk) Interceptor File=(/data/app/~~O7rUjcoz9oKfxIKK4-I29A==/com.google.android.gms-Y_u0GvzA9Xzdd9pTsctOlw==/split_MeasurementDynamite_installtime.apk) Offset=105613860 Original MS=1745120318580 Fake MS=1745225932440
+
+        boolean res = (file.startsWith("/data/user_de") && file.contains("/com.google.android.gms/app_chimera/") && file.endsWith(".apk"))
+                || (file.startsWith("/data/app") && file.contains("/com.google.android.gms") && file.endsWith("split_MeasurementDynamite_installtime.apk"));
+        if(res && DebugUtil.isDebug())
+            Log.d(TAG, "GMS Core Chimera APK! File=" + file + " Stack=" + RuntimeUtils.getStackTraceSafeString(new Exception()));
         return res;
     }
 

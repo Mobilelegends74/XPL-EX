@@ -122,7 +122,7 @@ public class IntentQueryData {
             String data = param.getSetting(IPCQueryFilterContainer.createAuthoritySetting(targetAuth));
             boolean isEmpty =
                     param.getSettingBool(IPCQueryFilterContainer.createArgSetting(IPCQueryFilterContainer.EMPTY_PREFIX, targetAuth), false);
-
+            //TODO: make sure createArgSetting is Correct
             if(!isEmpty && Str.isEmpty(data) && this.uri != null && ListUtil.isValid(this.uri.getPathSegments())) {
                 List<String> segments = this.uri.getPathSegments();
                 int i = 0;
@@ -331,21 +331,22 @@ public class IntentQueryData {
         try {
             if(c == null || !ArrayUtils.isValid(targetNames) || onHit == null) {
                 if(DebugUtil.isDebug())
-                    Log.d(TAG, Str.fm("Not Scanning Cursor, Cursor, onHit callback or Target Items is Null or Invalid! this[%s]", toString(false)));
+                    Log.d(TAG, Str.fm("Not Scanning Cursor, Cursor, onHit callback or Target Items is Null or Invalid! this[%s]",
+                            toString(false)));
                 return null;
             }
 
             // Ensure cursor is valid and has data
             if (c.getCount() <= 0) {
-                if(DebugUtil.isDebug())
-                    Log.d(TAG, "Cursor has no rows, nothing to scan");
+                if(DebugUtil.isDebug()) Log.d(TAG, "Cursor has no rows, nothing to scan");
                 return new MatrixCursor(c.getColumnNames());
             }
 
             if(DebugUtil.isDebug()) {
-                Log.d(TAG, Str.fm("Scanning cursor for targets: [%s]", Str.joinArray(targetNames)));
-                Log.d(TAG, Str.fm("Cursor columns: [%s]", Str.joinArray(c.getColumnNames())));
-                Log.d(TAG, Str.fm("Cursor rows: %d", c.getCount()));
+                Log.d(TAG, Str.fm("Scanning Cursor for Targets: [%s] Columns [%s] Rows [%s]",
+                        Str.joinArray(targetNames),
+                        Str.joinArray(c.getColumnNames()),
+                        c.getCount()));
             }
 
             // Create a new cursor with same column structure
@@ -380,7 +381,7 @@ public class IntentQueryData {
             if (nameIndex != -1 && valueIndex != -1) {
                 if(DebugUtil.isDebug()) {
                     Log.d(TAG, "Found key-value structure. Name column: " + c.getColumnName(nameIndex) + ", Value column: " + c.getColumnName(valueIndex));
-                    Log.d(TAG, Str.fm("Key-value structure detected with nameIndex=%d, valueIndex=%d", nameIndex, valueIndex));
+                    Log.d(TAG, Str.fm("Key-value structure detected with nameIndex=%s, valueIndex=%s", nameIndex, valueIndex));
                 }
 
                 // Make sure cursor is positioned properly
@@ -476,7 +477,7 @@ public class IntentQueryData {
                                     newChanges.append("[" + name + "]:" + newValue).append("\n");
 
                                     if(DebugUtil.isDebug()) {
-                                        Log.d(TAG, Str.fm("Replacing value in cursor row %d: [%s] = '%s' -> '%s'",
+                                        Log.d(TAG, Str.fm("Replacing value in cursor row %s: [%s] = '%s' -> '%s'",
                                                 c.getPosition(), name, value, newValue));
                                     }
                                 } else {
@@ -503,8 +504,10 @@ public class IntentQueryData {
                                 (columnName.contains(":") && columnName.endsWith(targetName))) {
                             targetColumnMap.put(i, targetName);
                             if(DebugUtil.isDebug())
-                                Log.d(TAG, Str.fm("Found target column name: %s at index %d Target: %s",
-                                        columnName, i, targetName));
+                                Log.d(TAG, Str.fm("Found target column name: %s at index %s Target: %s",
+                                        columnName,
+                                        i,
+                                        targetName));
                             // Don't break - continue to find all target columns
                         }
                     }
@@ -587,10 +590,14 @@ public class IntentQueryData {
                             if (isString) {
                                 verifiedTargets.put(colIndex, targetName);
                                 if(DebugUtil.isDebug())
-                                    Log.d(TAG, Str.fm("Verified column %d (%s) is a string type", colIndex, targetName));
+                                    Log.d(TAG, Str.fm("Verified column %s (%s) is a string type",
+                                            colIndex,
+                                            targetName));
                             } else {
                                 if(DebugUtil.isDebug())
-                                    Log.d(TAG, Str.fm("Column %d (%s) is not a string type, cannot replace", colIndex, targetName));
+                                    Log.d(TAG, Str.fm("Column %s (%s) is not a string type, cannot replace",
+                                            colIndex,
+                                            targetName));
                             }
                         } catch (Exception e) {
                             Log.e(TAG, "Error checking column type for " + targetName + ": " + e.getMessage());
@@ -630,8 +637,11 @@ public class IntentQueryData {
                                         newChanges.append("[" + targetName + "]:" + newValue).append("\n");
 
                                         if(DebugUtil.isDebug()) {
-                                            Log.d(TAG, Str.fm("Replacing value in column %d: [%s] = '%s' -> '%s'",
-                                                    i, targetName, oldValue, newValue));
+                                            Log.d(TAG, Str.fm("Replacing value in column %s: [%s] = '%s' -> '%s'",
+                                                    i,
+                                                    targetName,
+                                                    oldValue,
+                                                    newValue));
                                         }
                                     } else {
                                         // No replacement value available, keep original
@@ -673,9 +683,9 @@ public class IntentQueryData {
             }
 
             if(DebugUtil.isDebug()) {
-                Log.d(TAG, Str.fm("Scan complete - Created new cursor with %d rows", newCursor.getCount()));
+                Log.d(TAG, Str.fm("Scan complete - Created new cursor with %s rows", newCursor.getCount()));
                 if (!oldChanges.toString().isEmpty()) {
-                    Log.d(TAG, Str.fm("Changes summary: %d replacements", oldChanges.toString().split("\n").length));
+                    Log.d(TAG, Str.fm("Changes summary: %s replacements", oldChanges.toString().split("\n").length));
                     Log.d(TAG, Str.fm("Original values: %s", oldChanges.toString().trim()));
                     Log.d(TAG, Str.fm("New values: %s", newChanges.toString().trim()));
                 } else {
@@ -789,7 +799,6 @@ public class IntentQueryData {
             sb.append(Str.fm("Uri Encoded Path: [%s]", this.uri.getEncodedPath()));
             sb.append(Str.fm("Uri Query: [%s]", this.uri.getQuery()));
             sb.append(Str.fm("Uri Path Segments: [%s]", Str.joinList(this.uri.getPathSegments())));
-            Log.d(TAG, "DOING TO STRING INTERNQALLL!44!");
 
         }
 

@@ -6,11 +6,13 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.TypeMap;
+import eu.faircode.xlua.x.data.string.StrBuilder;
 import eu.faircode.xlua.x.data.utils.ArrayUtils;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.data.utils.TryRun;
@@ -32,11 +34,82 @@ public class IPCQueryFilterContainer extends FilterContainerElement implements I
 
 
     public static String createArgSetting(String arg, String authority) { return arg != null ? Str.combineEx("query:arg:[", Str.toLowerCase(arg), "]:[", Str.toLowerCase(authority), "]") : null; }
-    public static String createAuthoritySetting(String authority) { return authority != null ? Str.combineEx("query:auth:[", Str.toLowerCase(authority), "]") : null; }
+    public static String createAuthoritySetting(String authority) { return authority != null ? Str.combineEx(QUERY_SETTING_PREFIX, "[", Str.toLowerCase(authority), "]") : null; }
 
+    public static final String QUERY_SETTING_PREFIX = "query:auth:";
     public static final String FILLER_SYMBOL = "__q:s:d:";
     public static final String EMPTY_PREFIX = "__empty__";
     public static final String AUTH_PREFIX = "content://";
+
+    @Override
+    public int appendSettings(Map<String, String> settings) {
+        int count = 0;
+        for(Map.Entry<String, String> setting : this.createdSettings.entrySet()) {
+            String name = setting.getKey();
+            String value = setting.getValue();
+            if(Str.startsWith(name, QUERY_SETTING_PREFIX) && settings.containsKey(name) && !Str.isEmpty(value)) {
+                String oldValue = settings.get(name);
+                String trimmedStart = Str.trimEx(oldValue, true, true, true, true, Str.PIPE);
+                String trimmedEnd = Str.trimEx(value, true, true, true, true, Str.PIPE);
+                String newValue = StrBuilder.create()
+                        .setDoAppendFlag(!Str.isEmpty(trimmedStart))
+                        .append(trimmedStart)
+                        .append(Str.PIPE)
+                        .setDoAppendFlag(!Str.isEmpty(trimmedEnd))
+                        .toString();
+
+                settings.put(name, newValue);
+                count++;
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, Str.fm("Modified Existing Query Auth Setting [%s] with Original Value of (%s) requested to Append (%s) with the Final new Value of (%s)",
+                            name,
+                            oldValue,
+                            value,
+                            newValue));
+            } else {
+                settings.put(name, value);
+                count++;
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, Str.fm("Appended Query Setting [%s] with the value Of (%s)",
+                            name,
+                            value));
+            }
+        }
+
+        return count;
+    }
+
+    @Override
+    public void putSettingPair(String name, String value) {
+        if(Str.startsWith(name, QUERY_SETTING_PREFIX) && this.createdSettings.containsKey(name)) {
+            String oldValue = this.createdSettings.get(name);
+            String trimmedStart = Str.trimEx(oldValue, true, true, true, true, Str.PIPE);
+            String trimmedEnd = Str.trimEx(value, true, true, true, true, Str.PIPE);
+            String newValue = StrBuilder.create()
+                    .setDoAppendFlag(!Str.isEmpty(trimmedStart))
+                    .append(trimmedStart)
+                    .append(Str.PIPE)
+                    .setDoAppendFlag(!Str.isEmpty(trimmedEnd))
+                    .append(trimmedEnd)
+                    .toString();
+
+            createdSettings.put(name, newValue);
+            if(DebugUtil.isDebug())
+                Log.d(TAG, Str.fm("Setting Exists Query Auth Setting [%s] with Original Value of (%s) requested to Append (%s) with the Final new Value of (%s) Created Settings Count=%s",
+                        name,
+                        oldValue,
+                        value,
+                        newValue,
+                        createdSettings.size()));
+        } else {
+            createdSettings.put(name, value);
+            if(DebugUtil.isDebug())
+                Log.d(TAG, Str.fm("Appended Query Setting [%s] with Value of [%s] Created Settings Count=%s",
+                        name,
+                        value,
+                        createdSettings.size()));
+        }
+    }
 
     @Override
     public boolean hasSwallowedAsRule(XHook hook) {
@@ -157,6 +230,10 @@ public class IPCQueryFilterContainer extends FilterContainerElement implements I
 
                             if(!addedTargets.isEmpty()) {
                                 //ToDo: Handle wild card authorities, just add to our global list or something
+                                //  This is overriding old ! ? Maybe, I mean this is Authority based ? yes, because the "boot_count" is  part of the authority !
+                                //  How the system currently works is it creates for that "auth" a Setting that list its targets, we need to use some shared cache to join others that have tasks on the Same Auth
+                                //  Since, the value can be "joined" we should try that ?
+                                //  Wait, we control the Appending Settings Stage... hehe eZ
                                 putSettingPair(createAuthoritySetting(auth), Str.joinList(addedTargets, Str.PIPE));
                                 if(DebugUtil.isDebug())
                                     Log.d(TAG, Str.fm("Created Target Authority Auth Setting [%s] for Authority [%s] for filter Rules. Targets [%s] Hook [%s]",

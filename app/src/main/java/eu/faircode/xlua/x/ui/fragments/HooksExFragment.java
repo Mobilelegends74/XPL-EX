@@ -14,11 +14,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.R;
 import eu.faircode.xlua.databinding.HooksExFragmentBinding;
 import eu.faircode.xlua.databinding.HooksExItemBinding;
@@ -28,15 +31,19 @@ import eu.faircode.xlua.x.data.utils.TryRun;
 import eu.faircode.xlua.x.ui.adapters.hooks.HookAdapter;
 import eu.faircode.xlua.x.ui.adapters.hooks.elements.ResultRequest;
 import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
+import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHookIO;
 import eu.faircode.xlua.x.ui.core.CoreUiColors;
 import eu.faircode.xlua.x.ui.core.CoreUiLog;
 import eu.faircode.xlua.x.ui.core.DataEventKind;
 import eu.faircode.xlua.x.ui.core.UserClientAppContext;
 import eu.faircode.xlua.x.ui.core.fragment.ListFragment;
+import eu.faircode.xlua.x.ui.core.util.FileOpenUtils;
 import eu.faircode.xlua.x.ui.core.util.ListFragmentUtils;
 import eu.faircode.xlua.x.ui.core.view_registry.SettingSharedRegistry;
 import eu.faircode.xlua.x.ui.core.view_registry.SharedRegistry;
+import eu.faircode.xlua.x.ui.dialogs.ConfirmDialog;
 import eu.faircode.xlua.x.ui.dialogs.HookEditDialog;
+import eu.faircode.xlua.x.ui.dialogs.HooksDialog2;
 import eu.faircode.xlua.x.ui.models.HooksExItemViewModel;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.call.PutHookExCommand;
@@ -102,10 +109,6 @@ public class HooksExFragment
         binding.flSettingsButtonOne.setOnClickListener(this);
         binding.flSettingsButtonTwo.setOnClickListener(this);
         binding.flSettingsButtonThree.setOnClickListener(this);
-
-        //binding.cbForceStop.setOnCheckedChangeListener(this);
-        //binding.cbUseDefaultValues.setOnCheckedChangeListener(this);
-        //binding.btAppIslandProfileDialog.setOnClickListener(this);
     }
 
 
@@ -119,43 +122,81 @@ public class HooksExFragment
         switch (requestCode) {
             case ConfUtils.REQUEST_OPEN_CONFIG:
                 TryRun.onMain(() -> {
-                    List<XHook> hooks = ConfUtils.readHooks(requireContext(), uri);
+                    List<XHook> hooks = FileOpenUtils.readJsonElementsFromUri(requireContext(), uri, "hooks", XHook.class);
                     if(!ListUtil.isValid(hooks)) {
+                        Log.e(TAG, "Failed to Read Hooks Count=" + ListUtil.size(hooks));
                         return;
                     }
 
-                    Log.d(TAG, "Reading Hooks=" + hooks.size());
-
-
-                    HookAdapter adapter = (HookAdapter)getAdapter().getAsListAdapterOrNull();
-                    List<XHook> fromList = adapter.getCurrentList();
-
-                    Map<String, XHook> items = new HashMap<>();
-                    for(XHook hook : fromList) {
-                        if(hook.isValid()) {
-                            items.put(hook.getObjectId(), hook);
-                        }
+                    final HookAdapter adapter = (HookAdapter)getAdapter().getAsListAdapterOrNull();
+                    if(adapter == null) {
+                        Log.e(TAG, "Adapter is null!");
+                        return;
                     }
 
-                    Log.d(TAG, "Reading Hooks=" + hooks.size() + " Items Counts=" + items.size());
-                    for(XHook imported : hooks) {
-                        if(imported.isValid()) {
-                            ResultRequest res = PutHookExCommand.putEx(getContext(), imported, false);
-                            if(res.successful()) {
-                                items.put(res.hook.getObjectId(), res.hook);
-                            }
-                        }
-                    }
+                    HooksDialog2.create()
+                            .set(hooks, requireContext())
+                            .setEvent((e, d) -> {
+                                if(DebugUtil.isDebug()) Log.d(TAG, "Enabled=" + e.size() + " Disabled=" + d.size());
+                                if(ListUtil.isValid(e)) {
+                                    List<XHook> fromList = adapter.getCurrentList();
+                                    Map<String, XHook> items = new HashMap<>();
+                                    if(ListUtil.isValid(fromList)) {
+                                        for(XHook hook : fromList) {
+                                            if(hook.isValid())
+                                                items.put(hook.getObjectId(), hook);
+                                        }
+                                    }
 
-                    adapter.submitList(new ArrayList<>(items.values()));
+                                    if(DebugUtil.isDebug())
+                                        Log.d(TAG, Str.fm("Applying Total of [%s] to a List of Existing Hooks of Count [%s], Disabled [%s]",
+                                                e.size(),
+                                                fromList.size(),
+                                                d.size()));
+
+                                    int successful = 0;
+                                    int failed = 0;
+                                    for(XHook imported : e) {
+                                        if(imported.isValid()) {
+                                            ResultRequest res = PutHookExCommand.putEx(getContext(), imported, false);
+                                            if(res.successful()) {
+                                                successful++;
+                                                items.put(res.hook.getObjectId(), res.hook);
+                                            }
+                                            else {
+                                                failed++;
+                                                if(DebugUtil.isDebug())
+                                                    Log.d(TAG, Str.fm("Failed to Import Hook [%s] Error=%s",
+                                                            imported.getObjectId(),
+                                                            res.exception));
+                                            }
+                                        }
+                                    }
+
+                                    if(DebugUtil.isDebug())
+                                        Log.d(TAG, Str.fm("Applying total of [%s] Hooks from Enabled [%s] Disabled [%s] Successful [%s] Failed [%s]",
+                                                items.size(),
+                                                e.size(),
+                                                d.size(),
+                                                successful,
+                                                failed));
+
+
+                                    adapter.submitList(new ArrayList<>(items.values()));
+                                    Snackbar.make(requireView(), Str.fm(getString(R.string.msg_imported_hooks_success), successful), Snackbar.LENGTH_LONG).show();
+                                }
+                            })
+                            .show(getFragmentMan(), requireContext().getString(R.string.menu_filter_hooks));
                 });
                 break;
             case ConfUtils.REQUEST_SAVE_CONFIG:
                 TryRun.onMain(() -> {
                     XHook hook =  sharedRegistry.pop(XHook.class);
                     ConfUtils.takePersistablePermissions(requireContext(), uri);
-                    boolean success = ConfUtils.writeHookToUri(requireContext(), uri, hook);
-                    Log.d(TAG, "Hook (" + hook.getObjectId() + " ) Success=" + success);
+                    boolean success = FileOpenUtils.writeJsonElementToUri(requireContext(), uri, hook);
+                    Snackbar.make(requireView(), success ?
+                            getString(R.string.msg_export_hook_success) :
+                            getString(R.string.msg_export_hook_error), Snackbar.LENGTH_LONG).show();
                 });
                 break;
         }
@@ -189,6 +230,11 @@ public class HooksExFragment
                                         ResultRequest res = PutHookExCommand.putEx(context, hook, false);
                                         if(res.successful())
                                             adapter.onHookEdited(null, res.hook, false);
+
+                                        Log.d(TAG, "Hook Sent Status " + res.successful() + " Hook=" + hook.getObjectId());
+                                        Snackbar.make(requireView(), res.successful() ?
+                                                getString(R.string.msg_create_hook_success) :
+                                                getString(R.string.msg_create_hook_error), Snackbar.LENGTH_LONG).show();
                                     }
                                 }).show(getFragmentMan(), context.getString(R.string.title_hook_edit));
                     }

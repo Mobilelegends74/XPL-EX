@@ -389,14 +389,14 @@ public class Str {
 
     public static String[] split(String data, String delimiter, boolean ensureEachLineValid) { return split(data, delimiter, ensureEachLineValid, false); }
     public static String[] split(String data, String delimiter, boolean ensureEachLineValid, boolean trimEach) {
-        if(data == null || data.isEmpty())
+        if(Str.isEmpty(data))
             return new String[0];
 
         String[] parts = data.split(Pattern.quote(delimiter));
         if(ensureEachLineValid) {
             List<String> partsCleaned = new ArrayList<>();
             for(String p : parts) {
-                if(!isValidNotWhitespaces(p))
+                if(Str.isEmpty(p))
                     continue;
 
                 partsCleaned.add(trimEach ? p.trim() : p);
@@ -598,12 +598,18 @@ public class Str {
         }
     }
 
-    public static String toObjectId(IIdentifiableObject o) {
-        return
-            TryRun.getOrDefault(() -> {
-                if(o == null) return "null";
-                return o.getObjectId();
-            }, "null");
+    public static String toObjectId(Object o) {
+        if(o != null) {
+            try {
+                if(o instanceof IIdentifiableObject) {
+                    IIdentifiableObject io = (IIdentifiableObject)o;
+                    return io.getObjectId();
+                }
+
+                return String.valueOf(o.hashCode());
+            }catch (Exception ignored) { }
+        }
+        return "null";
     }
 
     public static String toObjectClassName(Object o) {
@@ -1415,6 +1421,34 @@ public class Str {
         }
 
         return false;
+    }
+
+    public static boolean endsWith(String s, String checkFor) { return endsWith(s, checkFor, false); }
+    public static boolean endsWith(String s, String checkFor, boolean ignoreCase) {
+        if(!isEmpty(s) || checkFor == null)
+            return false;
+
+        if(ignoreCase) {
+            String loweredOne = s.toLowerCase();
+            String loweredTwo = checkFor.toLowerCase();
+            return loweredOne.endsWith(loweredTwo);
+        }
+
+        return s.endsWith(checkFor);
+    }
+
+    public static boolean startsWith(String s, String checkFor) { return startsWith(s, checkFor, false); }
+    public static boolean startsWith(String s, String checkFor, boolean ignoreCase) {
+        if(isEmpty(s) || checkFor == null)
+            return false;
+
+        if(ignoreCase) {
+            String loweredOne = s.toLowerCase();
+            String loweredTwo = checkFor.toLowerCase();
+            return loweredOne.startsWith(loweredTwo);
+        }
+
+        return s.startsWith(checkFor);
     }
 
     public static boolean startsWithAny(String s, String... stringsToCheckFor) { return startsWithAny(s, false, stringsToCheckFor); }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import eu.faircode.xlua.R;
 import eu.faircode.xlua.x.ui.core.view_registry.IIdentifiableObject;
 import eu.faircode.xlua.x.ui.core.view_registry.SharedRegistry;
+import eu.faircode.xlua.x.xlua.LibUtil;
 
 public abstract class CheckableDialog<T extends IIdentifiableObject> extends AppCompatDialogFragment {
     protected String TAG_ITEMS = SharedRegistry.STATE_TAG_GLOBAL;
@@ -76,6 +78,7 @@ public abstract class CheckableDialog<T extends IIdentifiableObject> extends App
                     for (int i = 0; i < items.size(); i++) {
                         T item = items.get(i);
                         boolean isChecked = listView.isItemChecked(i);
+                        Log.d(LibUtil.generateTag(CheckableDialog.class), "Is Checked=" + isChecked + " ID=" + item.getObjectId() + " Use Original State=" + useOriginalState);
                         if(useOriginalState) {
                             boolean originalFlag = viewRegistry.isChecked(TAG_ITEMS, item.getObjectId());
                             if (isChecked && !originalFlag) {

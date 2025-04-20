@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 import androidx.collection.LongSparseArray;
 import androidx.core.util.Predicate;
 
+import org.json.JSONArray;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1703,6 +1705,8 @@ public class ListUtil {
     public static boolean isValid(Map<?, ?> map, int minSize) { return map != null && map.size() >= minSize; }
 
 
+
+    public static int size(JSONArray array) { return array != null ? array.length() : 0; }
 
     public static int size(Map<?, ?> map) { return map != null ? map.size() : 0; }
     public static int size(Collection<?> collection) { return collection != null ? collection.size() : 0; }

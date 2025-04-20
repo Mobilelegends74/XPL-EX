@@ -557,6 +557,8 @@ public class HookAdapter
             switch (id) {
                 case R.id.ivExpanderHookItem:
                 case R.id.tvHookId:
+                case R.id.tvHookSubInfo:
+                case R.id.clHookItemLayout:
                     handleExpandClickForGroup(currentItem);
                     break;
             }
@@ -658,6 +660,10 @@ public class HookAdapter
                 // Main elements
                 binding.ivExpanderHookItem.setOnClickListener(wire ? this : null);
                 binding.tvHookId.setOnClickListener(wire ? this : null);
+                binding.tvHookSubInfo.setOnClickListener(wire ? this : null);
+
+                binding.clHookItemLayout.setOnClickListener(wire ? this : null);
+
                 binding.cbHookItemEnabled.setOnCheckedChangeListener(wire ? this : null);
                 binding.ivActionNeeded.setOnClickListener(wire ? this : null);
                 binding.ivActionNeeded.setOnLongClickListener(wire ? this : null);

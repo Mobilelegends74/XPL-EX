@@ -47,9 +47,8 @@ public class HooksDialog extends CheckableDialog<XHook> {
     public List<XHook> getEnabled() {
         List<XHook> enabled = new ArrayList<>();
         for(XHook hook : items) {
-            if(this.viewRegistry != null && this.viewRegistry.isChecked(SharedRegistry.STATE_TAG_SETTINGS, hook.getObjectId())) {
+            if(this.viewRegistry != null && this.viewRegistry.isChecked(SharedRegistry.STATE_TAG_SETTINGS, hook.getObjectId()))
                 enabled.add(hook);
-            }
         }
 
         return enabled;
@@ -57,9 +56,7 @@ public class HooksDialog extends CheckableDialog<XHook> {
 
     public static List<String> toHookIds(List<XHook> hooks) {
         List<String> ids = new ArrayList<>(hooks.size());
-        for(XHook h : hooks)
-            ids.add(h.getObjectId());
-
+        for(XHook h : hooks) ids.add(h.getObjectId());
         return ids;
     }
 

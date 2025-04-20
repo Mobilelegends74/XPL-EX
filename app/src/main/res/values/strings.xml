@@ -61,7 +61,6 @@
     <string name="whats_new" translatable="false">
         Whats new in 1.5.X Update XPL-EX (ObbedCode) v2
 
-
         <![CDATA[<br><br>]]>This is my Art! Enjoy love all, smile, be happy, enjoy what you do!
         <![CDATA[<br>]]>Free, Open Source, No Analytics, No Servers, offline ...
         <![CDATA[<br><br>]]> Shout out to Hubert (always keeps me informed updated!) (want to hide root ? this is your man!)
@@ -77,6 +76,13 @@
         <![CDATA[<br><br>]]> VDInfos. Grabbing your own Device info cool dev
         <![CDATA[<br>]]><![CDATA[<a href="https://xdaforums.com/t/app-vdinfos.4097379/">XDA</a>]]>
         <![CDATA[<br>]]><![CDATA[<a href="https://github.com/VD171/VD-Infos">GitHub</a>]]>
+
+
+        <![CDATA[<br><br>]]> 1.5.4 XPL153R
+        <![CDATA[<br>]]>• Cleaned up some of the Internal Cat Logs Logging
+        <![CDATA[<br>]]>• Fixed Query Interception Rules Race Condition (Last Rules overridden the current one)
+        <![CDATA[<br>]]>• Improved the Hooks UI to have more Prompts and overall Feedback to make Feel less Unknown
+        <![CDATA[<br>]]>• Updated the README
 
         <![CDATA[<br><br>]]> 1.5.3 XPL153R
         <![CDATA[<br>]]>• Fixed AppSetId Hook Definitions Setting Names
@@ -307,6 +313,11 @@
     <string name="save_setting_success" translatable="false">Settings were saved! </string>
     <string name="save_setting_error" translatable="false">Failed to save Settings! </string>
 
+    <string name="msg_export_hook_error" translatable="false">Failed Export Hook to File! </string>
+    <string name="msg_export_hook_success" translatable="false">Successfully Exported Hook to File! </string>
+    <string name="msg_create_hook_error" translatable="false">Failed to Create the Hook! </string>
+    <string name="msg_create_hook_success" translatable="false">Successfully Created the Hook! </string>
+
 
 
     <string name="msg_error_processing"  translatable="false">An error occurred while processing settings. Please try again.</string>
@@ -482,6 +493,9 @@
     <string name="title_select_tags" translatable="false">Select Tags</string>
 
     <string name="msg_config_push" translatable="false">Pushed Config! Result = </string>
+
+
+
 
     <string name="msg_delete_config" translatable="false">Are you sure you really want to Delete this Config ? (whole config) </string>
     <string name="msg_na_randomizer" translatable="false">This setting does not have a Randomizer and or you set the Randomizer to N/A. Reason most likely is due to the Fact that there are SOO many settings to make Randomizers for all is asking North Korea to free its people. That being said as each Update comes more Randomizers will come, in the mean Time Use Google to find out what you think best fits this setting and use Description for help and maybe a Possible Format. Thank you! </string>
@@ -688,6 +702,7 @@
     <string name="button_settings_export_to_config" translatable="false">Export to Config</string>
 
     <string name="msg_settings_to_config_exporting" translatable="false">Exporting Settings to a Config</string>
+    <string name="msg_imported_hooks_success" translatable="false">Successfully Imported [%s] Hooks!</string>
 
 
     <string name="check_prop_hide_hint" translatable="false">Hide Specific Property from Build Props</string>
