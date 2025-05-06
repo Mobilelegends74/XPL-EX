@@ -10,6 +10,8 @@ import java.util.List;
 
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.string.StrBuilder;
+import eu.faircode.xlua.x.data.utils.ArrayUtils;
+import eu.faircode.xlua.x.data.utils.ListUtil;
 
 public class FilterRequest {
     public static FilterRequest create() { return new FilterRequest(); }
@@ -17,10 +19,22 @@ public class FilterRequest {
     public static FilterRequest create(String query, String order) { return new FilterRequest().setQuery(query).setOrder(order); }
     public static FilterRequest create(String query, String order, boolean isReversed) { return new FilterRequest().setQuery(query).setOrder(order).setIsReversed(isReversed); }
 
+
+
     public String query;
     public String order;
+    public String show;
     public final List<String> filterTags = new ArrayList<>();
     public boolean isReversed = false;
+
+    public FilterRequest clear() {
+        query = null;
+        order = null;
+        filterTags.clear();;
+        isReversed = false;
+        return this;
+    }
+
 
     public boolean hasQuery() { return query != null; }
     public boolean hasOrder() { return order != null; }
@@ -45,6 +59,11 @@ public class FilterRequest {
         return this;
     }
 
+    public FilterRequest setShow(String show) {
+        this.show = show;
+        return this;
+    }
+
     public FilterRequest setIsReversed(boolean isReversed) {
         this.isReversed = isReversed;
         return this;
@@ -52,13 +71,26 @@ public class FilterRequest {
 
     public FilterRequest setFilterTags(String... tags) {
         filterTags.clear();
-        filterTags.addAll(Arrays.asList(tags));
+        if(ArrayUtils.isValid(tags)) {
+            for(String tag : tags) {
+                if(!Str.isEmpty(tag) && !filterTags.contains(tag)) {
+                    filterTags.add(tag);
+                }
+            }
+        }
+
         return this;
     }
 
     public FilterRequest setFilterTags(List<String> tags) {
         filterTags.clear();
-        filterTags.addAll(tags);
+        if(ListUtil.isValid(tags)) {
+            for(String tag : tags) {
+                if(!Str.isEmpty(tag) && !filterTags.contains(tag)) {
+                    filterTags.add(tag);
+                }
+            }
+        }
         return this;
     }
 

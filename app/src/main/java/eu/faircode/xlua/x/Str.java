@@ -9,6 +9,8 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 
@@ -25,6 +28,7 @@ import eu.faircode.xlua.x.data.utils.ArrayUtils;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.data.utils.TryRun;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
+import eu.faircode.xlua.x.runtime.reflect.DynClass;
 import eu.faircode.xlua.x.ui.core.view_registry.IIdentifiableObject;
 import eu.faircode.xlua.x.xlua.LibUtil;
 
@@ -87,8 +91,23 @@ public class Str {
 
     public static String replaceAll(String s, String regex, String replaceWith) { return isEmpty(s) || isEmpty(regex) ? s : s.replaceAll(regex, getNonNullString(replaceWith, Str.EMPTY)); }
 
-    public static boolean isNullOrDefaultValue(String s) { return isEmpty(s) ||  areEqualAny(s,"00:00:00:00:00:00", "02:00:00:00:00:00", "unknown", "null", "empty", "default", "private", "<unknown ssid>"); }
+    public static boolean isNullOrDefaultValue(String s) { return isEmpty(s) ||  areEqualAny(s,
+            "00:00:00:00:00:00",
+            "0000000000",
+            "02:00:00:00:00:00",
+            "unknown",
+            "null",
+            "empty",
+            "default",
+            "private",
+            "<unknown ssid>",
+            "unavailable"); }
 
+
+
+    public static int hashCode(String s) { return s != null ? s.hashCode() : 0; }
+
+    public static String enclose(String s) { return "(" + s + ")"; }
 
     public static int length(String s) {
         return s == null ? -1 : s.length();
@@ -177,6 +196,37 @@ public class Str {
             return loweredS.contains(loweredC);
         } else {
             return s.contains(c);
+        }
+    }
+
+    public static boolean matches(String s, String pattern) { return matches(s, pattern, true); }
+    public static boolean matches(String s, String pattern, boolean ignoreCase) {
+        if(s == null)
+            return pattern == null;
+        if(isEmpty(pattern))
+            return false;
+
+        int len = length(pattern);
+        boolean start = pattern.charAt(0) == '*';
+        boolean end = len > 1 && pattern.charAt(len - 1) == '*';
+        if(!start && !end)
+            return ignoreCase ?
+                    s.equalsIgnoreCase(pattern) : s.equals(pattern);
+
+        String cleanPattern = start ?
+                end ? pattern.substring(1, pattern.length() - 1) : pattern.substring(1) :
+                pattern.substring(0, pattern.length() - 1);
+
+        if(ignoreCase) {
+            String loweredPattern = toLowerCase(cleanPattern);
+            String loweredString = toLowerCase(s);
+            return end ? start ?
+                    loweredString.contains(loweredPattern) : loweredString.endsWith(loweredPattern) :
+                    loweredString.startsWith(loweredPattern);
+        } else {
+            return end ? start ?
+                    s.contains(cleanPattern) : s.endsWith(cleanPattern) :
+                    s.startsWith(cleanPattern);
         }
     }
 
@@ -472,6 +522,35 @@ public class Str {
         return Character.toUpperCase(input.charAt(0)) + input.substring(1);
     }
 
+    /**
+     * Counts the number of occurrences of a substring within a string using regex.
+     *
+     * @param text The string to search within
+     * @param substring The substring to search for
+     * @return The number of times the substring appears in the text
+     */
+    public static int countOccurrencesRegex(String text, String substring) {
+        // Handle edge cases
+        if (text == null || substring == null || text.isEmpty() || substring.isEmpty()) {
+            return 0;
+        }
+
+        // Escape special regex characters in the substring to treat it as literal text
+        String escapedSubstring = Pattern.quote(substring);
+
+        // Create a pattern and matcher
+        Pattern pattern = Pattern.compile(escapedSubstring);
+        Matcher matcher = pattern.matcher(text);
+
+        // Count occurrences
+        int count = 0;
+        while (matcher.find()) {
+            count++;
+        }
+
+        return count;
+    }
+
 
     public static boolean isEmpty(StrBuilder sb) { return sb == null || sb.isEmpty(); }
     public static boolean isEmpty(StringBuilder sb) { return sb == null || sb.length() <= 0; }
@@ -612,32 +691,30 @@ public class Str {
         return "null";
     }
 
-    public static String toObjectClassName(Object o) {
+    public static String toObjectClassSimpleNameNonNull(Object o) { return Str.getNonNullOrEmptyString(toObjectClassSimpleName(o), "null"); }
+    public static String toObjectClassSimpleName(Object o) {
         if(o != null) {
             return TryRun.get(() -> {
-                if(o instanceof Class<?>) {
-                    return ((Class<?>)o).getName();
-                } else {
-                    return o.getClass().getName();
-                }
+                if(o instanceof DynClass) return toObjectClassSimpleNameNonNull(((DynClass)o).getRawClass());
+                else if(o instanceof Class<?>) return ((Class<?>)o).getSimpleName();
+                 else return o.getClass().getSimpleName();
             });
         }
         return null;
     }
 
-
-    public static String toObjectClassNameNonNull(Object o) {
+    public static String toObjectClassNameNonNull(Object o) { return Str.getNonNullOrEmptyString(toObjectClassName(o), "null"); }
+    public static String toObjectClassName(Object o) {
         if(o != null) {
             return TryRun.get(() -> {
-                if(o instanceof Class<?>) {
-                    return ((Class<?>)o).getName();
-                } else {
-                    return o.getClass().getName();
-                }
+                if(o instanceof DynClass) return ((DynClass)o).getName();
+                else if(o instanceof Class<?>) return ((Class<?>)o).getName();
+                else return o.getClass().getName();
             });
         }
-        return "null";
+        return null;
     }
+
 
     public static Character charAt(String s, int index) { return charAt(s, index, '\0'); }
     public static Character charAt(String s, int index, Character defaultValue) {
@@ -656,6 +733,26 @@ public class Str {
                     return bytesToHexString((byte[]) o, true);
                 else if(o instanceof ZipEntry)
                     return ((ZipEntry)o).getName();
+                else if(o instanceof Class<?>[]) {
+                    StrBuilder sb = StrBuilder.create().ensureDelimiter(Str.COMMA);
+                    Class<?>[] cTypes = (Class<?>[]) o;
+                    if(!ArrayUtils.isValid(cTypes)) {
+                        sb.append(Str.EMPTY);
+                    } else {
+                        for(Class<?> c : cTypes)
+                            sb.append(c == null ? "null" : c.getName());
+                    }
+
+                    return sb.toString();
+                }
+                else if(o instanceof Method) {
+                    Method m = (Method) o;
+                    return m.getName();
+                }
+                else if(o instanceof Field) {
+                    Field f = (Field) o;
+                    return f.getName();
+                }
                 else {
                     return String.valueOf(o);
                 }

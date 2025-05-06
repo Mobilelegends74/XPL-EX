@@ -7,7 +7,6 @@ import eu.faircode.xlua.x.runtime.BuildInfo;
 import eu.faircode.xlua.x.xlua.settings.random.RandomElement;
 import eu.faircode.xlua.x.xlua.settings.random.RandomizerSessionContext;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
-import eu.faircode.xlua.x.xlua.settings.random.utils.RanUnqUtils;
 
 public class RandomUUID extends RandomElement {
     public RandomUUID() {
@@ -24,8 +23,9 @@ public class RandomUUID extends RandomElement {
                 RandomizersCache.SETTING_XI_MI_GC_BOOSTER_UUID,
                 RandomizersCache.SETTING_XI_MI_KEY_MQS_UUID,
                 RandomizersCache.SETTING_XI_MI_MDM_UUID,
-                RandomizersCache.SETTING_XI_MI_OP_SEC_UUID,
-                RandomizersCache.SETTING_XI_MI_EXTM_UUID);
+                RandomizersCache.SETTING_OP_SEC_UUID,
+                RandomizersCache.SETTING_XI_MI_EXTM_UUID,
+                RandomizersCache.SETTING_UNIQUE_PAY_SESSION_ID);
     }
 
     @Override

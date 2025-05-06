@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -25,6 +26,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.ui.core.FilterRequest;
 
 @SuppressWarnings("all")
 public class ListUtil {
@@ -1265,31 +1267,49 @@ public class ListUtil {
         TVal getValue(TItem item);
     }
 
-    public interface  IToStringItem<T> {
-        String toStringItem(T o);
-    }
-
-    public interface IIterateVoid<T> {
-        void onItem(T o, int index);
-    }
+    public interface  IToStringItem<T> { String toStringItem(T o); }
+    public interface IIterateVoid<T> { void onItem(T o, int index); }
 
     public interface IIteratePairCondition<TFrom, TTo> {
         boolean isFine(TFrom from);
         TTo get(TFrom from);
     }
 
-    public interface IIterateCondition<T> {
-        boolean isFine(T item);
-    }
+    public interface IIterateCondition<T> { boolean isFine(T item); }
+    public interface IIteratePairTo<TFrom, TTo> { TTo get(TFrom from); }
+    public interface IIterateGet<T> { T onItem(T o); }
 
-    public interface IIteratePairTo<TFrom, TTo> {
-        TTo get(TFrom from);
-    }
+    public interface ICriteraCheck<T> { boolean isMatchingCriteria(T item, FilterRequest request); }
 
-    public interface IIterateGet<T> {
-         T onItem(T o);
-    }
 
+    public static <T> List<T> forEachFilter(List<T> items, FilterRequest request, Comparator<? super T> comparator) { return forEachFilter(items, request, null, comparator, false); }
+    public static <T> List<T> forEachFilter(List<T> items, FilterRequest request, ICriteraCheck<T> criteraCheck) { return forEachFilter(items, request, criteraCheck, null, false); }
+    public static <T> List<T> forEachFilter(List<T> items, FilterRequest request, ICriteraCheck<T> criteraCheck, Comparator<? super T> comparator) { return forEachFilter(items, request, criteraCheck, comparator, false); }
+    public static <T> List<T> forEachFilter(
+            List<T> items,
+            FilterRequest request,
+            ICriteraCheck<T> criteraCheck,
+            Comparator<? super T> comparator,
+            boolean ensureNoDuplicated) {
+
+        if(items == null || items.isEmpty())
+            return items;
+
+        List<T> sorted = new ArrayList<>();
+        if(criteraCheck != null && request != null) {
+            for(T item : items)
+                if(item != null && (!ensureNoDuplicated || !sorted.contains(item)) && criteraCheck.isMatchingCriteria(item, request))
+                    sorted.add(item);
+        } else {
+            for(T item : items) {
+                if(item != null && (!ensureNoDuplicated || !sorted.contains(item)))
+                    sorted.add(item);
+            }
+        }
+
+        if(comparator != null) Collections.sort(sorted, comparator);
+        return sorted;
+    }
 
     public static <TFrom, TTo> List<TTo> forEachTo(Collection<TFrom> items, IIteratePairTo<TFrom, TTo> onItem) {
         List<TTo> list = new ArrayList<>();

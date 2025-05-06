@@ -19,6 +19,10 @@ public class RandomDateHelper {
     private static final long MILLIS_PER_MINUTE = 60 * MILLIS_PER_SECOND;
     private static final long MILLIS_PER_HOUR = 60 * MILLIS_PER_MINUTE;
 
+    public static long generateSeconds() {
+        return generateSecondsInMilliseconds(5, 2000);
+    }
+
     public static long[] generateEpochTimeStamps(int amountOfTimeStamps, boolean leastToGreatest) {
         long[] times = new long[amountOfTimeStamps];
         for(int i = 0; i < times.length; i++) {

@@ -305,7 +305,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_bluetoothadapter_getname",
-    "settings": ["bluetooth.name"]
+    "settings": ["device.unique.bluetooth.name"]
   }
 
   /*{

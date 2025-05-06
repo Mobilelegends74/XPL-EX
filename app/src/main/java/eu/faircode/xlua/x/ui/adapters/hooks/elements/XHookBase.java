@@ -108,7 +108,9 @@ public abstract class XHookBase implements IValidator, IBundleData, IIdentifiabl
     }
 
     @Override
-    public String toJSON() throws JSONException { return XHookIO.toJsonString(this); }
+    public String toJSON() throws JSONException {
+        return XHookIO.toJsonString(this);
+    }
 
     @Override
     public void fromJSONObject(JSONObject obj) throws JSONException { XHookIO.fromJson(this, obj); }

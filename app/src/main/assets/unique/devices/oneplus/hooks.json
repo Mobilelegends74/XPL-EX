@@ -1,0 +1,47 @@
+[
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "Device.ID.OnePlus",
+    "name": "ID/Call/OnePlus",
+    "author": "OBC",
+    "className": "Intercept.Settings.Call",
+    "methodName": "settings",
+    "parameterTypes": [ "op_security_uuid" ],
+    "version": 1,
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "settings":["settings.one.plus.security.uuid"]
+  },
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "Device.ID.OnePlus",
+    "name": "ID/Query/OnePlus",
+    "author": "OBC",
+    "className": "Intercept.Intent.Query",
+    "methodName": "settings",
+    "parameterTypes": [ "op_security_uuid" ],
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "settings":[ "settings.one.plus.security.uuid" ]
+  },
+
+  {
+    "collection": "PrivacyEx",
+    "group": "Device.ID.OnePlus",
+    "name": "ID/Properties/OnePlus",
+    "author": "OBC",
+    "className": "Intercept.Properties",
+    "methodName": "get",
+    "parameterTypes": ["persist.sys.oneplus.serialno"],
+    "version": 1,
+    "description": "IDs for OnePlus via Properties...",
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "settings":["props.unique.one.plus.serialno"]
+  }
+]

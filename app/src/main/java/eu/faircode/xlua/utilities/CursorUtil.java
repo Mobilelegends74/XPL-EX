@@ -17,7 +17,9 @@ import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.api.xstandard.interfaces.IJsonSerial;
 import eu.faircode.xlua.logger.XLog;
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.data.interfaces.IValidator;
 import eu.faircode.xlua.x.data.string.StrBuilder;
+import eu.faircode.xlua.x.data.utils.ArrayUtils;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
@@ -406,37 +408,82 @@ public class CursorUtil {
 
 
     public static <T extends IParcelType & IJsonType> Cursor toMatrixCursor_final(Collection<T> items, boolean marshall, int flags)  {
-        MatrixCursor result = new MatrixCursor(new String[]{marshall ? "blob" : "json"});
+        MatrixCursor result = new MatrixCursor(new String[]{
+                marshall ? "blob" : "json"});
+
         if(!CollectionUtil.isValid(items)) {
             Log.e(TAG, "Failed to Convert Collection to Cursor! Collection passed is Null or Empty!");
             return result;
         }
 
         if(DebugUtil.isDebug())
-            Log.d(TAG, "Converting Collection to Cursor, Count=" + ListUtil.size(items));
+            Log.d(TAG, Str.fm("Converting Collection to Cursor, Count=%s Marshall=%s Flags=%s",
+                    ListUtil.size(items),
+                    marshall,
+                    flags));
 
+        int ix = 0;
+        int succeeded = 0;
+        int failed = 0;
         try {
             for (T item : items) {
-                if (marshall) {
-                    Parcel parcel = Parcel.obtain();
-                    item.writeToParcel(parcel, flags);
-                    result.newRow().add(parcel.marshall());
-                    parcel.recycle();
-                } else {
-                    String jData = item.toJSONString();
-                    if(jData == null)
-                        continue;
+                if(item != null) {
+                    if (marshall) {
+                        try {
+                            Parcel parcel = Parcel.obtain();
+                            item.writeToParcel(parcel, flags);
+                            byte[] bys = parcel.marshall();
+                            if(!ArrayUtils.isValid(bys))
+                                throw new Exception("Invalid Marshal Byte Array, Empty or Null...");
 
-                    result.addRow(new Object[]{ jData });
+                            result.newRow().add(bys);
+                            parcel.recycle();
+                            succeeded++;
+                        }catch (Exception e) {
+                            failed++;
+                            Log.e(TAG, Str.fm("Failed to Marshal Item At [%s] Succeeded [%s] Failed [%s] Item [%s]! Error%s Stack=%s",
+                                    ix,
+                                    succeeded,
+                                    failed,
+                                    Str.replaceAll(Str.ensureNoDoubleNewLines(Str.toStringOrNull(item)), Str.NEW_LINE, Str.WHITE_SPACE),
+                                    e,
+                                    RuntimeUtils.getStackTraceSafeString(e)));
+                        }
+                    } else {
+                        try {
+                            String jData = item.toJSONString();
+                            if(Str.isEmpty(jData))
+                                throw new Exception("Invalid Json String...");
+
+                            result.addRow(new Object[]{ jData });
+                            succeeded++;
+                        }catch (Exception e) {
+                            failed++;
+                            Log.e(TAG, Str.fm("Failed to Json String Item At [%s] Succeeded [%s] Failed [%s] Item [%s]! Error%s Stack=%s",
+                                    ix,
+                                    succeeded,
+                                    failed,
+                                    Str.replaceAll(Str.ensureNoDoubleNewLines(Str.toStringOrNull(item)), Str.NEW_LINE, Str.WHITE_SPACE),
+                                    e,
+                                    RuntimeUtils.getStackTraceSafeString(e)));
+                        }
+                    }
+                    ix++;
                 }
             }
-        }catch (JSONException je) {
-            Log.e(TAG, Str.fm("Failed to Write Collection to Cursor JSON, Error=%s Stack=%s", je, RuntimeUtils.getStackTraceSafeString(je)));
-            return result;
         }catch (Exception e) {
             Log.e(TAG, Str.fm("Failed to Write Collection to Cursor, Error=%s Stack=%s", e, RuntimeUtils.getStackTraceSafeString(e)));
             return result;
         }
+
+        if(DebugUtil.isDebug())
+            Log.d(TAG, Str.fm("Finished Converting Type from [%s] Elements into a Cursor, Flags=%s Marshal=%s Succeeded Count=%s Failed=%s Ix=%s",
+                    ListUtil.size(items),
+                    flags,
+                    marshall,
+                    succeeded,
+                    failed,
+                    ix));
 
         return result;
     }
@@ -449,41 +496,104 @@ public class CursorUtil {
             return items;
         }
 
-        //int pos = 0;
+        if(cursor == null) {
+            Log.e(TAG, Str.fm("Failed to Read Cursor as it is Null... Marshall=%s ClassType=%s Stack=%s",
+                    marshall,
+                    Str.toObjectClassName(classType),
+                    RuntimeUtils.getStackTraceSafeString(new Exception())));
+            return items;
+        }
+
+        int succeeded = 0;
+        int failed = 0;
+        int ix = 0;
         try {
-            if(cursor != null && !cursor.isClosed() && cursor.moveToFirst()) {
-                //XLog.i("Reading Matrix Cursor to a IJsonSerial Collection. marshall=" + marshall + " class type=" + classType.getName());
-                if (marshall) {
-                    do {
-                        T inst = classType.newInstance();
-                        byte[] marshaled = cursor.getBlob(0);
-                        Parcel parcel = Parcel.obtain();
-                        parcel.unmarshall(marshaled, 0, marshaled.length);
-                        parcel.setDataPosition(0);
-                        inst.fromParcel(parcel);
-                        parcel.recycle();
-                        items.add(inst);
-                        //pos++;
-                    }while (cursor.moveToNext());
-                } else {
-                    do {
-                        T inst = classType.newInstance();
-                        String json = cursor.getString(0);
-                        inst.fromJSONObject(new JSONObject(json));
-                        items.add(inst);
-                        //pos++;
-                    }while (cursor.moveToNext());
+            // Check if cursor has data and column count is correct
+            if(!cursor.isClosed() && cursor.getCount() > 0 && cursor.getColumnCount() > 0) {
+                cursor.moveToPosition(-1); // Reset position to make sure we start from beginning
+
+                // Get column index - don't assume it's 0
+                int columnIndex = marshall ? cursor.getColumnIndex("blob") : cursor.getColumnIndex("json");
+                if(columnIndex == -1) {
+                    // Try the other column if the expected one isn't found
+                    columnIndex = marshall ? cursor.getColumnIndex("json") : cursor.getColumnIndex("blob");
+
+                    // If still not found, use first column
+                    if(columnIndex == -1) {
+                        columnIndex = 0;
+                        Log.w(TAG, "Expected column not found, using column 0");
+                    }
                 }
-            }else {
-                Log.e(TAG, Str.fm("Cursor is Empty or Null failed to Read, Marshall=%s Class=%s Stack=%s", marshall, classType, RuntimeUtils.getStackTraceSafeString()));
-                return items;
+
+                while(cursor.moveToNext()) {
+                    try {
+                        T inst = classType.newInstance();
+                        if (marshall) {
+                            // Check if the column type is actually a BLOB
+                            if(cursor.getType(columnIndex) == Cursor.FIELD_TYPE_BLOB) {
+                                byte[] marshaled = cursor.getBlob(columnIndex);
+                                if(marshaled != null && marshaled.length > 0) {
+                                    Parcel parcel = Parcel.obtain();
+                                    parcel.unmarshall(marshaled, 0, marshaled.length);
+                                    parcel.setDataPosition(0);
+                                    inst.fromParcel(parcel);
+                                    parcel.recycle();
+                                    items.add(inst);
+                                    succeeded++;
+                                } else {
+                                    failed++;
+                                    Log.e(TAG, "Blob data is null or empty at row " + cursor.getPosition());
+                                }
+                            } else {
+                                // Fall back to string/JSON if blob not available
+                                String json = cursor.getString(columnIndex);
+                                if(!Str.isEmpty(json)) {
+                                    inst.fromJSONObject(new JSONObject(json));
+                                    items.add(inst);
+                                    succeeded++;
+                                    Log.w(TAG, "Expected BLOB but found STRING, used JSON fallback");
+                                } else {
+                                    failed++;
+                                    Log.e(TAG, "String data is null or empty at row " + cursor.getPosition());
+                                }
+                            }
+                        } else {
+                            String json = cursor.getString(columnIndex);
+                            if(!Str.isEmpty(json)) {
+                                inst.fromJSONObject(new JSONObject(json));
+                                items.add(inst);
+                                succeeded++;
+                            } else {
+                                failed++;
+                                Log.e(TAG, "JSON string is null or empty at row " + cursor.getPosition());
+                            }
+                        }
+                    } catch (Exception e) {
+                        failed++;
+                        Log.e(TAG, Str.fm("Error processing row %s: %s",
+                                ix,
+                                e.getMessage()));
+                    }
+                    ix++;
+                }
+
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, Str.fm("Finished reading cursor, Total=%s, Succeeded=%s, Failed=%s",
+                            ix,
+                            succeeded,
+                            failed));
+            } else {
+                Log.e(TAG, Str.fm("Cursor is Empty, Closed, or Invalid to Read, Marshall=%s Class=%s Stack=%s",
+                        marshall,
+                        classType,
+                        RuntimeUtils.getStackTraceSafeString()));
             }
-        }catch (JSONException je) {
-            Log.e(TAG, Str.fm("Error Reading Objects from Cursor JSON, Error=%s Class=%s Stack=%s", je, classType, RuntimeUtils.getStackTraceSafeString(je)));
-            return items;
         } catch (Exception e) {
-            Log.e(TAG, Str.fm("Error Reading Objects from Cursor JSON, Error=%s Marshall=%s Class=%s Stack=%s", e, marshall, classType, RuntimeUtils.getStackTraceSafeString(e)));
-            return items;
+            Log.e(TAG, Str.fm("Error Reading Objects from Cursor, Error=%s Marshall=%s Class=%s Stack=%s",
+                    e,
+                    marshall,
+                    classType,
+                    RuntimeUtils.getStackTraceSafeString(e)));
         }
 
         return items;

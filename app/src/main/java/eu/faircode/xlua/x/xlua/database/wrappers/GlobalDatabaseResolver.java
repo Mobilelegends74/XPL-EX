@@ -87,7 +87,8 @@ public class GlobalDatabaseResolver {
     public static String resolveName(Context context, String name) {
         initReMapCache(context);
         String resolved = RE_MAPPED_CACHE.get(name);
-        if(DebugUtil.isDebug()) Log.d(TAG, "Resolved Name:" + name + " Resolved=" + resolved + " Total Count=" + RE_MAPPED_CACHE.size());
+        if(DebugUtil.isDebug())
+            Log.d(TAG, "Resolved Name:" + name + " Resolved=" + resolved + " Total Count=" + RE_MAPPED_CACHE.size());
 
         return resolved == null ? name : resolved;
     }

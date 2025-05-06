@@ -31,6 +31,25 @@
     "id": "soc.cpu.abi",
     "oldIds": ["cpu.abi"]
   },
+
+  {
+    "id": "files.time.modify.offset",
+    "oldIds": ["file.time.modify.offset", "file.last.modified.offset"]
+  },
+  {
+    "id": "files.time.access.offset",
+    "oldIds": ["file.time.access.offset"]
+  },
+  {
+    "id": "files.time.created.offset",
+    "oldIds": ["file.time.created.offset"]
+  },
+
+  {
+    "id": "apps.time.sync.bool",
+    "oldIds": ["apps.sync.times.bool"]
+  },
+
   {
     "id": "soc.cpu.abi.list",
     "oldIds": ["cpu.abilist"]
@@ -93,9 +112,69 @@
     "oldIds": ["region.country"]
   },
   {
-    "id": "zone.country.iso2",
-    "oldIds": ["region.country.iso"]
+    "id": "cell.sim.country.iso.1",
+    "oldIds":
+    [
+      "region.country.iso",
+      "zone.country.iso2",
+      "cell.sim.country.iso",
+      "cell.provider.country.iso.1"
+    ]
   },
+
+  {
+    "id": "cell.sim.country.iso.2",
+    "oldIds":
+    [
+      "cell.provider.country.iso.2"
+    ]
+  },
+
+  {
+    "id": "settings.one.plus.security.uuid",
+    "oldIds": [
+      "settings.xiaomi.op.security.uuid",
+      "settings.xiaomi.op_security_uuid"
+    ]
+  },
+  {
+    "id": "settings.xiaomi.mdm.uuid",
+    "oldIds": ["settings.xiaomi.mdm_uuid"]
+  },
+  {
+    "id": "settings.xiaomi.key.mqs.uuid",
+    "oldIds": ["settings.xiaomi.key_mqs_uuid"]
+  },
+  {
+    "id": "settings.xiaomi.mi.health.id",
+    "oldIds": ["settings.xiaomi.mi_health_id"]
+  },
+  {
+    "id": "settings.xiaomi.gcbooster.uuid",
+    "oldIds": ["settings.xiaomi.gcbooster_uuid"]
+  },
+
+
+  {
+    "id": "__delete",
+    "oldIds": [
+      "cell.sim.country.numeric.code",
+      "cell.sim.country.numeric.code.1",
+      "cell.sim.country.numeric.code.2",
+      "cell.sim.country.numeric.code.[1,2]",
+      "cell.sim.country.iso.numeric.test",
+      "cell.sim.country.iso.numeric.test.1",
+      "cell.sim.country.iso.numeric.test.2",
+      "cell.sim.country.iso.numeric.test.[1,2]",
+      "gsm.data.state",
+      "gsm.index.sim.port",
+      "gsm.index.sim.slot",
+      "gsm.sim.card.id",
+      "gsm.sim.state",
+      "gsm.subscription.usage.setting"
+    ]
+  },
+
   {
     "id": "zone.country.code",
     "oldIds": ["region.country.code", "region.region"]
@@ -122,15 +201,71 @@
   },
   {
     "id": "zone.timezone.display.name",
-    "oldIds": ["region.timezone.display.label"]
+    "oldIds": [
+      "region.timezone.display.label"
+    ]
   },
   {
     "id": "cell.phone.type.1",
-    "oldIds": ["gsm.phone.type"]
+    "oldIds" : [
+      "gsm.phone.type",
+      "gsm.phone.type.1",
+      "cell.phone.type"
+    ]
+  },
+
+  {
+    "id": "cell.phone.type.2",
+    "oldIds" : [
+      "gsm.phone.type.2"
+    ]
+  },
+  {
+    "id": "cell.sim.type.1",
+    "oldIds": [
+      "gsm.sim.type",
+      "gsm.sim.type.1",
+      "cell.sim.type"
+    ]
+  },
+  {
+    "id": "cell.sim.type.2",
+    "oldIds": [
+      "gsm.sim.type.2"
+    ]
+  },
+
+  {
+    "id": "cell.data.is.opportunistic.1",
+    "oldIds": [
+      "gsm.setting.network.opportunistic.bool",
+      "cell.data.is.opportunistic"
+    ]
+  },
+
+  {
+    "id": "cell.sim.is.embedded.1",
+    "oldIds":
+    [
+      "cell.operator.is.embedded",
+      "cell.operator.is.embedded.1",
+      "gsm.setting.network.esim.bool"
+    ]
+  },
+  {
+    "id": "cell.sim.is.embedded.2",
+    "oldIds":
+    [
+      "cell.operator.is.embedded.2"
+    ]
   },
   {
     "id": "cell.phone.sim.card.count",
-    "oldIds": ["gsm.sim.count", "cell.phone.sim.card.count.[1,2]", "cell.phone.sim.card.count.1", "cell.phone.sim.card.count.2"]
+    "oldIds": [
+      "gsm.sim.count",
+      "cell.phone.sim.card.count.[1,2]",
+      "cell.phone.sim.card.count.1",
+      "cell.phone.sim.card.count.2"]
   },
   {
     "id": "cell.operator.id.1",
@@ -138,16 +273,21 @@
   },
   {
     "id": "cell.operator.name.1",
-    "oldIds": ["gsm.network.carrier"]
+    "oldIds": ["gsm.network.carrier", "cell.operator.name"]
   },
   {
     "id": "cell.operator.numeric.id.1",
     "oldIds": ["gsm.operator.id"]
   },
   {
-    "id": "cell.operator.display.name.1",
-    "oldIds": ["gsm.setting.display.name"]
+    "id": "cell.display.name.1",
+    "oldIds": ["gsm.setting.display.name", "gsm.setting.display.name.1", "cell.operator.display.name.1", "cell.operator.display.name"]
   },
+  {
+    "id": "cell.display.name.2",
+    "oldIds": ["gsm.setting.display.name.2", "cell.operator.display.name.2" ]
+  },
+
   {
     "id": "cell.operator.mcc.1",
     "oldIds": ["gsm.operator.mcc", "cell.operator.mcc"]
@@ -161,10 +301,6 @@
     "oldIds": ["apps.allow.listt"]
   },
   {
-    "id": "cell.sim.type.1",
-    "oldIds": ["gsm.sim.type"]
-  },
-  {
     "id": "cell.sim.state.flag.[1,2]",
     "oldIds": ["cell.sim.state.flag,[1,2]"]
   },
@@ -174,7 +310,10 @@
   },
   {
     "id": "cell.location.lac",
-    "oldIds": ["gsm.cell.location.lac"]
+    "oldIds": [
+      "gsm.cell.location.lac",
+      "lac.cid"
+    ]
   },
   {
     "id": "cell.location.cid",
@@ -216,52 +355,143 @@
     "id": "android.etc.build.rom.user",
     "oldIds": ["android.build.dev.codename"]
   },
+
+
+
   {
-    "id": "unique.gsm.phone.number.1",
-    "oldIds": ["unique.gsm.phone.number"]
+    "id": "cell.data.roaming.enabled.flag.1",
+    "oldIds":
+    [
+      "gsm.setting.network.roaming.bool",
+      "cell.data.roaming.enabled",
+      "cell.data.roaming.enabled.1",
+      "cell.data.roaming.enabled.flag"
+    ]
+  },
+
+
+
+  {
+    "id": "cell.data.roaming.enabled.flag.2",
+    "oldIds":
+    [
+      "cell.data.roaming.enabled.2"
+    ]
+  },
+
+  {
+    "id": "cell.unique.phone.number.1",
+    "oldIds": ["unique.gsm.phone.number", "cell.phone.number", "unique.gsm.phone.number.1", "cell.phone.number.1"]
   },
   {
-    "id": "unique.gsm.subscription.id.1",
-    "oldIds": ["unique.gsm.subscription.id"]
+    "id": "cell.unique.phone.number.2",
+    "oldIds": ["unique.gsm.phone.number.2", "cell.phone.number.2"]
+  },
+
+
+  {
+    "id": "cell.unique.subscriber.id.1",
+    "oldIds": [
+      "unique.gsm.subscription.id",
+      "unique.gsm.subscription.id.1"
+    ]
+  },
+
+  {
+    "id": "cell.unique.subscriber.id.2",
+    "oldIds": [ "unique.gsm.subscription.id.2" ]
+  },
+
+  {
+    "id": "cell.unique.imei.1",
+    "oldIds": [
+      "value.imei",
+      "unique.gsm.imei",
+      "unique.gsm.imei.1"
+    ]
+  },
+
+  {
+    "id": "cell.unique.imei.2",
+    "oldIds": [ "unique.gsm.imei.2" ]
+  },
+
+
+  {
+    "id": "device.unique.bluetooth.name",
+    "oldIds": [ "bluetooth.name" ]
+  },
+
+  {
+    "id": "props.unique.vbmeta.digest",
+    "oldIds": [ "unique.property.vbmeta.digest" ]
+  },
+
+  {
+    "id": "unique.account.email",
+    "oldIds": [ "value.email" ]
+  },
+
+  {
+    "id": "cell.unique.meid.1",
+    "oldIds": [
+      "value.meid",
+      "unique.gsm.meid",
+      "unique.gsm.meid.1"
+    ]
   },
   {
-    "id": "unique.gsm.imei.1",
-    "oldIds": ["unique.gsm.imei"]
+    "id": "cell.unique.meid.2",
+    "oldIds": [ "unique.gsm.meid.2" ]
+  },
+
+
+  {
+    "id": "cell.voice.mail.alpha.tag.1",
+    "oldIds": [
+      "unique.gsm.voicemail.id",
+      "unique.gsm.voicemail.id.1",
+      "cell.voice.mail.alpha.tag"
+    ]
+  },
+
+  {
+    "id": "cell.voice.mail.alpha.tag.2",
+    "oldIds": ["unique.gsm.voicemail.id.2"]
+  },
+
+  {
+    "id": "cell.unique.sim.icc.id.1",
+    "oldIds": [
+      "unique.gsm.icc.id",
+      "unique.gsm.icc.id.1",
+      "cell.unique.sim.icc.id",
+      "unique.gsm.sim.serial",
+      "unique.gsm.sim.serial.1"
+    ]
+  },
+
+  {
+    "id": "cell.unique.sim.icc.id.2",
+    "oldIds": [
+      "unique.gsm.icc.id.2",
+      "unique.gsm.sim.serial.2"
+    ]
+  },
+
+  {
+    "id": "cell.unique.msin.1",
+    "oldIds": [
+      "unique.gsm.operator.msin",
+      "unique.gsm.operator.msin.1"
+    ]
   },
   {
-    "id": "unique.gsm.meid.1",
-    "oldIds": ["unique.gsm.meid"]
-  },
-  {
-    "id": "unique.gsm.icc.id.1",
-    "oldIds": ["unique.gsm.icc.id"]
-  },
-  {
-    "id": "unique.gsm.phone.number.1",
-    "oldIds": ["unique.gsm.phone.number"]
-  },
-  {
-    "id": "unique.gsm.sim.serial.1",
-    "oldIds": ["unique.gsm.sim.serial"]
-  },
-  {
-    "id": "unique.gsm.voicemail.id.1",
-    "oldIds": ["unique.gsm.voicemail.id"]
-  },
-  {
-    "id": "unique.gsm.operator.msin.1",
-    "oldIds": ["unique.gsm.operator.msin"]
+    "id": "cell.unique.msin.2",
+    "oldIds": [ "unique.gsm.operator.msin.2" ]
   },
   {
     "id": "android.etc.build.rom.version.codename",
     "oldIds": ["android.build.type"]
-  },
-  {
-    "id": "settings.xiaomi.mi.health.id",
-    "oldIds": ["settings.xiaomi.mi_health_id"]
-  },
-  {
-    "id": "settings.xiaomi.gcbooster.uuid",
-    "oldIds": ["settings.xiaomi.gcbooster_uuid"]
   }
 ]

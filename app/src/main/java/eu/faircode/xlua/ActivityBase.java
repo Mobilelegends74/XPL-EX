@@ -55,18 +55,24 @@ public class ActivityBase extends AppCompatActivity {
     }
 
     public void setForceEnglish(boolean force) {
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        prefs.edit().putBoolean("forceenglish", force).apply();
+        try {
+            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            prefs.edit().putBoolean("forceenglish", force).apply();
+        }catch (Exception ignored) { }
     }
 
     public boolean getIsForceEnglish() {
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        if(!prefs.contains("forceenglish")) {
-            prefs.edit().putBoolean("forceenglish", false).apply();
+        try {
+            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            if(!prefs.contains("forceenglish")) {
+                prefs.edit().putBoolean("forceenglish", false).apply();
+                return false;
+            }
+
+            return prefs.getBoolean("forceenglish", false);
+        }catch (Exception ignored) {
             return false;
         }
-
-        return prefs.getBoolean("forceenglish", false);
     }
 
     @Override
@@ -86,8 +92,8 @@ public class ActivityBase extends AppCompatActivity {
                 config.locale = locale;
                 getBaseContext().getResources().updateConfiguration(config,
                         getBaseContext().getResources().getDisplayMetrics());
-            }catch (Exception e) {
-                Log.i("XLua.ActivityBase", "Not good mr huberth");
+            }catch (Exception ignored) {
+
             }
         }
 

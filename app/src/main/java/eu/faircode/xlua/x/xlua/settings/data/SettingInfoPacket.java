@@ -161,17 +161,17 @@ public class SettingInfoPacket implements IDatabaseEntry, IJsonType, INameResolv
     }
 
     @Override
-    public boolean consumeId(Object o) {
-        boolean wasConsumed = false;
+    public boolean consumeObject(Object o) {
         if(o instanceof SettingInfoPacket) {
             SettingInfoPacket other = (SettingInfoPacket) o;
-            if(other.getObjectId().equalsIgnoreCase(this.getObjectId()) && !Str.areEqualIgnoreCase(this.description, other.description)) {
+            //if(this.getObjectId().equalsIgnoreCase(other.getObjectId())) { }
+            if(!Str.areEqual(this.description, other.description, true, true)) {
                 this.description = other.description;
-                wasConsumed = true;
+                return true;
             }
         }
 
-        return wasConsumed;
+        return false;
     }
 
     @Override

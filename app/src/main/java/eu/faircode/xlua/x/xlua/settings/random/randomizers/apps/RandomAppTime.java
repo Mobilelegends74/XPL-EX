@@ -24,12 +24,15 @@ import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
 
 public class RandomAppTime extends RandomElement {
     public RandomAppTime() {
-        super("Apps Time Offset");
+        super("Time Offset");
         putSettings(
                 RandomizersCache.SETTING_APP_INSTALL_TIME_OFFSET,
                 RandomizersCache.SETTING_APP_UPDATE_TIME_OFFSET,
                 RandomizersCache.SETTING_APP_CURRENT_INSTALL_TIME_OFFSET,
-                RandomizersCache.SETTING_APP_CURRENT_UPDATE_TIME_OFFSET);
+                RandomizersCache.SETTING_APP_CURRENT_UPDATE_TIME_OFFSET,
+                RandomizersCache.SETTING_FILE_ACCESS_OFFSET,
+                RandomizersCache.SETTING_FILE_CREATION_OFFSET,
+                RandomizersCache.SETTING_FILE_MODIFY_OFFSET);
         putOptions(
                 RandomOptionNullElement.create(),
                 RandomOptionString.create("Manual Input", ""),

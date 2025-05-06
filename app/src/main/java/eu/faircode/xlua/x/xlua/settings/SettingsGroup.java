@@ -19,12 +19,11 @@ public class SettingsGroup implements IDiffFace {
     private final String groupName;
     private final List<SettingsContainer> containers = new ArrayList<>();
 
-    public final GroupStats groupStats = new GroupStats();
-
-
 
     public String getGroupName() { return this.groupName; }
     public List<SettingsContainer> getContainers() { return this.containers; }
+
+    public void setContainers(List<SettingsContainer> containers) { ListUtil.addAll(this.containers, containers, true); }
 
     public SettingsGroup(String groupName) { this.groupName = groupName; }
     public SettingsGroup(String groupName, List<SettingsContainer> containers) {
@@ -33,6 +32,7 @@ public class SettingsGroup implements IDiffFace {
     }
 
     public static List<SettingsGroup> categorizeIntoGroups(List<SettingsContainer> containers) {
+        //ToDO: Is this in the correct place ? why not the repo ?
         Map<String, List<SettingsContainer>> groups = new HashMap<>();
         for(SettingsContainer container : containers) {
             List<SettingsContainer> groupContainers = groups.get(container.getGroup());
@@ -59,19 +59,30 @@ public class SettingsGroup implements IDiffFace {
     }
 
     private static int getPriority(String name) {
-        // Handle parent.control anywhere in the string
+        // Assign priorities based on the specific patterns in the name
         String low = name.toLowerCase();
-        if (low.contains("parent.control")) return 0;
-        if (low.contains("allowed.list") || low.contains("allow.list") || name.contains("block.list") || name.contains("blocked.list")) return 1;
-        return 2;
+
+        // Parent has highest priority
+        if (low.contains(".parent.")) return 0;
+
+        // List has second highest priority
+        if (low.contains(".list")) return 1;
+
+        // Unique has third highest priority
+        if (low.contains(".unique.")) return 2;
+
+        // Everything else has lowest priority
+        return 3;
     }
 
     public static void sortSettingsContainers(List<SettingsContainer> containers) {
         Collections.sort(containers, new Comparator<SettingsContainer>() {
             @Override
             public int compare(SettingsContainer o1, SettingsContainer o2) {
-                String name1 = o1.getNameInformation().name;
-                String name2 = o2.getNameInformation().name;
+                if (o1 == null || o2 == null) return 0;
+
+                String name1 = o1.getName(); // Make sure this returns the full name with patterns
+                String name2 = o2.getName();
 
                 int priority1 = getPriority(name1);
                 int priority2 = getPriority(name2);

@@ -152,7 +152,9 @@ public class AssignmentPacket extends PacketBase implements IBundleData, IParcel
 
         parcel.writeLong(this.installed);
         parcel.writeLong(this.used);
+
         ParcelUtil.writeBool(parcel, this.restricted);
+
         parcel.writeString(this.exception);
         parcel.writeString(this.oldValue);
         parcel.writeString(this.newValue);

@@ -4,7 +4,7 @@ function after(hook, param)
 		return false
 	end
 
-    local setting = param:getSetting("gsm.setting.network.opportunistic.bool", "false")
+    local setting = param:getSetting("cell.data.is.opportunistic.1", "false")
     if setting == nil then
         return false
     end

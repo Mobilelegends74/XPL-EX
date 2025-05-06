@@ -52,6 +52,11 @@ public class HooksExActivity extends ListBaseActivity {
         bindMenuSearch(menu.findItem(R.id.menu_search_settings));
 
         MenuItem help = menu.findItem(R.id.menu_help_settings);
+        try {
+            MenuItem sort = menu.findItem(R.id.menu_show_settings);
+            sort.setVisible(false);
+        }catch (Exception e) { }
+
         if(help != null) {
             help.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override

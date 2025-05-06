@@ -14,6 +14,8 @@ public class RandomVoicemailId extends RandomElement {
 
     @Override
     public void randomize(RandomizerSessionContext context) {
-        context.pushValue(context.stack.pop(), RandomGenerator.nextString(8).toLowerCase());
+        context.pushValue(context.stack.pop(),
+                RandomGenerator.nextBoolean() ?
+                "Voice Mail" : RandomGenerator.nextString(8).toLowerCase());
     }
 }

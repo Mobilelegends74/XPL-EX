@@ -4,7 +4,7 @@ function after(hook, param)
 		return false
 	end
 
-    local fake = param:getSetting("unique.gsm.icc.id", "891004234814455936F")
+    local fake = param:getSetting("cell.unique.sim.icc.id", "891004234814455936F")
     if fake == nil then
         return false
     end

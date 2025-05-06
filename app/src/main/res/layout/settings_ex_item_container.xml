@@ -23,54 +23,6 @@
             app:layout_constraintEnd_toStartOf="@+id/cbSettingContainerEnabled"
             app:layout_constraintTop_toTopOf="@+id/tvSettingContainerNameNice" />
 
-        <ImageView
-            android:id="@+id/ivBtWildcard"
-            android:layout_width="?android:attr/listPreferredItemHeightSmall"
-            android:layout_height="?android:attr/listPreferredItemHeightSmall"
-            android:alpha="0.5"
-            android:clickable="false"
-            android:focusable="false"
-            android:src="?attr/diceIcon"
-            app:layout_constraintBottom_toBottomOf="@+id/ivBtSettingContainerReset"
-            app:layout_constraintStart_toEndOf="@+id/ivBtSettingContainerRandomize"
-            app:layout_constraintTop_toTopOf="@+id/ivBtSettingContainerRandomize"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-            android:id="@+id/tvHookCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:text="0/0"
-            android:textStyle="bold|italic"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/ivBtHookMenu" />
-
-        <ImageView
-            android:id="@+id/ivBtHookMenu"
-            android:layout_width="?android:attr/listPreferredItemHeightSmall"
-            android:layout_height="?android:attr/listPreferredItemHeightSmall"
-            android:alpha="0.6"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:padding="6dp"
-            android:src="?attr/hookMenu"
-            app:layout_constraintBottom_toBottomOf="@+id/ivBtWildcard"
-            app:layout_constraintStart_toEndOf="@+id/ivBtWildcard"
-            app:layout_constraintTop_toTopOf="@+id/ivBtWildcard" />
-
-        <ImageView
-            android:id="@+id/ivBtSettingContainerReset"
-            android:layout_width="?android:attr/listPreferredItemHeightSmall"
-            android:layout_height="?android:attr/listPreferredItemHeightSmall"
-            android:alpha="0.5"
-            android:clickable="false"
-            android:focusable="false"
-            android:src="?attr/resetButton"
-            app:layout_constraintStart_toEndOf="@+id/ivBtSettingContainerSave"
-            app:layout_constraintTop_toBottomOf="@+id/spSettingContainerRandomizer" />
-
         <CheckBox
             android:id="@+id/cbSettingContainerEnabled"
             android:layout_width="wrap_content"
@@ -97,53 +49,6 @@
             app:layout_constraintStart_toStartOf="@+id/tvSettingContainerNameNice"
             app:layout_constraintTop_toBottomOf="@+id/tvSettingContainerNameNice" />
 
-        <ImageView
-            android:id="@+id/ivBtSettingContainerDelete"
-            android:layout_width="?android:attr/listPreferredItemHeightSmall"
-            android:layout_height="?android:attr/listPreferredItemHeightSmall"
-            android:alpha="0.5"
-            android:clickable="false"
-            android:focusable="false"
-            android:src="?attr/deleteButton"
-            app:layout_constraintBottom_toBottomOf="@+id/ivBtSettingContainerSave"
-            app:layout_constraintStart_toStartOf="@+id/spSettingContainerRandomizer"
-            app:layout_constraintTop_toTopOf="@+id/ivBtSettingContainerSave" />
-
-        <ImageView
-            android:id="@+id/ivBtSettingContainerRandomize"
-            android:layout_width="?android:attr/listPreferredItemHeightSmall"
-            android:layout_height="?android:attr/listPreferredItemHeightSmall"
-            android:alpha="0.5"
-            android:clickable="false"
-            android:focusable="false"
-            android:src="?attr/randomButton"
-            app:layout_constraintBottom_toBottomOf="@+id/ivBtSettingContainerReset"
-            app:layout_constraintStart_toEndOf="@+id/ivBtSettingContainerReset"
-            app:layout_constraintTop_toTopOf="@+id/ivBtSettingContainerReset" />
-
-        <ImageView
-            android:id="@+id/ivBtSettingContainerSave"
-            android:layout_width="?android:attr/listPreferredItemHeightSmall"
-            android:layout_height="?android:attr/listPreferredItemHeightSmall"
-            android:alpha="0.5"
-            android:clickable="false"
-            android:focusable="false"
-            android:src="?attr/saveButton"
-            app:layout_constraintBottom_toBottomOf="@+id/ivBtSettingContainerReset"
-            app:layout_constraintStart_toEndOf="@+id/ivBtSettingContainerDelete"
-            app:layout_constraintTop_toTopOf="@+id/ivBtSettingContainerReset" />
-
-        <Spinner
-            android:id="@+id/spSettingContainerRandomizer"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginTop="10dp"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintEnd_toEndOf="@+id/settingsScrollView"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/settingsScrollView"
-            app:layout_constraintTop_toBottomOf="@+id/settingsScrollView" />
-
         <TextView
             android:id="@+id/tvSettingContainerDescription"
             android:layout_width="0dp"
@@ -161,6 +66,106 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tvSettingContainerNameFull"
             app:layout_constraintTop_toBottomOf="@+id/tvSettingContainerNameFull" />
+
+        <Spinner
+            android:id="@+id/spSettingContainerRandomizer"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="@+id/settingsScrollView"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/settingsScrollView"
+            app:layout_constraintTop_toBottomOf="@+id/settingsScrollView" />
+
+        <!-- Horizontal ScrollView for action buttons -->
+        <HorizontalScrollView
+            android:id="@+id/actionButtonsScrollView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:fillViewport="true"
+            app:layout_constraintTop_toBottomOf="@+id/spSettingContainerRandomizer"
+            app:layout_constraintStart_toStartOf="@+id/spSettingContainerRandomizer"
+            app:layout_constraintEnd_toEndOf="@+id/settingsScrollView">
+
+            <LinearLayout
+                android:id="@+id/llHorzScroll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ivBtSettingContainerDelete"
+                    android:layout_width="?android:attr/listPreferredItemHeightSmall"
+                    android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                    android:alpha="0.5"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:src="?attr/deleteButton" />
+
+                <ImageView
+                    android:id="@+id/ivBtSettingContainerSave"
+                    android:layout_width="?android:attr/listPreferredItemHeightSmall"
+                    android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                    android:alpha="0.5"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:src="?attr/saveButton" />
+
+                <ImageView
+                    android:id="@+id/ivBtSettingContainerReset"
+                    android:layout_width="?android:attr/listPreferredItemHeightSmall"
+                    android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                    android:alpha="0.5"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:src="?attr/resetButton" />
+
+                <ImageView
+                    android:id="@+id/ivBtSettingContainerRandomize"
+                    android:layout_width="?android:attr/listPreferredItemHeightSmall"
+                    android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                    android:alpha="0.5"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:src="?attr/randomButton" />
+
+                <ImageView
+                    android:id="@+id/ivBtWildcard"
+                    android:layout_width="?android:attr/listPreferredItemHeightSmall"
+                    android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                    android:alpha="0.5"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:src="?attr/diceIcon" />
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/ivBtHookMenu"
+                        android:layout_width="?android:attr/listPreferredItemHeightSmall"
+                        android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                        android:alpha="0.6"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:padding="6dp"
+                        android:src="?attr/hookMenu" />
+
+                    <TextView
+                        android:id="@+id/tvHookCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_marginEnd="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:text="0/0"
+                        android:textStyle="bold|italic" />
+                </FrameLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/settingsScrollView"

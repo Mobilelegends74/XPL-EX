@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import eu.faircode.xlua.DebugUtil;
+import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.XUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.JsonHelperEx;
@@ -46,7 +47,7 @@ public class DatabaseUpdater<T extends IIdentifiableObject & ICursorType & IJson
         ContentValues getContentValues(T o);
     }
 
-    public static final String DELETE_ID = "<!delete!>";
+    public static final String DELETE_PREFIX = "__delete";
 
     private final WeakHashMap<String, T> all = new WeakHashMap<>();
     private final WeakHashMap<String, Pair<T, String>> push = new WeakHashMap<>();
@@ -171,45 +172,91 @@ public class DatabaseUpdater<T extends IIdentifiableObject & ICursorType & IJson
             if(!DatabaseHelpEx.prepareDatabaseLocked(database, tableInfo))
                 return this;
 
+            //How Much of this are we using given we have a "IDMapper" Class ? Supposedly suppose to do the same thing ?
             if(defaultsJson != null) {
                 List<T> jsonElements = JsonHelperEx.findJsonElementsFromAssets(XUtil.getApk(context), defaultsJson, true, clazz);
                 if(DebugUtil.isDebug())
-                    XposedUtility.logD_xposed(TAG, "Got JSON Elements Count=" + jsonElements.size() + " JSON=" + defaultsJson + " " + getInfoPrefix(tableInfo));
+                    XposedUtility.logD_xposed(TAG, Str.fm("Got JSON Elements Count=(%s) JSON Name=(%s) Push Count=(%s) Table Info Prefix=(%s)",
+                            ListUtil.size(jsonElements),
+                            defaultsJson,
+                            this.push.size(),
+                            Str.ensureNoDoubleNewLines(getInfoPrefix(tableInfo))));
 
+                //[2] Create a Local Map of all the Elements from the DB that Need to be Updated because of the cause (NEW ID) (Needs to Update their IDs)
+                //      Map<NEW_ID, OLD_ITEM>
                 Map<String, T> toUpdates = new HashMap<>();
                 for(Map.Entry<String, Pair<T, String >> entry : this.push.entrySet()) {
+                    //Create a MAP of the Ones in Need of An Update for their IDs Map<NEW_ID, OLD_ITEM>
                     Pair<T, String> pair = entry.getValue();
                     T item = pair.first;
                     String newId = pair.second;
-                    if(!Str.isEmpty(newId))
-                        toUpdates.put(newId, item);
+                    if(!Str.isEmpty(newId)) toUpdates.put(newId, item);
                 }
 
+                //[3] Iterate through all the JSON Elements
                 for(T jsonElement : jsonElements) {
+                    //[3.1] using the JSON Element ID (Newest since its from JSON) try to Get the DB Object
+                    //      Only Gets if Exits in the Local Map of Need to Update due to Outdated ID
                     T up = toUpdates.get(jsonElement.getObjectId());
                     if(up != null) {
-                        if(up.consumeId(jsonElement))
+                        if(up.consumeObject(jsonElement))
                             if(DebugUtil.isDebug())
-                                XposedUtility.logD_xposed(TAG, "Consumed, id=" + up.getObjectId());
+                                XLegacyCore.logD(TAG,
+                                        Str.fm("Consumed JSON Element (%s) to the DB Element (%s) in the Push (NEW_IDS) QUE of Count (%s) Global (%s)",
+                                                jsonElement.getObjectId(),
+                                                up.getObjectId(),
+                                                toUpdates.size(),
+                                                this.push.size()));
                     } else {
+                        //[3.2] If not in the Already Push QUE for NEW IDs, then Check if it is in the Push Que At All for Any Reason
                         Pair<T, String> pItem = push.get(jsonElement.getObjectId());
-
                         if(pItem != null) {
-                            if(pItem.first.consumeId(jsonElement))
+                            if(pItem.first.consumeObject(jsonElement))
                                 if(DebugUtil.isDebug())
-                                    XposedUtility.logD_xposed(TAG, "Consumed, id=" + pItem.first.getObjectId() + " new id=" + pItem.second);
+                                    XLegacyCore.logD(TAG, Str.fm("Consumed JSON Element (%s) to the DB Element (%s) from the Push QUE of Count (%s)",
+                                            jsonElement.getObjectId(),
+                                            pItem.first.getObjectId(),
+                                            this.push.size()));
                         } else {
+                            //[3.3] Not in Push QUE for NEW IDs, Not in the Global Push QUE, now Check the (All) Global List
+                            //ToDo: Support Deleting, and also should we Remove it from All ? No I dont think so ALL is all
                             T item = all.get(jsonElement.getObjectId());
                             if(item == null)
                                 push.put(jsonElement.getObjectId(), Pair.create(jsonElement, null));
-                            else if(item.consumeId(jsonElement)) {
+                            else if(item.consumeObject(jsonElement)) {
                                 push.put(item.getObjectId(), Pair.create(item, null));
                                 if(DebugUtil.isDebug())
-                                    XposedUtility.logD_xposed(TAG, "Consumed, id=" + item.getObjectId());
+                                    XLegacyCore.logD(TAG, Str.fm("Consumed JSON Element (%s) to the DB Element (%s) from the (All) list, Pushed Count (%s) All Count (%s)",
+                                            jsonElement.getObjectId(),
+                                            item.getObjectId(),
+                                            this.push.size(),
+                                            this.all.size()));
+                            } else {
+                                try {
+                                    String jsonOne = item.toJSONString();
+                                    String jsonTwo = jsonElement.toJSONString();
+                                    if(jsonTwo != null) {
+                                        if(!jsonTwo.equals(jsonOne)) {
+                                            push.put(jsonElement.getObjectId(), Pair.create(jsonElement, null));
+                                            if(DebugUtil.isDebug())
+                                                XLegacyCore.logD(TAG, Str.fm("Consumed JSON Element (%s) to DB Element (%s) from (All) list, Reason (BAD_JSON_COMPARE) Pushed Count (%s) All Count (%s)",
+                                                        jsonElement.getObjectId(),
+                                                        item.getObjectId(),
+                                                        this.push.size(),
+                                                        this.all.size()));
+                                        }
+                                    }
+                                }catch (Exception ignored) { }
                             }
                         }
                     }
                 }
+
+                if(DebugUtil.isDebug())
+                    XLegacyCore.logD(TAG, Str.fm("Finished Ensuring (%s) Elements Match JSON Elements from Assets (%s), to Push Count=%s",
+                            this.all.size(),
+                            ListUtil.size(jsonElements),
+                            this.push.size()));
             }
         }
 
@@ -224,95 +271,122 @@ public class DatabaseUpdater<T extends IIdentifiableObject & ICursorType & IJson
                 return this;
             }
 
-            if(!database.beginTransaction(true)) {
-                XposedUtility.logE_xposed(TAG_PUSH, "Failed to Begin Database Transaction for push!");
-                return this;
-            }
-
-            Map<String, Pair<T, String>> failed = new HashMap<>();
-            Map<String, T> success = new HashMap<>();
-            List<String> removed = new ArrayList<>();
             if(DebugUtil.isDebug())
-                XposedUtility.logD_xposed(TAG_PUSH, Str.fm("Pushing Database Update, %s", getInfoPrefix(toTable)));
+                XLegacyCore.logD(TAG,
+                        "Starting Database Push Update for (%s)" +
+                                getInfoPrefix(toTable));
 
-            StrBuilder sb = StrBuilder.create().ensureOneNewLinePer(true);
-            try {
-                for(Map.Entry<String, Pair<T, String>> entry : push.entrySet()) {
-                    String id = entry.getKey();
-                    Pair<T, String> pair = entry.getValue();
-                    T item = pair.first;
-                    String newId = pair.second;
-
-                    if(item == null) {
-                        Log.e(TAG_PUSH, "Item is fucking null ? " + id);
-                        continue;
+            if(!push.isEmpty()) {
+                int successCount = 0;
+                try {
+                    if(!database.beginTransaction(true)) {
+                        XposedUtility.logE_xposed(TAG_PUSH, "Failed to Begin Database Transaction for push!");
+                        return this;
                     }
 
-                    //How are we dropping the old ?
-                    //database.delete()
-                    //DatabaseHelpEx.deleteItem()
-                    //item.getSharedId()
-                    //We can also just update ? no ?
-                    //Either way we need to SQL Snake this bitch
-
-                    SQLSnake snake = item.createSnake();
-                    if(newId != null) {
-                        item.setId(newId);
-                        sb.appendLine(Str.combineEx("Old ID=", id, " => ", newId));
-                    }
-
-                    ContentValues cv = ic.getContentValues(item);
-                    if(!Str.isEmpty(newId) && snake != null && !Str.areEqualIgnoreCase(id, newId)) {
-                        if(cv != null && database.update(toTable.name, cv, snake)) {
-                            if(!removed.contains(id))
-                                removed.add(id);
-
+                    for(String id : new ArrayList<>(push.keySet())) {
+                        Pair<T, String> pair = push.remove(id);
+                        if(pair == null || (pair.first == null))
                             continue;
-                        } else  {
-                            Log.e(TAG_PUSH, "Failed to Update Entry: " + id + " Prefix=" + getInfoPrefix(toTable));
-                            database.delete(toTable.name, snake.getWhereClause(), snake.getWhereArgs());
-                            if(!removed.contains(id))
-                                removed.add(id);
+
+                        T item = pair.first;
+                        String newId = pair.second;
+                        SQLSnake query = item.createSnake();
+                        if(query == null)
+                            continue;
+
+                        if(!Str.isEmpty(newId)) {
+                            if(newId.startsWith(DELETE_PREFIX)) {
+                                if(database.delete(toTable.name, query.getWhereClause(), query.getWhereArgs())) {
+                                    this.all.remove(id);
+                                    successCount++;
+                                }
+                                else {
+                                    this.push.put(id, pair);
+                                    if(DebugUtil.isDebug())
+                                        XLegacyCore.logD(TAG, Str.fm("Failed to Delete Item (%s) Where Clause (%s) Where Args (%s) Table (%s) Database (%s)",
+                                                id,
+                                                query.getWhereClause(),
+                                                Str.joinArray(query.getWhereArgs()),
+                                                toTable.name,
+                                                database.toString()));
+                                }
+                            } else {
+                                item.setId(newId);
+                                ContentValues contentValues = ic.getContentValues(item);
+                                if(!database.update(toTable.name, contentValues, query)) {
+                                    if(!database.delete(toTable.name, query.getWhereClause(), query.getWhereArgs())) {
+                                        item.setId(id);
+                                        this.push.put(id, pair);
+                                        if(DebugUtil.isDebug())
+                                            XLegacyCore.logD(TAG, Str.fm("Failed to Delete Item (%s) For Reason (NEW_ID) (%s) Content Values (%s) Where Clause (%s) Where Args (%s) Table (%s) Database (%s)",
+                                                    id,
+                                                    newId,
+                                                    Str.toStringOrNull(contentValues),
+                                                    query.getWhereClause(),
+                                                    Str.joinArray(query.getWhereArgs()),
+                                                    toTable.name,
+                                                    database.toString()));
+                                    } else {
+                                        this.all.remove(id);
+                                        if(database.insert(toTable.name, contentValues)) {
+                                            this.all.put(newId, item);
+                                            successCount++;
+                                        }
+                                        else {
+                                            item.setId(id);
+                                            this.push.put(id, pair);
+                                            if(DebugUtil.isDebug())
+                                                XLegacyCore.logD(TAG, Str.fm("Failed to Push Insert Item (%s) For Reason (NEW_ID) (%s) Content Values (%s) Where Clause (%s) Where Args (%s) Table (%s) Database (%s)",
+                                                        id,
+                                                        newId,
+                                                        Str.toStringOrNull(contentValues),
+                                                        query.getWhereClause(),
+                                                        Str.joinArray(query.getWhereArgs()),
+                                                        toTable.name,
+                                                        database.toString()));
+                                        }
+                                    }
+                                } else {
+                                    this.all.remove(id);
+                                    this.all.put(newId, item);
+                                    successCount++;
+                                }
+                            }
+                        } else {
+                            ContentValues contentValues = ic.getContentValues(item);
+                            if(database.insert(toTable.name, contentValues)) {
+                                this.all.put(id, item);
+                                successCount++;
+                                if(DebugUtil.isDebug())
+                                    XLegacyCore.logD(TAG, Str.fm("Updated Item (%s) Content Values (%s) Table (%s)",
+                                            id,
+                                            Str.toStringOrNull(contentValues),
+                                            toTable.name));
+                            }
+                             else {
+                                this.push.put(id, pair);
+                                if(DebugUtil.isDebug())
+                                    XLegacyCore.logD(TAG, Str.fm("Failed to Push Insert Item by Id (%s) Content Values (%s) Table (%s) Database (%s)",
+                                            id,
+                                            Str.toStringOrNull(contentValues),
+                                            toTable.name,
+                                            database.toString()));
+                            }
                         }
                     }
 
-                    if(!database.insert(toTable.name, cv)) {
-                        Log.e(TAG_PUSH, "Failed to Insert Entry: " + id + " Prefix=" + getInfoPrefix(toTable));
-                        failed.put(id, pair);
-                        if(newId != null)
-                            item.setId(id);
-                    } else {
-                        success.put(item.getObjectId(), item);
-                    }
+                    database.setTransactionSuccessful();
+                } finally {
+                    database.endTransaction(true, false);
+                    if(DebugUtil.isDebug())
+                        XLegacyCore.logD(TAG, Str.fm("Finished Pushing Updates! For Table (%s) Database (%s) All Count (%s) Push Count (%s) Success Count=%s",
+                                toTable.name,
+                                database.toString(),
+                                all.size(),
+                                push.size(),
+                                successCount));
                 }
-
-                database.setTransactionSuccessful();
-            } finally {
-                database.endTransaction(true, false);
-                ListUtil.addAll(this.push, failed, true);
-                ListUtil.addAll(this.all, success, false);
-
-                StrBuilder sb2 = StrBuilder.create().ensureOneNewLinePer(true);
-                for(String rem : removed) {
-                    sb2.appendLine(Str.combineEx("[REM]::[", rem, "]::[", String.valueOf(this.all.remove(rem) != null), "]"));
-                    this.all.remove(rem);
-                }
-
-                if(DebugUtil.isDebug())
-                    XposedUtility.logD_xposed(TAG_PUSH, Str.fm("Removed From Table=%s  Output=%s",
-                            toTable.name,
-                            sb2.toString(true)));
-
-                if(DebugUtil.isDebug())
-                    XposedUtility.logD_xposed(TAG_PUSH, Str.fm("Updated Table=%s  Output=%s",
-                            toTable.name,
-                            sb.toString(true)));
-
-                if(DebugUtil.isDebug())
-                    XposedUtility.logD_xposed(TAG_PUSH, Str.fm("Finished Pushing %s Failed=%s Success=%s",
-                            getInfoPrefix(toTable),
-                            failed.size(),
-                            success.size()));
             }
         }
 
@@ -599,9 +673,6 @@ public class DatabaseUpdater<T extends IIdentifiableObject & ICursorType & IJson
                             .setDatabase(database)
                             .createMap(context)
                             .ensureIsUpdated(AssignmentPacket.TABLE_INFO);
-
-
-
 
                     ColumnSimpleReMapper.create()
                             .setDatabase(database)

@@ -478,7 +478,7 @@ public class OptimizedContainerAdapter
                 groupStats
                         .update(currentItem, forceUpdate)
                         .updateColor(binding.tvSettingContainerNameNice, context)
-                        .updateIv(binding.ivActionNeeded);
+                        .updateIv(binding.ivActionNeeded, currentItem.getName());
             }
         }
 

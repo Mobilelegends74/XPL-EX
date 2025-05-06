@@ -36,7 +36,6 @@ public class GetHookCommand extends CallCommandHandlerEx {
                 XLegacyCore.getHookAsJsonString(commandData.getExtraString(FIELD)));
     }
 
-
     public static XHook getEx(Context context, String hookId) {
         if(Str.isEmpty(hookId))
             return null;

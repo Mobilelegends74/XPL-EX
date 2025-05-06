@@ -241,6 +241,35 @@ public class StrConversionUtils {
         }
     }
 
+
+    /**
+     * Attempts to parse a string to a Character, returning '\0' if parsing fails.
+     */
+    public static Character tryParseChar(String v) {
+        return tryParseChar(v, false);
+    }
+
+    /**
+     * Attempts to parse a string to a Character, with option to return null on failure.
+     *
+     * @param v The string to parse
+     * @param returnNullIfFailureElseZero Whether to return null (true) or '\0' (false) on failure
+     * @return The parsed Character value, or null/'\0' on failure
+     */
+    public static Character tryParseChar(String v, boolean returnNullIfFailureElseZero) {
+        if (v == null || v.isEmpty()) {
+            return returnNullIfFailureElseZero ? null : '\0';
+        }
+
+        try {
+            // First approach: just get the first character
+            char firstChar = v.charAt(0);
+            return firstChar;
+        } catch (Exception ignored) {
+            return returnNullIfFailureElseZero ? null : '\0';
+        }
+    }
+
     // ============================
     // Short Conversion Methods
     // ============================

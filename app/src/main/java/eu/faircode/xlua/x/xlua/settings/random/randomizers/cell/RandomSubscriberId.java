@@ -1,4 +1,4 @@
-package eu.faircode.xlua.x.xlua.settings.random.randomizers.unique;
+package eu.faircode.xlua.x.xlua.settings.random.randomizers.cell;
 
 import android.util.Log;
 
@@ -22,12 +22,12 @@ import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
     MSIN: 123456789
  */
 
-public class RandomSubscriptionId extends RandomElement {
-    private static final String TAG = LibUtil.generateTag(RandomSubscriptionId.class);
+public class RandomSubscriberId extends RandomElement {
+    private static final String TAG = LibUtil.generateTag(RandomSubscriberId.class);
 
-    public RandomSubscriptionId() {
-        super("Unique Cell Subscription ID");
-        putIndexSettings(RandomizersCache.SETTING_UNIQUE_SUB_ID, 1, 2);
+    public RandomSubscriberId() {
+        super("Unique Cell Subscriber ID");
+        putIndexSettings(RandomizersCache.SETTING_CELL_SUBSCRIBER_ID, 1, 2);
         putRequirementsAsIndex(
                 RandomizersCache.SETTING_CELL_OPERATOR_MCC,
                 RandomizersCache.SETTING_CELL_OPERATOR_MNC,

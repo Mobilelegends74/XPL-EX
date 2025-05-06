@@ -1,6 +1,6 @@
 [
 
-  {
+  /*{
     "builtin": true,
     "collection": "PrivacyEx",
     "group": "ID.Unique",
@@ -19,9 +19,9 @@
     "usage": true,
     "notify": false,
     "luaScript": "@id_subscriptioninfo_iccid",
-    "settings": ["unique.gsm.icc.id"]
-  },
-  {
+    "settings": ["cell.unique.sim.icc.id"]
+  },*/
+ /* {
     "builtin": false,
     "collection": "PrivacyEx",
     "group": "ID.Unique",
@@ -41,8 +41,8 @@
     "notify":false,
     "luaScript": "@id_phonenumber_str",
     "settings":[ "unique.gsm.phone.number" ]
-  },
-  {
+  },*/
+  /*{
     "builtin": false,
     "collection": "PrivacyEx",
     "group": "ID.Unique",
@@ -62,8 +62,8 @@
     "notify":false,
     "luaScript": "@id_phonenumber_str",
     "settings":[ "unique.gsm.phone.number" ]
-  },
-  {
+  },*/
+  /*{
     "builtin": true,
     "collection": "PrivacyEx",
     "group": "ID.Unique",
@@ -83,8 +83,8 @@
     "notify":false,
     "luaScript": "@id_phonenumber_str",
     "settings":[ "unique.gsm.phone.number" ]
-  },
-  {
+  },*/
+  /*{
     "builtin": true,
     "collection": "PrivacyEx",
     "group": "ID.Unique",
@@ -104,8 +104,8 @@
     "notify":false,
     "luaScript": "@id_subscriber_id_string",
     "settings":[ "gsm.operator.mcc", "gsm.operator.mnc", "unique.gsm.operator.msin", "unique.gsm.subscription.id" ]
-  },
-  {
+  },*/
+ /* {
     "builtin": true,
     "collection": "PrivacyEx",
     "group": "ID.Unique",
@@ -124,8 +124,8 @@
     "notify":false,
     "luaScript": "@id_subscriber_id_int",
     "settings":[ "gsm.operator.mcc", "gsm.operator.mnc", "unique.gsm.operator.msin", "unique.gsm.subscription.id" ]
-  },
-  {
+  },*/
+  /*{
     "builtin": true,
     "collection": "PrivacyEx",
     "group": "ID.Telephony",
@@ -145,8 +145,8 @@
     "notify":false,
     "luaScript": "@id_subscriber_id_int",
     "settings":[ "gsm.operator.mcc", "gsm.operator.mnc", "gsm.operator.id" ]
-  },
-  {
+  },*/
+  /*{
     "builtin": true,
     "collection": "PrivacyEx",
     "group": "ID.Telephony",
@@ -188,6 +188,7 @@
     "luaScript": "@id_telephony_getvoicemailalphatag",
     "settings":[ "unique.gsm.voicemail.id.1", "unique.gsm.voicemail.id.2" ]
   },
+
   {
     "builtin": false,
     "collection": "PrivacyEx",
@@ -208,5 +209,5 @@
     "notify":false,
     "luaScript": "@id_telephony_getsimserialnumber",
     "settings":[ "unique.gsm.sim.serial" ]
-  }
+  }*/
 ]

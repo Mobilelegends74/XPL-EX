@@ -41,7 +41,6 @@
     "luaScript": "@id_build_board",
     "settings":["soc.board.config.code.name"]
   },
-
   {
     "builtin": true,
     "collection": "PrivacyEx",
@@ -62,9 +61,6 @@
     "luaScript": "",
     "settings":["soc.board.config.code.name"]
   },
-
-
-
   {
     "builtin": true,
     "collection": "PrivacyEx",
@@ -86,9 +82,6 @@
     "luaScript": "@id_build_bootloader",
     "settings":["device.bootloader"]
   },
-
-
-
   {
     "builtin": true,
     "collection": "PrivacyEx",
@@ -361,9 +354,6 @@
     "luaScript": "",
     "settings":["device.manufacturer"]
   },
-
-
-
   {
     "builtin": true,
     "collection": "PrivacyEx",
@@ -405,9 +395,6 @@
     "luaScript": "",
     "settings":["device.model"]
   },
-
-
-
   {
     "builtin": true,
     "collection": "PrivacyEx",

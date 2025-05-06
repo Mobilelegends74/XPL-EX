@@ -41,7 +41,7 @@ public class AppAssignmentsMap {
             if(container == null)
                 return AppAssignmentInfo.DEFAULT;
 
-            List<String> settings = HooksSettingsGlobal.settingHoldersToNames(container);
+            List<String> settings = HooksSettingsGlobal.settingHoldersToNames(container, true);
             if(DebugUtil.isDebug())
                 Log.d(TAG, Str.fm("get(container:%s::%s) Settings Count (%s)(%s) Is Global (%s) Assignment Cache Count (%s)",
                         container.getContainerName(),

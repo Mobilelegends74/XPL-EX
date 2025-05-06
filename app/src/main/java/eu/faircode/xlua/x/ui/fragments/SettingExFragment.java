@@ -7,7 +7,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
@@ -22,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import eu.faircode.xlua.ActivityMain;
+import eu.faircode.xlua.AdapterApp;
 import eu.faircode.xlua.DebugUtil;
 import  eu.faircode.xlua.R;
 
@@ -100,6 +104,28 @@ public class SettingExFragment
 
     private boolean isViewOpen = true;
     private final SettingSharedRegistry sharedRegistry = new SettingSharedRegistry();
+    private SettingsExActivity.enumShow show = SettingsExActivity.enumShow.none;
+
+
+    //        show = PrefManager.settingToShow(ActivityMain.manager.getString(PrefManager.SETTING_APPS_SHOW, "show_user", true));
+    //data.show = PrefManager.settingToShow(ActivityMain.manager.getString(PrefManager.SETTING_APPS_SHOW, "show_user", true));
+
+
+    //Make this into base
+    public SettingsExActivity.enumShow getShow() { return this.show; }
+
+    //@Override
+    //public String getShowValue() { return this.show.name(); }
+
+    public void setShow(SettingsExActivity.enumShow value) {
+        this.show = value;
+        //this.refresh();
+        this.updatedSortedList(null);
+
+        //refresh();
+        //if (rvAdapter != null)
+        //    rvAdapter.setShow(value);
+    }
 
     @Override
     public SharedRegistry getSharedRegistry() { return sharedRegistry; }
@@ -114,6 +140,14 @@ public class SettingExFragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.createViewModel(SettingsExGroupViewModel.class, true);
         super.onCreate(savedInstanceState);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        this.show = PrefManager.settingToShowSettings(
+                SettingsExActivity.manager.getString(PrefManager.PREFERENCE_SHOW, PrefManager.DEFAULT_SHOW, true));
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -213,6 +247,13 @@ public class SettingExFragment
                 binding.btAppIslandSaveChecked,
                 binding.btAppIslandClearData,
                 binding.btAppIslandCreateConfigDialog);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.show = PrefManager.settingToShowSettings(
+                SettingsExActivity.manager.getString(PrefManager.PREFERENCE_SHOW, PrefManager.DEFAULT_SHOW, true));
     }
 
     @Override
@@ -341,11 +382,12 @@ public class SettingExFragment
                         .show();
                 break;
             case R.id.btAppIslandProfileDialog:
-                ProfileDialog.create()
+                /*ProfileDialog.create()
                         .setApp(context, getUserContext())
                         .setSettings(context, SettingFragmentUtils.filterChecked(SettingFragmentUtils.getSettings(getLiveData()), sharedRegistry))
                         .initKnownProfiles(context)
-                        .show(getFragmentMan(),  getString(R.string.title_profile_manager));
+                        .show(getFragmentMan(),  getString(R.string.title_profile_manager));*/
+                Snackbar.make(v, "Coming Soon (Not Ready)...", Snackbar.LENGTH_LONG).show();
                 break;
             case R.id.btAppIslandToLogsDialog:
                 LogDialog.create()

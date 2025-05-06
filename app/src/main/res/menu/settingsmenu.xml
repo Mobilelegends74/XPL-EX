@@ -3,6 +3,27 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/menu_show_settings"
+        android:icon="@drawable/ic_filter_list_white_24dp"
+        android:title="@string/menu_show"
+        app:showAsAction="always">
+        <menu>
+            <group
+                android:id="@+id/groupShow"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/menu_show_settings_all"
+                    android:title="@string/menu_show_settings_all" />
+                <item
+                    android:id="@+id/menu_show_settings_unique"
+                    android:title="@string/menu_show_settings_unique" />
+                <item
+                    android:id="@+id/menu_show_settings_android"
+                    android:title="@string/menu_show_settings_android" />
+            </group>
+        </menu>
+    </item>
+    <item
         android:id="@+id/menu_search_settings"
         android:icon="@drawable/ic_search_white_24dp"
         android:title="@string/menu_search"

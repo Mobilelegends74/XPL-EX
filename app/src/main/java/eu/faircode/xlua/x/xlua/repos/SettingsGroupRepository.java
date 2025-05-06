@@ -11,10 +11,10 @@ import java.util.List;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
-import eu.faircode.xlua.x.data.utils.ObjectUtils;
 import eu.faircode.xlua.x.ui.core.FilterRequest;
 import eu.faircode.xlua.x.ui.core.UserClientAppContext;
 import eu.faircode.xlua.x.xlua.LibUtil;
+import eu.faircode.xlua.x.xlua.settings.GroupStats;
 import eu.faircode.xlua.x.xlua.settings.SettingHolder;
 import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
 import eu.faircode.xlua.x.xlua.settings.SettingsGroup;
@@ -23,6 +23,7 @@ public class SettingsGroupRepository implements IXLuaRepo<SettingsGroup> {
     private static final String TAG = LibUtil.generateTag(SettingsGroupRepository.class);
 
     public static final IXLuaRepo<SettingsGroup> INSTANCE = new SettingsGroupRepository();
+    public static final String DEFAULT_SORT_FIELD = "name";
 
     @Override
     public List<SettingsGroup> get() {
@@ -30,38 +31,69 @@ public class SettingsGroupRepository implements IXLuaRepo<SettingsGroup> {
     }
 
     @Override
-    public List<SettingsGroup> get(Context context, UserClientAppContext userContext) {
+    public List<SettingsGroup> get(
+            Context context,
+            UserClientAppContext userContext) {
         return SettingsGroup.categorizeIntoGroups(SettingsRepository.INSTANCE.get(context, userContext));
     }
 
     @Override
     public List<SettingsGroup> filterAndSort(List<SettingsGroup> items, FilterRequest request) {
-        if(ObjectUtils.anyNull(items, request)) {
-            Log.e(TAG, "Input has Null or Bad Args!");
-            return ListUtil.emptyList();
-        }
-
-        Comparator<SettingsGroup> comparator = getComparator(request.getOrderOrDefault("name"), request.isReversed);
-
-        List<SettingsGroup> queryGroups = new ArrayList<>();
-        if(!request.isEmptyOrClearQuery()) {
-            for(SettingsGroup group : items)
-                if( isMatchingCriteria(group, request))
-                    queryGroups.add(group);
-        } else {
-            queryGroups.addAll(items);
-        }
-
-
-        Collections.sort(queryGroups, comparator);
-        if(DebugUtil.isDebug())
-            Log.d(TAG, "Filtered and Sorted through Settings groups, Original Size=" + ListUtil.size(items) + " Filtered Size=" + ListUtil.size(queryGroups) + " Request=" + Str.toStringOrNull(request));
-
-        return queryGroups;
+        return ListUtil.forEachFilter(
+                items,
+                request,
+                SettingsGroupRepository::isMatchingCriteria,
+                getComparator(request.getOrderOrDefault(DEFAULT_SORT_FIELD), request.isReversed, request.show),
+                true);
     }
 
     public static boolean isMatchingCriteria(SettingsGroup group, FilterRequest request) {
         //Make this more advance
+        if(request == null || group == null)
+            return true;
+
+        //do first wave
+        if(!Str.isEmpty(request.show)) {
+            if(DebugUtil.isDebug())
+                Log.d(TAG, "Filtering Groups By Show=[" + request.show + "]");
+
+            switch (request.show) {
+                case "unique":
+                case "android":
+                    boolean isUnique = request.show.equals("unique");
+                    //Show only ones with invoked assignments, aka used
+                    List<SettingsContainer> allowedContainers = new ArrayList<>();
+                    for(SettingsContainer container : group.getContainers()) {
+                        List<SettingHolder> allowedHolders = new ArrayList<>();
+                        for(SettingHolder holder : container.getSettings()) {
+                            if(isUnique) {
+                                if(GroupStats.isSettingUnique(holder.getName()))
+                                    allowedHolders.add(holder);
+                            } else {
+                                if(GroupStats.isSettingAndroid(holder.getName()))
+                                    allowedHolders.add(holder);
+                            }
+                        }
+
+                        if(!allowedHolders.isEmpty()) {
+                            container.setSettings(allowedHolders);
+                            allowedContainers.add(container);
+                        }
+                    }
+
+                    if(allowedContainers.isEmpty())
+                        return false;
+                    else {
+                        group.setContainers(allowedContainers);
+                    }
+
+                    break;
+            }
+        }
+
+        if(request.isEmptyOrClearQuery())
+            return true;
+
         String qLow = request.query.toLowerCase();
         if(group.getGroupName().toLowerCase().contains(qLow))
             return true;
@@ -69,10 +101,8 @@ public class SettingsGroupRepository implements IXLuaRepo<SettingsGroup> {
         for(SettingsContainer container : group.getContainers()) {
             if(container.getContainerName().toLowerCase().contains(qLow))
                 return true;
-
             if(container.getDescription() != null && container.getDescription().toLowerCase().contains(qLow))
                 return true;
-
             for(SettingHolder setting : container.getSettings())
                 if(setting.getName().toLowerCase().contains(qLow))
                     return true;
@@ -83,7 +113,7 @@ public class SettingsGroupRepository implements IXLuaRepo<SettingsGroup> {
 
 
 
-    public static Comparator<SettingsGroup> getComparator(String sortBy, boolean isReverse) {
+    public static Comparator<SettingsGroup> getComparator(String sortBy, boolean isReverse, String show) {
         Comparator<SettingsGroup> comparator;
         switch (sortBy) {
             default:

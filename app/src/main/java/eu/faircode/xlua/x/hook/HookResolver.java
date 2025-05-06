@@ -336,7 +336,8 @@ public class HookResolver {
                         for(Member c : clazz.getDeclaredConstructors()) {
                             if(!alreadyAdded.contains(c)) {
                                 alreadyAdded.add(c);
-                                constructorDefList.add(HookDefinitionMember.fromConstructor(c, hook,
+                                constructorDefList.add(
+                                        HookDefinitionMember.fromConstructor(c, hook,
                                         HookResolverUtils.resolveClass(c.getDeclaringClass().getName(), loader)));
                             }
                         }

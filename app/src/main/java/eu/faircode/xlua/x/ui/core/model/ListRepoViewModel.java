@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.faircode.xlua.x.data.PrefManager;
+import eu.faircode.xlua.x.runtime.RuntimeUtils;
 import eu.faircode.xlua.x.ui.core.FilterRequest;
 import eu.faircode.xlua.x.ui.core.interfaces.IRepositoryContainer;
+import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.repos.IXLuaRepo;
 import kotlin.Pair;
 import kotlin.Triple;
@@ -17,7 +19,7 @@ public class ListRepoViewModel<TElement> extends ListPreferenceViewModel<TElemen
 
     protected IXLuaRepo<TElement> repository;
 
-    private static final String TAG = "XLua.ListRepoViewModel";
+    private static final String TAG = LibUtil.generateTag(ListRepoViewModel.class);
 
     public ListRepoViewModel(Application application, String tag) {
         super(application, tag);
@@ -29,13 +31,12 @@ public class ListRepoViewModel<TElement> extends ListPreferenceViewModel<TElemen
     }
 
     @Override
-    protected List<TElement> filterData(Triple<Pair<String, List<String>>, Pair<String, Boolean>, Long> params, Application application) {
-        if(!hasContext() || repository == null) {
-            Log.e(TAG, "Repo View Model Does not have Context or Repository!");
+    protected List<TElement> filterData(Triple<Triple<String, String, List<String>>, Pair<String, Boolean>, Long> params, Application application) {
+        if(!hasContext() || repository == null)
             return new ArrayList<>();
-        }
 
-        Pair<String, List<String>> filter = params.getFirst();
+        Triple<String, String, List<String>> filter = params.getFirst();
+        Log.d(TAG, "SHOW SHOW=" + filter.getSecond() + " Stack=" + RuntimeUtils.getStackTraceSafeString(new Exception()));
         Pair<String, Boolean> searchParams = params.getSecond();
         return repository.filterAndSort(
                 repository.get(application, getUserContext()),
@@ -44,7 +45,8 @@ public class ListRepoViewModel<TElement> extends ListPreferenceViewModel<TElemen
                     .setQuery(searchParams.getFirst())          //Query Item to Search For
                     .setIsReversed(searchParams.getSecond())    //Is Reversed Flags
                     .setOrder(filter.getFirst())                //Order Items by ...
-                    .setFilterTags(filter.getSecond()));        //List of the Tags for a more of a Filter, like Chips
+                    .setShow(filter.getSecond())
+                    .setFilterTags(filter.getThird()));        //List of the Tags for a more of a Filter, like Chips
     }
 
     @Override

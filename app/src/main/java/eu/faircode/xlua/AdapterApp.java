@@ -22,11 +22,13 @@ package eu.faircode.xlua;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -54,6 +56,7 @@ import java.util.concurrent.Executors;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.constraintlayout.widget.Group;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -67,15 +70,18 @@ import eu.faircode.xlua.ui.interfaces.ILoader;
 import eu.faircode.xlua.utilities.ViewUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.data.utils.TryRun;
 import eu.faircode.xlua.x.ui.activities.SettingsExActivity;
 import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.ui.core.UserClientAppContext;
+import eu.faircode.xlua.x.ui.dialogs.ConfirmDialog;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.call.AssignHooksCommand;
 import eu.faircode.xlua.x.xlua.commands.call.PutSettingExCommand;
 import eu.faircode.xlua.x.xlua.database.A_CODE;
 import eu.faircode.xlua.x.xlua.hook.AssignmentPacket;
 import eu.faircode.xlua.x.xlua.hook.AppXpPacket;
+import eu.faircode.xlua.x.xlua.hook.AssignmentUtils;
 import eu.faircode.xlua.x.xlua.hook.AssignmentsPacket;
 import eu.faircode.xlua.x.xlua.hook.IAssignListener;
 //import eu.faircode.xlua.GlideApp;
@@ -88,6 +94,7 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
     public enum enumShow {none, user, icon, all, hook, system }
 
     private ILoader fragmentLoader;
+    private boolean warn = false;
 
     private enumShow show = enumShow.icon;
     private String group = null;
@@ -109,22 +116,12 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
             IAssignListener {
 
         final View itemView;
-        final ImageView ivExpander;
-        final ImageView ivIcon;
-        final TextView tvLabel;
-        final TextView tvUid;
-        final TextView tvPackage;
-        final ImageView ivPersistent;
-        final ImageView ivSettings;
-        final TextView tvAndroid;
-        final AppCompatCheckBox cbAssigned;
-        final AppCompatCheckBox cbForceStop;
+        //ivProfile
+        final ImageView ivExpander, ivIcon, ivPersistent, ivSettings;
+        final TextView tvLabel,tvUid, tvPackage, tvAndroid;
+        final AppCompatCheckBox cbAssigned, cbForceStop;
         final RecyclerView rvGroup;
         final Group grpExpanded;
-
-        //final ImageView ivHooks, ivConfigs, ivSettingEx, ivProperties;
-        final ImageView ivProfile;
-
         final AdapterGroup adapter;
 
         ViewHolder(View itemView) {
@@ -147,7 +144,7 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
             //ivSettingEx = itemView.findViewById(R.id.ivSettingsExButton);
             //ivProperties = itemView.findViewById(R.id.ivPropertiesButton);
 
-            ivProfile = itemView.findViewById(R.id.ivGroupProfile);
+            //ivProfile = itemView.findViewById(R.id.ivGroupProfile);
 
             rvGroup = itemView.findViewById(R.id.rvGroup);
             rvGroup.setHasFixedSize(true);
@@ -158,6 +155,8 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
             rvGroup.setAdapter(adapter);
             rvGroup.addItemDecoration(GroupHelper.createGroupDivider(itemView.getContext()));
             grpExpanded = itemView.findViewById(R.id.grpExpanded);
+
+            //fragmentLoader.
         }
 
         private void wire() {
@@ -175,8 +174,9 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
             //ivSettingEx.setOnLongClickListener(this);
             //ivProperties.setOnClickListener(this);
             //ivProperties.setOnLongClickListener(this);
-            ivProfile.setOnClickListener(this);
-            ivProfile.setOnLongClickListener(this);
+
+            //ivProfile.setOnClickListener(this);
+            //ivProfile.setOnLongClickListener(this);
         }
 
         private void unWire() {
@@ -194,8 +194,9 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
             //ivSettingEx.setOnLongClickListener(null);
             //ivProperties.setOnClickListener(null);
             //ivProperties.setOnLongClickListener(null);
-            ivProfile.setOnClickListener(null);
-            ivProfile.setOnLongClickListener(null);
+
+            //ivProfile.setOnClickListener(null);
+            //ivProfile.setOnLongClickListener(null);
         }
 
         @SuppressLint("NonConstantResourceId")
@@ -299,16 +300,43 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
             }
         }
 
+        //private FragmentManager fragmentManager;
+
         @SuppressLint("NonConstantResourceId")
         @Override
         public void onCheckedChanged(final CompoundButton compoundButton, boolean checked) {
             try {
                 Log.i(TAG, "Check changed");
                 final AppXpPacket app = filtered.get(getAdapterPosition());
+                final Context context = compoundButton.getContext();
                 switch (compoundButton.getId()) {
                     case R.id.cbAssigned:
-                        updateAssignments(compoundButton.getContext(), app, group, checked);
-                        notifyItemChanged(getAdapterPosition());
+                        if(checked && (warn)) {
+                            ConfirmDialog.create()
+                                    .setContext(context)
+                                    .setMessage(context.getString(R.string.warning_bulk_check))
+                                    .setDelay(10)
+                                    .onConfirm(() -> {
+                                        try {
+                                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                                            prefs.edit().putBoolean("bulkWarn", false).apply();
+                                            warn = false;
+                                        }catch (Exception ignored) { }
+                                        TryRun.onMain(() -> {
+                                            updateAssignments(context, app, group, checked);
+                                            notifyItemChanged(getAdapterPosition());
+                                        });
+                                    })
+                                    .onCancel(() -> {
+                                        TryRun.onMain(() -> {
+                                            notifyItemChanged(getAdapterPosition());
+                                        });
+                                    })
+                                    .show(fragmentLoader.getManager(), context.getString(R.string.warning_bulk_check_title));
+                        } else {
+                            updateAssignments(context, app, group, checked);
+                            notifyItemChanged(getAdapterPosition());
+                        }
                         break;
                     case R.id.cbForceStop:
                         app.forceStop = checked;
@@ -365,7 +393,11 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
         }
     }
 
-    AdapterApp(Context context, ILoader loader) { this(context); this.fragmentLoader = loader; }
+    AdapterApp(Context context, ILoader loader, boolean warn) {
+        this(context);
+        this.fragmentLoader = loader;
+        this.warn = warn;
+    }
     AdapterApp(Context context) {
         TypedValue typedValue = new TypedValue();
         context.getTheme().resolveAttribute(android.R.attr.listPreferredItemHeight, typedValue, true);
@@ -373,6 +405,12 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
         iconSize = Math.round(height * context.getResources().getDisplayMetrics().density + 0.5f);
         setHasStableIds(true);
     }
+
+    //void setFragmentManager(FragmentManager manager) {
+    //    if(manager != null) {
+    //        this.
+    //    }
+    //}
 
     void set(List<String> collection, List<XHook> hooks, List<AppXpPacket> apps) {
         this.dataChanged = (this.hooks.size() != hooks.size());
@@ -401,6 +439,78 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
 
         final Collator collator = Collator.getInstance(Locale.getDefault());
         collator.setStrength(Collator.SECONDARY); // Case insensitive, process accents etc
+
+        for(AppXpPacket app : apps) {
+            List<AssignmentPacket> allowed = new ArrayList<>();
+            for(AssignmentPacket ass : new ArrayList<>(app.assignments)) {
+                String idOne = ass.hookId;
+                String idTwo = ass.hook;
+                if(Str.isEmpty(idOne) && Str.isEmpty(idTwo)) {
+                    if(ass.hookObj == null) {
+                        continue;
+                    } else {
+                        allowed.add(ass);
+                    }
+                }
+
+                boolean isBad = false;
+
+                if(!Str.isEmpty(idOne) && idOne.length() > 6 && ListUtil.isValid(collection)) {
+                    if(AssignmentUtils.BAD_ASSIGNMENTS.contains(idOne)) {
+                        continue;
+                    } else {
+                        String lowered = Str.toLowerCase(idOne);
+                        boolean found = false;
+                        for (String c : collection) {
+                            if(lowered.startsWith(c.toLowerCase() + ".")) {
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if(!found) {
+                            isBad = true;
+                        }
+                    }
+                }
+
+                if(!isBad) {
+                    if(!Str.isEmpty(idTwo) && idTwo.length() > 6 && ListUtil.isValid(collection)) {
+                        if(AssignmentUtils.BAD_ASSIGNMENTS.contains(idTwo)) {
+                            continue;
+                        } else {
+                            String lowered = Str.toLowerCase(idTwo);
+                            boolean found = false;
+                            for (String c : collection) {
+                                if(lowered.startsWith(c.toLowerCase() + ".")) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+
+                            if(!found) {
+                                isBad = true;
+                            }
+                        }
+                    }
+                }
+
+                if(!isBad) {
+                    allowed.add(ass);
+                    if(DebugUtil.isDebug())
+                        Log.d(TAG, Str.fm("App [%s] Assignment ID1=[%s] ID2=[%s] ID3=[%s] ToString=%s",
+                                app.packageName,
+                                idOne,
+                                idTwo,
+                                Str.toObjectId(ass.hookObj),
+                                Str.toStringOrNull(ass.hookObj)));
+                }
+            }
+
+            app.assignments.clear();
+            if(!allowed.isEmpty())
+                app.assignments.addAll(allowed);
+        }
 
         Collections.sort(apps, (app1, app2) -> collator.compare(app1.label, app2.label));
 
@@ -730,8 +840,9 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
         holder.tvAndroid.setVisibility("android".equals(app.packageName) ? View.VISIBLE : View.GONE);
         holder.cbForceStop.setChecked(app.forceStop);
         holder.cbForceStop.setEnabled(!app.persistent);
-        holder.adapter.set(app, selectedHooks, holder.itemView.getContext());
-        holder.updateExpand();
-        holder.wire();
+        holder.adapter.set(app, selectedHooks, holder.itemView.getContext(), () -> {
+            holder.updateExpand();
+            holder.wire();
+        });
     }
 }

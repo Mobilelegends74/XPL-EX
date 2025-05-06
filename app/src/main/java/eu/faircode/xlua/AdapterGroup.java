@@ -23,6 +23,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.os.Trace;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -56,6 +57,7 @@ import eu.faircode.xlua.ui.dialogs.HookWarningDialog;
 import eu.faircode.xlua.ui.interfaces.ILoader;
 import eu.faircode.xlua.utilities.SettingUtil;
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.data.utils.TryRun;
 import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.ui.dialogs.HookInfoDialog;
 import eu.faircode.xlua.x.xlua.LibUtil;
@@ -67,6 +69,10 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
     private AppXpPacket app;
     private List<LuaHooksGroup> groups = new ArrayList<>();
     private ILoader fragmentLoader;
+
+    public static interface IFinished {
+        void onFinish();
+    }
 
     @Override
     public String getDividerID(int position) { return groups.get(position).groupId; }
@@ -169,7 +175,7 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
                     cbAssigned.setChecked(!cbAssigned.isChecked());//Invoke the onCheck
                     break;
 
-                    //if they click on the Name then pop up
+                //if they click on the Name then pop up
             }
         }
 
@@ -194,76 +200,77 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
         }
     }
 
-    AdapterGroup() {
-        setHasStableIds(true);
-    }
+    AdapterGroup() { setHasStableIds(true); }
     AdapterGroup(ILoader loader) { this(); this.fragmentLoader = loader; }
 
     @SuppressLint("NotifyDataSetChanged")
-    void set(AppXpPacket app, List<XHook> hooks, Context context) {
+    void set(AppXpPacket app, List<XHook> hooks, Context context, IFinished onFinished) {
         this.app = app;
+        TryRun.silent(() -> {
+            Map<String, LuaHooksGroup> map = new HashMap<>();
+            for (XHook hook : hooks) {
+                if(!Str.isEmpty(hook.group) &&
+                        !hook.group.toLowerCase().startsWith("intercept.") &&
+                        (hook.enabled == null || Boolean.TRUE.equals(hook.enabled))) {
+                    LuaHooksGroup group = map.get(hook.group);
+                    if(group == null) {
+                        group = new LuaHooksGroup();
+                        map.put(hook.group, group);
 
-        Map<String, LuaHooksGroup> map = new HashMap<>();
-        for (XHook hook : hooks) {
-            LuaHooksGroup group = map.get(hook.group);
-            if(group == null) {
-                group = new LuaHooksGroup();
-                map.put(hook.group, group);
+                        Resources resources = context.getResources();
+                        String name = hook.group.toLowerCase().replaceAll("[^a-z]", "_");
+                        group.id = resources.getIdentifier("group_" + name, "string", context.getPackageName());
+                        group.name = hook.group;
+                        group.title = (group.id > 0 ? resources.getString(group.id) : hook.group);
+                        group.groupId = GroupHelper.getGroupId(group.name);
+                        group.hasWarning = HookWarnings.hasWarning(context, group.name);
+                    }
 
-                Resources resources = context.getResources();
-                String name = hook.group.toLowerCase().replaceAll("[^a-z]", "_");
-                group.id = resources.getIdentifier("group_" + name, "string", context.getPackageName());
-                group.name = hook.group;
-                group.title = (group.id > 0 ? resources.getString(group.id) : hook.group);
-                group.groupId = GroupHelper.getGroupId(group.name);
-                group.hasWarning = HookWarnings.hasWarning(context, group.name);
-            }
-
-            if(DebugUtil.isDebug())
-                Log.d(LibUtil.generateTag(AdapterGroup.class), "Putting Hook ID [" + hook.getObjectId() + "] Group [" + hook.group + "] Group 2 =" + group + " app=" + app.packageName + " name=" + group.name);
-
-            group.hooks.add(hook);
-        }
-
-        for (String groupId : map.keySet()) {
-            for (AssignmentPacket assignment : app.assignments)
-                if (assignment.hookObj.group.equals(groupId)) {
-                    LuaHooksGroup group = map.get(groupId);
-                    if(group == null)
-                        continue;
-
-                    String id = assignment.getHookId();
-                    if(DebugUtil.isDebug())
-                        Log.d(LibUtil.generateTag(AdapterGroup.class), "Putting ID [" + id + "] For Group [" + groupId + "] app=" + app.packageName + " name=" + group.name);
-
-                    if (assignment.exception != null)
-                        group.exception = true;
-                    if (assignment.installed >= 0)
-                        group.installed++;
-                    if(assignment.hookObj.optional)
-                        group.optional++;
-                    if (assignment.restricted)
-                        group.used = Math.max(group.used, assignment.used);
-
-                    group.assigned++;
+                    group.hooks.add(hook);
                 }
-        }
-
-        this.groups = new ArrayList<>(map.values());
-        if(DebugUtil.isDebug()) {
-            for(LuaHooksGroup g : this.groups) {
-                String name = g.groupId;
-                Log.w(LibUtil.generateTag(AdapterGroup.class), "Found Group [" + name + "] app=" + app.packageName + " Hooks Count=" + g.hooks.size() + " Assignment Count=" + g.assigned);
-                for(XHook h : g.hooks)
-                    Log.d(LibUtil.generateTag(AdapterGroup.class), "Hook: " + h.getObjectId() + " Group=" + g.groupId + " Name=" + g.name + " app=" + app.packageName);
             }
-        }
 
-        final Collator collator = Collator.getInstance(Locale.getDefault());
-        collator.setStrength(Collator.SECONDARY); // Case insensitive, process accents etc
-        Collections.sort(this.groups, (group1, group2) -> collator.compare(group1.groupId, group2.groupId));
+            for (String groupId : map.keySet()) {
+                for (AssignmentPacket assignment : app.assignments) {
+                    if(assignment.hookObj != null && !Str.isEmpty(assignment.getHookId())) {
+                        String groupName = assignment.hookObj.group;
+                        if(!Str.isEmpty(groupName) &&
+                                !groupName.toLowerCase().startsWith("intercept.") &&
+                                (assignment.hookObj.enabled == null || Boolean.TRUE.equals(assignment.hookObj.enabled))) {
+                            if (assignment.hookObj.group.equals(groupId)) {
+                                LuaHooksGroup group = map.get(groupId);
+                                if(group == null)
+                                    continue;
 
-        notifyDataSetChanged();//Invoke to Update the UI
+                                if (assignment.exception != null)
+                                    group.exception = true;
+                                if (assignment.installed >= 0)
+                                    group.installed++;
+                                if(assignment.hookObj.optional)
+                                    group.optional++;
+                                if (assignment.restricted)
+                                    group.used = Math.max(group.used, assignment.used);
+
+                                group.assigned++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            this.groups = new ArrayList<>(map.values());
+            final Collator collator = Collator.getInstance(Locale.getDefault());
+            collator.setStrength(Collator.SECONDARY); // Case insensitive, process accents etc
+            Collections.sort(this.groups, (group1, group2) -> collator.compare(group1.groupId, group2.groupId));
+
+            TryRun.onMain(() -> {
+                notifyDataSetChanged();//Invoke to Update the UI
+                //Invoke parent
+                if(onFinished != null) {
+                    onFinished.onFinish();
+                }
+            });
+        });
     }
 
     @Override

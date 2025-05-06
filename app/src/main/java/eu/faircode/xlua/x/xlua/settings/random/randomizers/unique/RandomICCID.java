@@ -13,8 +13,10 @@ import eu.faircode.xlua.x.data.utils.random.RandomGenerator;
 import eu.faircode.xlua.x.xlua.settings.random.RandomElement;
 import eu.faircode.xlua.x.xlua.settings.random.RandomizerSessionContext;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomLocCountryIso;
 
 public class RandomICCID extends RandomElement {
+    //Support EUICCID , E SIMs
     /**
      * ICCID Format: MM CC III NNNNNNNNNND
      * - MM: Major Industry Identifier (89 for telecommunications).
@@ -32,19 +34,21 @@ public class RandomICCID extends RandomElement {
      */
 
     public RandomICCID() {
-        super("CELL ICC ID (MM + CC + II + NNN...)");
+        super("CELL ICC ID (MM::CC::II::NNN)");
         putIndexSettings(RandomizersCache.SETTING_UNIQUE_ICC_ID, 1, 2);
-        putRequirementsAsIndex(RandomizersCache.SETTING_CELL_SIM_COUNTRY_CODE, RandomizersCache.SETTING_CELL_OPERATOR_MNC);
+        putRequirementsAsIndex(
+                RandomizersCache.SETTING_SIM_COUNTRY_ISO,
+                RandomizersCache.SETTING_CELL_OPERATOR_MNC);
     }
 
-    //return RandomStringGenerator.generateRandomNumberString(18) + RandomStringGenerator.generateRandomLetterString(1, "ABCDEF");
     @Override
     public void randomize(RandomizerSessionContext context) {
         String name = context.stack.pop();
         if(!context.wasRandomized(name)) {
             List<String> req = context.resolveRequirements(getRequirements(name));
-            String countryCode = context.getValue(req.get(0));
-            String mnc = context.getValue( req.get(1));
+            String countryIso = context.getValue(req.get(0));
+            String countryCode = RandomLocCountryIso.getCountryCallingCode(countryIso);
+            String mnc = context.getValue(req.get(1));
             context.pushSpecial(name, generateIccid("89", countryCode, mnc));
         }
     }
@@ -106,5 +110,4 @@ public class RandomICCID extends RandomElement {
         // Calculate the check digit
         return (10 - (sum % 10)) % 10;
     }
-
 }

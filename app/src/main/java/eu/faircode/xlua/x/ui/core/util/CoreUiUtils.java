@@ -72,8 +72,13 @@ public class CoreUiUtils {
     public static final List<String> SPECIAL_TIME_APP_SETTINGS = Arrays.asList(
             PackageInfoInterceptor.INSTALL_OFFSET_SETTING,
             PackageInfoInterceptor.UPDATE_OFFSET_SETTING,
+
             PackageInfoInterceptor.INSTALL_CURRENT_OFFSET_SETTING,
-            PackageInfoInterceptor.UPDATE_CURRENT_OFFSET_SETTING);
+            PackageInfoInterceptor.UPDATE_CURRENT_OFFSET_SETTING,
+
+            RandomizersCache.SETTING_FILE_MODIFY_OFFSET,
+            RandomizersCache.SETTING_FILE_ACCESS_OFFSET,
+            RandomizersCache.SETTING_FILE_CREATION_OFFSET);
 
     public static final List<String> APP_TIME_KINDS = Arrays.asList(
             PackageInfoInterceptor.NOW_ALWAYS,
@@ -430,6 +435,7 @@ public class CoreUiUtils {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (controller != null) {
+                    //controller.updatedSortedList(FilterRequest.create(query).setFilterTags(controller.getShowValue()));
                     controller.updatedSortedList(FilterRequest.create(query));
                     searchView.clearFocus();
                 }
@@ -439,8 +445,10 @@ public class CoreUiUtils {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (controller != null)
+                if (controller != null) {
+                    //controller.updatedSortedList(FilterRequest.create(newText).setFilterTags(controller.getShowValue()));
                     controller.updatedSortedList(FilterRequest.create(newText));
+                }
 
                 return true;
             }

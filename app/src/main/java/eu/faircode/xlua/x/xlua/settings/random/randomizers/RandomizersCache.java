@@ -8,9 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import eu.faircode.xlua.DebugUtil;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomCellDisplayName;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomCellDisplayNameSource;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomDataRoaming;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomOperatorCarrierId;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomOperatorName;
 import eu.faircode.xlua.x.ui.core.util.CoreUiUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
-import eu.faircode.xlua.x.xlua.settings.SettingHolder;
 import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
 import eu.faircode.xlua.x.xlua.settings.random.RandomGenericBool;
 import eu.faircode.xlua.x.xlua.settings.random.RandomGenericBoolInt;
@@ -50,7 +54,12 @@ import eu.faircode.xlua.x.xlua.settings.random.randomizers.battery.RandomChargin
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomMCC;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomMNC;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomMSIN;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomOperatorTint;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomPhoneType;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomSIMCountyCode;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomSimCount;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomSimType;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomSubscriptionId;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.generic.RandomDateEpocSeconds;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.generic.RandomDateISOThree;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.generic.RandomDateOne;
@@ -100,10 +109,13 @@ import eu.faircode.xlua.x.xlua.settings.random.randomizers.network.RandomNetHost
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.network.RandomNetNetmask;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.network.RandomNetParentControl;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.network.RandomNetRoutes;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomLocCountryIso;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.settings.RandomBootCount;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomAndroidId;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomBSSID;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomBaiduId;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomBluetoothAddress;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomBluetoothOrDeviceName;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomDRMID;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomEmail;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomGSFID;
@@ -112,16 +124,18 @@ import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomIMEI;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomMEID;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomMac;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomNetSSID;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.props_serials.RandomOnePlusSerial;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomPhone;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomSIMSerial;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomSerialNo;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomSubscriptionId;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomSubscriberId;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomUUID;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomVbmetaDigest;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.RandomVoicemailId;
 
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionCountryName;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionCountryIso2;
+//import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionCountryIso2;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionCountryCode;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionLanguageName;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionLanguageIso;
@@ -129,6 +143,7 @@ import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionPa
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionTimezoneOffset;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionTimezoneId;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.region.RandomRegionParent.RandomRegionTimezoneDisplayName;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.unique.props_serials.RandomSerialGeneric;
 
 
 public class RandomizersCache {
@@ -172,8 +187,8 @@ public class RandomizersCache {
     public static final String SETTING_ZONE_COUNTRY_NAME = "zone.country.name";
     public static final Class<?> SETTING_ZONE_COUNTRY_NAME_TYPE = RandomRegionCountryName.class;
 
-    public static final String SETTING_ZONE_COUNTRY_ISO2 = "zone.country.iso2";
-    public static final Class<?> SETTING_ZONE_COUNTRY_ISO2_TYPE = RandomRegionCountryIso2.class;
+    //public static final String SETTING_ZONE_COUNTRY_ISO2 = "zone.country.iso2";
+    //public static final Class<?> SETTING_ZONE_COUNTRY_ISO2_TYPE = RandomRegionCountryIso2.class;
 
     public static final String SETTING_ZONE_COUNTRY_CODE = "zone.country.code";
     public static final Class<?> SETTING_ZONE_COUNTRY_CODE_TYPE = RandomRegionCountryCode.class;
@@ -199,13 +214,20 @@ public class RandomizersCache {
     public static final Class<?> SETTING_ZONE_TIMEZONE_DISPLAY_NAME_TYPE = RandomRegionTimezoneDisplayName.class;
 
 
+    //network.allowed.list
+    public static final String SETTING_DEVICE_NAME = "device.unique.name";
+    public static final String SETTING_BLUETOOTH_NAME = "device.unique.bluetooth.name";
+    public static final Class<?> SETTING_BLUETOOTH_OR_DEVICE_NAME_TYPE = RandomBluetoothOrDeviceName.class;
+
+    public static final String SETTING_BAIDU_DEVICE_ID = "settings.unique.baidu.device.id";
+    public static final Class<?> SETTING_BAIDU_DEVICE_ID_TYPE = RandomBaiduId.class;
 
 
     public static final String SETTING_XI_MI_HEALTH_ID = "settings.xiaomi.mi.health.id";
     public static final String SETTING_XI_MI_GC_BOOSTER_UUID = "settings.xiaomi.gcbooster.uuid";
     public static final String SETTING_XI_MI_KEY_MQS_UUID = "settings.xiaomi.key.mqs.uuid";
     public static final String SETTING_XI_MI_MDM_UUID = "settings.xiaomi.mdm.uuid";
-    public static final String SETTING_XI_MI_OP_SEC_UUID = "settings.xiaomi.op.security.uuid";
+    public static final String SETTING_OP_SEC_UUID = "settings.one.plus.security.uuid";
     public static final String SETTING_XI_MI_EXTM_UUID = "settings.xiaomi.extm.uuid";
 
     /*
@@ -509,8 +531,25 @@ public class RandomizersCache {
     public static final Class<?> SETTING_UNIQUE_MAC_TYPE = RandomMac.class;
 
 
-    public static final String SETTING_UNIQUE_SUB_ID = "unique.gsm.subscription.id";
-    public static final Class<?> SETTING_UNIQUE_SUB_ID_TYPE = RandomSubscriptionId.class;
+    //public static final String SETTING_UNIQUE_SUB_ID = "unique.gsm.subscription.id";
+
+
+    public static final String INSTALL_CURRENT_OFFSET_SETTING = "apps.current.install.time.offset";
+    public static final String UPDATE_CURRENT_OFFSET_SETTING = "apps.current.update.time.offset";
+    public static final String INSTALL_OFFSET_SETTING = "apps.install.time.offset";
+    public static final String UPDATE_OFFSET_SETTING = "apps.update.time.offset";
+
+    public static final String SETTING_FILE_MODIFY_OFFSET = "files.time.modify.offset";
+    public static final String SETTING_FILE_ACCESS_OFFSET = "files.time.access.offset";
+    public static final String SETTING_FILE_CREATION_OFFSET = "files.time.created.offset";
+
+    public static final String SETTING_FILES_OFFSET_SUBTRACT = "files.offset.subtract.bool";
+    public static final String SETTING_FILE_SYNC_TIME = "files.time.sync.bool";
+
+
+
+    public static final String SETTING_APP_SYNC_TIME = "apps.time.sync.bool";
+    public static final String SETTING_APP_OFFSET_SUBTRACT = "apps.offset.subtract.bool";
 
 
     public static final Class<?> SETTING_GENERIC_BOOL_TYPE = RandomGenericBool.class;
@@ -529,20 +568,23 @@ public class RandomizersCache {
 
     public static final String SETTING_BATTERY_IS_PLUGGED = "battery.is.plugged.in.bool";
 
+    public static final String SETTING_UNIQUE_VB_META_DIGEST = "props.unique.vbmeta.digest";
+    public static final Class<?> SETTING_UNIQUE_VB_META_DIGEST_TYPE = RandomVbmetaDigest.class;
 
-    public static final String SETTING_CELL_OPERATOR_MCC = "cell.operator.mcc";
-    public static final Class<?> SETTING_CELL_OPERATOR_MCC_TYPE = RandomMCC.class;
+    public static final String SETTING_PROP_ONE_PLUS_UNIQUE_SERIAL = "props.unique.one.plus.serialno";
+    public static final Class<?> SETTING_PROP_ONE_PLUS_UNIQUE_SERIAL_TYPE = RandomOnePlusSerial.class;
 
-    public static final String SETTING_CELL_OPERATOR_MNC = "cell.operator.mnc";
-    public static final Class<?> SETTING_CELL_OPERATOR_MNC_TYPE = RandomMNC.class;
+    //"props.unique.ril.serialnumber" "props.unique.ap_serial" "props.unique.em.did" "props.unique.lite.uid", "props.unique.persist.radio.serialno"
 
-    public static final String SETTING_CELL_MSIN = "unique.gsm.operator.msin";
-    public static final Class<?> SETTING_CELL_MSIN_TYPE = RandomMSIN.class;
+    //public static final String SETTING_PROP_ONE_PLUS_UNIQUE_SERIAL = "props.unique.ril.serialnumber";
+    //public static final String SETTING_PROP_ONE_PLUS_UNIQUE_SERIAL = "props.unique.ap_serial";
+    //public static final String SETTING_PROP_ONE_PLUS_UNIQUE_SERIAL = "props.unique.em.did";
+    public static final Class<?> SETTING_PROP_UNIQUE_NO_GENERIC_TYPE = RandomSerialGeneric.class;
 
     public static final String SETTING_UNIQUE_GSF_ID = "unique.gsf.id";
     public static final Class<?> SETTING_UNIQUE_GSF_ID_TYPE = RandomGSFID.class;
 
-    public static final String SETTING_EMAIL = "value.email";
+    public static final String SETTING_EMAIL = "unique.account.email";
     public static final Class<?> SETTING_EMAIL_TYPE = RandomEmail.class;
 
 
@@ -565,6 +607,7 @@ public class RandomizersCache {
     public static final String SETTING_UNIQUE_BOOT_ID = "unique.boot.id";
     public static final String SETTING_UNIQUE_FACEBOOK_ID = "unique.facebook.advertising.id";
     public static final String SETTING_UNIQUE_GOOGLE_ID = "unique.google.advertising.id";
+    public static final String SETTING_UNIQUE_PAY_SESSION_ID = "settings.unique.pay.session.id";
 
     public static final String SETTING_UNIQUE_GOOGLE_APP_SET_ID = "unique.google.app.set.id";
 
@@ -572,18 +615,12 @@ public class RandomizersCache {
 
     public static final Class<?> SETTING_UNIQUE_UUID_TYPE = RandomUUID.class;
 
+    public static final String SETTING_UNIQUE_ICC_ID = "cell.unique.sim.icc.id";
+    public static final String SETTING_UNIQUE_MEID = "cell.unique.meid";
+    public static final String SETTING_UNIQUE_IMEI = "cell.unique.imei";
 
-    //unique.gsm.phone.number.[1,2]
-    public static final String SETTING_UNIQUE_PHONE_NO = "unique.gsm.phone.number";
-    public static final Class<?> SETTING_UNIQUE_PHONE_NO_TYPE = RandomPhone.class;
-
-    public static final String SETTING_UNIQUE_ICC_ID = "unique.gsm.icc.id";
     public static final Class<?> SETTING_UNIQUE_ICC_ID_TYPE = RandomICCID.class;
-
-    public static final String SETTING_UNIQUE_MEID = "unique.gsm.meid";
     public static final Class<?> SETTING_UNIQUE_MEID_TYPE = RandomMEID.class;
-
-    public static final String SETTING_UNIQUE_IMEI = "unique.gsm.imei";
     public static final Class<?> SETTING_UNIQUE_IMEI_TYPE = RandomIMEI.class;
 
     public static final String SETTING_UNIQUE_ANDROID_ID = "unique.android.id";
@@ -592,13 +629,86 @@ public class RandomizersCache {
     public static final String SETTING_UNIQUE_SIM_SERIAL = "unique.gsm.sim.serial";
     public static final Class<?> SETTING_UNIQUE_SIM_SERIAL_TYPE = RandomSIMSerial.class;
 
+
+
+
+    public static final String SETTING_CELL_SUBSCRIBER_ID = "cell.unique.subscriber.id";
+    public static final Class<?> SETTING_UNIQUE_SUB_ID_TYPE = RandomSubscriberId.class;
+
+    //cell.phone.sim.card.count
+    public static final String SETTING_CELL_SIM_COUNT = "cell.phone.sim.card.count";
+    public static final Class<?> SETTING_CELL_SIM_COUNT_TYPE = RandomSimCount.class;
+
+    public static final String SETTING_CELL_PHONE_NUMBER = "cell.unique.phone.number";
+    public static final Class<?> SETTING_CELL_UNIQUE_PHONE_TYPE = RandomPhone.class;
+    public static final String SETTING_CELL_OPERATOR_NAME = "cell.operator.name";
+    public static final Class<?> SETTING_CELL_CARRIER_NAME_TYPE = RandomOperatorName.class;
+    public static final String SETTING_CELL_DISPLAY_NAME = "cell.display.name";
+    public static final Class<?> SETTING_CELL_DISPLAY_NAME_TYPE = RandomCellDisplayName.class;
+    public static final String SETTING_CELL_DISPLAY_NAME_SOURCE = "cell.display.name.source";
+    public static final Class<?> SETTING_CELL_DISPLAY_NAME_SOURCE_TYPE = RandomCellDisplayNameSource.class;
+
+    public static final String SETTING_OPERATOR_ICON_TINT = "cell.operator.icon.tint";                      //"telephony.db" => 'siminfo' [color] example (-6728704 / FF99CC00) or
+    public static final Class<?> SETTING_OPERATOR_ICON_TINT_TYPE = RandomOperatorTint.class;
+
+    public static final String SETTING_SIM_KIND = "cell.sim.type";
+
+    public static final String SETTING_SIM_SUBSCRIPTION_ID = "cell.sim.subscription.id";
+    public static final Class<?> SETTING_SIM_SUB_TYPE = RandomSubscriptionId.class;
+
+    public static final String SETTING_PHONE_KIND = "cell.phone.type";
+
+    public static final String SETTING_SIM_COUNTRY_ISO = "cell.sim.country.iso";                      //or zone.country.iso2 / cell.zone.provioder ? //cell.sim.country.iso
+    public static final String SETTING_CELL_OPERATOR_E_SIM = "cell.sim.is.embedded";//cell.sim.is.embedded
+
+
+    public static final Class<?> SETTING_PHONE_TYPE = RandomPhoneType.class;
+
+    public static final Class<?> SETTING_SIM_KIND_TYPE = RandomSimType.class;
+
+    public static final Class<?> SETTING_PROVIDER_COUNTRY_ISO_TYPE = RandomLocCountryIso.class;
+
+    //mIsOpportunistic
+
+    //cell.data.is.opportunistic
+    public static final String SETTING_CELL_DATA_IS_OPPORTUNISTIC = "cell.data.is.opportunistic";
+
+
+    public static final String SETTING_CELL_DATA_ROAMING = "cell.data.roaming.enabled.flag";
+
+    public static final Class<?> SETTING_CELL_DATA_ROAMING_TYPE = RandomDataRoaming.class;
+
+
+
     public static final String SETTING_CELL_SIM_COUNTRY_CODE = "cell.sim.country.numeric.code";
     public static final Class<?> SETTING_CELL_SIM_COUNTRY_CODE_TYPE = RandomSIMCountyCode.class;
+
+
+    public static final String SETTING_CELL_OPERATOR_ID = "cell.operator.id";                               //"carrierIdentification.db" => carrier_id [carrier id] Example (1839)
+    public static final Class<?> SETTING_CELL_OPERATOR_ID_TYPE = RandomOperatorCarrierId.class;
+
+
+
+    public static final String SETTING_CELL_OPERATOR_MCC = "cell.operator.mcc";
+    public static final Class<?> SETTING_CELL_OPERATOR_MCC_TYPE = RandomMCC.class;
+
+    public static final String SETTING_CELL_OPERATOR_MNC = "cell.operator.mnc";
+    public static final Class<?> SETTING_CELL_OPERATOR_MNC_TYPE = RandomMNC.class;
+
+    public static final String SETTING_CELL_MSIN = "cell.unique.msin";
+    public static final Class<?> SETTING_CELL_MSIN_TYPE = RandomMSIN.class;
+
+
+
+
+
+
+
 
     public static final String SETTING_UNIQUE_DRM_ID = "unique.drm.id";
     public static final Class<?> SETTING_UNIQUE_DRM_ID_TYPE = RandomDRMID.class;
 
-    public static final String SETTING_UNIQUE_VOICEMAIL_ID = "unique.gsm.voicemail.id";
+    public static final String SETTING_UNIQUE_VOICEMAIL_ID = "cell.voice.mail.alpha.tag";
     public static final Class<?> SETTING_UNIQUE_VOICEMAIL_ID_TYPE = RandomVoicemailId.class;
 
 

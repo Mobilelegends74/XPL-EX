@@ -199,6 +199,24 @@ public class SettingPacket extends PacketBase implements IDatabaseEntry, IBundle
         return this;
     }
 
+
+    public boolean consume(SettingPacket packet) {
+        boolean was = false;
+        if(packet != null) {
+            if(Str.isEmpty(this.value) && !Str.isEmpty(packet.value)) {
+                this.value = packet.value;
+                was = true;
+            }
+
+            if(Str.isEmpty(this.description) && !Str.isEmpty(packet.description)) {
+                this.description = packet.description;
+                was = true;
+            }
+        }
+
+        return was;
+    }
+
     @NonNull
     @Override
     public String toString() {

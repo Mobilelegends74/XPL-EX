@@ -23,9 +23,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Process;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,6 +72,7 @@ import eu.faircode.xlua.x.xlua.commands.call.GetGroupsCommand;
 import eu.faircode.xlua.x.xlua.commands.call.GetSettingExCommand;
 import eu.faircode.xlua.x.xlua.commands.query.GetAppsCommand;
 import eu.faircode.xlua.x.xlua.commands.query.GetHooksCommand;
+import eu.faircode.xlua.x.xlua.hook.AppProviderUtils;
 import eu.faircode.xlua.x.xlua.hook.AppXpPacket;
 
 
@@ -126,9 +129,17 @@ public class FragmentMain extends Fragment implements ILoader {
                 return true;
             }
         };
+
+
+        boolean warn = false;
+        try {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            warn = prefs.getBoolean("bulkWarn", true);
+        }catch (Exception ignored) { }
+
         llm.setAutoMeasureEnabled(true);
         rvApplication.setLayoutManager(llm);
-        rvAdapter = new AdapterApp(getActivity(), this);
+        rvAdapter = new AdapterApp(getActivity(), this, warn);
         rvApplication.setAdapter(rvAdapter);
 
         spAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item);
@@ -238,11 +249,13 @@ public class FragmentMain extends Fragment implements ILoader {
                 show = data.show;
                 rvAdapter.setShow(data.show);
 
-                ListUtil.filterCondition(data.hooks,
-                        (o) -> !Str.isEmpty(o.group)
-                                && !o.group.toLowerCase().startsWith("intercept."));
+                ListUtil.filterCondition(data.hooks, (o) ->
+                        !Str.isEmpty(o.group) &&
+                                !o.group.toLowerCase().startsWith("intercept.") &&
+                                (o.enabled == null || Boolean.TRUE.equals(o.enabled)));
 
                 rvAdapter.set(data.collection, data.hooks, data.apps);
+
 
                 swipeRefresh.setRefreshing(false);
                 pbApplication.setVisibility(View.GONE);
@@ -254,6 +267,19 @@ public class FragmentMain extends Fragment implements ILoader {
                 String group = (selected == null ? null : selected.name);
                 tvRestrict.setVisibility(group == null ? View.VISIBLE : View.GONE);
                 btnRestrict.setVisibility(group == null ? View.INVISIBLE : View.VISIBLE);
+
+                /*rvAdapter.setEx(getContext(), data.collection, data.hooks, data.apps, () -> {
+                    swipeRefresh.setRefreshing(false);
+                    pbApplication.setVisibility(View.GONE);
+                    grpApplication.setVisibility(View.VISIBLE);
+
+                    //This will determine if its all or a actual name
+                    //If a actual group is selected then show the restrict button
+                    XUiGroup selected = (XUiGroup) spGroup.getSelectedItem();
+                    String group = (selected == null ? null : selected.name);
+                    tvRestrict.setVisibility(group == null ? View.VISIBLE : View.GONE);
+                    btnRestrict.setVisibility(group == null ? View.INVISIBLE : View.VISIBLE);
+                });*/
             } else {
                 Log.e(TAG, Log.getStackTraceString(data.exception));
                 Snackbar.make(Objects.requireNonNull(getView()), data.exception.toString(), Snackbar.LENGTH_LONG).show();
@@ -316,7 +342,6 @@ public class FragmentMain extends Fragment implements ILoader {
 
                 // Get collection
                 data.collection.addAll(collections);
-
                 if(DebugUtil.isDebug())
                     Log.d(TAG, "Getting Groups...");
 

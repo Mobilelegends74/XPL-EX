@@ -62,6 +62,10 @@ public class XHook extends XHookBase implements IDiffFace {
 
     public boolean isGroup(String group) { return this.group != null && this.group.equalsIgnoreCase(group);  }
 
+    public String getName() { return name; }
+    public String getGroup() { return group; }
+    public String getAuthor() { return author; }
+
     public XHook() { }
     public XHook(XHook from) { XHookIO.copy(from, this); }
     public XHook(Parcel p) { XHookIO.fromParcel(this, p); }

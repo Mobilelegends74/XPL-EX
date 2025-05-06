@@ -72,9 +72,28 @@
   { "name": "xplex.force.settings.list", "description": "When Certain Fields like (Build.SERIAL) return (unknown) or when Functions such as (IMEI) Related ones that Return (null) because you are Running a New Version of Android that Blocks (IMEI) from Apps, then XPL-EX will use that Value instead of your Setting Value. This is to prevent Detections, but using this List you can Set a list of Settings to Force Use your Value despite it Returning a Default Value From the Function and or Field.", "defaultValue": "" },
 
 
-  { "name": "file.time.modify.offset", "description": "Offset of Times to add to the File Modify Time Stamp", "defaultValue": "1DAY" },
-  { "name": "file.time.access.offset", "description": "Offset of Times to add to the File Access Time Stamp", "defaultValue": "1DAY" },
-  { "name": "file.time.created.offset", "description": "Offset of Times to add to the File Created Time Stamp", "defaultValue": "1DAY" },
+
+  //APPS
+  { "name": "apps.allow.list", "description": "List of Applications allowed through the filter example (cool.app,new.app,someother.app.name,amazon)", "defaultValue": "*" }, //applications.allow.list
+  { "name": "apps.block.list", "description": "List of Applications blocked through the filter example (cool.app,new.app,someother.app.name,amazon)", "defaultValue": "*" }, //applications.block.list
+  { "name": "apps.blacklist.mode.bool", "description": "If True then Black list mode is used else it will not be used and only allow application through IF they are on the allow list", "defaultValue": "false" }, //applications.blacklist.mode.bool
+  { "name": "apps.blacklist.allow.vital.apps.bool", "description": "Allow a list of apps for Settings, some Google Apps, and WebView", "defaultValue": "true" }, //applications.blacklist.allow.vital.apps.bool
+
+  { "name": "apps.time.sync.bool", "description": "Install and Update Time will be the same", "defaultValue": "false" }, //applications.sync.times.bool
+
+  { "name": "apps.install.time.offset", "description": "Install Time of apps + offset", "defaultValue": "1:DAY" },
+  { "name": "apps.update.time.offset", "description": "Install Time of apps + offset", "defaultValue": "1:DAY" },
+  { "name": "apps.current.install.time.offset", "description": "Install Time of Current App + offset", "defaultValue": "1:DAY" },
+  { "name": "apps.current.update.time.offset", "description": "Install Time of Current App + offset", "defaultValue": "1:DAY" },
+
+  { "name": "apps.offset.subtract.bool", "description": "Should we Take the Original Time of the App then Subtract the Given Offsets instead of Adding. (More Stable)", "defaultValue": "1:DAY" },
+
+  { "name": "files.time.modify.offset", "description": "Offset of Times to add to the File Modify Time Stamp", "defaultValue": "1DAY" },
+  { "name": "files.time.access.offset", "description": "Offset of Times to add to the File Access Time Stamp", "defaultValue": "1DAY" },
+  { "name": "files.time.created.offset", "description": "Offset of Times to add to the File Created Time Stamp", "defaultValue": "1DAY" },
+
+  { "name": "files.time.sync.bool", "description": "Creation, Modify, Access Time Stamps will be the Same (Not with all files just the file has Synced Time Stamps)", "defaultValue": "false" },
+  { "name": "files.offset.subtract.bool", "description": "Should we Take the Original Time Stamp of the Attribute then Subtract the Given Offsets instead of Adding. (More Stable)", "defaultValue": "1:DAY" },
 
 
 
@@ -171,15 +190,16 @@
   //UNIQUE IDs
   //Clean these GSM ones up
   { "name": "unique.serial.no", "description": "Android Build Serial", "defaultValue": "840er743" },
-  { "name": "unique.gsm.subscription.id.[1,2]", "description": "Subscription ID for Service", "defaultValue": "274299888888765" }, //old subid: 93939251723998531487
-  { "name": "unique.gsm.imei.[1,2]", "description": "IMEI Number for GSM Devices", "defaultValue": "743893156789320" },
-  { "name": "unique.gsm.meid.[1,2]", "description": "MEID Number for CDMA Devices", "defaultValue": "743893156789320" },
-  { "name": "unique.gsm.icc.id.[1,2]", "description": "First two digits are always 89, SIM Unique ID", "defaultValue": "891004234814455936F" },
-  { "name": "unique.gsm.phone.number.[1,2]", "description": "Device Phone Number", "defaultValue": "6666666666" },
-  { "name": "unique.gsm.sim.serial.[1,2]", "description": "Serial number of the SIM", "defaultValue": "djhwlmt51pd30ar4ymtk" },
-  { "name": "unique.gsm.voicemail.id.[1,2]", "description": "alphabetic identifier associated with the voice mail number", "defaultValue": "abc" },
-  { "name": "unique.gsm.operator.msin.[1,2]", "description": "Mobile Subscription Identification Number (MSIN) is a 9-digit unique numeric code ", "defaultValue": "123456789" },
+  //{ "name": "unique.gsm.subscription.id.[1,2]", "description": "Subscription ID for Service", "defaultValue": "274299888888765" }, //old subid: 93939251723998531487
+  //{ "name": "unique.gsm.imei.[1,2]", "description": "IMEI Number for GSM Devices", "defaultValue": "743893156789320" },
+  //{ "name": "unique.gsm.meid.[1,2]", "description": "MEID Number for CDMA Devices", "defaultValue": "743893156789320" },
+  //{ "name": "unique.gsm.phone.number.[1,2]", "description": "Device Phone Number", "defaultValue": "6666666666" },
+  //{ "name": "unique.gsm.sim.serial.[1,2]", "description": "Serial number of the SIM", "defaultValue": "djhwlmt51pd30ar4ymtk" },
+  //{ "name": "unique.gsm.voicemail.id.[1,2]", "description": "alphabetic identifier associated with the voice mail number", "defaultValue": "abc" },
+  //{ "name": "unique.gsm.operator.msin.[1,2]", "description": "Mobile Subscription Identification Number (MSIN) is a 9-digit unique numeric code ", "defaultValue": "123456789" },
 
+
+  { "name": "unique.account.email", "description": "Email Address of the Account on the Device", "defaultValue": "xprivacy@eu.org" },
 
   { "name": "unique.bluetooth.address", "description": "Bluetooth MAC/Hardware Address", "defaultValue": "00:00:00:00:00:00" },
   { "name": "unique.network.mac.address", "description": "Net MAC/Hardware Address", "defaultValue": "00:00:00:00:00:00" },
@@ -197,13 +217,28 @@
   { "name": "unique.network.bssid", "description": "Wifi BSSID", "defaultValue": "00:00:00:00:00:00" },
   { "name": "unique.google.app.set.id", "description": "This is Googles way of Giving each App a Unique ID, if the App has been Re-Installed or the ID has not been accessed in 13 Months for that app it will then reset. This is used for Anti Fraud and once again Tracking, No clearing app data does nothing.", "defaultValue": "00:00:00:00:00:00" },
 
+  { "name": "props.unique.vbmeta.digest", "description": "This property contains a SHA256 digest (hash) of the device's Verified Boot metadata (vbmeta) partition. It's essentially a cryptographic fingerprint that represents the boot security state and verification data of the device. Warning, this MIGHT when Spoofed inflict issues with Key Attestation.", "defaultValue": "f5241446f4b2b08d815733d86dbd6ff2597c4da1aff42062021a7aa8a46aab81e" },
+
+  { "name": "props.unique.one.plus.serialno", "description": "Some OnePlus Serial NO ID", "defaultValue": "IGFBDIAFCJIFIEJFG" },
+
+  //props.unique.oneplus.serialno
+  //unique.property.vbmeta.digest
+
+  //SETTING_BAIDU_DEVICE_ID
+  // "com.baidu.deviceid", "com.baidu.deviceid.v2", "com.baidu.uuid", "dxCRMxhQkdGePGnp", "mqBRboGZkQPcAkyk"
+  { "name": "settings.unique.baidu.device.id.[1,2,3,4,5]", "description": "IDs from Baidu (settings) the IDs are \n[1] com.baidu.deviceid (N/A)\n[2] com.baidu.deviceid.v2 (App’s package name and Android ID, MD5 hashed)\n[3] com.baidu.uuid (App’s package name and serial or a random UUID, MD5 hashed)\n[4] dxCRMxhQkdGePGnp (IMEI/MEID, serial, or Android ID, AES encrypted, base64 encoded)\n[5] mqBRboGZkQPcAkyk (IMEI/MEID, serial, or Android ID, AES encrypted, base64 encoded)", "defaultValue": "43851AA1525644247E2C7CA2049961B4" },
 
   { "name": "settings.xiaomi.extm.uuid", "description": "HyperOS/MI Roms some ID (extm_uuid)", "defaultValue": "a910e261-f054-415b-9a61-bcb05b167e20" },
   { "name": "settings.xiaomi.mi.health.id", "description": "HyperOS/MI Roms Health ID (mi_health_id)", "defaultValue": "0329184861423674" },
   { "name": "settings.xiaomi.gcbooster.uuid", "description": "HyperOS/MI Game Turbo Booster UUID (gcbooster_uuid)", "defaultValue": "a910e261-f054-415b-9a61-bcb05b167e20" },
   { "name": "settings.xiaomi.key.mqs.uuid", "description": "HyperOS/MI Service UUID (key_mqs_uuid)", "defaultValue": "bdb9d790-19ed-4f6c-be94-16afec9fab04" },
   { "name": "settings.xiaomi.mdm.uuid", "description": "HyperOS/MI Device Management Implementation UUID (mdm_uuid)", "defaultValue": "d8b93329-97df-46c6-90a5-1c080181fca5" },
-  { "name": "settings.xiaomi.op.security.uuid", "description": "HyperOS/MI Security UUID (op_security_uuid)", "defaultValue": "9ab0c4fe-a2be-4af4-9da6-c7caf24ba463" },
+  { "name": "settings.one.plus.security.uuid", "description": "OnePlus Security UUID (op_security_uuid)", "defaultValue": "9ab0c4fe-a2be-4af4-9da6-c7caf24ba463" },
+
+  { "name": "settings.unique.pay.session.id", "description": "Pay Session ID (pay_session_id)", "defaultValue": "9ab0c4fe-a2be-4af4-9da6-c7caf24ba463" },
+
+  { "name": "device.unique.name", "description": "Device Name", "defaultValue": "Android" },
+  { "name": "device.unique.bluetooth.name", "description": "Bluetooth Device Name, your Device Name appearing on Bluetooth Scans", "defaultValue": "Android" },
 
   { "name": "settings.boot.count", "description": "The Amount of times the Phone has Been Rebooted / Booted (boot_count)", "defaultValue": "5" },
   { "name": "settings.mock.location", "description": "Is Mock Location Enabled (mock_location) ?", "defaultValue": "0" },
@@ -223,7 +258,7 @@
   { "name": "zone.parent.control.tz", "description": "TimeZone Settings Parent Control, Use this to Control All", "defaultValue": "0" },
   //REGION Country
   { "name": "zone.country.name", "description": "Country Name", "defaultValue": "Iceland" },
-  { "name": "zone.country.iso2", "description": "Country ISO 3166-1 alpha-2 code", "defaultValue": "IS" },
+ // { "name": "zone.country.iso2", "description": "Country ISO 3166-1 alpha-2 code", "defaultValue": "IS" },
   { "name": "zone.country.code", "description": "Country Code (three-letter)", "defaultValue": "ISL" },
 
   //REGION Language
@@ -251,41 +286,63 @@
   { "name": "network.allowed.list", "description": "Click me to Modify the List of Allowed networks to be seen by this Application.", "defaultValue": "*" },
 
 
-  //CELL Phone
-  { "name": "cell.phone.type.[1,2]", "description": "GSM=(1) CDMA=(2) NONE=(0) SIP=(3)", "defaultValue": "1" }, //gsm.phone.type
-  { "name": "cell.phone.sim.card.count.[1,2]", "description": "Amount of SIM Cards, overall supported", "defaultValue": "1" },  //gsm.sim.count
-  //CELL Operator
-  { "name": "cell.operator.id.[1,2]", "description": "Carrier ID name example Tmobile is [TMO]", "defaultValue": "TMO" }, //gsm.operator.id
+
+  //{ "name": "unique.gsm.icc.id.[1,2]", "description": "First two digits are always 89, SIM Unique ID", "defaultValue": "891004234814455936F" },
+
+
+  { "name": "cell.phone.type.[1,2]", "description": "GSM=(1) CDMA=(2) NONE=(0) SIP=(3), Select Drop Down for Options. Details If Device at SUB (1) or (2) Is CDMA or GSM, You can do Both, Index 1 is or Should be Default.", "defaultValue": "1" },
+  { "name": "cell.phone.sim.card.count", "description": "Amount of SIM Cards, overall supported", "defaultValue": "1" },  //gsm.sim.count
+
+  { "name": "cell.unique.meid.[1,2]", "description": "MEID ID, for CDMA Devices", "defaultValue": "743893156789320" },
+  { "name": "cell.unique.imei.[1,2]", "description": "IMEI ID, for GSM Devices", "defaultValue": "743893156789320" },
+  { "name": "cell.unique.msin.[1,2]", "description": "Mobile Subscription Identification Number (MSIN) is a 9-digit unique numeric code", "defaultValue": "364726485" },
+  { "name": "cell.unique.subscriber.id.[1,2]", "description": "Also Known as your IMSI (MCC + MNC + MSIN)", "defaultValue": "333565345674567" },
+  { "name": "cell.unique.sim.icc.id.[1,2]", "description": "First two digits are always 89, SIM Unique ID",  "defaultValue": "891004234814455936F" },
+  { "name": "cell.unique.phone.number.[1,2]", "description": "Well this is your Phone number, if it is blocked on your Device it will return (0000000000) or Empty / Null. No Specific format, I keep it simple using no spaces or pluses or Country Codes.", "defaultValue": "0000000000" },
+
   { "name": "cell.operator.name.[1,2]", "description": "Alpha name of current registered operator. aka Carrier Name, like T-Mobile or Siminn. This will Include NETWORK and SIM as Same", "defaultValue": "T-Mobile" }, //gsm.network.carrier
+  { "name": "cell.operator.id.[1,2]", "description": "This is Typically a 1 Digit to a 6 Digit Number, No relation to MCC or MNC. T-Mobile US is always (1) for Example", "defaultValue": "TMO" }, //gsm.operator.id
+  { "name": "cell.operator.mcc.[1,2]", "description": "Operator MCC Value", "defaultValue": "274" },
+  { "name": "cell.operator.mnc.[1,2]", "description": "Operator MNC Value", "defaultValue": "299" },
+  { "name": "cell.operator.icon.tint.[1,2]", "description": "(iconTint) or Also Known as (color) The iconTint in SubscriptionInfo is a color value used to tint SIM card icons in the UI, helping users visually distinguish between multiple subscriptions/SIMs on their device.", "defaultValue": "-6728704" },
+
+  { "name": "cell.voice.mail.alpha.tag.[1,2]", "description": "Retrieves the alphabetic identifier associated with the voice mail Number. Typically Default is (Voice Mail)", "defaultValue": "KEK" },
+
+  { "name": "cell.display.name.[1,2]", "description": "The name displayed to the user that identifies this subscription. This name is used in (Android) Settings page and can be renamed by the user in (Android) Settings. If you change it to something Custom then that will affect the (source) flag or if you leave it as a Carrier Type name like (Verizon) that typically means your Name Source is the carrier..", "defaultValue": "KEK" },
+  { "name": "cell.display.name.source.[1,2]", "description": "If for Example the Display Name was not Changed most likely then it would be result (CARRIER) or (3) Since the Carrier Most Likely Set your Display Name. If you as a user for your actual Phone were to Change the Display Name then the Value would appear (USER_INPUT) or (2)", "defaultValue": "2" },
+
+  { "name": "cell.sim.type.[1,2]", "description": "Local Sim is usually the Sim Card physical remote is ESim LOCAL_SIM=(0) REMOTE_SIM=(1). If you set Is Embedded to true, set this to Remote SIM via Drop Down Options", "defaultValue": "0" },
+  { "name": "cell.sim.subscription.id.[1,2]", "description": "This is an ID that Gets Created upon Insertion of the Card. It Starts at (1) then for each NEW SIM Card Inserted it Increments the Number and that is the ID for the SIM Card. First Ever SIM will be (1) and again It Increments each new one. Not one Should have the SAME Value, Ensure they are not the Same!", "defaultValue": "1" },
+
+  { "name": "cell.sim.is.embedded.[1,2]", "description": "Is the SIM a E-SIM or Electronic SIM", "defaultValue": "false" },
+  { "name": "cell.sim.country.iso.[1,2]", "description": "The ISO Country code for the subscription's provider. Example United States is (US) Format is 3166-1", "defaultValue": "US" },
+
+
+  { "name": "cell.data.is.opportunistic.[1,2]", "description": "Whether the subscription is opportunistic or not.", "defaultValue": "false" },
+  { "name": "cell.data.roaming.enabled.flag.[1,2]", "description": " Whether user enables data roaming for this subscription or not. Either", "defaultValue": "false" },
+
+
+  //The iconTint in SubscriptionInfo is a color value used to tint SIM card icons in the UI, helping users visually distinguish between multiple subscriptions/SIMs on their device.
+
+  //cell.display.name.source
+
   { "name": "cell.operator.numeric.id.[1,2]", "description": "Operator ID (MCC + MNC) this will Include NETWORK and SIM as Same", "defaultValue": "573777" }, //gsm.operator.id
   { "name": "cell.operator.display.name.[1,2]", "description": "The name displayed to the user that identifies this subscription. Examples , eSIM T-Mobile. This will Include NETWORK and SIM as Same", "defaultValue": "Rob" }, //gsm.setting.display.name
-  { "name": "cell.operator.mcc.[1,2]", "description": "Operator MCC Value", "defaultValue": "274" }, //gsm.operator.mcc
-  { "name": "cell.operator.mnc.[1,2]", "description": "Operator MNC Value", "defaultValue": "299" }, //gsm.operator.mnc
+
+
   //CELL SIM
-  { "name": "cell.sim.type.[1,2]", "description": "Local Sim is usually the Sim Card physical remote is ESim LOCAL_SIM=(0) REMOTE_SIM=(1)", "defaultValue": "0" }, //gsm.sim.type
   { "name": "cell.sim.state.[1,2]", "description": "State of the SIM Card (LOADED) or (ABSENT)", "defaultValue": "READY" }, //gsm.sim.state.number
   { "name": "cell.sim.state.flag.[1,2]", "description": "State of the SIM Card (SIM_STATE_READY) Number", "defaultValue": "5" },
+
   //CELL Location
   { "name": "cell.location.lac", "description": "Location Area Code", "defaultValue": "0" },//gsm.cell.location.lac
   { "name": "cell.location.cid", "description": "Cell ID", "defaultValue": "0" }, //gsm.cell.location.cid
-  { "name": "cell.sim.country.numeric.code.[1,2]", "description": "Your SIM Country Numeric  ITU-T E.164 Code", "defaultValue": "01" },
+  //{ "name": "cell.sim.country.numeric.code.[1,2]", "description": "Your SIM Country Numeric  ITU-T E.164 Code", "defaultValue": "01" },
 
 
 
   //Have these always below the groups above in the UI
 
-  //APPS
-  { "name": "apps.allow.list", "description": "List of Applications allowed through the filter example (cool.app,new.app,someother.app.name,amazon)", "defaultValue": "*" }, //applications.allow.list
-  { "name": "apps.block.list", "description": "List of Applications blocked through the filter example (cool.app,new.app,someother.app.name,amazon)", "defaultValue": "*" }, //applications.block.list
-  { "name": "apps.blacklist.mode.bool", "description": "If True then Black list mode is used else it will not be used and only allow application through IF they are on the allow list", "defaultValue": "false" }, //applications.blacklist.mode.bool
-  { "name": "apps.blacklist.allow.vital.apps.bool", "description": "Allow a list of apps for Settings, some Google Apps, and WebView", "defaultValue": "true" }, //applications.blacklist.allow.vital.apps.bool
-  { "name": "apps.sync.times.bool", "description": "Install and Update Time will be the same", "defaultValue": "false" }, //applications.sync.times.bool
-
-  { "name": "apps.install.time.offset", "description": "Install Time of apps + offset", "defaultValue": "1:DAY" },
-  { "name": "apps.update.time.offset", "description": "Install Time of apps + offset", "defaultValue": "1:DAY" },
-
-  { "name": "apps.current.install.time.offset", "description": "Install Time of Current App + offset", "defaultValue": "1:DAY" },
-  { "name": "apps.current.update.time.offset", "description": "Install Time of Current App + offset", "defaultValue": "1:DAY" },
 
 
   //public static final String SETTING_APP_CURRENT_INSTALL_TIME_OFFSET = "apps.current.install.time.offset";
@@ -302,7 +359,7 @@
   //BLUETOOTH
   { "name": "bluetooth.state", "description": "Is Bluetooth On Disabled ??", "defaultValue": "10" },
   { "name": "bluetooth.allow.discovery.bool", "description": "Allow to Start Discovery or Connect to Any Device etc", "defaultValue": "false" },
-  { "name": "bluetooth.name", "description": "Bluetooth Name Starter", "defaultValue": "Android" },
+  //{ "name": "bluetooth.name", "description": "Bluetooth Name Starter", "defaultValue": "Android" },
   { "name": "bluetooth.allowed.bonded.list", "description": "List seperated with a comma (,) of ALLOWED (SAVED/PAIRED/BONDED) Bluetooth Devices that the app can see. Use Device name or Bluetooth MAC", "defaultValue": "*" },
 
 

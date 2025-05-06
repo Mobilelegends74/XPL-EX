@@ -48,10 +48,10 @@
                 android:id="@+id/tvStatsCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="15dp"
                 android:text="000/000"
-                android:textStyle="bold|italic"
                 android:textAppearance="@android:style/TextAppearance.Small"
+                android:textStyle="bold|italic"
                 app:layout_constraintBottom_toBottomOf="@+id/tvSettingGroupName"
                 app:layout_constraintEnd_toStartOf="@+id/ivActionNeeded"
                 app:layout_constraintTop_toTopOf="@+id/tvSettingGroupName" />

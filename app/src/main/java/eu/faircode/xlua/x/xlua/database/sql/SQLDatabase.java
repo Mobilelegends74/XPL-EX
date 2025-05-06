@@ -156,15 +156,16 @@ public class SQLDatabase {
     public boolean update(String tableName, ContentValues cv, String selectionArgs, String[] compareValues) {
         try {
             long rows = db.update(tableName, cv, selectionArgs, compareValues);
-            if(rows != 1) {
+
+            // If no rows were updated, try with CONFLICT_REPLACE strategy
+            if(rows == 0) {
                 rows = db.updateWithOnConflict(tableName, cv, selectionArgs, compareValues, SQLiteDatabase.CONFLICT_REPLACE);
-                if(rows != 1)
-                    throw new Exception("Generic error, rows updated=" + rows);
             }
 
-            return true;
-        }catch (Exception e) {
-            Log.e(TAG, "Failed to Update Database Item, Table=" + tableName + " Selection Args=" + selectionArgs + " Content Values=" + Str.toStringOrNull(cv) + " Error=" + e + " Database=" +  FileUtils.getAbsolutePath(file));
+            // Consider the update successful if any rows were updated
+            return rows > 0;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to Update Database Item, Table=" + tableName + " Selection Args=" + selectionArgs + " Content Values=" + Str.toStringOrNull(cv) + " Error=" + e + " Database=" + FileUtils.getAbsolutePath(file));
             return false;
         }
     }

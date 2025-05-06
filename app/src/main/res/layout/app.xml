@@ -9,19 +9,6 @@
     android:paddingBottom="6dp">
 
     <ImageView
-        android:id="@+id/ivGroupProfile"
-        android:layout_width="?android:attr/listPreferredItemHeightSmall"
-        android:layout_height="?android:attr/listPreferredItemHeightSmall"
-        android:alpha="0.6"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:padding="6dp"
-        android:src="?attr/configMenu"
-        app:layout_constraintStart_toStartOf="@+id/cbForceStop"
-        app:layout_constraintTop_toBottomOf="@+id/cbForceStop" />
-
-    <ImageView
         android:id="@+id/ivExpander"
         android:layout_width="30dp"
         android:layout_height="?android:attr/listPreferredItemHeightSmall"
@@ -157,11 +144,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvGroup"
         android:layout_width="0dp"
-        android:layout_marginTop="6dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivGroupProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/cbForceStop" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/grpExpanded"

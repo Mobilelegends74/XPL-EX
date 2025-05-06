@@ -9,7 +9,7 @@ public interface IIdentifiableObject {
 
     default SQLSnake createSnake() { return null; }
 
-    default boolean consumeId(Object o) { return false; }
+    default boolean consumeObject(Object o) { return false; }
 
     default String getCategory() {
         return null;

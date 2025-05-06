@@ -30,7 +30,12 @@ public class GroupHelper {
 
     public static String getGroupId(String str) {
         String firstString = Str.getFirstString(str, ".", "Unknown");
-        return (firstString.equalsIgnoreCase("record") || firstString.equalsIgnoreCase("send") || firstString.equalsIgnoreCase("use")) ? "Usage" : firstString.equalsIgnoreCase("id") ? "Identification" : firstString.equalsIgnoreCase("ad") ? "Advertisement & Analytics" : firstString;
+        return (firstString.equalsIgnoreCase("record") ||
+                firstString.equalsIgnoreCase("send") ||
+                firstString.equalsIgnoreCase("use")) ?
+                "Usage" : firstString.equalsIgnoreCase("id") ?
+                "Identification" : firstString.equalsIgnoreCase("ad") ?
+                "Advertisement & Analytics" : firstString;
     }
 
 }

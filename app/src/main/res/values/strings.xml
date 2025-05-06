@@ -77,8 +77,43 @@
         <![CDATA[<br>]]><![CDATA[<a href="https://xdaforums.com/t/app-vdinfos.4097379/">XDA</a>]]>
         <![CDATA[<br>]]><![CDATA[<a href="https://github.com/VD171/VD-Infos">GitHub</a>]]>
 
+        <![CDATA[<br><br>]]> 1.5.5 XPL155R
+        <![CDATA[<br>]]>• Started Implementation of the CELL/GSM Hooks! Enable Collection (Telephony) to view Them
+        <![CDATA[<br>]]>• Updated Hooks Internal Repo Class
+        <![CDATA[<br>]]>• Improved the Database Updater (JSON) Better Detection on Outdated JSON Entries
+        <![CDATA[<br>]]>• Revised and Improved the WHOLE Settings Repo Class and its Logic (Worked on Fist Try!)
+        <![CDATA[<br>]]>• Added (pay_session_id) Settings Identifier
+        <![CDATA[<br>]]>• Added Visual Indicators Next to the Setting to Flag if it is a Unique Related Setting
+        <![CDATA[<br>]]>• Updated (op_security_uuid) to be Part of the OnePlus Device IDs
+        <![CDATA[<br>]]>• Updated List of Settings, Removed a lot of the Non Working Ones or Dead Ones
+        <![CDATA[<br>]]>• Added Filters for the Settings UI (All, Unique, Android) and Improved the Settings UI by a lot!
+        <![CDATA[<br>]]>• Added Control to Set the Subtract Mode on AppTime Offsets, by Default it is not Subtract (true)
+        <![CDATA[<br>]]>• Added (5x) Baidu IDs to Settings Hooks. Spoof Baidu Device IDs 5 Types
+        <![CDATA[<br>]]>• Added (5x) vbmeta hash Properties to Intercept (Not recommended, might cause mismatch with report from Key Attestation).
+        <![CDATA[<br>]]>• Added Serial number Property (persist.sys.oneplus.serialno)
+        <![CDATA[<br>]]>• Added (5x) Serial Related Properties to Property Interceptor
+        <![CDATA[<br>]]>• Added Spoofing for Device Name and BlueTooth Name
+        <![CDATA[<br>]]>• Improved the Import Export on Main UI (Should be better Handling Crashes)
+        <![CDATA[<br>]]>• Notify on Hook Usage is working with Non Rule Hooks. So it is still under in need of Completing
+        <![CDATA[<br>]]>• Removed Restrict new apps (No easy and Good way of Implementing this without it being messy let alone with Scoped LSPosed)
+        <![CDATA[<br>]]>• Fixed Notify on New Apps
+        <![CDATA[<br>]]>• Added Default Export Backup Name for Dialog (Still needs Some Adjustment but works)
+        <![CDATA[<br>]]>• Improved the Main UI Assignments Group Behaviour (Still needs more Improvement)
+        <![CDATA[<br>]]>• Enhanced Hook loading by Hiding Deprecated API Hooks, Avoid Errors with old APIs (If you cant find your Hook, Update it!)
+        <![CDATA[<br>]]>• Fixed First Time Start Bug (Format Exception for Whats new Dialog)
+        <![CDATA[<br>]]>• Fixed TimeStamp Time Exceeding Current day, now by Default Offsets will not be Added but Subtracted. You can control this behaviour in the all Settings
+        <![CDATA[<br>]]>• Added Warning Dialog for First Time Bulk Hook Checking
+        <![CDATA[<br>]]>• Updated some Icons
+        <![CDATA[<br>]]>• Improved Cursor Util at Reading and Writing to and From Service. Fix Missing Apps Bugs and more...
+        <![CDATA[<br>]]>• Improved and Updated Time Interception (Files, Apps) Sync, Subtract, Offset Control
+        <![CDATA[<br>]]>• Fixed Some hooks, Re Linked Api Functions for XHook for LUA Scripts to use
+        <![CDATA[<br>]]>• Fixed Global Settings not being used in App Context when App Context Settings were not Specified.
+        <![CDATA[<br>]]>• Added Range Randomization for Numeric Settings. Example Amount of Cameras (10-999) Random Value between (10) and (999)
+        <![CDATA[<br>]]>• Fixed Check Box not Unchecking Bug in main UI (Restrict All Check)
+        <![CDATA[<br>]]>• Updated Mappings for Settings, to new Names etc...
 
-        <![CDATA[<br><br>]]> 1.5.4 XPL153R
+
+        <![CDATA[<br><br>]]> 1.5.4 XPL154R
         <![CDATA[<br>]]>• Cleaned up some of the Internal Cat Logs Logging
         <![CDATA[<br>]]>• Fixed Query Interception Rules Race Condition (Last Rules overridden the current one)
         <![CDATA[<br>]]>• Improved the Hooks UI to have more Prompts and overall Feedback to make Feel less Unknown
@@ -293,6 +328,10 @@
 
    </string>
 
+    <string name="warning_bulk_check" translatable="false">Selecting this will Enable Every Hook Possible (Super Highly NOT recommended). Why ? Why use a BOMB causing Chaos, when you should Enable what you think is best Needed for your situation.\n\nRemember, in Settings "unique" Filter is everything that can be used to Identify you, the rest does not matter. \n\nIf you Continue, you are NOT to ask for Help if Target App Crashes or acts abnormally, you accept such behaviour due to a lack of patience. (Do NOT ask for Help if App Crashes when you Select all at once) \n\nSelect what is NEEDED by Testing, Trying, or FAQ. \n\n\nOnce you click (ok) this Dialog will never Appear again hence the Long Timeout (READ THIS DAMN MESSAGE!!!)</string>
+    <string name="warning_bulk_check_title" translatable="false">Select all Hooks ?</string>
+
+
     <string name="warning_hook_ad_analytics" translatable="false">This will attempt to disable the analytics libraries from being loaded into the application. This does not support all (80+) right now, so be patient until I get around to all of them. If analytics are still being loaded in or ads are still appearing, it means they are not supported for now. This can also cause applications to crash if they heavily depend on the analytics/ad library. IF Application Crashes go into the New HOOK UI and disable some of the Ad Analytics Hooks test app rinse and repeat until you find the Hook that is crashing it. I WILL not help with this as Disabling ads and analytics can crash some apps so figure out your self what is causing it disable it!</string>
     <string name="warning_hook_ad_analytics_spoof" translatable="false">This will not disable the analytics/ad libraries from being loaded in but will spoof unique/critical IDs and/or keys within the library to make analytics more difficult.</string>
     <string name="warning_hook_embed_paypal" translatable="false">This will attempt to spoof the environment to help trick PayPal payment gateways within apps into thinking the phone is not rooted or an emulator. This is an attempt, not bulletproof.</string>
@@ -333,6 +372,40 @@
 
     <string name="title_backup" translatable="false">Backup Manager</string>
     <string name="title_settings_search" translatable="false">Settings Search</string>
+
+
+    <string name="task_status_dropping_tables" translatable="false">Dropping old tables...</string>
+    <string name="task_status_applying_settings" translatable="false">Applying %1$d settings</string>
+    <string name="task_status_progress" translatable="false">Progress: %1$d of %2$d</string>
+    <string name="task_status_settings_completed" translatable="false">Completed %1$d of %2$d settings</string>
+    <string name="task_status_processing_scripts" translatable="false">Processing scripts</string>
+    <string name="task_status_applying_hooks" translatable="false">Applying %1$d hooks</string>
+    <string name="task_status_hooks_completed" translatable="false">Completed %1$d of %2$d hooks</string>
+    <string name="task_status_applying_assignments" translatable="false">Applying %1$d assignments</string>
+    <string name="task_status_assignments_completed" translatable="false">Completed %1$d of %2$d assignments</string>
+    <string name="cancelling" translatable="false">Cancelling...</string>
+    <string name="task_cancelled" translatable="false">Cancelled</string>
+
+    <string name="title_applying_backup" translatable="false">Applying Backup</string>
+    <string name="task_applying_settings" translatable="false">Applying Settings</string>
+    <string name="task_applying_definitions" translatable="false">Applying Definitions</string>
+    <string name="task_applying_assignments" translatable="false">Applying Assignments</string>
+    <string name="task_complete" translatable="false">Complete</string>
+    <string name="task_progress_format" translatable="false">Progress: %1$d of %2$d</string>
+    <string name="task_detail_dropping_settings" translatable="false">Dropping Old Settings</string>
+    <string name="task_detail_dropping_settings_table" translatable="false">Dropping old settings table...</string>
+    <string name="task_detail_dropping_hooks" translatable="false">Dropping Old Hooks</string>
+    <string name="task_detail_dropping_hooks_table" translatable="false">Dropping old hooks table...</string>
+    <string name="task_detail_dropping_assignments" translatable="false">Dropping Old Assignments</string>
+    <string name="task_detail_dropping_assignments_table" translatable="false">Dropping old assignments table...</string>
+    <string name="task_detail_processing_scripts_status" translatable="false">Processing Scripts</string>
+    <string name="task_detail_processing_scripts" translatable="false">Preparing Lua scripts for hook definitions...</string>
+    <string name="task_detail_applying_setting" translatable="false">Setting: %1$s</string>
+    <string name="task_detail_applying_hook" translatable="false">Hook: %1$s</string>
+    <string name="task_detail_applying_assignment" translatable="false">Hook: %1$s to Package: %2$s</string>
+    <string name="task_detail_settings_complete" translatable="false">Completed %1$d of %2$d settings</string>
+    <string name="task_detail_definitions_complete" translatable="false">Completed %1$d of %2$d definitions</string>
+    <string name="task_detail_assignments_complete" translatable="false">Completed %1$d of %2$d assignments</string>
 
 
 
@@ -659,6 +732,10 @@
     <string name="menu_show_icon">Show apps with icon</string>
     <string name="menu_show_all">Show all apps</string>
 
+    <string name="menu_show_settings_all" translatable="false">All</string>
+    <string name="menu_show_settings_unique" translatable="false">Unique</string>
+    <string name="menu_show_settings_android" translatable="false">Android</string>
+
 
     <string name="menu_show_hook" translatable="false">Show hooked apps</string>
     <string name="menu_show_system" translatable="false">Show system apps</string>
@@ -780,6 +857,8 @@
     <string name="message_warning_hooks_title" translatable="false">Warning!</string>
     <string name="message_warning_hooks_message" translatable="false">Warning! It seems a Setting in this Group and or Container is NOT saved! Ensure you save your modified Changes unless you wish to not save the new values or value!</string>
 
+    <string name="message_unique_title" translatable="false">Unique</string>
+    <string name="message_unique_message" translatable="false">This Setting is a Unique Setting meaning it is and or Can be used in part of trying to Identify as a User. Unlike the Other Settings like your F*cking Model Name, these are what actually used to ID you as a Person. These you should focus on Spoofing</string>
 
 
     <string name="msg_no_service">Module not running or updated</string>

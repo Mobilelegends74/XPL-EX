@@ -23,8 +23,11 @@ import eu.faircode.xlua.x.xlua.settings.data.SettingPacket;
 
 @SuppressWarnings("unused")
 public class GetAppsCommand extends QueryCommandHandlerEx {
-
-    public GetAppsCommand() { this.name = "getApps"; this.requiresSingleThread = true; this.requiresPermissionCheck = true; }
+    public GetAppsCommand() {
+        this.name = "getAppsEx";
+        this.requiresSingleThread = true;
+        this.requiresPermissionCheck = true;
+    }
 
     @Override
     public Cursor handle(QueryPacket commandData) throws Throwable {
@@ -41,16 +44,15 @@ public class GetAppsCommand extends QueryCommandHandlerEx {
     public static Cursor invoke(Context context, boolean marshall) {
         return XProxyContent.luaQuery(
                 context,
-                marshall ? "getApps2" : "getApps");
+                marshall ? "getAppsEx2" : "getAppsEx");
     }
-
 
     public static List<AppXpPacket> get(Context context, boolean marshall) {
         return ListUtil.copyToArrayList(
                 CursorUtil.readCursorAs_final(
                         XProxyContent.luaQuery(
                                 context,
-                                marshall ? "getApps2" : "getApps"),
+                                marshall ? "getAppsEx2" : "getAppsEx"),
                         marshall, AppXpPacket.class));
     }
 }

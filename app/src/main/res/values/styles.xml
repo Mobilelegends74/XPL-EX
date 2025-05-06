@@ -46,6 +46,7 @@
     <attr name="importFile" format="reference" />
 
     <attr name="fingerPrintIcon" format="reference" />
+    <attr name="squareQuestionIcon" format="reference" />
 
 
     <style name="RoundedButtonWithIcon" parent="Widget.AppCompat.Button">
@@ -104,6 +105,8 @@
         <item name="diceIcon">@drawable/ic_dice1_black24</item>
         <item name="addIcon">@drawable/ic_add_black24</item>
         <item name="fingerPrintIcon">@drawable/ic_finger_black24</item>
+        <item name="squareQuestionIcon">@drawable/ic_square_question_black24</item>
+
 
         <item name="importFile">@drawable/ic_file_open_black24</item>
 
@@ -161,6 +164,8 @@
         <item name="diceIcon">@drawable/ic_dice1_white24</item>
         <item name="addIcon">@drawable/ic_add_white24</item>
         <item name="fingerPrintIcon">@drawable/ic_finger_white24</item>
+        <item name="squareQuestionIcon">@drawable/ic_square_question_white24</item>
+
 
         <item name="importFile">@drawable/ic_file_open_white24</item>
 

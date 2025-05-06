@@ -16,6 +16,7 @@ public class AssignmentUtils {
             "PrivacyEx.Filter/Settings$Secure.getString",
             "PrivacyEx.Filter/Settings$Global.getString",
             "PrivacyEx.Filter/ContentResolver/Settings",
+            "PrivacyEx.Filter/ContentResolver(uri)/Settings",
 
             "PrivacyEx.BlockGuardOs.open/Filter/Filter",
             "PrivacyEx.File.canRead/Filter",

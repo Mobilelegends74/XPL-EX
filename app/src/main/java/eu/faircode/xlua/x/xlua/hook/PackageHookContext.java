@@ -21,6 +21,7 @@ import eu.faircode.xlua.api.xmock.XMockQuery;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.string.StrBuilder;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.data.utils.random.RandomGenerator;
 import eu.faircode.xlua.x.ui.core.view_registry.SharedRegistry;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.call.GetSettingExCommand;
@@ -57,7 +58,80 @@ public class PackageHookContext {
         this.temporaryKey = UUID.randomUUID().toString();
         this.useDefault = GetSettingExCommand.getBool(context, GetSettingExCommand.SETTING_USE_DEFAULT, uid, packageName);
 
-        settings.putAll(GetSettingsExCommand.getAsMap(
+        Map<String, String> local = GetSettingsExCommand.getAsMap(context, true, uid, packageName, GetSettingsExCommand.FLAG_ONE);
+        Map<String, String> global = GetSettingsExCommand.getAsMap(context, true, UserIdentity.DEFAULT_USER, UserIdentity.GLOBAL_NAMESPACE, GetSettingsExCommand.FLAG_ONE);
+
+        if(ListUtil.isValid(global)) {
+            for(Map.Entry<String, String> entry : global.entrySet()) {
+                String name = entry.getKey();
+                String value = entry.getValue();
+                if(local.containsKey(name)) {
+                    String otherValue = local.get(name);
+                    if(otherValue == null)
+                        this.settings.put(name, value);
+                     else
+                        this.settings.put(name, otherValue);
+                } else {
+                    if(value != null) {
+                        this.settings.put(name, value);
+                    }
+                }
+            }
+        }
+
+        if(ListUtil.isValid(local)) {
+            for(Map.Entry<String, String> entry : local.entrySet()) {
+                String name = entry.getKey();
+                String value = entry.getValue();
+                if(!this.settings.containsKey(name)) {
+                    this.settings.put(name, value);
+                }
+            }
+        }
+
+        if(ListUtil.isValid(this.settings)) {
+            for(String name : new ArrayList<>(this.settings.keySet())) {
+                String value = this.settings.get(name);
+                if(!Str.isEmpty(value) && value.length() > 2 && Str.countOccurrencesRegex(value, "-") == 1) {
+                    try {
+                        String trimmed = Str.trimOriginal(value);
+                        String[] parts = trimmed.split("-");
+                        if(!Str.isEmpty(parts[0]) && Str.isNumeric(parts[0]) && !Str.isEmpty(parts[1]) && Str.isNumeric(parts[1])) {
+                            Long one = Str.tryParseLong(parts[0]);
+                            Long two = Str.tryParseLong(parts[1]);
+                            if(one != null && two != null) {
+                                long fake = RandomGenerator.nextLong(one, two);
+                                this.settings.put(name, String.valueOf(fake));
+                                if(DebugUtil.isDebug())
+                                    Log.d(TAG, Str.fm("Generated [%s] Long from [0][%s] [1][%s] Name=%s",
+                                            fake,
+                                            one,
+                                            two,
+                                            name));
+                            } else {
+                                if(DebugUtil.isDebug())
+                                    Log.d(TAG, Str.fm("Failed to Generate Long from  [0][%s] [1][%s] Name=%s",
+                                            one,
+                                            two,
+                                            name));
+                            }
+                        }
+                    }catch (Exception ignored) {
+
+                    }
+                }
+            }
+        }
+
+        if(DebugUtil.isDebug())
+            Log.d(TAG, Str.fm("App [%s] Uid [%s] Local Settings Count=%s Global Settings Count=%s Total Settings Parsed Count=%s",
+                    this.packageName,
+                    this.uid,
+                    ListUtil.size(local),
+                    ListUtil.size(global),
+                    ListUtil.size(this.settings)));
+
+        /*settings.putAll(GetSettingsExCommand.getAsMap(
                 context,
                 true,
                 UserIdentity.DEFAULT_USER,  //We need to get User ID
@@ -69,7 +143,7 @@ public class PackageHookContext {
                 true,
                 uid,
                 packageName,
-                GetSettingsExCommand.FLAG_ONE));
+                GetSettingsExCommand.FLAG_ONE));*/
 
 
         if(!this.settings.isEmpty()) {

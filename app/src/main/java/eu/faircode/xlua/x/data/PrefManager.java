@@ -14,6 +14,7 @@ import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.string.StrBuilder;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.ui.activities.SettingsExActivity;
 import eu.faircode.xlua.x.xlua.LibUtil;
 
 /**
@@ -45,6 +46,10 @@ import eu.faircode.xlua.x.xlua.LibUtil;
 public class PrefManager {
     private static final String TAG = LibUtil.generateTag(PrefManager.class);
 
+    public static final String PREFERENCE_SHOW = "show";
+    public static final String DEFAULT_SHOW = "all";
+
+
     public static final String NAMESPACE_DELIMINATOR = "_";
     public static final String DEFAULT_NAMESPACE = "settings";
     public static final String SETTINGS_NAMESPACE = "settings_settings";
@@ -54,6 +59,8 @@ public class PrefManager {
     public static final String SETTING_SETTINGS_CHECKED = "_checked_settings_1_";
 
     public static final String SETTING_APPS_SHOW = "appShow";
+    public static final String SETTING_SETTINGS_SHOW = "settingsShow";
+
 
     public static String nameForChecked() { return nameForChecked(true, null); }
     public static String nameForChecked(boolean global) { return nameForChecked(global, null); }
@@ -145,6 +152,20 @@ public class PrefManager {
                 return AdapterApp.enumShow.system;
             default:
                 return AdapterApp.enumShow.user;
+        }
+    }
+
+    public static SettingsExActivity.enumShow settingToShowSettings(String value) {
+        if(Str.isEmpty(value))
+            return SettingsExActivity.enumShow.all;
+
+        switch (value) {
+            case "unique":
+                return SettingsExActivity.enumShow.unique;
+            case "android":
+                return SettingsExActivity.enumShow.android;
+            default:
+                return SettingsExActivity.enumShow.all;
         }
     }
 

@@ -5,22 +5,8 @@ import android.util.Log;
 
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.x.Str;
-import eu.faircode.xlua.x.hook.interceptors.file.FileInterceptor;
-import eu.faircode.xlua.x.hook.interceptors.file.FileTimeInterceptor;
-import eu.faircode.xlua.x.hook.interceptors.file.stat.StatMockSettings;
+import eu.faircode.xlua.x.hook.interceptors.file.TimeInterceptor;
 import eu.faircode.xlua.x.xlua.LibUtil;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.Locale;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 
 public class StatCommandCleaner {
     private static final String TAG = LibUtil.generateTag(StatCommandCleaner.class);
@@ -33,10 +19,10 @@ public class StatCommandCleaner {
         private boolean mExpectingValue = false;
         public String field = null;
 
-        public FileTimeInterceptor interceptor;
+        public TimeInterceptor interceptor;
         private StringBuilder mValueBuilder = new StringBuilder();
 
-        public FieldValuePointer(FileTimeInterceptor interceptor) { this.interceptor = interceptor; }
+        public FieldValuePointer(TimeInterceptor interceptor) { this.interceptor = interceptor; }
 
         public boolean valueIsEmpty() { return mValueBuilder == null || mValueBuilder.length() == 0; }
         public boolean expectingValue() {  return mExpectingValue; }
@@ -70,40 +56,45 @@ public class StatCommandCleaner {
                 if(t.contains(":")) t = t.replaceAll(":", "");
                 long inputMilliseconds = StatUtils.toEpochMillis(originalValue);
                 long org = 0;
-                long offset = 0;
+                //long offset = 0;
+                long fake = 0;
                 switch (t) {
                     case "modify":
-                        org = interceptor.getOriginalModified(inputMilliseconds);
-                        offset = interceptor.getModifiedOffset();
+                        org = interceptor.getOriginalModify(inputMilliseconds);
+                        //offset = interceptor.getModifiedOffset();
+                        fake = interceptor.getModify(org);
                         break;
                     case "change":
                         org = interceptor.getOriginalChange(inputMilliseconds);
-                        offset = interceptor.getChangeOffset();
+                        //offset = interceptor.getChangeOffset();
+                        fake = interceptor.getChange(org);
                         break;
                     case "access":
                         org = interceptor.getOriginalAccess(inputMilliseconds);
-                        offset = interceptor.getAccessOffset();
+                        //offset = interceptor.getAccessOffset();
+                        fake = interceptor.getAccess(org);
                         break;
                     case "birth":
                     case "create":
                         org = interceptor.getOriginalCreated(inputMilliseconds);
-                        offset = interceptor.getCreatedOffset();
+                        //offset = interceptor.getCreatedOffset();
+                        fake = interceptor.getCreation(org);
                         break;
                     default:
                         if(DebugUtil.isDebug()) Log.d(TAG, "Failed to find Field: " + t + " Returning:" + originalValue);
                         return originalValue;
                 }
 
-                String fakeTime = StatUtils.fromEpochMillis(org + offset, StatUtils.detectFormat(originalValue));
+                //String fakeTime = StatUtils.fromEpochMillis(org + offset, StatUtils.detectFormat(originalValue));
+                String fakeTime = StatUtils.fromEpochMillis(fake, StatUtils.detectFormat(originalValue));
                 if(DebugUtil.isDebug())
-                    Log.d(TAG, Str.fm("Created Fake Time for Field [%s] Original Value=[%s] Converted MS=%s Original MS=%s Offset=%s Fake Time Value=[%s] File=%s",
+                    Log.d(TAG, Str.fm("Created Fake Time for Field [%s] Original Value=[%s] Converted MS=%s Original MS=%s Fake Time Value=[%s] File=%s",
                             t,
                             originalValue,
                             inputMilliseconds,
                             org,
-                            offset,
                             fakeTime,
-                            interceptor.file));
+                            interceptor.fileOrApp));
 
                 return fakeTime;
             }
@@ -153,9 +144,9 @@ public class StatCommandCleaner {
     }
 
 
-    public static String parseFake(String output, FileTimeInterceptor interceptor) {
+    public static String parseFake(String output, TimeInterceptor interceptor) {
         if(DebugUtil.isDebug())
-            Log.d(TAG, "Cleaning Stat Command output for File: " + interceptor.file + " Output=" + Str.ensureNoDoubleNewLines(output));
+            Log.d(TAG, "Cleaning Stat Command output for File: " + interceptor.fileOrApp + " Output=" + Str.ensureNoDoubleNewLines(output));
 
         StringBuilder currentChunk = new StringBuilder();
         StringBuilder full = new StringBuilder();
@@ -217,7 +208,7 @@ public class StatCommandCleaner {
 
         String res = full.toString();
         if(DebugUtil.isDebug())
-            Log.d(TAG, "File:" + interceptor.file + " Stat Command Output is now: " + Str.ensureNoDoubleNewLines(res));
+            Log.d(TAG, "File:" + interceptor.fileOrApp + " Stat Command Output is now: " + Str.ensureNoDoubleNewLines(res));
 
         return res;
     }

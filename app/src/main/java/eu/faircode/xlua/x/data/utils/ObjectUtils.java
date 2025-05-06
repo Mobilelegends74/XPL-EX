@@ -1,7 +1,9 @@
 package eu.faircode.xlua.x.data.utils;
 
 import android.util.Log;
+import android.util.Pair;
 
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 
@@ -10,6 +12,7 @@ import eu.faircode.xlua.x.data.interfaces.IValidator;
 import eu.faircode.xlua.x.data.interfaces.IValueSelector;
 import eu.faircode.xlua.x.data.string.StrBuilder;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
+import eu.faircode.xlua.x.xlua.LibUtil;
 
 /**
  * ToDo: Design a Value Selection System with Cached Evaluation
@@ -83,7 +86,60 @@ import eu.faircode.xlua.x.runtime.RuntimeUtils;
 public class ObjectUtils {
     //public static final IConditioner<Object> NON_NULL_CONDITIONER = (o) -> { return o != null; };
 
-    private static final String TAG = "XLua.ObjectUtils";
+    private static final String TAG = LibUtil.generateTag(ObjectUtils.class);
+
+
+    public static String objectValidity(Object o) {
+        if(o == null) {
+            return "IsNull: true";
+        } else {
+            if(o instanceof Pair) {
+                try {
+                    Pair p = (Pair) o;
+                    Object o1 = p.first;
+                    Object o2 = p.second;
+                    return "IsNull (Pair): false, [" + (o1 == null) + "][" + (o2 == null) + "]";
+                }catch (Exception ignored) {
+                    return "IsNull (Pair): false";
+                }
+            } else if (o instanceof String) {
+                try {
+                    String s = (String)o;
+                    return "IsNull (String): false, IsEmpty: " + s.isEmpty();
+                }catch (Exception ignored) {
+                    return "IsNull (String): false";
+                }
+            }
+            else if(o instanceof Array || o.getClass().isArray()) {
+                try {
+                    int sz = Array.getLength(o);
+                    return "IsNull (Array): false, IsEmpty: " + (sz <= 0);
+                }catch (Exception ignored) {
+                    return "IsNull (Array): false";
+                }
+            }
+            else if(o instanceof Collection) {
+                try {
+                    int sz = ((Collection)o).size();
+                    return "IsNull (Collection): false, IsEmpty: " + (sz <= 0);
+                }catch (Exception ignored) {
+                    return "IsNull (Collection): false";
+                }
+            }
+            else if(o instanceof IValidator) {
+                try {
+                    return "IsNull (IValidator): false, IsValid: " + ((IValidator)o).isValid();
+                }catch (Exception ignored) {
+                    return "IsNull (IValidator): false";
+                }
+            }
+            else {
+                return "IsNull: false";
+            }
+        }
+    }
+
+
 
 
     @SafeVarargs

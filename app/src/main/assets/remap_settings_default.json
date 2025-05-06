@@ -31,6 +31,31 @@
     "id": "soc.cpu.instruction.set.32",
     "oldIds": ["cpu.dalvik.vm.variant"]
   },
+
+  {
+    "id": "files.time.modify.offset",
+    "oldIds": ["file.time.modify.offset", "file.last.modified.offset"]
+  },
+  {
+    "id": "files.time.access.offset",
+    "oldIds": ["file.time.access.offset"]
+  },
+  {
+    "id": "files.time.created.offset",
+    "oldIds": ["file.time.created.offset"]
+  },
+
+  {
+    "id": "apps.time.sync.bool",
+    "oldIds": ["apps.sync.times.bool"]
+  },
+
+  {
+    "id": "apps.time.sync.bool",
+    "oldIds": ["apps.sync.times.bool"]
+  },
+
+
   {
     "id": "soc.cpu.abi",
     "oldIds": ["cpu.abi"]
@@ -91,10 +116,48 @@
     "id": "zone.country.name",
     "oldIds": ["region.country"]
   },
+
   {
-    "id": "zone.country.iso2",
-    "oldIds": ["region.country.iso"]
+    "id": "cell.sim.country.iso.[1,2]",
+    "oldIds": [
+      "zone.country.iso2",
+      "region.country.iso",
+      "cell.sim.country.iso",
+      "cell.sim.country.iso.1",
+      "cell.sim.country.iso.2",
+      "cell.provider.country.iso",
+      "cell.provider.country.iso.1",
+      "cell.provider.country.iso.2",
+      "cell.provider.country.iso.[1,2]"
+    ]
   },
+
+
+  {
+    "id": "cell.data.is.opportunistic.[1,2]",
+    "oldIds":
+    [
+      "cell.data.is.opportunistic",
+      "cell.data.is.opportunistic.1",
+      "cell.data.is.opportunistic.2",
+      "gsm.setting.network.opportunistic.bool",
+      "cell.data.is.opportunistic"
+    ]
+  },
+
+
+
+  {
+    "id": "cell.sim.is.embedded.[1,2]",
+    "oldIds": [
+      "gsm.setting.network.esim.bool",
+      "cell.operator.is.embedded",
+      "cell.operator.is.embedded.1",
+      "cell.operator.is.embedded.2",
+      "cell.operator.is.embedded.[1,2]"
+    ]
+  },
+
   {
     "id": "zone.country.code",
     "oldIds": ["region.country.code", "region.region"]
@@ -125,28 +188,94 @@
   },
   {
     "id": "cell.phone.type.[1,2]",
-    "oldIds": ["gsm.phone.type", "cell.phone.type.1", "cell.phone.type.2"]
+    "oldIds": [
+      "gsm.phone.type",
+      "cell.phone.type",
+      "cell.phone.type.1",
+      "cell.phone.type.2"
+    ]
   },
   {
     "id": "cell.phone.sim.card.count",
-    "oldIds": ["gsm.sim.count", "cell.phone.sim.card.count.[1,2]", "cell.phone.sim.card.count.1", "cell.phone.sim.card.count.2"]
+    "oldIds": [
+      "gsm.sim.count",
+      "cell.phone.sim.card.count.[1,2]",
+      "cell.phone.sim.card.count.1",
+      "cell.phone.sim.card.count.2"]
   },
   {
     "id": "cell.operator.id.[1,2]",
-    "oldIds": ["gsm.operator.id", "cell.operator.id.1", "cell.operator.id.2"]
+    "oldIds": ["gsm.operator.id", "cell.operator.id.1", "cell.operator.id.2", "cell.operator.id"]
   },
   {
     "id": "cell.operator.name.[1,2]",
-    "oldIds": ["gsm.network.carrier", "cell.operator.name.1", "cell.operator.name.2"]
+    "oldIds":
+    [
+      "gsm.network.carrier",
+      "cell.operator.name.1",
+      "cell.operator.name.2"
+    ]
   },
   {
     "id": "cell.operator.numeric.id.[1,2]",
     "oldIds": ["gsm.operator.id", "cell.operator.numeric.id.1", "cell.operator.numeric.id.2"]
   },
+
   {
-    "id": "cell.operator.display.name.[1,2]",
-    "oldIds": ["gsm.setting.display.name", "cell.operator.display.name.1", "cell.operator.display.name.2"]
+    "id": "settings.one.plus.security.uuid",
+    "oldIds": [
+      "settings.xiaomi.op.security.uuid",
+      "settings.xiaomi.op_security_uuid"
+    ]
   },
+  {
+    "id": "settings.xiaomi.mdm.uuid",
+    "oldIds": ["settings.xiaomi.mdm_uuid"]
+  },
+  {
+    "id": "settings.xiaomi.key.mqs.uuid",
+    "oldIds": ["settings.xiaomi.key_mqs_uuid"]
+  },
+  {
+    "id": "settings.xiaomi.mi.health.id",
+    "oldIds": ["settings.xiaomi.mi_health_id"]
+  },
+  {
+    "id": "settings.xiaomi.gcbooster.uuid",
+    "oldIds": ["settings.xiaomi.gcbooster_uuid"]
+  },
+
+
+  {
+    "id": "__delete",
+    "oldIds": [
+      "cell.sim.country.numeric.code",
+      "cell.sim.country.numeric.code.1",
+      "cell.sim.country.numeric.code.2",
+      "cell.sim.country.numeric.code.[1,2]",
+      "gsm.data.state",
+      "gsm.index.sim.port",
+      "gsm.index.sim.slot",
+      "gsm.sim.card.id",
+      "gsm.sim.state",
+      "gsm.subscription.usage.setting"
+    ]
+  },
+
+  {
+    "id": "cell.display.name.[1,2]",
+    "oldIds":
+    [
+      "gsm.setting.display.name",
+      "gsm.setting.display.name.1",
+      "gsm.setting.display.name.2",
+      "cell.operator.display.name.1",
+      "cell.operator.display.name.2",
+      "cell.operator.display.name.[1,2]",
+      "cell.operator.display.name"
+    ]
+  },
+
   {
     "id": "cell.operator.mcc.[1,2]",
     "oldIds": ["gsm.operator.mcc", "cell.operator.mcc", "cell.operator.mcc.1", "cell.operator.mcc.2"]
@@ -155,58 +284,183 @@
     "id": "cell.operator.mnc.[1,2]",
     "oldIds": ["gsm.operator.mnc", "cell.operator.mnc", "cell.operator.mnc.1", "cell.operator.mnc.2"]
   },
+
   {
-    "id": "unique.gsm.phone.number.[1,2]",
-    "oldIds": ["unique.gsm.phone.number", "unique.gsm.phone.number.1", "unique.gsm.phone.number.2"]
+    "id": "cell.unique.phone.number.[1,2]",
+    "oldIds": [  "unique.gsm.phone.number.[1,2]", "unique.gsm.phone.number", "unique.gsm.phone.number.1", "unique.gsm.phone.number.2", "cell.phone.number.[1,2]"]
+  },
+
+
+  {
+    "id": "cell.data.roaming.enabled.flag.[1,2]",
+    "oldIds":
+    [
+      "cell.data.roaming.enabled.flag",
+      "cell.data.roaming.enabled.flag.1",
+      "cell.data.roaming.enabled.flag.2",
+
+      "cell.data.roaming.enabled",
+      "cell.data.roaming.enabled.1",
+      "cell.data.roaming.enabled.2",
+      "cell.data.roaming.enabled.[1,2]",
+
+      "cell.data.roaming.enabled",
+      "cell.data.roaming.enabled.1",
+      "cell.data.roaming.enabled.2",
+
+      "gsm.setting.network.roaming.bool"
+    ]
+  },
+
+
+
+
+  {
+    "id": "cell.unique.subscriber.id.[1,2]",
+    "oldIds": [
+      "unique.gsm.subscription.id",
+      "unique.gsm.subscription.id.1",
+      "unique.gsm.subscription.id.2",
+      "unique.gsm.subscription.id.[1,2]",
+      "cell.unique.subscriber.id",
+      "cell.unique.subscriber.id.1",
+      "cell.unique.subscriber.id.2"]
+  },
+
+  {
+    "id": "props.unique.vbmeta.digest",
+    "oldIds": [ "unique.property.vbmeta.digest" ]
+  },
+
+  {
+    "id": "device.unique.bluetooth.name",
+    "oldIds": [ "bluetooth.name" ]
+  },
+
+
+  {
+    "id": "unique.account.email",
+    "oldIds": [ "value.email" ]
+  },
+
+
+  {
+    "id": "cell.unique.imei.[1,2]",
+    "oldIds": [
+      "value.imei",
+      "unique.gsm.imei",
+      "unique.gsm.imei.1",
+      "unique.gsm.imei.2",
+      "unique.gsm.imei.[1,2]",
+      "cell.unique.imei",
+      "cell.unique.imei.1",
+      "cell.unique.imei.2"
+    ]
+  },
+
+  {
+    "id": "cell.unique.meid.[1,2]",
+    "oldIds": [
+      "value.meid",
+      "unique.gsm.meid",
+      "unique.gsm.meid.1",
+      "unique.gsm.meid.2",
+      "unique.gsm.meid.[1,2]",
+      "cell.unique.meid",
+      "cell.unique.meid.1",
+      "cell.unique.meid.2"
+    ]
   },
   {
-    "id": "unique.gsm.subscription.id.[1,2]",
-    "oldIds": ["unique.gsm.subscription.id", "unique.gsm.subscription.id.1", "unique.gsm.subscription.id.2"]
+    "id": "cell.unique.sim.icc.id.[1,2]",
+    "oldIds": [
+      "unique.gsm.icc.id",
+      "unique.gsm.icc.id.1",
+      "unique.gsm.icc.id.2",
+      "unique.gsm.icc.id.[1,2]",
+      "unique.gsm.sim.serial",
+      "unique.gsm.sim.serial.1",
+      "unique.gsm.sim.serial.2",
+      "unique.gsm.sim.serial.[1,2]"
+    ]
   },
   {
-    "id": "unique.gsm.imei.[1,2]",
-    "oldIds": ["unique.gsm.imei", "unique.gsm.imei.1", "unique.gsm.imei.2"]
+    "id": "cell.voice.mail.alpha.tag.[1,2]",
+    "oldIds": [
+      "unique.gsm.voicemail.id",
+      "unique.gsm.voicemail.id.1",
+      "unique.gsm.voicemail.id.2",
+      "unique.gsm.voicemail.id.[1,2]",
+      "cell.voice.mail.alpha.tag",
+      "cell.voice.mail.alpha.tag.1",
+      "cell.voice.mail.alpha.tag.2"
+    ]
   },
+
   {
-    "id": "unique.gsm.meid.[1,2]",
-    "oldIds": ["unique.gsm.meid", "unique.gsm.meid.1", "unique.gsm.meid.2"]
+    "id": "cell.unique.msin.[1,2]",
+    "oldIds": [
+      "unique.gsm.operator.msin",
+      "unique.gsm.operator.msin.1",
+      "unique.gsm.operator.msin.2",
+      "unique.gsm.operator.msin.[1,2]"
+    ]
   },
-  {
-    "id": "unique.gsm.icc.id.[1,2]",
-    "oldIds": ["unique.gsm.icc.id", "unique.gsm.icc.id.1", "unique.gsm.icc.id.2"]
-  },
-  {
-    "id": "unique.gsm.phone.number.[1,2]",
-    "oldIds": ["unique.gsm.phone.number", "unique.gsm.phone.number.1", "unique.gsm.phone.number.2"]
-  },
-  {
-    "id": "unique.gsm.sim.serial.[1,2]",
-    "oldIds": ["unique.gsm.sim.serial", "unique.gsm.sim.serial.1", "unique.gsm.sim.serial.2"]
-  },
-  {
-    "id": "unique.gsm.voicemail.id.[1,2]",
-    "oldIds": ["unique.gsm.voicemail.id", "unique.gsm.voicemail.id.1", "unique.gsm.voicemail.id.2"]
-  },
-  {
-    "id": "unique.gsm.operator.msin.[1,2]",
-    "oldIds": ["unique.gsm.operator.msin", "unique.gsm.operator.msin.1", "unique.gsm.operator.msin.2"]
-  },
+
   {
     "id": "cell.sim.type.[1,2]",
-    "oldIds": ["cell.sim.type.1", "cell.sim.type.2"]
+    "oldIds": [
+      "cell.sim.type.1",
+      "cell.sim.type.2",
+      "gsm.network.type"
+    ]
   },
   {
     "id": "cell.sim.state.flag.[1,2]",
     "oldIds": ["cell.sim.state.flag,[1,2]"]
   },
+
+
+  {
+    "id": "cell.sim.state.flag.[1,2]",
+    "oldIds": ["cell.sim.state.flag,[1,2]"]
+  },
+
+
+  {
+    "id": "__delete",
+    "oldIds": [
+      "cell.sim.country.numeric.code",
+      "cell.sim.country.numeric.code.1",
+      "cell.sim.country.numeric.code.2",
+      "cell.sim.country.numeric.code.[1,2]",
+      "cell.sim.country.iso.numeric.test",
+      "cell.sim.country.iso.numeric.test.1",
+      "cell.sim.country.iso.numeric.test.2",
+      "cell.sim.country.iso.numeric.test.[1,2]"
+    ]
+  },
+
+
+
+
   {
     "id": "cell.sim.state.[1,2]",
-    "oldIds": ["cell.sim.state.1", "cell.sim.state.2"]
+    "oldIds": [
+      "cell.sim.state",
+      "cell.sim.state.1",
+      "cell.sim.state.2"
+    ]
   },
+
   {
     "id": "cell.location.lac",
-    "oldIds": ["gsm.cell.location.lac"]
+    "oldIds": [
+      "gsm.cell.location.lac",
+      "lac.cid"
+    ]
   },
+
   {
     "id": "cell.location.cid",
     "oldIds": ["gsm.cell.location.cid"]

@@ -15,7 +15,7 @@ public class RandomRegionParent extends RandomElement {
 
         putRequirements(
                 RandomizersCache.SETTING_ZONE_COUNTRY_NAME,
-                RandomizersCache.SETTING_ZONE_COUNTRY_ISO2,
+                //RandomizersCache.SETTING_ZONE_COUNTRY_ISO2,
                 RandomizersCache.SETTING_ZONE_COUNTRY_CODE,
                 RandomizersCache.SETTING_ZONE_LANGUAGE_NAME,
                 RandomizersCache.SETTING_ZONE_LANGUAGE_ISO,
@@ -34,7 +34,7 @@ public class RandomRegionParent extends RandomElement {
 
         // Push all region settings to context
         context.pushValue(RandomizersCache.SETTING_ZONE_COUNTRY_NAME, randomSetting.getCountryName());
-        context.pushValue(RandomizersCache.SETTING_ZONE_COUNTRY_ISO2, randomSetting.getCountryIso2());
+        //context.pushValue(RandomizersCache.SETTING_ZONE_COUNTRY_ISO2, randomSetting.getCountryIso2());
         context.pushValue(RandomizersCache.SETTING_ZONE_COUNTRY_CODE, randomSetting.getCountryCode());
         context.pushValue(RandomizersCache.SETTING_ZONE_LANGUAGE_NAME, randomSetting.getLanguageName());
         context.pushValue(RandomizersCache.SETTING_ZONE_LANGUAGE_ISO, randomSetting.getLanguageIso());
@@ -64,7 +64,7 @@ public class RandomRegionParent extends RandomElement {
     }
 
     // Country ISO2 Randomizer
-    public static class RandomRegionCountryIso2 extends RandomElement {
+    /*public static class RandomRegionCountryIso2 extends RandomElement {
         public RandomRegionCountryIso2() {
             super("Region Country ISO2 Code");
             putSettings(RandomizersCache.SETTING_ZONE_COUNTRY_ISO2);
@@ -77,7 +77,7 @@ public class RandomRegionParent extends RandomElement {
             RegionSettingsHashMap.RegionSetting randomSetting = regionSettingsMap.getRandomRegionSetting();
             context.pushValue(context.stack.pop(), randomSetting.getCountryIso2());
         }
-    }
+    }*/
 
     // Country Code Randomizer
     public static class RandomRegionCountryCode extends RandomElement {

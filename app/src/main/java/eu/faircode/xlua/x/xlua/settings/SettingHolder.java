@@ -12,6 +12,7 @@ import eu.faircode.xlua.x.ui.core.UINotifier;
 import eu.faircode.xlua.x.ui.core.interfaces.IDiffFace;
 import eu.faircode.xlua.x.ui.core.view_registry.IIdentifiableObject;
 import eu.faircode.xlua.x.ui.core.view_registry.SharedRegistry;
+import eu.faircode.xlua.x.xlua.settings.data.SettingPacket;
 import eu.faircode.xlua.x.xlua.settings.interfaces.INameInformation;
 import eu.faircode.xlua.x.xlua.settings.interfaces.IValueDescriptor;
 
@@ -60,7 +61,7 @@ public class SettingHolder extends UiBindingsController implements IValueDescrip
 
     public String getContainerName() { return nameInformation != null ? nameInformation.getContainerName() : ""; }
 
-    public void setDescription(String description) { if(!TextUtils.isEmpty(description)) this.description = description; }
+    public void setDescription(String description) { if(!Str.isEmpty(description)) this.description = description; }
 
     protected SettingHolder() {  }
     public SettingHolder(NameInformation nameInformation, String value, String description) {
@@ -75,6 +76,18 @@ public class SettingHolder extends UiBindingsController implements IValueDescrip
     public void notifyUpdate(UINotifier notifier) {
         if(notifier != null && notifier.hasGroups()) {
             notifier.notifyChange(UINotifier.settingName(getName()), UINotifier.CODE_DATA_CHANGED);
+        }
+    }
+
+    public void consume(SettingPacket packet) {
+        if(packet != null) {
+            if(Str.isEmpty(this.value) && !Str.isEmpty(packet.value)) {
+                this.value = packet.value;
+            }
+
+            if(Str.isEmpty(this.description) && !Str.isEmpty(packet.description)) {
+                this.description = packet.description;
+            }
         }
     }
 

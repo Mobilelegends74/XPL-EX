@@ -14,7 +14,14 @@
     "enabled":true,
     "optional":true,
     "usage":true,
-    "luaScript": ""
+    "luaScript": "",
+    "settings": [
+      "files.time.modify.offset",
+      "files.time.access.offset",
+      "files.time.created.offset",
+      "files.time.sync.bool",
+      "files.offset.subtract.bool"
+    ]
   },
   {
     "builtin": true,
@@ -31,7 +38,14 @@
     "enabled":true,
     "optional":true,
     "usage":true,
-    "luaScript": ""
+    "luaScript": "",
+    "settings": [
+      "files.time.modify.offset",
+      "files.time.access.offset",
+      "files.time.created.offset",
+      "files.time.sync.bool",
+      "files.offset.subtract.bool"
+    ]
   },
 
   {
@@ -48,10 +62,18 @@
     "maxSdk": 999,
     "version": 1,
     "description": "",
+    "enabled":true,
     "optional": true,
     "usage": true,
     "notify": false,
-    "luaScript": "@id_stat_attributes"
+    "luaScript": "@id_stat_attributes",
+    "settings": [
+      "files.time.modify.offset",
+      "files.time.access.offset",
+      "files.time.created.offset",
+      "files.time.sync.bool",
+      "files.offset.subtract.bool"
+    ]
   },
   {
     "builtin": true,
@@ -67,12 +89,18 @@
     "maxSdk": 999,
     "version": 1,
     "description": "",
+    "enabled":true,
     "optional": true,
     "usage": true,
     "notify": false,
     "luaScript": "@id_stat_attributes",
-    "settings": ["file.last.modified.offset"]
-
+    "settings": [
+      "files.time.modify.offset",
+      "files.time.access.offset",
+      "files.time.created.offset",
+      "files.time.sync.bool",
+      "files.offset.subtract.bool"
+    ]
   },
 
 
@@ -91,11 +119,18 @@
     "maxSdk": 999,
     "version": 1,
     "description": "",
+    "enabled":true,
     "optional": true,
     "usage": true,
     "notify": false,
     "luaScript": "@id_stat_last_modified",
-    "settings": ["file.last.modified.offset"]
+    "settings": [
+      "files.time.modify.offset",
+      "files.time.access.offset",
+      "files.time.created.offset",
+      "files.time.sync.bool",
+      "files.offset.subtract.bool"
+    ]
   },
   {
     "builtin": true,
@@ -111,11 +146,18 @@
     "maxSdk": 999,
     "version": 1,
     "description": "",
+    "enabled":true,
     "optional": true,
     "usage": true,
     "notify": false,
     "luaScript": "@id_stat_nio",
-    "settings": ["file.last.modified.offset"]
+    "settings": [
+      "files.time.modify.offset",
+      "files.time.access.offset",
+      "files.time.created.offset",
+      "files.time.sync.bool",
+      "files.offset.subtract.bool"
+    ]
   }
   /*{
     "builtin": true,

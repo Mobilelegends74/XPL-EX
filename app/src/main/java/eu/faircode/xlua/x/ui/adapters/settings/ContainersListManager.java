@@ -21,6 +21,7 @@ import java.util.Map;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.R;
 import eu.faircode.xlua.databinding.SettingsExItemContainerBinding;
+import eu.faircode.xlua.utilities.CursorUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.data.utils.ObjectUtils;
@@ -82,7 +83,8 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
 
     @Override
     protected void bindItemView(SettingsExItemContainerBinding binding, SettingsContainer container) {
-        if (container == null) return;
+        if (container == null)
+            return;
 
         // Create or get view holder
         ContainerViewHolder holder = viewHolders.get(container.getContainerName());
@@ -194,7 +196,7 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
             sharedRegistry.putGroupChangeListener(this, currentItem.getObjectId());
             sharedRegistry.notifier.subscribeGroup(this);
 
-            Log.d(TAG, "Current Item=" + currentItem.getName() + " Nice Name=" + currentItem.getNameNice() + " Container=" + currentItem.getContainerName() + " IsSpecial=" + currentItem.isSpecial());
+            //Log.d(TAG, "Current Item=" + currentItem.getName() + " Nice Name=" + currentItem.getNameNice() + " Container=" + currentItem.getContainerName() + " IsSpecial=" + currentItem.isSpecial());
             if(currentItem.isSpecial()) {
                 CoreUiUtils.nullifyViews(
                         true,
@@ -217,14 +219,19 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                     binding.ivBtSettingContainerRandomize,
                     binding.ivBtSettingContainerReset,
                     binding.ivBtSettingContainerSave,
+
+                    binding.llHorzScroll,
+                    binding.actionButtonsScrollView,
+
                     binding.ivBtWildcard,
                     binding.spSettingContainerRandomizer,
                     binding.ivBtHookMenu);
 
             if(isExpanded && currentItem != null) {
                 if(settingsManager != null) {
-                    if(currentItem.hasSettings())
+                    if(currentItem.hasSettings()) {
                         TryRun.onMain(() -> settingsManager.submitList(currentItem.getSettings()));
+                    }
                     else
                         TryRun.onMain(() -> settingsManager.clear());
                 }
@@ -302,7 +309,7 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                 groupStats
                         .update(currentItem, forceUpdate)
                         .updateColor(binding.tvSettingContainerNameNice, context)
-                        .updateIv(binding.ivActionNeeded);
+                        .updateIv(binding.ivActionNeeded, currentItem.getName());
             }
         }
 
@@ -397,11 +404,20 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                     });
                     break;
                 case R.id.ivActionNeeded:
-                    MessageDialog.create()
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setName(res.getString(R.string.message_warning_hooks_title))
-                            .setMessage(res.getString(R.string.message_warning_hooks_message))
-                            .show(manager.getFragmentMan(), res.getString(R.string.menu_info));
+                    if(groupStats.hasUnsaved()) {
+                        MessageDialog.create()
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setName(res.getString(R.string.message_warning_hooks_title))
+                                .setMessage(res.getString(R.string.message_warning_hooks_message))
+                                .show(manager.getFragmentMan(), res.getString(R.string.menu_info));
+                    } else {
+                        MessageDialog.create()
+                                .setIcon(R.drawable.ic_finger_print18)
+                                .setName(res.getString(R.string.message_unique_title))
+                                .setMessage(res.getString(R.string.message_unique_message))
+                                .show(manager.getFragmentMan(), res.getString(R.string.menu_info));
+                    }
+
                     break;
             }
         }
@@ -502,7 +518,7 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                         Log.d(TAG, "Randomizer Selected=" + randomizer.getDisplayName() + " IsOption=" + randomizer.isOption() +  " Current Item=" + currentItem.getContainerName());
 
                     if(randomizer.isOption()) {
-                        if(!(randomizer instanceof RandomOptionNullElement)) {
+                        if(!(randomizer instanceof RandomOptionNullElement))
                             RandomizerSessionContext.create()
                                     .updateToOption(
                                             manager.getAsFragment(),
@@ -510,7 +526,6 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                                             randomizer,
                                             context,
                                             sharedRegistry);
-                        }
                     } else {
                         ListUtil.forEachVoid(settingShared
                                         .getSettingsForContainer(currentItem, false),

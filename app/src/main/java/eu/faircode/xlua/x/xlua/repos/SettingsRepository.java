@@ -23,6 +23,8 @@ import eu.faircode.xlua.x.xlua.settings.data.SettingPacket;
 public class SettingsRepository implements IXLuaRepo<SettingsContainer> {
     private static final String TAG = LibUtil.generateTag(SettingsRepository.class);
 
+    public static final String DEFAULT_SORT_FIELD = "name";
+
     public static final IXLuaRepo<SettingsContainer> INSTANCE = new SettingsRepository();
 
     @Override
@@ -45,13 +47,6 @@ public class SettingsRepository implements IXLuaRepo<SettingsContainer> {
 
     @Override
     public List<SettingsContainer> get(Context context, UserClientAppContext userContext) {
-        List<SettingPacket> settings = GetSettingsExCommand.get(context, true, userContext.appUid, userContext.appPackageName, GetSettingsExCommand.FLAG_ONE);
-        if(DebugUtil.isDebug())
-            Log.d(TAG, "Settings Count from Command=" + ListUtil.size(settings));
-
-        if(!ListUtil.isValid(settings))
-            return ListUtil.emptyList();
-
         //ToDO: Build settings factory to do as it says
         //          So in theory, most of this bullshit at least (GetSettingsExCommand) should be done in the Factory!
         //          Goal is also to make these portable but usable any where Service or Client
@@ -60,50 +55,35 @@ public class SettingsRepository implements IXLuaRepo<SettingsContainer> {
         //          Perhaps it can handle a lot like keeping things up to date in containers etc
         //          Make a nice one way in linear control system so in theory I can add more it will handle duplicates etc
 
-        SettingsFactory factory = new SettingsFactory();
-        List<SettingPacket> all = factory.joinHookDefinedSettings(context, settings, userContext);
-        if(!ListUtil.isValid(all))
-            all = new ArrayList<>(settings);
-
-        if(DebugUtil.isDebug())
-            Log.d(TAG, "Settings Count from Joining from Command and Hooks=" + ListUtil.size(all) + " Original Count: " + ListUtil.size(settings));
-
-        factory.parseSettings(all);
-        factory.finish();
-        List<SettingsContainer> containers = factory.getContainers();
-        if(DebugUtil.isDebug())
-            Log.d(TAG, "Got all Setting Containers from repo, Settings Original Count=" + ListUtil.size(settings) + " All Settings Count=" + ListUtil.size(all) + " Container Count=" + ListUtil.size(containers));
-
-        return containers;
+        return SettingsFactory
+                .create()
+                .initialize(context, userContext, true)
+                .getContainers();
     }
 
     @Override
     public List<SettingsContainer> filterAndSort(List<SettingsContainer> items, FilterRequest request) {
-        if(!ObjectUtils.anyNull(items, request))
-            return ListUtil.emptyList();
-
-        Comparator<SettingsContainer> comparator = getComparator(request.getOrderOrDefault("name"), request.isReversed);
-        List<SettingsContainer> containers = new ArrayList<>();
-        for(SettingsContainer container : items)
-            if(isMatchingCriteria(container, request))
-                containers.add(container);
-
-        Collections.sort(containers, comparator);
-        if(DebugUtil.isDebug())
-            Log.d(TAG, "Filtered and Sorted through Settings, Original Size=" + ListUtil.size(items) + " New Size=" + ListUtil.size(containers) + " Request=" + Str.toStringOrNull(request));
-
-        return containers;
+        return ListUtil.forEachFilter(
+                items,
+                request,
+                SettingsRepository::isMatchingCriteria,
+                getComparator(request.getOrderOrDefault(DEFAULT_SORT_FIELD), request.isReversed),
+                true);
     }
 
     public static boolean isMatchingCriteria(SettingsContainer container, FilterRequest request) {
+        if(request == null || container == null)
+            return true;
         if(!container.getContainerName().toLowerCase().contains(request.getQueryOrDefault(container.getContainerName()).toLowerCase()))
             return false;
+
         //Make this into a irreplaceable type from IDiffFace ??
         if(request.hasFilterTags()) {
             for(String filter : request.filterTags) {
                 switch (filter) {
                     case "enabled":
-                        if(!container.isValid()) return false;
+                        if(!container.isValid())
+                            return false;
                         break;
                 }
             }

@@ -56,6 +56,12 @@
     "usage": true,
     "notify": false,
     "luaScript": "@id_package_info_after_two",
-    "settings": ["apps.install.time.offset", "apps.update.time.offset", "apps.sync.times.bool","apps.current.install.time.offset", "apps.current.update.time.offset"]
+    "settings": [
+      "apps.install.time.offset",
+      "apps.update.time.offset",
+      "apps.sync.times.bool",
+      "apps.current.install.time.offset",
+      "apps.current.update.time.offset"
+    ]
   }
 ]

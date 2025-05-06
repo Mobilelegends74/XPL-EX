@@ -47,7 +47,7 @@ import eu.faircode.xlua.x.xlua.database.A_CODE;
 import eu.faircode.xlua.x.xlua.identity.UserIdentity;
 import eu.faircode.xlua.x.xlua.settings.data.SettingPacket;
 
-
+//To Store "logs" or more cache have cleared out here n there
 
 public class ConfigDialog extends AppCompatDialogFragment implements ConfigAdapter.OnConfigActionListener {
     private static final String TAG = LibUtil.generateTag(ConfigDialog.class);

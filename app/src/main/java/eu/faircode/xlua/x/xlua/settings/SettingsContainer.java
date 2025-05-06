@@ -8,7 +8,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -100,8 +104,51 @@ public class SettingsContainer extends NameInformationTypeBase implements IDiffF
         return names;
     }
 
-    public List<SettingHolder> getSettings() { return settings.isEmpty() ? ListUtil.emptyList() : ListUtil.copyToArrayList(settings.values()); }
-    public void ensureDescription(String description) { if(this.description == null && !TextUtils.isEmpty(description)) this.description = description; }
+    //public List<SettingHolder> getSettings() { return settings.isEmpty() ? ListUtil.emptyList() : ListUtil.copyToArrayList(settings.values()); }
+
+    public void setSettings(List<SettingHolder> holders) {
+        this.settings.clear();
+        if(ListUtil.isValid(holders)) {
+            for(SettingHolder holder : holders) {
+                int index = holder.getIndex();
+                int minIndex = Math.max(0, index);
+                this.settings.put(minIndex, holder);
+                /*if(index == 1 || index == 2) {
+                    this.settings.put(index, holder);
+                } else {
+
+                    this.settings.put(minIndex, holder);
+                }*/
+            }
+        }
+    }
+
+    public List<SettingHolder> getSettings() { return getSettings(false); }
+    public List<SettingHolder> getSettings(boolean includeAllPossibleOptionsOnIndexable) {
+        if(includeAllPossibleOptionsOnIndexable && this.settings.size() > 1) {
+            LinkedHashMap<Integer, SettingHolder> items = new LinkedHashMap<>(this.settings);
+            LinkedList<SettingHolder> list = new LinkedList<>(items.values());
+            if(!items.containsKey(0) || (items.size() > 1)) {
+                SettingHolder first = new SettingHolder(this.nameInformation, null, this.description);
+                list.add(first);
+                SettingHolder second = new SettingHolder(NameInformation.create(getContainerName()), null, this.description);
+                list.add(second);
+            }
+
+            Collections.sort(list, (settingHolder, t1) -> settingHolder.getName().compareTo(t1.getName()));
+            return list;
+        } else {
+            return ListUtil.copyToArrayList(settings.values());
+        }
+    }
+
+
+    public void ensureDescription(String desc) {
+        String trimmed = Str.trimOriginal(desc);
+        if(Str.isValidNotWhitespaces(trimmed) && Str.length(trimmed) > 5) {
+            this.description = trimmed;
+        }
+    }
 
     public SettingsContainer(SettingHolder singleSetting) {
         consumeSingleSetting(singleSetting);
@@ -124,13 +171,22 @@ public class SettingsContainer extends NameInformationTypeBase implements IDiffF
         }
     }
 
+    public SettingsContainer(NameInformation nameInformation, String containerName, boolean prepareChildrenHolder) {
+        if(nameInformation != null) {
+            super.bindNameInformation(nameInformation);
+            this.containerName = containerName;
+            if(prepareChildrenHolder)
+                nameInformation.prepareChildrenHolders(settings);
+        }
+    }
+
     public void consumeSingleSetting(SettingHolder holder) {
         if(holder != null) {
             super.bindNameInformation(holder.getNameInformation());
             this.containerName = getNameNice();
             this.settings.clear();
             this.settings.put(0, holder);
-            this.description = holder.getDescription();
+            this.ensureDescription(holder.getDescription());
         }
     }
 
@@ -173,10 +229,22 @@ public class SettingsContainer extends NameInformationTypeBase implements IDiffF
         if(child != null) {
             ensureDescription(child.getDescription());
             SettingHolder cache = settings.get(child.getIndex());
-            if(cache != null)
-                SettingsUtil.copyHolder(child, cache, true);
-
+            if(cache != null) SettingsUtil.copyHolder(child, cache, true);
             else settings.put(child.getIndex(), child);
+        }
+    }
+
+    public void pushChild(SettingHolder child, boolean ensureDescription) {
+        if(child != null) {
+            if(ensureDescription) ensureDescription(child.getDescription());
+            settings.put(child.getIndex(), child);
+            if(DebugUtil.isDebug())
+                Log.d(TAG, Str.fm("Pushed Child [%s][%s] for [%s] with Cache Count [%s] Ensure Description=%s",
+                        child.getName(),
+                        child.getIndex(),
+                        getContainerName(),
+                        settings.size(),
+                        ensureDescription));
         }
     }
 
@@ -220,9 +288,7 @@ public class SettingsContainer extends NameInformationTypeBase implements IDiffF
     }
 
     @Override
-    public int hashCode() {
-        return containerName.hashCode();
-    }
+    public int hashCode() { return containerName.hashCode(); }
 
     @NonNull
     @Override

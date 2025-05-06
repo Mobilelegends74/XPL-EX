@@ -1,8 +1,19 @@
 package eu.faircode.xlua.x.runtime.reflect;
 
+import android.app.ActivityManager;
+import android.appwidget.AppWidgetManager;
+import android.content.Context;
+import android.hardware.SensorManager;
+import android.hardware.camera2.CameraManager;
+import android.media.AudioManager;
+import android.telephony.SmsManager;
+
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+
+import eu.faircode.xlua.rootbox.XReflectUtils;
 
 public class DynType<T> {
     private T t;

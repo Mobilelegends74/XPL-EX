@@ -86,6 +86,7 @@ import eu.faircode.xlua.x.xlua.commands.call.GetBridgeVersionCommand;
 import eu.faircode.xlua.x.xlua.commands.query.GetAssignedHooksExCommand;
 import eu.faircode.xlua.x.xlua.database.DatabasePathUtil;
 import eu.faircode.xlua.x.xlua.hook.PackageHookContext;
+import eu.faircode.xlua.x.xlua.settings.GroupStats;
 
 /*
     ToDO:

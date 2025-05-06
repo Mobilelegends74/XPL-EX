@@ -20,7 +20,7 @@ function after(hook, param)
 
     if restricted then
         local old = result.name
-        local fake = param:getSetting('value.email')
+        local fake = param:getSetting('unique.account.email')
         if fake == nil then
             result.name = 'deadb33f@gmail.com'--private@lua.xprivacy.eu
         else

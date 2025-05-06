@@ -7,7 +7,7 @@
     "author": "OBC",
     "className": "Intercept.Settings.Call",
     "methodName": "settings",
-    "parameterTypes": [ "mi_health_id", "gcbooster_uuid", "key_mqs_uuid", "mdm_uuid", "op_security_uuid", "extm_uuid" ],
+    "parameterTypes": [ "mi_health_id", "gcbooster_uuid", "key_mqs_uuid", "mdm_uuid", "extm_uuid" ],
     "minSdk": 4,
     "maxSdk": 999,
     "version": 1,
@@ -17,7 +17,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "",
-    "settings":[ "settings.xiaomi.mi.health.id", "settings.xiaomi.gcbooster.uuid", "settings.xiaomi.key.mqs.uuid", "settings.xiaomi.mdm.uuid", "settings.xiaomi.op.security.uuid", "settings.xiaomi.extm.uuid" ]
+    "settings":[ "settings.xiaomi.mi.health.id", "settings.xiaomi.gcbooster.uuid", "settings.xiaomi.key.mqs.uuid", "settings.xiaomi.mdm.uuid", "settings.xiaomi.extm.uuid" ]
   },
   {
     "builtin": true,

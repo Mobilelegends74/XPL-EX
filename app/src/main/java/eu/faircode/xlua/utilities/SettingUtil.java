@@ -1,6 +1,7 @@
 package eu.faircode.xlua.utilities;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import eu.faircode.xlua.api.settings.LuaSettingExtended;
 import eu.faircode.xlua.api.settings.LuaSettingPacket;
 import eu.faircode.xlua.api.xlua.XLuaCall;
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.xlua.LibUtil;
 
 public class SettingUtil {
 
@@ -96,6 +98,7 @@ public class SettingUtil {
         return dividerDecor;
     }
 
+
     public static void sortSettings(List<LuaSettingExtended> settings) {
         if(settings != null && !settings.isEmpty()) {
             Collections.sort(settings, new Comparator<LuaSettingExtended>() {
@@ -104,11 +107,15 @@ public class SettingUtil {
                     if(o1 == null || o2 == null || o1.getName() == null || o2.getName() == null)
                         return 0;
 
+
+                    Log.d(LibUtil.generateTag(SettingUtil.class), "SETTING=" + o1.getName() + "  2=" + o2.getName());
+
                     // First, sort by built-in settings
                     if (o1.isBuiltIntSetting() && !o2.isBuiltIntSetting())
                         return -1; // o1 comes before o2
                     else if (!o1.isBuiltIntSetting() && o2.isBuiltIntSetting())
                         return 1; // o2 comes before o1
+
 
                     // If both are built-in or both are not built-in, proceed with category sorting
                     String category1 = o1.getName().split("\\.")[0];
@@ -118,16 +125,28 @@ public class SettingUtil {
                         return category1.compareToIgnoreCase(category2);
                     }
 
-                    // Within the same category, sort by .parent., regular, and .list
+                    // Within the same category, sort by priority:
+                    // 1. .parent. (highest)
+                    // 2. .list
+                    // 3. .unique.
+                    // 4. Regular items (lowest)
+
+                    // Determine item types
                     boolean isParent1 = o1.getName().contains(".parent.");
                     boolean isParent2 = o2.getName().contains(".parent.");
-                    boolean isList1 = o1.getName().endsWith(".list");
-                    boolean isList2 = o2.getName().endsWith(".list");
+                    boolean isList1 = o1.getName().contains(".list");
+                    boolean isList2 = o2.getName().contains(".list");
+                    boolean isUnique1 = o1.getName().contains(".unique.");
+                    boolean isUnique2 = o2.getName().contains(".unique.");
 
-                    if (isParent1 && !isParent2) return -1;
-                    if (!isParent1 && isParent2) return 1;
-                    if (isList1 && !isList2) return 1;
-                    if (!isList1 && isList2) return -1;
+                    // Calculate priority values (lower number means higher priority)
+                    int priority1 = isParent1 ? 0 : (isList1 ? 1 : (isUnique1 ? 2 : 3));
+                    int priority2 = isParent2 ? 0 : (isList2 ? 1 : (isUnique2 ? 2 : 3));
+
+                    // Compare by priority
+                    if (priority1 != priority2) {
+                        return priority1 - priority2;
+                    }
 
                     // If all else is equal, sort alphabetically
                     return o1.getName().compareToIgnoreCase(o2.getName());
@@ -135,6 +154,8 @@ public class SettingUtil {
             });
         }
     }
+
+
     public static boolean isBuiltInSetting(String settingName) {
         return XP_SETTINGS.contains(settingName) ||
                 settingName.endsWith(".randomize") || settingName.equalsIgnoreCase("lac,cid"); }

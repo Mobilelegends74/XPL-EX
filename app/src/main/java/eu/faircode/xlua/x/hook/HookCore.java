@@ -63,7 +63,6 @@ public class HookCore {
             Map<LuaScriptHolder, Prototype> scriptPrototype = new HashMap<>();
             PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 
-
             for(XHook hook :  HookRepository.create().initializeHooks(context, hooks, app.settings).getHooks()) {
                 List<HookDefinition> definitions = HookResolver.resolveHook(context, context.getClassLoader(), hook);
                 if(DebugUtil.isDebug())

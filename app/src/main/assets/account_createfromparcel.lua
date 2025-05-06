@@ -38,7 +38,7 @@ function after(hook, param)
     --log((restricted and 'Restricted' or 'Allowed') .. ' account ' .. result.type .. '/' .. result.name)
     if restricted then
         local old = result.name
-        local fake = param:getSetting('value.email')
+        local fake = param:getSetting('unique.account.email')
         if fake == nil then
             result.name = 'private@lua.xprivacy.eu'
         else

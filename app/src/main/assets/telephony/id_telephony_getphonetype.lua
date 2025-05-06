@@ -4,7 +4,7 @@ function after(hook, param)
 		return false
 	end
 
-	local setting = param:getSettingReMap("gsm.phone.type", "phone.type", "2")
+	local setting = param:getSettingReMap("cell.phone.type", "phone.type", "2")
 	if setting == nil then
 	    return false
 	end

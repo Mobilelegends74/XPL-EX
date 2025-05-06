@@ -81,7 +81,10 @@ public class BinderInterceptorBase implements IBinderInterceptor {
                     byte[] from = Arrays.copyOfRange(bytes, startIndex * 2, (startIndex * 2) + (length * 2));
                     String original = new String(from, StandardCharsets.UTF_16LE);
                     if(DebugUtil.isDebug())
-                        Log.d(TAG, "Got AppSetId Interface Bytes From=" + Str.bytesToHex(from) + " ID=" + original + " Setting Name Value=" + settingValueName);
+                        Log.d(TAG, "Got AppSetId Interface Bytes From=" +
+                                Str.bytesToHex(from) +
+                                " ID=" + original +
+                                " Setting Name Value=" + settingValueName);
 
                     String fake = param.getSetting(settingValueName);
                     if(Str.isEmpty(fake) || fake.length() != original.length()) {

@@ -17,19 +17,30 @@ import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XUtil;
 import eu.faircode.xlua.XposedUtil;
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.database.sql.SQLDatabase;
 import eu.faircode.xlua.x.xlua.identity.UserIdentity;
 import eu.faircode.xlua.x.xlua.identity.UserIdentityUtils;
 
 public class AppProviderApi {
-    private static final String TAG = "XLua.AppProviderApi";
+    private static final String TAG = LibUtil.generateTag(AppProviderApi.class);
 
     public static final int INVALID_VERSION = -55;
 
-    public static Map<String, AppXpPacket> getApps(Context context, SQLDatabase database, int uid, boolean initForceStop, boolean initAssignments) {
+    public static Map<String, AppXpPacket> getApps(
+            Context context,
+            SQLDatabase database,
+            int uid,
+            boolean initForceStop,
+            boolean initAssignments) {
         int userId = UserIdentityUtils.getUserId(uid);
         if(DebugUtil.isDebug())
-            Log.d(TAG, Str.fm("Getting App(s), Database=%s UserId=%s InitForceStop=%s InitAssignments=%s UID=%s", Str.noNL(database), userId, initForceStop, initAssignments, uid));
+            Log.d(TAG, Str.fm("Getting App(s), Database=%s UserId=%s InitForceStop=%s InitAssignments=%s UID=%s",
+                    Str.noNL(database),
+                    userId,
+                    initForceStop,
+                    initAssignments,
+                    uid));
 
         Map<String, AppXpPacket> apps = new HashMap<>();
 
@@ -44,7 +55,11 @@ public class AppProviderApi {
                 if(ai.packageName.startsWith(BuildConfig.APPLICATION_ID))
                     continue;
 
-                AppXpPacket packet = AppProviderUtils.assignAppInfoToPacket(ai, pm, initForceStop, initAssignments);
+                AppXpPacket packet = AppProviderUtils.assignAppInfoToPacket(
+                        ai,
+                        pm,
+                        initForceStop,
+                        initAssignments);
                 apps.put(packet.packageName, packet);
             }
         }catch (Throwable e) {

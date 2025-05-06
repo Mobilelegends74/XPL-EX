@@ -22,6 +22,7 @@ import eu.faircode.xlua.x.ui.core.FilterRequest;
 import eu.faircode.xlua.x.ui.core.UserClientAppContext;
 import eu.faircode.xlua.x.ui.core.interfaces.IListViewModel;
 import eu.faircode.xlua.x.ui.core.interfaces.IUserContext;
+import eu.faircode.xlua.x.xlua.LibUtil;
 import kotlin.Pair;
 import kotlin.Triple;
 
@@ -29,7 +30,7 @@ import kotlin.Triple;
 
 public abstract class ListBaseViewModel<TElement> extends AndroidViewModel implements IUserContext, IListViewModel<TElement> {
 
-    private static final String TAG = "XLua.ListBaseViewModel";
+    private static final String TAG = LibUtil.generateTag(ListBaseViewModel.class);
 
     //App
     //User
@@ -38,7 +39,7 @@ public abstract class ListBaseViewModel<TElement> extends AndroidViewModel imple
     //Above this can also be one for "repos"
 
     protected String tag = "";
-    protected final MutableLiveData<Triple<Pair<String, List<String>>, Pair<String, Boolean>, Long>> updateParams;
+    protected final MutableLiveData<Triple<Triple<String, String, List<String>>, Pair<String, Boolean>, Long>> updateParams;
     protected final LiveData<List<TElement>> liveData;
     protected final Handler mainHandler = new Handler(Looper.getMainLooper());
     protected final Executor backgroundExecutor = Executors.newSingleThreadExecutor();
@@ -53,14 +54,22 @@ public abstract class ListBaseViewModel<TElement> extends AndroidViewModel imple
     @Override
     public IUserContext getAsUserContext() { return this; }
 
+    protected abstract String getShowValue();
     protected abstract boolean isReversed();
     protected abstract String getOrder();
     protected abstract List<String> getFilters();
-    protected abstract List<TElement> filterData(Triple<Pair<String, List<String>>, Pair<String, Boolean>, Long> params, Application application);
+    protected abstract List<TElement> filterData(
+            Triple<Triple<String, String, List<String>>,
+                    Pair<String, Boolean>, Long> params, Application application);
 
     public ListBaseViewModel(Application application, String tag) {
         super(application);
-        this.updateParams = new MutableLiveData<>(new Triple<>(new Pair<>(Str.EMPTY, new ArrayList<>()), new Pair<>(Str.EMPTY, false), 0L));
+        this.updateParams = new MutableLiveData<>(
+                new Triple<>(
+                        new Triple<>(Str.EMPTY, Str.EMPTY,
+                                new ArrayList<>()),
+                        new Pair<>(Str.EMPTY,
+                                false), 0L));
         this.liveData = setupLiveData(application);
         this.tag = tag;
         refresh();
@@ -68,20 +77,29 @@ public abstract class ListBaseViewModel<TElement> extends AndroidViewModel imple
 
     @Override
     public void refresh() {
+        //Refresh use last query ?
         updateParams.setValue(new Triple<>(
-                new Pair<>(getOrder(), getFilters()),
+                new Triple<>(getOrder(), getShowValue(), getFilters()),
                 new Pair<>(Str.EMPTY, isReversed()),
                 System.currentTimeMillis()));
     }
 
+    //new Pair<>(request.order, request.filterTags)
     @Override
-    public void updateList(FilterRequest request) { updateList(new Pair<>(request.order, request.filterTags), request.query, request.isReversed); }
+    public void updateList(FilterRequest request) {
+        updateList(
+                new Triple<>(request.order, request.show, request.filterTags),
+                request.query,
+                request.isReversed);
+    }
 
     @Override
-    public void updateList(Pair<String, List<String>> filter, String query, boolean isReversed) {
+    public void updateList(
+            Triple<String, String, List<String>> filter,
+            String query,
+            boolean isReversed) {
         updateParams.setValue(
-                new Triple<>(filter, new Pair<>(query, isReversed),
-                System.currentTimeMillis()));
+                new Triple<>(filter, new Pair<>(query, isReversed), System.currentTimeMillis()));
     }
 
     private LiveData<List<TElement>> setupLiveData(final Application application) {

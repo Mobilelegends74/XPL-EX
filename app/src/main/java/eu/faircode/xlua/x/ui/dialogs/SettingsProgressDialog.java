@@ -108,6 +108,8 @@ public class SettingsProgressDialog extends AppCompatDialogFragment {
     }
 
     private void processSettings() {
+        //Oh ye we abandoned this dialog due to it fucking with the UI, major glitches
+        //Lets just try a new one
         if (data == null || getContext() == null) {
             dismissSafely();
             return;

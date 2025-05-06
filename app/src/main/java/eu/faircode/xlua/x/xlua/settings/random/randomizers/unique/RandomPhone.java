@@ -13,7 +13,7 @@ import eu.faircode.xlua.x.xlua.settings.random.utils.RanUnqUtils;
 public class RandomPhone extends RandomElement {
     public RandomPhone() {
         super("Phone Number");
-        putIndexSettings(RandomizersCache.SETTING_UNIQUE_PHONE_NO, 1, 2);
+        putIndexSettings(RandomizersCache.SETTING_CELL_PHONE_NUMBER, 1, 2);
     }
 
     @Override

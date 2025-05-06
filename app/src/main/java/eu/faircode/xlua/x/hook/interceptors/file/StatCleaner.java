@@ -35,7 +35,7 @@ public class StatCleaner {
             if(DebugUtil.isDebug())
                 Log.d(TAG, "Cleaning STAT Command Output for File=" + file + " Output=" + output);
 
-            FileTimeInterceptor interceptor = FileTimeInterceptor.create(file, result.param);
+            TimeInterceptor interceptor = TimeInterceptor.create(file, result.param);
             String outputRes = result.getCommandOutput();
             if(outputRes.equals("---") || outputRes.equals("--") || outputRes.equals("-"))
                 return false;
@@ -43,18 +43,18 @@ public class StatCleaner {
             result.param.setLogOld(output);
             result.param.setLogExtra("stat >> " + file);
             if(result.hasCommand("%Y", false)) {
-               long original =  interceptor.getOriginalModified(StatStructCleaner.secondsToMillis(Str.tryParseLong(outputRes)));
-               long offset = interceptor.getModifiedOffset();
-               long fake = interceptor.getFinalValue(offset, original);
+               long original =  interceptor.getOriginalModify(StatStructCleaner.secondsToMillis(Str.tryParseLong(outputRes)));
+               //long offset = interceptor.getModifiedOffset();
+               //long fake = interceptor.getFinalValue(offset, original);
+                long fake = interceptor.getModify(original);
                result.setIsMalicious(true);
 
                String fakeValue = String.valueOf(StatStructCleaner.millisToSeconds(fake));
                result.setNewValue(fakeValue);
                result.param.setLogNew(fakeValue);
                 if(DebugUtil.isDebug())
-                    Log.d(TAG, Str.fm("Is Last Modified (epoch) File=[%s] Arg for Stat, Offset=%s Original MS=%s Fake MS=%s Original Hex [%s](%s) Fake Hex [%s](%s) Actual Output=%s",
+                    Log.d(TAG, Str.fm("Is Last Modified (epoch) File=[%s] Arg for Stat, Original MS=%s Fake MS=%s Original Hex [%s](%s) Fake Hex [%s](%s) Actual Output=%s",
                             file,
-                            offset,
                             original,
                             fake,
                             outputRes.length(),
@@ -66,8 +66,9 @@ public class StatCleaner {
             }
             else if(result.hasCommand("%y", false)) {
                 long toMilliseconds = StatUtils.toEpochMillis(outputRes);
-                long original = interceptor.getOriginalModified(toMilliseconds);
-                long fake = interceptor.getFinalValue(interceptor.getModifiedOffset(), original);
+                long original = interceptor.getOriginalModify(toMilliseconds);
+                //long fake = interceptor.getFinalValue(interceptor.getModifiedOffset(), original);
+                long fake = interceptor.getModify(original);
                 String fakeToHuman = StatUtils.fromEpochMillis(fake, StatUtils.detectFormat(output));
                 result.setIsMalicious(true);
                 result.setNewValue(fakeToHuman);
@@ -83,17 +84,17 @@ public class StatCleaner {
 
             if(result.hasCommand("%Z", false)) {
                 long original =  interceptor.getOriginalChange(StatStructCleaner.secondsToMillis(Str.tryParseLong(outputRes)));
-                long offset = interceptor.getChangeOffset();
-                long fake = interceptor.getFinalValue(offset, original);
+                //long offset = interceptor.getChangeOffset();
+                //long fake = interceptor.getFinalValue(offset, original);
+                long fake = interceptor.getChange(original);
                 result.setIsMalicious(true);
 
                 String fakeValue = String.valueOf(StatStructCleaner.millisToSeconds(fake));
                 result.setNewValue(fakeValue);
                 result.param.setLogNew(fakeValue);
                 if(DebugUtil.isDebug())
-                    Log.d(TAG, Str.fm("Is Last Changes (epoch) File=[%s] Arg for Stat, Offset=%s Original MS=%s Fake MS=%s Original Hex [%s](%s) Fake Hex [%s](%s) Actual Output=%s",
+                    Log.d(TAG, Str.fm("Is Last Changes (epoch) File=[%s] Arg for Stat, Original MS=%s Fake MS=%s Original Hex [%s](%s) Fake Hex [%s](%s) Actual Output=%s",
                             file,
-                            offset,
                             original,
                             fake,
                             outputRes.length(),
@@ -108,8 +109,10 @@ public class StatCleaner {
                 //To make even more sharp, perhaps replace the old with new in the string ?
                 long toMilliseconds = StatUtils.toEpochMillis(outputRes);
                 long original = interceptor.getOriginalChange(toMilliseconds);
-                long fake = interceptor.getFinalValue(interceptor.getChangeOffset(), original);
+                //long fake = interceptor.getFinalValue(interceptor.getChangeOffset(), original);
+                long fake = interceptor.getChange(original);
                 String fakeToHuman = StatUtils.fromEpochMillis(fake, StatUtils.detectFormat(output));
+                //ToDo: Ensure uppercase formats etc are supported , you lack uppercase or lowercase one of the two
                 result.setIsMalicious(true);
                 result.setNewValue(fakeToHuman);
                 result.param.setLogNew(fakeToHuman);
@@ -123,17 +126,17 @@ public class StatCleaner {
 
             if(result.hasCommand("%X", false)) {
                 long original =  interceptor.getOriginalAccess(StatStructCleaner.secondsToMillis(Str.tryParseLong(outputRes)));
-                long offset = interceptor.getAccessOffset();
-                long fake = interceptor.getFinalValue(offset, original);
+                //long offset = interceptor.getAccessOffset();
+                //long fake = interceptor.getFinalValue(offset, original);
+                long fake = interceptor.getAccess(original);
                 result.setIsMalicious(true);
 
                 String fakeValue = String.valueOf(StatStructCleaner.millisToSeconds(fake));
                 result.setNewValue(fakeValue);
                 result.param.setLogNew(fakeValue);
                 if(DebugUtil.isDebug())
-                    Log.d(TAG, Str.fm("Is Last Access (epoch) File=[%s] Arg for Stat, Offset=%s Original MS=%s Fake MS=%s Original Hex [%s](%s) Fake Hex [%s](%s) Actual Output=%s",
+                    Log.d(TAG, Str.fm("Is Last Access (epoch) File=[%s] Arg for Stat, Original MS=%s Fake MS=%s Original Hex [%s](%s) Fake Hex [%s](%s) Actual Output=%s",
                             file,
-                            offset,
                             original,
                             fake,
                             outputRes.length(),
@@ -147,7 +150,8 @@ public class StatCleaner {
             else if(result.hasCommand("%x", false)) {
                 long toMilliseconds = StatUtils.toEpochMillis(outputRes);
                 long original = interceptor.getOriginalAccess(toMilliseconds);
-                long fake = interceptor.getFinalValue(interceptor.getAccessOffset(), original);
+                //long fake = interceptor.getFinalValue(interceptor.getAccessOffset(), original);
+                long fake = interceptor.getAccess(original);
                 String fakeToHuman = StatUtils.fromEpochMillis(fake, StatUtils.detectFormat(output));
                 result.setIsMalicious(true);
                 result.setNewValue(fakeToHuman);
@@ -237,41 +241,40 @@ public class StatCleaner {
                     return false;
 
                 String pathName = path.toFile().getAbsolutePath();
-                FileTimeInterceptor interceptor = FileTimeInterceptor.create(pathName, param);
+                TimeInterceptor interceptor = TimeInterceptor.create(pathName, param);
                 if(DebugUtil.isDebug())
                     Log.d(TAG, "Intercepting NIO File Time Stamp: " + pathName + " Original:" + res.toMillis());
 
                 long original = 0;
-                long offset = 0;
+                long modified = 0;
                 switch (tag) {
                     case NIO_TAG_LAST_ACCESS:
                         original = interceptor.getOriginalAccess(res.toMillis());
-                        offset = interceptor.getAccessOffset();
+                        modified = interceptor.getAccess(original);
                         break;
                     case NIO_TAG_LAST_MODIFIED:
-                        original = interceptor.getOriginalModified(res.toMillis());
-                        offset = interceptor.getModifiedOffset();
+                        original = interceptor.getOriginalModify(res.toMillis());
+                        modified = interceptor.getModify(original);
                         break;
                     case NIO_TAG_CREATED:
                         original = interceptor.getOriginalCreated(res.toMillis());
-                        offset = interceptor.getCreatedOffset();
+                        modified = interceptor.getCreation(original);
                         break;
                     default:
                         Log.w(TAG, "Is not Attribute! NIO");
                         return false;
                 }
 
-                FileTime fake = FileTime.fromMillis(interceptor.getFinalValue(offset, original));
+                FileTime fake = FileTime.fromMillis(modified);
                 param.setLogOld(String.valueOf(original));
                 param.setLogNew(String.valueOf(fake.toMillis()));
                 param.setResult(fake);
                 if(DebugUtil.isDebug())
                     Log.d(TAG, "NIO File:[" + pathName + "] Tag=(" + tag + ")" +
                             " Time Stamps!" +
-                            " Offset=" + offset +
                             " Old=" + original +
                             " New=" + fake.toMillis() +
-                            " Interceptor File=" + interceptor.file);
+                            " Interceptor File=" + interceptor.fileOrApp);
 
                 return true;
             }
@@ -293,16 +296,18 @@ public class StatCleaner {
             if(DebugUtil.isDebug())
                 Log.d(TAG, "Intercepting File.lastModified() File Stamps for:" + file);
 
-            FileTimeInterceptor interceptor = FileTimeInterceptor.create(file, param);
+            TimeInterceptor interceptor = TimeInterceptor.create(file, param);
             long def = 0L;
-            long org = interceptor.getOriginalModified(param.tryGetResult(def));
-            long offset = interceptor.getModifiedOffset();
-            long fake = interceptor.getFinalValue(offset, org);
+            long res = param.tryGetResult(def);
+            //long org = interceptor.getOriginalModify(param.tryGetResult(def));
+            //long offset = interceptor.getModifiedOffset();
+            //long fake = interceptor.getFinalValue(offset, org);
+            long fake = interceptor.getModify(res);
             param.setResult(fake);
-            param.setLogOld(String.valueOf(org));
+            param.setLogOld(String.valueOf(res));
             param.setLogNew(String.valueOf(fake));
             if(DebugUtil.isDebug())
-                Log.d(TAG, "File.lastModified(" + file + ") Interceptor File=(" + interceptor.file + ") Offset=" + offset + " Original MS=" + org + " Fake MS=" + fake);
+                Log.d(TAG, "File.lastModified(" + file + ") Interceptor File=(" + interceptor.fileOrApp + ") Original MS=" + res + " Fake MS=" + fake);
 
             return true;
         }catch (Throwable e) {
@@ -319,7 +324,7 @@ public class StatCleaner {
         if(DebugUtil.isDebug())
             Log.d(TAG, "Intercepting Os.stat() File Stamps for:" + file);
 
-        FileTimeInterceptor interceptor = FileTimeInterceptor.create(file, param);
+        TimeInterceptor interceptor = TimeInterceptor.create(file, param);
         return StatStructCleaner.cleanStructure(interceptor, param.tryGetResult(null));
     }
 }

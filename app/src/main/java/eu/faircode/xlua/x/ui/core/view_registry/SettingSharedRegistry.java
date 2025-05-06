@@ -81,7 +81,8 @@ public class SettingSharedRegistry extends SharedRegistry {
             return TryRun.getOrDefault(() -> {
                 if(info == null) return AppAssignmentInfo.DEFAULT;
                 if(refresh && context != null)
-                    info.refreshSettingAssignmentsFromMap(context, HooksSettingsGlobal.settingHoldersToNames(container));
+                    info.refreshSettingAssignmentsFromMap(context,
+                            HooksSettingsGlobal.settingHoldersToNames(container, true));
                 return info;
             }, AppAssignmentInfo.DEFAULT);
         }
@@ -94,8 +95,7 @@ public class SettingSharedRegistry extends SharedRegistry {
     private HookGroupOrganizer groups;
 
     private void doDebugTest() {
-        if(DebugUtil.isDebug())
-            Log.d(TAG, "Has Randomizer for [settings.xiaomi.gcbooster_uuid] = " + (randomizers.containsKey("settings.xiaomi.gcbooster_uuid")));
+
     }
 
     public static String getHooksGroupTag(String packageName) { return SharedRegistry.STATE_TAG_HOOKS + "_" + packageName; }

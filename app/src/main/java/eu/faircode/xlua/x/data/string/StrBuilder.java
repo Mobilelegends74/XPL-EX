@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.data.utils.ArrayUtils;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
 
 import java.util.Map;
@@ -206,6 +207,15 @@ public class StrBuilder {
         return this;
     }
 
+    public StrBuilder appendNewLineOrSpace(boolean useNewLine) {
+        if(mDoAppend) {
+            ensureDel();
+            mSb.append(useNewLine ? STR_NEW_LINE : STR_SPACE);
+        }
+
+        return this;
+    }
+
     public StrBuilder append(String s) {
         if(mDoAppend) {
             ensureDel();
@@ -398,6 +408,22 @@ public class StrBuilder {
                     .append(STR_SPACE)
                     .append(value)
                     .append(STR_NEW_LINE);
+        }
+        return this;
+    }
+
+    public StrBuilder appendTypes(Class<?>[] types) {
+        if(mDoAppend) {
+            ensureDel();
+            StrBuilder sub = StrBuilder.create().ensureDelimiter(Str.COMMA);
+            if(ArrayUtils.isValid(types)) {
+                for(Class<?> c : types)
+                    sub.append(Str.toObjectClassName(c));
+            } else {
+                sub.append("null");
+            }
+
+            mSb.append(sub.toString());
         }
         return this;
     }

@@ -8,11 +8,13 @@ import android.util.Log;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
+import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ObjectUtils;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
+import eu.faircode.xlua.x.xlua.LibUtil;
 
 public class UserIdentityUtils {
-    private static final String TAG = "XLua.UserIdentityUtils";
+    private static final String TAG = LibUtil.generateTag(UserIdentityUtils.class);
 
     private static final int PER_USER_RANGE = 100000;
 
@@ -24,7 +26,10 @@ public class UserIdentityUtils {
             Method method = UserHandle.class.getDeclaredMethod("getAppId", int.class);
             return (int) method.invoke(null, uid);
         } catch (Throwable ex) {
-            Log.e(TAG, Log.getStackTraceString(ex));
+            Log.e(TAG, Str.fm("Failed to Resolve AppId for UID [%s] Error=[%s] Stack=%s",
+                    uid,
+                    ex,
+                    RuntimeUtils.getStackTraceSafeString(ex)));
             return uid % PER_USER_RANGE;
         }
     }
@@ -36,7 +41,10 @@ public class UserIdentityUtils {
             Method method = UserHandle.class.getDeclaredMethod("getUserId", int.class);
             return (int) method.invoke(null, uid);
         } catch (Throwable ex) {
-            Log.e(TAG, Log.getStackTraceString(ex));
+            Log.e(TAG, Str.fm("Failed to Resolve UserId for UID [%s] Error=[%s] Stack=%s",
+                    uid,
+                    ex,
+                    RuntimeUtils.getStackTraceSafeString(ex)));
             return uid / PER_USER_RANGE;
         }
     }
@@ -47,7 +55,11 @@ public class UserIdentityUtils {
             Method method = UserHandle.class.getDeclaredMethod("getUid", int.class, int.class);
             return (int) method.invoke(null, userid, appid);
         } catch (Throwable ex) {
-            Log.e(TAG, Log.getStackTraceString(ex));
+            Log.e(TAG, Str.fm("Failed to Resolve UserUid for userId [%s] appId [%s] Error=[%s] Stack=%s",
+                    userid,
+                    appid,
+                    ex,
+                    RuntimeUtils.getStackTraceSafeString(ex)));
             return userid * PER_USER_RANGE + (appid % PER_USER_RANGE);
         }
     }

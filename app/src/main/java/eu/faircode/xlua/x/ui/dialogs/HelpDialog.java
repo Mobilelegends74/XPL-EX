@@ -192,6 +192,11 @@ public class HelpDialog extends AppCompatDialogFragment {
                     getString(R.string.help_warning_title),
                     getString(R.string.help_warning_description)));
 
+            helpItems.add(new HelpItem(
+                    R.drawable.ic_finger_print18,
+                    getString(R.string.message_unique_title),
+                    getString(R.string.message_unique_message)));
+
             // Color items
             helpItems.add(HelpItem.createWithColor(
                     R.attr.colorUnsavedSetting,

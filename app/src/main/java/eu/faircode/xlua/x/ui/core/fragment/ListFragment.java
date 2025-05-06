@@ -67,6 +67,7 @@ public abstract class ListFragment<TElement extends IDiffFace, TBinding extends 
     private static final String TAG = "XLua.ListFragment";
     private static final int TYPE_VIEW_BINDING_ARG_INDEX = 1;   //Set this to where the arg for the ViewBinding Type is in for Templates / Generics ListFragment<TElement(0), TBinding(1)..
 
+    protected FilterRequest lastRequest;
     protected TBinding binding;
 
     private UserClientAppContext userContext;
@@ -136,8 +137,23 @@ public abstract class ListFragment<TElement extends IDiffFace, TBinding extends 
         ensureUpdatedShared();
         viewModel.refresh();
     }
+
+
+    /*@Override
+    public FilterRequest getLastRequest(boolean returnNewIfNull) {
+        if(lastRequest == null)
+            lastRequest = new FilterRequest();
+        return lastRequest;
+    }*/
+
     @Override
-    public void updatedSortedList(FilterRequest request) { this.viewModel.updateList(request); }
+    public void updatedSortedList(FilterRequest request) {
+        if(request == null) {
+            this.viewModel.updateList(this.viewModel.createRequest(true, true, true));
+        } else {
+            this.viewModel.updateList(this.viewModel.createRequest(true, true, false).setQuery(request.query));
+        }
+    }
 
     /*IViewEventController*/
     @Override

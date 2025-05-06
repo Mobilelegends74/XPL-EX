@@ -58,6 +58,7 @@ import eu.faircode.xlua.x.data.utils.random.RandomGenerator;
 import eu.faircode.xlua.x.hook.filter.FilterContainerElement;
 import eu.faircode.xlua.x.hook.filter.kinds.IPCCallFilterContainer;
 import eu.faircode.xlua.x.hook.interceptors.battery.BatteryInterceptor;
+import eu.faircode.xlua.x.hook.interceptors.cell.SubscriptionInfoInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.devices.InputDeviceInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.file.FileInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.file.StatCleaner;
@@ -335,6 +336,9 @@ public class XParam extends XParamExtra {
 
     @SuppressWarnings("unused")
     public boolean interceptStructStatVfsFree() { return StorageAvailInterceptor.interceptStructVfs(this); }
+
+    @SuppressWarnings("unused")
+    public boolean interceptSubscriptionInfo(boolean isResult, int indexOverride) { return SubscriptionInfoInterceptor.interceptObject(this, isResult, indexOverride, null); }
 
     @SuppressWarnings("unused")
     public boolean interceptNetworkInfo(boolean isResult) { return NetworkInfoInterceptor.intercept(this, isResult); }
@@ -744,6 +748,16 @@ public class XParam extends XParamExtra {
     @SuppressWarnings("unused")
     public Class<?> getThisClazz() { return getThis().getClass(); }
 
+
+    @SuppressWarnings("unused")
+    public int tryGetArgumentInt(int index, int defaultValue) {
+        try {
+            Object arg = getArgument(index);
+            return arg instanceof Integer ? (int)arg : defaultValue;
+        }catch (Exception ignored) {
+            return defaultValue;
+        }
+    }
 
     @SuppressWarnings("unused")
     public<T> T tryGetArgument(int index, T defaultValue) { return TryRun.getOrDefault(() -> (T)getArgument(index), defaultValue); }

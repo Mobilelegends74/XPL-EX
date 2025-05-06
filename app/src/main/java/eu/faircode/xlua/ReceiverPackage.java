@@ -33,9 +33,11 @@ import android.util.Log;
 import de.robv.android.xposed.XposedBridge;
 import eu.faircode.xlua.api.xstandard.UserIdentityPacket;
 import eu.faircode.xlua.api.xlua.XLuaCall;
+import eu.faircode.xlua.x.xlua.LibUtil;
+import eu.faircode.xlua.x.xlua.commands.call.GetSettingExCommand;
 
 public class ReceiverPackage extends BroadcastReceiver {
-    private static final String TAG = "XLua.Receiver";
+    private static final String TAG = LibUtil.generateTag(ReceiverPackage.class);
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -47,6 +49,7 @@ public class ReceiverPackage extends BroadcastReceiver {
 
             int userid = XUtil.getUserId(uid);
             Context ctx = XUtil.createContextForUser(context, userid);
+
 
             if (Intent.ACTION_PACKAGE_ADDED.equals(intent.getAction())) {
                 if (!replacing && !packageName.startsWith(BuildConfig.APPLICATION_ID)) {
@@ -60,15 +63,15 @@ public class ReceiverPackage extends BroadcastReceiver {
                     XLuaCall.clearApp(context, uid, packageName);
 
                     //Ensure this bullshit works (userid then use Global namespace ???????? )
-                    if (XLuaCall.getSettingBoolean(context, userid, UserIdentityPacket.GLOBAL_NAMESPACE, "restrict_new_apps"))
+                    //if (XLuaCall.getSettingBoolean(context, userid, UserIdentityPacket.GLOBAL_NAMESPACE, "restrict_new_apps"))
                         //XLuaCall.initApp(context, packageName, uid);
-                        XLuaCall.initApp(context, uid, packageName);
+                    //    XLuaCall.initApp(context, uid, packageName);
                         //context.getContentResolver()
                         //        .call(XSecurity.getURI(), "xlua", "initApp", args);
 
 
                     // Notify new app
-                    if (XLuaCall.getSettingBoolean(context, userid,  UserIdentityPacket.GLOBAL_NAMESPACE, "notify_new_apps")) {
+                    if (GetSettingExCommand.notifyOnNewApps(context, uid)) {
                         PackageManager pm = ctx.getPackageManager();
                         Resources resources = pm.getResourcesForApplication(BuildConfig.APPLICATION_ID);
 
@@ -104,7 +107,7 @@ public class ReceiverPackage extends BroadcastReceiver {
 
                     //WTF IS THIS GLOBAL ARGUMENT ????????
                     //Clear XLUA data ?
-                    XLuaCall.clearData(context, userid);
+                    //XLuaCall.clearData(context, userid);
                     //For now we comment this out
                 } else {
                     //Bundle args = new Bundle();

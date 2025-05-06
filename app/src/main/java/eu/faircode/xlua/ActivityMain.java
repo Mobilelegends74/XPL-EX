@@ -82,6 +82,7 @@ import eu.faircode.xlua.x.ui.core.UserClientAppContext;
 import eu.faircode.xlua.x.ui.dialogs.BackupDialog;
 import eu.faircode.xlua.x.ui.dialogs.CollectionsDialog;
 import eu.faircode.xlua.x.ui.dialogs.ErrorDialog;
+import eu.faircode.xlua.x.ui.dialogs.TaskProgressDialog;
 import eu.faircode.xlua.x.ui.dialogs.utils.BackupDialogUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.call.DropTableCommand;
@@ -117,8 +118,6 @@ public class ActivityMain extends ActivityBase {
     public static final String EXTRA_SEARCH_PACKAGE = "package";
 
     public static final PrefManager manager = PrefManager.create(null, PrefManager.SETTINGS_MAIN);
-
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private final XBackup backup = new XBackup();
 
@@ -208,14 +207,15 @@ public class ActivityMain extends ActivityBase {
                 }
             }));
 
-        if (!XposedUtil.isVirtualXposed())
+        //Remove this for now, how can something like this be implemented ?
+        /*if (!XposedUtil.isVirtualXposed())
             drawerArray.add(new DrawerItem(this, R.string.menu_restrict_new, restrictNew, new DrawerItem.IListener() {
                 @Override
                 public void onClick(DrawerItem item) {
                     handleCodeToSnack(PutSettingExCommand.putRestrictNewApps(ActivityMain.this, item.isChecked()), getString(R.string.result_prefix_restrict) + "=" + item.isChecked());
                     drawerArray.notifyDataSetChanged();
                 }
-            }));
+            }));*/
 
 
         drawerArray.add(new DrawerItem(this, R.string.menu_readme, new DrawerItem.IListener() {
@@ -243,7 +243,7 @@ public class ActivityMain extends ActivityBase {
         drawerArray.add(new DrawerItem(this, R.string.menu_donate, new DrawerItem.IListener() {
             @Override
             public void onClick(DrawerItem item) {
-                Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/0bbedCode/XPL-EX/?tab=readme-ov-file#donate"));
+                Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/0bbedCode/XPL-EX/?tab=readme-ov-file#donations"));
                 if (browse.resolveActivity(getPackageManager()) == null)
                     Snackbar.make(findViewById(android.R.id.content), getString(R.string.msg_no_browser), Snackbar.LENGTH_LONG).show();
                 else
@@ -289,8 +289,6 @@ public class ActivityMain extends ActivityBase {
                 }
             }));
 
-
-
         drawerArray.add(new DrawerItem(this, R.string.menu_debug_logs, isVerbose, new DrawerItem.IListener() {
             @Override
             public void onClick(DrawerItem item) {
@@ -335,6 +333,11 @@ public class ActivityMain extends ActivityBase {
             @Override
             public void onClick(DrawerItem item) {
                 BackupDialogUtils.startBackupFilePicker(ActivityMain.this);
+
+
+                // Create and show the dialog
+
+
             }
         }));
 
@@ -441,6 +444,10 @@ public class ActivityMain extends ActivityBase {
 
         return trimmed;
     }
+
+
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -743,19 +750,29 @@ public class ActivityMain extends ActivityBase {
     }
 
     public void whatsNew() {
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View view = inflater.inflate(R.layout.thankyou, null, false);
-        TextView tvLicence = view.findViewById(R.id.tvThankYouObbed);
-        tvLicence.setMovementMethod(LinkMovementMethod.getInstance());
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        tvLicence.setText(Html.fromHtml(getString(R.string.whats_new, year)));
-        firstRunDialog = new AlertDialog.Builder(this)
-                .setView(view).setCancelable(false)
-                .setPositiveButton(R.string.option_thanks, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) { Toast.makeText(getApplicationContext(), "ObedCode Says good luck", Toast.LENGTH_SHORT).show(); }
-                }).create();
-        firstRunDialog.show();
+        try {
+            LayoutInflater inflater = LayoutInflater.from(this);
+            View view = inflater.inflate(R.layout.thankyou, null, false);
+            TextView tvLicence = view.findViewById(R.id.tvThankYouObbed);
+            tvLicence.setMovementMethod(LinkMovementMethod.getInstance());
+            //int year = Calendar.getInstance().get(Calendar.YEAR);
+            //tvLicence.setText(
+            //        Html.fromHtml(getString(R.string.whats_new, year)));
+
+            //int year = Calendar.getInstance().get(Calendar.YEAR);
+            tvLicence.setText(Html.fromHtml(getString(R.string.whats_new)));
+
+            firstRunDialog = new AlertDialog.Builder(this)
+                    .setView(view)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.option_thanks, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(getApplicationContext(), "ObedCode Says good luck", Toast.LENGTH_SHORT).show();
+                        }
+                    }).create();
+            firstRunDialog.show();
+        } catch (Exception ignored) { }
     }
 
     public void initCore() {

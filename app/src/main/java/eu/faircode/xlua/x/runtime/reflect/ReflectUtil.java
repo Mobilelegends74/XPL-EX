@@ -20,14 +20,10 @@ public class ReflectUtil {
 
     public static <T> T tryCreateNewInstanceWild(String className, Object... args) { return tryCreateNewInstanceWild(tryGetClassForName(className), args); }
 
-    /**
-     * Attempts to create a new instance of the specified class using constructor with the provided arguments.
-     * Returns null instead of throwing exceptions if instantiation fails.
-     *
-     * @param clazz The class to instantiate
-     * @param args The constructor arguments
-     * @return A new instance of the class or null if instantiation fails
-     */
+
+
+
+
     public static <T> T tryCreateNewInstanceWild(Class<?> clazz, Object... args) {
         if (clazz == null) {
             return null;
@@ -107,14 +103,7 @@ public class ReflectUtil {
         return null;
     }
 
-    /**
-     * Attempts to create a new instance of the specified class using constructor with the provided arguments.
-     * Returns null instead of throwing exceptions if instantiation fails.
-     *
-     * @param clazz The class to instantiate
-     * @param args The constructor arguments
-     * @return A new instance of the class or null if instantiation fails
-     */
+
     public static <T> T tryCreateNewInstance(Class<T> clazz, Object... args) {
         if (clazz == null) {
             return null;

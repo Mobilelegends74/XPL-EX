@@ -5,12 +5,30 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Arrays;
+import java.util.List;
+
 import eu.faircode.xlua.R;
 import eu.faircode.xlua.XUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.ui.core.util.CoreUiUtils;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
 
 public class GroupStats {
+    public static final List<String> UNIQUE_NAMES = Arrays.asList(
+            RandomizersCache.SETTING_APP_CURRENT_INSTALL_TIME_OFFSET,
+            RandomizersCache.SETTING_APP_CURRENT_UPDATE_TIME_OFFSET,
+            RandomizersCache.SETTING_APP_INSTALL_TIME_OFFSET,
+            RandomizersCache.SETTING_APP_UPDATE_TIME_OFFSET,
+
+            RandomizersCache.SETTING_SETTING_BOOT_COUNT,
+            RandomizersCache.SETTING_BATTERY_CHARGING_CYCLES,
+
+            RandomizersCache.SETTING_FILE_MODIFY_OFFSET,
+            RandomizersCache.SETTING_FILE_ACCESS_OFFSET,
+            RandomizersCache.SETTING_FILE_CREATION_OFFSET,
+            "bluetooth.name");
+
     public static GroupStats create() { return new GroupStats(); }
 
     private int totalSettings = 0;
@@ -28,6 +46,49 @@ public class GroupStats {
     public GroupStats updateIv(ImageView ivWarning) {
         if(ivWarning != null) {
             ivWarning.setVisibility(hasUnsaved() ? View.VISIBLE : View.GONE);
+        }
+
+        return this;
+    }
+
+    public static boolean isSettingAndroid(String name) {
+        if(Str.isEmpty(name))
+            return false;
+        String lowered = name.toLowerCase();
+        if(lowered.startsWith("android.") || lowered.startsWith("device."))
+            return true;
+
+        return false;
+    }
+
+    public static boolean isSettingUnique(String name) {
+        if(Str.isEmpty(name))
+            return false;
+        String lowered = name.toLowerCase();
+        if(lowered.contains("unique"))
+            return true;
+        if(lowered.startsWith("settings.xiaomi."))
+            return true;
+        if(lowered.endsWith(".uuid"))
+            return true;
+        return UNIQUE_NAMES.contains(lowered);
+    }
+
+    public GroupStats updateIv(ImageView ivWarning, String name) {
+        if(ivWarning != null) {
+            if(isSettingUnique(name)) {
+                if(!hasUnsaved()) {
+                    ivWarning.setVisibility(View.VISIBLE);
+                    ivWarning.setImageResource(R.drawable.ic_finger_print18);
+                } else {
+                    ivWarning.setVisibility(View.VISIBLE);
+                    ivWarning.setImageResource(android.R.drawable.ic_dialog_alert);
+                }
+            } else {
+                ivWarning.setVisibility(hasUnsaved() ?
+                        View.VISIBLE :
+                        View.GONE);
+            }
         }
 
         return this;

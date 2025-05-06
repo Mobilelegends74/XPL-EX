@@ -1,6 +1,7 @@
 package eu.faircode.xlua;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -12,8 +13,11 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,9 +36,12 @@ import eu.faircode.xlua.utilities.DatabasePathUtil;
 import eu.faircode.xlua.utilities.DateTimeUtil;
 import eu.faircode.xlua.utilities.JSONUtil;
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.data.XParamExtra;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.data.utils.TryRun;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
+import eu.faircode.xlua.x.runtime.reflect.DynClass;
+import eu.faircode.xlua.x.runtime.reflect.DynMethod;
 import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHookBase;
 import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHookIO;
@@ -45,6 +52,7 @@ import eu.faircode.xlua.x.xlua.database.DatabaseHelpEx;
 import eu.faircode.xlua.x.xlua.database.DatabaseUtils;
 import eu.faircode.xlua.x.xlua.database.sql.SQLDatabase;
 import eu.faircode.xlua.x.xlua.identity.UserIdentityUtils;
+import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
 import eu.faircode.xlua.x.xlua.settings.data.SettingsApi;
 
 @SuppressWarnings("all")
@@ -91,7 +99,7 @@ public class XLegacyCore {
     public static XHook getHook(String hookId, String packageName, Collection<String> collections) { XHook res = getHook(hookId); return res == null || !res.isAvailable(packageName, collections) ? null : res; }
 
     public static boolean updateHookCache(Context context, XHook hook, String extraId, boolean flag) { return flag && updateHookCache(context, hook, extraId); }
-    public static boolean updateHookCache(Context context, XHook hook, String extraId) { synchronized (lock) { return internalUpdateHookCache(context, hook, extraId); } }
+    public static boolean updateHookCache(Context context, XHook hook, String extraId) { synchronized (lock) { return internalUpdateHookCache(context, hook, extraId, null); } }
 
     public static void initializeFromJsons(Context context, SQLDatabase database, boolean clearCache) {
         if(DatabaseUtils.isReady(database)) {
@@ -133,8 +141,23 @@ public class XLegacyCore {
 
                     //ToDo: Please for one use Database Help Util Class, BUT make a check IF it exists in DB BUT it is the SAME just Ignore it then
                     //  Besides that Everything works as intended 100%, Good job on this Sexy Revision
+
+                    // Get all valid API method names
+                    List<String> names = new ArrayList<>();
+                    List<Method> methods = new ArrayList<>();
+                    ListUtil.addAll(methods, DynClass.create(XParam.class).getRawClass().getMethods(), true);
+                    ListUtil.addAll(methods, DynClass.create(XParamExtra.class).getRawClass().getMethods(), true);
+                    for(Method method : methods) {
+                        if(Modifier.isPublic(method.getModifiers())) {
+                            String lowered = Str.toLowerCase(method.getName());
+                            if(!names.contains(lowered))
+                                names.add(lowered);
+                        }
+                    }
+
                     Cursor cursor = null;
                     int parsedFromDatabase = 0;
+                    int skipped = 0;
                     try {
                         cursor = database.getDatabase().query(XHook.TABLE_NAME, null, null, null, null, null, null);
                         if(cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
@@ -143,25 +166,112 @@ public class XLegacyCore {
                                 if(!hook.isValid()) {
                                     logE(TAG, "Bad Hook=" + hook.methodName);
                                 } else {
-                                    hook.builtin = false;
-                                    hooks.put(hook.getObjectId(), hook);
-                                    databaseDefs.put(hook.getObjectId(), hook);
-                                    parsedFromDatabase++;
+                                    if(!Str.isEmpty(hook.luaScript) && hook.luaScript.contains("param:")) {
+                                        boolean isBad = false;
+                                        if(hook.isDefaultScript()) {
+                                            XHook other = builtIn.get(hook.getObjectId());
+                                            if(other != null && !other.isDefaultScript()) {
+                                                skipped++;
+                                                isBad = true;
+                                                if(DebugUtil.isDebug())
+                                                    logE(TAG, String.format("From Hook [%s][%s] [%s] got a is Default Lua Script when a Valid one Exists! Hiding this Hook...",
+                                                            hook.methodName,
+                                                            hook.className,
+                                                            hook.getObjectId()));
+                                            }
+                                        }
+
+                                        if(!isBad) {
+                                            char[] chars = hook.luaScript.toCharArray();
+                                            StringBuilder name = new StringBuilder();
+                                            int sz = chars.length;
+                                            int ix = 0;                     // Parse the character array looking for "param:" patterns
+                                            while (ix < sz - 8 && !isBad) {  // -8 because we need at least 6 chars for "param:" + some extra padding
+                                                String chunk = new String(chars, ix, 6);    // Extract 6-character chunk to check for "param:"
+                                                if(chunk.equals("param:")) {
+                                                    ix += 6;                // Skip past "param:"
+                                                    name.setLength(0);      // Clear the StringBuilder for the next parameter
+                                                    while (ix < sz) {
+                                                        char ch = chars[ix];
+                                                        if(!Character.isLetterOrDigit(ch))
+                                                            break;
+
+                                                        name.append(ch);
+                                                        ix++;
+                                                    }
+
+                                                    // Validate the extracted parameter name
+                                                    String finalName = name.toString();
+                                                    if(!Str.isEmpty(finalName)) {
+                                                        String lowered = Str.toLowerCase(finalName);
+                                                        if(!names.contains(lowered)) {
+                                                            skipped++;
+                                                            isBad = true;
+                                                            if(DebugUtil.isDebug())
+                                                                logE(TAG, String.format("From Hook [%s][%s] [%s] got a Bad or Deprecated Api [%s] Hiding this Hook...",
+                                                                        hook.methodName,
+                                                                        hook.className,
+                                                                        hook.getObjectId(),
+                                                                        finalName));
+                                                            break;
+                                                        }
+                                                    }
+                                                } else {
+                                                    // Move to next character
+                                                    ix++;
+                                                }
+                                            }
+                                        }
+
+                                        //Final Check...
+                                        if(!isBad) {
+                                            XHook other = builtIn.get(hook.getObjectId());
+                                            boolean isSafe = false;
+                                            if(other != null) {
+                                                int versionOriginal = other.version == null ? 0 : Math.max(0, other.version);
+                                                int versionNew = hook.version == null ? 0 : Math.max(0, hook.version);
+                                                if(versionNew > versionOriginal)
+                                                    isSafe = true;
+                                                else if(versionNew == versionOriginal) {
+                                                    String jsonOne = XHookIO.toJsonString(other, 0);
+                                                    String jsonTwo = XHookIO.toJsonString(hook, 0);
+                                                    if(!Str.areEqual(jsonOne, jsonTwo, false))
+                                                        isSafe = true;
+                                                }
+                                            } else {
+                                                isSafe = true;
+                                            }
+
+                                            if(isSafe) {
+                                                hook.builtin = false;
+                                                hooks.put(hook.getObjectId(), hook);
+                                                databaseDefs.put(hook.getObjectId(), hook);
+                                                parsedFromDatabase++;
+                                            } else {
+                                                skipped++;
+                                                if(DebugUtil.isDebug())
+                                                    logE(Str.fm("Hook [%s] Failed the Final Test... Other=[%s]",
+                                                            hook.getObjectId(),
+                                                            Str.toObjectId(other)));
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             while (cursor.moveToNext());
                         }
-                    }catch (Exception e) {
-                        logE(Str.fm("Error Loading in Database Hooks! Error=" + e));
+                    } catch (Exception e) {
+                        logE(TAG, "Error Loading in Database Hooks! Error=" + e);
                     } finally {
                         CursorUtil.closeCursor(cursor);
                     }
 
                     if(DebugUtil.isDebug())
-                        logD(Str.fm("Total Cached Hooks Count=%s Built In Cached Count=%s Parsed From Database Count=%s",
+                        logD(Str.fm("Total Cached Hooks Count=%s Built In Cached Count=%s Parsed From Database Count=%s Skipped=%s",
                                 hooks.size(),
                                 builtIn.size(),
-                                parsedFromDatabase));
+                                parsedFromDatabase,
+                                skipped));
                 });
             }
         }
@@ -242,7 +352,7 @@ public class XLegacyCore {
         return groups;
     }
 
-    private static boolean internalUpdateHookCache(Context context, XHook hook, String extraId) {
+    private static boolean internalUpdateHookCache(Context context, XHook hook, String extraId, SQLDatabase database) {
         if(DebugUtil.isDebug())
             logD(Str.fm("Updating Hook Cache for Hook [%s] Is Delete [%s] ID [%s] Internal Cache Size=%s::%s::%s JSON=%s",
                     extraId,
@@ -254,7 +364,26 @@ public class XLegacyCore {
                     Str.ensureNoDoubleNewLines(XHookIO.toJsonString(hook))), false);
 
         if(hook == null) {
-            databaseDefs.remove(extraId);
+            if(databaseDefs.containsKey(extraId)) {
+                XHook hookCopy = databaseDefs.remove(extraId);
+                if(database != null && DatabaseHelpEx.ensureTableIsReady(XHook.TABLE_INFO, database)) {
+                    try {
+                        if(database.beginTransaction(true)) {
+                            boolean result = DatabaseHelpEx.deleteItem(hookCopy.createSnake());
+                            if(result) database.setTransactionSuccessful();
+                            if(DebugUtil.isDebug())
+                                logD(Str.fm("Attempted to Delete [%s] from Database, With Result=%s",
+                                        hookCopy.getObjectId(),
+                                        result));
+                        }
+                    }catch (Exception ignored) {
+                        //Ignore
+                    } finally {
+                        database.endTransaction(true, false);
+                    }
+                }
+            }
+
             hooks.remove(extraId);
             XHook original = builtIn.get(extraId);
             if(original != null) {
@@ -269,10 +398,27 @@ public class XLegacyCore {
                             Str.ensureNoDoubleNewLines(XHookIO.toJsonString(original))), false);
             }
         } else {
-            hook.resolveClass(context);
+            hook.resolveClass(context); //Could this set off JSON Checks ?
             hook.builtin = false;
             hooks.put(extraId, hook);
             databaseDefs.put(extraId, hook);
+            if(database != null && DatabaseHelpEx.ensureTableIsReady(XHook.TABLE_INFO, database)) {
+                try {
+                    if(database.beginTransaction(true)) {
+                        ContentValues contentValues = hook.toContentValues();
+                        boolean result = database.update(XHook.TABLE_NAME, contentValues, hook.createSnake()) ||  database.insert(XHook.TABLE_NAME, contentValues);
+                        if(result) database.setTransactionSuccessful();
+                        if(DebugUtil.isDebug())
+                            logD(Str.fm("Attempted to Update [%s] from Database, With Result=%s",
+                                    hook.getObjectId(),
+                                    result));
+                    }
+                }catch (Exception ignored) {
+                    //Ignore
+                } finally {
+                    database.endTransaction(true, false);
+                }
+            }
         }
 
         return true;

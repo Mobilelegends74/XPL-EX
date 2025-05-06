@@ -100,7 +100,7 @@ Targeted APIs:
     - STAT (Shell & Apis)
     - File (Android & Java NIO)
 - Sensors (Hide)
-    - For more Constol please Refer to use [Sensor Disabler](https://github.com/wardellbagby/sensor-disabler)
+    - For more Control please Refer to use [Sensor Disabler](https://github.com/wardellbagby/sensor-disabler)
 - UUID Named Files with UUIDs
 - Charging Cycles
 - Boot Count
@@ -120,7 +120,10 @@ To Freeze and or Disable Apps / Block use [Hail](https://github.com/aistra0528/H
 To Block Microphone Access [PilferShush Jammer](https://github.com/kaputnikGo/PilferShushJammer)<br>
 To Turn off All Sensors on the Device at Once use [Sensors Off](https://github.com/LinerSRT/SensorsOff)<br>
 To Check Information on your Apps including Tracking SDK and Libraries use [LibChecker](https://github.com/LibChecker/LibChecker)<br>
+Chromium based Browser [Cromite](https://github.com/uazo/cromite)<br>
+Favorite Wallet (No KYC and has Swaps) [Cake Wallet](https://github.com/cake-tech/cake_wallet)<br>
 For the best Secure Chatting App (Signal Fork) [Molly](https://molly.im/)<br>
+PlayStore Alternative (Aurora Store)[https://github.com/whyorean/AuroraStore]
 Modifying your Router Firmware use of course [OpenWRT](https://openwrt.org/)<br>
 
 
@@ -162,6 +165,16 @@ ltc1qvy7e4k26gwuj0kvuugsc8mextj9vkyu3tlrefy
 *XMR:*
 <br>
 89WiRBYaYcKa947MD8SNNe7Jkag5mvZruRFnVEDmqD5rRonTsEMr7KJ4PeYByDZAGjM2XJUgAsMniLiwcq4vSirDQvf8sT9
+<br><br>
+
+*SOL*
+<br>
+2Y7fAzrByFCUaAP8JMYBgbfN1YveVVX1xgfktFtvUmBx
+<br><br>
+
+*TRX*
+<br>
+TRk5a1C4U5fTgMbZQBi7wRM1hjvguPnqBb
 <br><br>
 
 *BCH:*

@@ -1,26 +1,19 @@
 package eu.faircode.xlua.x.hook.interceptors.pkg;
 
 import android.content.pm.PackageInfo;
-import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
-import java.nio.file.Path;
-import java.nio.file.attribute.FileTime;
 import java.util.HashMap;
 
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XParam;
-import eu.faircode.xlua.utilities.DateTimeUtil;
 import eu.faircode.xlua.x.Str;
-import eu.faircode.xlua.x.data.utils.ArrayUtils;
-import eu.faircode.xlua.x.data.utils.random.RandomGenerator;
-import eu.faircode.xlua.x.hook.interceptors.file.FileTimeInterceptor;
+import eu.faircode.xlua.x.hook.interceptors.file.TimeInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.zone.RandomDateHelper;
 import eu.faircode.xlua.x.data.GroupedMap;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
 
 public class PackageInfoInterceptor {
     private static final String TAG = LibUtil.generateTag(PackageInfoInterceptor.class);
@@ -109,14 +102,24 @@ public class PackageInfoInterceptor {
             }
 
             PackageInfo pkgInfo = (PackageInfo) obj;
-            boolean isCurrent = pkgInfo.packageName.equalsIgnoreCase(param.getPackageName());
-            if(isCurrent) {
-                FileTimeInterceptor interceptor = FileTimeInterceptor.create(param.getPackageName(), param);
+            TimeInterceptor interceptor = TimeInterceptor.create(pkgInfo, param);
+            pkgInfo.firstInstallTime = interceptor.getCreation(pkgInfo.firstInstallTime);
+            pkgInfo.lastUpdateTime = interceptor.getModify(pkgInfo.lastUpdateTime);
+            if(isReturn)
+                param.setResult(pkgInfo);
+
+            return true;
+            //long originalInstall = interceptor.getOriginalCreated(pkgInfo.firstInstallTime);
+            //long originalUpdate = interceptor.getOriginalModify(pkgInfo.lastUpdateTime);
+
+            //boolean isCurrent = pkgInfo.packageName.equalsIgnoreCase(param.getPackageName());
+            /*if(isCurrent) {
+                TimeInterceptor interceptor = TimeInterceptor.create(param.getPackageName(), param);
                 long installOffset = interceptor.getCreatedOffset();
                 long updateOffset = interceptor.getModifiedOffset();
 
                 long originalInstall = interceptor.getOriginalCreated(pkgInfo.firstInstallTime);
-                long originalUpdate = interceptor.getOriginalModified(pkgInfo.lastUpdateTime);
+                long originalUpdate = interceptor.getOriginalModify(pkgInfo.lastUpdateTime);
 
                 long installFake = interceptor.getFinalValue(installOffset, originalInstall);
                 long updateFake = interceptor.getFinalValue(updateOffset, originalUpdate);
@@ -138,9 +141,9 @@ public class PackageInfoInterceptor {
             } else {
                 GroupedMap map = param.getGroupedMap(GroupedMap.MAP_APP_TIMES);
                 long[] times = RandomDateHelper.generateEpochTimeStamps(2, true);
-                long install = PkgHookUtils.getTime(INSTALL_GROUP, pkgInfo.packageName,
+                long install = TimeHookUtils.getTime(INSTALL_GROUP, pkgInfo.packageName,
                         param.getSetting(INSTALL_OFFSET_SETTING), map, times[0], pkgInfo.firstInstallTime);
-                long update = PkgHookUtils.getTime(UPDATE_GROUP, pkgInfo.packageName,
+                long update = TimeHookUtils.getTime(UPDATE_GROUP, pkgInfo.packageName,
                         param.getSetting(UPDATE_OFFSET_SETTING), map, times[1], pkgInfo.lastUpdateTime);
 
                 if(DebugUtil.isDebug())
@@ -156,7 +159,7 @@ public class PackageInfoInterceptor {
                     param.setResult(pkgInfo);
 
                 return true;
-            }
+            }*/
             /*if(obj instanceof PackageInfo) {
 
             } else {

@@ -132,15 +132,33 @@ public abstract class RandomElement implements IRandomizer {
         ToDO: Check this why is it default false ?
      */
     public IRandomizer randomOption() { return randomOption(false); }
-    public IRandomizer randomOption(boolean skipFirst) {
-        if(options.isEmpty())
-            return null;
+    public IRandomizer randomOption(boolean skipFirst) { return randomOption(skipFirst, false); }
+    public IRandomizer randomOption(boolean skipFirst, boolean chanceEndHigher) {
+        if(options.isEmpty()) return null;
+        if(options.size() == 1) return options.get(0);
 
-        if(options.size() == 1)
-            return options.get(0);
+        if(chanceEndHigher) {
+            // Give a 30% chance to select the last element
+            if(RandomGenerator.chance(30)) {
+                return options.get(options.size() - 1);
+            } else {
+                // If we don't select the last element, select randomly from the others
+                int max = options.size() - 1; // Exclude the last element
+                int min = skipFirst ? 1 : 0;
+                if(min >= max) return options.get(min); // Safety check
 
-        int itemIndex = RandomGenerator.nextInt(skipFirst ? 1 : 0, options.size());
-        return options.get(itemIndex);
+                int itemIndex = RandomGenerator.nextInt(min, max);
+                return options.get(itemIndex);
+            }
+        } else {
+            // Standard random selection across all options
+            int min = skipFirst ? 1 : 0;
+            int max = options.size();
+            if(min >= max) return options.get(Math.min(min, options.size() - 1)); // Safety check
+
+            int itemIndex = RandomGenerator.nextInt(min, max);
+            return options.get(itemIndex);
+        }
     }
 
     public void putParents(String... parents) {

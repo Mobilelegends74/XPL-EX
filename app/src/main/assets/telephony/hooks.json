@@ -1,6 +1,6 @@
 [
 
-  {
+  /*{
     "builtin": true,
     "collection": "PrivacyEx",
     "group": "ID.Telephony",
@@ -39,7 +39,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_telephony_getnetworkoperatorname",
-    "settings":[ "gsm.network.carrier" ]
+    "settings":[ "cell.operator.name" ]
   },
   {
     "builtin": true,
@@ -80,7 +80,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_telephony_carrierid",
-    "settings":[ "gsm.operator.id", "gsm.operator.mcc", "gsm.operator.mnc" ]
+    "settings":[ "cell.operator.id", "cell.operator.mcc", "cell.operator.mnc" ]
   },
 
 
@@ -103,7 +103,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_telephony_carrierid_two",
-    "settings":[ "gsm.operator.id", "gsm.operator.mcc", "gsm.operator.mnc" ]
+    "settings":[ "cell.operator.id", "cell.operator.mcc", "cell.operator.mnc" ]
   },
   {
     "builtin": true,
@@ -124,7 +124,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_telephony_carrierid_two",
-    "settings":[ "gsm.operator.id", "gsm.operator.mcc", "gsm.operator.mnc" ]
+    "settings":[ "cell.operator.id", "cell.operator.mcc", "cell.operator.mnc" ]
   },
   {
     "builtin": true,
@@ -145,7 +145,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_telephony_carrierid_two",
-    "settings":[ "gsm.operator.id", "gsm.operator.mcc", "gsm.operator.mnc" ]
+    "settings":[ "cell.operator.id", "cell.operator.mcc", "cell.operator.mnc" ]
   },
   {
     "builtin": true,
@@ -166,11 +166,8 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_telephony_carrierid_two",
-    "settings":[ "gsm.operator.id", "gsm.operator.mcc", "gsm.operator.mnc" ]
+    "settings":[ "cell.operator.id", "cell.operator.mcc", "cell.operator.mnc" ]
   },
-
-
-
   {
     "builtin": true,
     "collection": "PrivacyEx",
@@ -229,7 +226,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getdisplayname",
-    "settings":[ "gsm.setting.display.name" ]
+    "settings":[ "cell.display.name" ]
   },
 
 
@@ -252,7 +249,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmcc",
-    "settings":[ "gsm.operator.mcc" ]
+    "settings":[ "cell.operator.mcc" ]
   },
   {
     "builtin": true,
@@ -273,7 +270,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmcc_str",
-    "settings":[ "gsm.operator.mcc" ]
+    "settings":[ "cell.operator.mcc" ]
   },
   {
     "builtin": true,
@@ -294,7 +291,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmcc",
-    "settings":[ "gsm.operator.mcc" ]
+    "settings":[ "cell.operator.mcc" ]
   },
   {
     "builtin": true,
@@ -315,7 +312,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmcc_str",
-    "settings":[ "gsm.operator.mcc" ]
+    "settings":[ "cell.operator.mcc" ]
   },
   {
     "builtin": true,
@@ -336,7 +333,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmcc",
-    "settings":[ "gsm.operator.mcc" ]
+    "settings":[ "cell.operator.mcc" ]
   },
   {
     "builtin": true,
@@ -357,7 +354,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmcc_str",
-    "settings":[ "gsm.operator.mcc" ]
+    "settings":[ "cell.operator.mcc" ]
   },
   {
     "builtin": true,
@@ -378,7 +375,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmcc",
-    "settings":[ "gsm.operator.mcc" ]
+    "settings":[ "cell.operator.mcc" ]
   },
   {
     "builtin": true,
@@ -399,7 +396,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmcc_str",
-    "settings":[ "gsm.operator.mcc" ]
+    "settings":[ "cell.operator.mcc" ]
   },
   {
     "builtin": true,
@@ -420,7 +417,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmcc_str",
-    "settings":[ "gsm.operator.mcc" ]
+    "settings":[ "cell.operator.mcc" ]
   },
   {
     "builtin": true,
@@ -441,7 +438,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmcc_str",
-    "settings":[ "gsm.operator.mcc" ]
+    "settings":[ "cell.operator.mcc" ]
   },
 
   {
@@ -463,7 +460,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmnc",
-    "settings":[ "gsm.operator.mnc" ]
+    "settings":[ "cell.operator.mnc" ]
   },
   {
     "builtin": true,
@@ -484,7 +481,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmnc",
-    "settings":[ "gsm.operator.mnc" ]
+    "settings":[ "cell.operator.mnc" ]
   },
   {
     "builtin": true,
@@ -505,7 +502,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmnc_str",
-    "settings":[ "gsm.operator.mnc" ]
+    "settings":[ "cell.operator.mnc" ]
   },
   {
     "builtin": true,
@@ -526,7 +523,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmnc",
-    "settings":[ "gsm.operator.mnc" ]
+    "settings":[ "cell.operator.mnc" ]
   },
   {
     "builtin": true,
@@ -547,7 +544,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmnc_str",
-    "settings":[ "gsm.operator.mnc" ]
+    "settings":[ "cell.operator.mnc" ]
   },
   {
     "builtin": true,
@@ -568,7 +565,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmnc",
-    "settings":[ "gsm.operator.mnc" ]
+    "settings":[ "cell.operator.mnc" ]
   },
   {
     "builtin": true,
@@ -589,7 +586,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmnc_str",
-    "settings":[ "gsm.operator.mnc" ]
+    "settings":[ "cell.operator.mnc" ]
   },
   {
     "builtin": true,
@@ -610,7 +607,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmnc",
-    "settings":[ "gsm.operator.mnc" ]
+    "settings":[ "cell.operator.mnc" ]
   },
   {
     "builtin": true,
@@ -631,7 +628,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmnc_str",
-    "settings":[ "gsm.operator.mnc" ]
+    "settings":[ "cell.operator.mnc" ]
   },
   {
     "builtin": true,
@@ -652,7 +649,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmnc_str",
-    "settings":[ "gsm.operator.mnc" ]
+    "settings":[ "cell.operator.mnc" ]
   },
 
   {
@@ -674,7 +671,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_getmnc_str",
-    "settings":[ "gsm.operator.mnc" ]
+    "settings":[ "cell.operator.mnc" ]
   },
 
   {
@@ -801,7 +798,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_subscriptioninfo_isopportunistic",
-    "settings":[ "gsm.setting.network.opportunistic.bool" ]
+    "settings":[ "cell.data.is.opportunistic" ]
   },
   {
     "builtin": true,
@@ -929,7 +926,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_telephony_countryiso",
-    "settings":[ "zone.country.iso2" ]
+    "settings":[ "cell.sim.country.iso" ]
   },
   {
     "builtin": false,
@@ -972,7 +969,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_telephony_getnetworkoperator",
-    "settings":[ "gsm.operator.mcc", "gsm.operator.mnc", "gsm.operator.id" ]
+    "settings":[ "cell.operator.mcc", "cell.operator.mnc", "cell.operator.id" ]
   },
   {
     "builtin": false,
@@ -993,7 +990,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_telephony_getnetworkoperatorname",
-    "settings":[ "gsm.network.carrier" ]
+    "settings":[ "cell.operator.name" ]
   },
   {
     "builtin": false,
@@ -1014,7 +1011,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_telephony_getnetworkoperatorname",
-    "settings":[ "gsm.network.carrier" ]
+    "settings":[ "cell.operator.name" ]
   },
   {
     "builtin": false,
@@ -1035,7 +1032,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_telephony_getnetworkoperatorname",
-    "settings":[ "gsm.network.carrier" ]
+    "settings":[ "cell.operator.name" ]
   },
   {
     "builtin": false,
@@ -1056,7 +1053,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_telephony_getnetworkoperatorname",
-    "settings":[ "gsm.network.carrier" ]
+    "settings":[ "cell.operator.name" ]
   },
   {
     "builtin": false,
@@ -1077,8 +1074,8 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_telephony_getphonetype",
-    "settings":[ "gsm.phone.type" ]
-  },
+    "settings":[ "cell.phone.type" ]
+  },*/
 
   /*{
     "builtin": false,
@@ -1099,9 +1096,10 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_telephony_subscriberid_two",
-    "settings":[ "gsm.operator.mcc", "gsm.operator.mnc" ]
+    "settings":[ "cell.operator.mcc", "cell.operator.mnc" ]
   },*/
 
+  /*
   {
     "builtin": false,
     "collection": "PrivacyEx",
@@ -1121,7 +1119,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_telephony_carrierid",
-    "settings":[ "gsm.operator.mcc", "gsm.operator.mnc", "gsm.operator.id"  ]
+    "settings":[ "cell.operator.mcc", "cell.operator.mnc", "cell.operator.id"  ]
   },
   {
     "builtin": false,
@@ -1323,5 +1321,5 @@
     "usage":true,
     "notify":false,
     "luaScript": "@generic_empty_list"
-  }
+  }*/
 ]

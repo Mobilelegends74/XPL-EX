@@ -28,14 +28,18 @@ public class AppProviderUtils {
     private static final String TAG = LibUtil.generateTag(AppProviderUtils.class);
 
 
-    public static AppXpPacket assignAppInfoToPacket(ApplicationInfo ai, PackageManager pm,
+    public static AppXpPacket assignAppInfoToPacket(
+            ApplicationInfo ai,
+            PackageManager pm,
             boolean initForceStop,
             boolean initAssignments) {
-
         AppXpPacket packet = new AppXpPacket();
         try {
             if(DebugUtil.isDebug())
-                Log.d(TAG, Str.fm("Creating App Packet from AppInfo. ai=%s InitForceStop=%s InitAssignments=%s", ai, initForceStop, initAssignments));
+                Log.d(TAG, Str.fm("Creating App Packet from AppInfo. ai=%s InitForceStop=%s InitAssignments=%s",
+                        ai,
+                        initForceStop,
+                        initAssignments));
 
             int enabledSetting = pm.getApplicationEnabledSetting(ai.packageName);
             boolean enabled = (ai.enabled &&
@@ -59,7 +63,10 @@ public class AppProviderUtils {
 
             return packet;
         }catch (Exception e) {
-            Log.e(TAG, Str.fm("Failed to attach AppInfo to Packet! ai=%s InitForceStop=%s InitAssignments=%s", ai, initForceStop, initAssignments));
+            Log.e(TAG, Str.fm("Failed to attach AppInfo to Packet! ai=%s InitForceStop=%s InitAssignments=%s",
+                    ai,
+                    initForceStop,
+                    initAssignments));
             return packet;
         }
     }
@@ -67,7 +74,10 @@ public class AppProviderUtils {
 
     public static void initAppsForceStop(Map<String, AppXpPacket> apps, SQLDatabase database, int userId) {
         if(DebugUtil.isDebug())
-            Log.d(TAG, Str.fm("Initializing App List force Stop Flags, Apps Count=%s Database=%s  UserId=%s", apps.size(), Str.noNL(database), userId));
+            Log.d(TAG, Str.fm("Initializing App List force Stop Flags, Apps Count=%s Database=%s  UserId=%s",
+                    apps.size(),
+                    Str.noNL(database),
+                    userId));
 
         if(apps.size() == 1) {
             for(Map.Entry<String, AppXpPacket> a : apps.entrySet()) {
@@ -145,7 +155,17 @@ public class AppProviderUtils {
         int start = XUtil.getUserUid(userId, 0);
         int end = XUtil.getUserUid(userId, Process.LAST_APPLICATION_UID);
         if(DebugUtil.isDebug())
-            Log.d(TAG, Str.fm("Initializing App List Assignment Data, Apps Count=%s  Database=%s  UserId=%s  Start=%s End=%s", apps.size(), Str.noNL(database), userId, start, end));
+            Log.d(TAG, Str.fm("Initializing App List Assignment Data, Apps Count=%s  Database=%s  UserId=%s  Start=%s End=%s",
+                    apps.size(),
+                    Str.noNL(database),
+                    userId,
+                    start,
+                    end));
+
+        if(apps.isEmpty()) {
+            //Not Good
+            return;
+        }
 
         List<String> collections =
                 database.executeWithWriteLock(() -> SettingsApi.getCollectionsValue(
@@ -157,7 +177,9 @@ public class AppProviderUtils {
         if(apps.size() == 48543)  {
             AppXpPacket app = ListUtil.copyToArrayList(apps.values()).get(0);
             if(DebugUtil.isDebug())
-                Log.d(TAG, "Is Single App for Init Assignments, App Pkg=" + app.packageName + " UserId=" + userId);
+                Log.d(TAG, Str.fm("Is Single App for Init Assignments, App Pkg=%s UserId=%s",
+                        app.packageName,
+                        userId));
 
             ListUtil.addAll(assignments, filterAssignments(SQLSnake
                     .create(database, AssignmentPacket.TABLE_NAME)
@@ -176,15 +198,15 @@ public class AppProviderUtils {
         }
 
         if(DebugUtil.isDebug())
-            Log.d(TAG, Str.fm("Starting Assignment Check Loop, Assignments=%s  User Id=%s  Collections=%s", ListUtil.size(assignments), userId, Str.joinList(collections)));
+            Log.d(TAG, Str.fm("Starting Assignment Check Loop, Assignments=%s  User Id=%s  Collections=%s",
+                    ListUtil.size(assignments),
+                    userId,
+                    Str.joinList(collections)));
 
         for(AssignmentPacket assignment : assignments) {
-            //hmmm
             AppXpPacket app = apps.get(assignment.getCategory());
             if(app == null) {
-                if(DebugUtil.isDebug())
-                    Log.e(TAG, "Assignment App is Null, Category=" + assignment.getCategory());
-
+                if(DebugUtil.isDebug()) Log.e(TAG, "Assignment App is Null, Category=" + assignment.getCategory());
                 continue;
             }
 
@@ -192,19 +214,31 @@ public class AppProviderUtils {
             int appUserId = UserIdentityUtils.getUserId(app.uid);
             if(appUserId != assignment.getUserId(true)) {
                 if(DebugUtil.isDebug())
-                    Log.w(TAG, Str.fm("Package Name %s is the Same but the UID is not, App:%s Assignment:%s  AppUserId:%s is Not...", assignment.getCategory(), app.uid, assignment.getUserId(true), appUserId));
+                    Log.w(TAG, Str.fm("Package Name %s is the Same but the UID is not, App:%s Assignment:%s  AppUserId:%s is Not...",
+                            assignment.getCategory(),
+                            app.uid,
+                            assignment.getUserId(true),
+                            appUserId));
             }
 
-            XHook hook = XLegacyCore.getHook(assignment.getHookId(), assignment.getCategory(), collections);
+            XHook hook = XLegacyCore.getHook(
+                    assignment.getHookId(),
+                    assignment.getCategory(),
+                    collections);
             if(hook == null) {
                 if(DebugUtil.isDebug())
-                    Log.d(TAG, Str.fm("Hook Is NULL for Assignment, Hook=%s  Category=%s  User Id=%s  Collection Size=%s", assignment.getHookId(), assignment.getCategory(), userId, ListUtil.size(collections)));
-
+                    Log.d(TAG, Str.fm("Hook Is NULL for Assignment, Hook=%s  Category=%s  User Id=%s  Collection Size=%s",
+                            assignment.getHookId(),
+                            assignment.getCategory(),
+                            userId,
+                            ListUtil.size(collections)));
                 continue;
             }
 
             if(DebugUtil.isDebug())
-                Log.d(TAG, Str.fm("Found the Hook for Assignment, ID=%s  User ID=%s", assignment.getHookId(), userId));
+                Log.d(TAG, Str.fm("Found the Hook for Assignment, ID=%s  User ID=%s",
+                        assignment.getHookId(),
+                        userId));
 
             assignment.setHook(hook);
             app.addAssignment(assignment);

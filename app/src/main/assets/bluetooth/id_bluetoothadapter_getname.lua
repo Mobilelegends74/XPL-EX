@@ -4,7 +4,7 @@ function after(hook, param)
 		return false
 	end
 
-    local fake = param:getSetting("bluetooth.name", "private")
+    local fake = param:getSetting("device.unique.bluetooth.name", "private")
     if fake == nil then
         return false
     end

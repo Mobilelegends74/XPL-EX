@@ -69,14 +69,14 @@ public class XposedUtil {
         List<String> expApps = getExpApps(context);
         PackageManager packageManager = context.getPackageManager();
         if (expApps.isEmpty()) {
-            return packageManager.getInstalledApplications(0);
+            return packageManager.getInstalledApplications(PackageManager.MATCH_ALL);
         } else {
             List<ApplicationInfo> apps = new ArrayList<>();
             for (String expApp : expApps) {
                 try {
                     apps.add(packageManager.getApplicationInfo(expApp, 0));
                 } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
+
                 }
             }
             return apps;

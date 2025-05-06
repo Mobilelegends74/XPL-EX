@@ -5,7 +5,7 @@ import android.util.Log;
 
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.x.data.string.StrBuilder;
-import eu.faircode.xlua.x.hook.interceptors.file.FileTimeInterceptor;
+import eu.faircode.xlua.x.hook.interceptors.file.TimeInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.file.stat.StatMockSettings;
 import eu.faircode.xlua.x.hook.interceptors.file.stat.StatUtils;
 import eu.faircode.xlua.x.runtime.reflect.DynamicField;
@@ -44,17 +44,18 @@ public class StatStructCleaner {
     public static final DynamicField STAT_CHANGE_S_FIELD = new DynamicField(StructStat.class, "st_ctim")
             .setAccessible(true);
 
-    public static boolean cleanStructure(FileTimeInterceptor interceptor, Object obj) {
+    public static boolean cleanStructure(TimeInterceptor interceptor, Object obj) {
         if(interceptor != null && obj != null) {
             try {
                 StrBuilder orgValue = new StrBuilder();
                 StrBuilder newValue = new StrBuilder();
-                orgValue.appendFieldLine("File", interceptor.file);
-                newValue.appendFieldLine("File", interceptor.file);
+                orgValue.appendFieldLine("File", interceptor.fileOrApp);
+                newValue.appendFieldLine("File", interceptor.fileOrApp);
 
                 long[] access = getTimes(obj, StatMockSettings.TimeKind.ACCESS);
                 long originalAccess = interceptor.getOriginalAccess(secondsToMillis(access[0]));
-                long fakeAccess = interceptor.getFinalValue(interceptor.getAccessOffset(), originalAccess);
+                //long fakeAccess = interceptor.getFinalValue(interceptor.getAccessOffset(), originalAccess);
+                long fakeAccess = interceptor.getAccess(originalAccess);
                 if(access[0] > 0) {
                     setTimes(obj, StatMockSettings.TimeKind.ACCESS, fakeAccess, access[1]);
                     orgValue.appendFieldLine("Access", StatUtils.timespecToString(access[0], access[1]));
@@ -62,8 +63,9 @@ public class StatStructCleaner {
                 }
 
                 long[] modified = getTimes(obj, StatMockSettings.TimeKind.MODIFY);
-                long originalModified = interceptor.getOriginalModified(secondsToMillis(modified[0]));
-                long fakeModified = interceptor.getFinalValue(interceptor.getModifiedOffset(), originalModified);
+                long originalModified = interceptor.getOriginalModify(secondsToMillis(modified[0]));
+                //long fakeModified = interceptor.getFinalValue(interceptor.getModifiedOffset(), originalModified);
+                long fakeModified = interceptor.getModify(originalModified);
                 if(modified[0] > 0) {
                     setTimes(obj, StatMockSettings.TimeKind.MODIFY, fakeModified, modified[1]);
                     orgValue.appendFieldLine("Modify", StatUtils.timespecToString(modified[0], modified[1]));
@@ -72,7 +74,8 @@ public class StatStructCleaner {
 
                 long[] change = getTimes(obj, StatMockSettings.TimeKind.CHANGE);
                 long originalChange = interceptor.getOriginalChange(secondsToMillis(change[0]));
-                long fakeChange = interceptor.getFinalValue(interceptor.getChangeOffset(), originalChange);
+                //long fakeChange = interceptor.getFinalValue(interceptor.getChangeOffset(), originalChange);
+                long fakeChange = interceptor.getChange(originalChange);
                 if(modified[0] > 0) {
                     setTimes(obj, StatMockSettings.TimeKind.CHANGE, fakeChange, change[1]);
                     orgValue.appendFieldLine("Change", StatUtils.timespecToString(change[0], change[1]));

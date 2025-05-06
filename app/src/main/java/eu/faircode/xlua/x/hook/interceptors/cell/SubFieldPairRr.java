@@ -3,21 +3,18 @@ package eu.faircode.xlua.x.hook.interceptors.cell;
 import android.telephony.SubscriptionInfo;
 import android.util.Log;
 
-import java.lang.reflect.Field;
-
 import eu.faircode.xlua.DebugUtil;
-import eu.faircode.xlua.XParam;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.runtime.reflect.DynamicField;
 import eu.faircode.xlua.x.xlua.LibUtil;
 
-public class SubFieldPair {
-    private static final String TAG = LibUtil.generateTag(SubFieldPair.class);
+public class SubFieldPairRr {
+    private static final String TAG = LibUtil.generateTag(SubFieldPairRr.class);
 
     public static final String BUILDER_CLASS_NAME = "android.telephony.SubscriptionInfo$Builder";
 
-    public static SubFieldPair create(String fieldName, String settingName) { return new SubFieldPair(fieldName, settingName); }
-    public static SubFieldPair create(String fieldName) { return new SubFieldPair(fieldName, null); }
+    public static SubFieldPairRr create(String fieldName, String settingName) { return new SubFieldPairRr(fieldName, settingName); }
+    public static SubFieldPairRr create(String fieldName) { return new SubFieldPairRr(fieldName, null); }
 
     /*public static SubFieldPair createLike(String settingName, String key) {
         try {
@@ -45,7 +42,7 @@ public class SubFieldPair {
 
     private Object defaultValue = null;
 
-    public SubFieldPair setDefaultValue(Object defaultValue) {
+    public SubFieldPairRr setDefaultValue(Object defaultValue) {
         this.defaultValue = defaultValue;
         return this;
     }
@@ -53,7 +50,7 @@ public class SubFieldPair {
 
     public String getIndexedName(int index) { return index > -1 ? Str.combine(settingName, "." + String.valueOf(index)) : settingName; }
 
-    public SubFieldPair(String fieldName, String settingName) {
+    public SubFieldPairRr(String fieldName, String settingName) {
         this.fieldName = fieldName;
         this.field = DynamicField.create(SubscriptionInfo.class, fieldName).setAccessible(true);
         this.settingName = settingName;

@@ -3,6 +3,7 @@ package eu.faircode.xlua.api.hook;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
+import android.widget.CheckBox;
 
 import java.text.Collator;
 import java.util.ArrayList;
@@ -21,16 +22,21 @@ import eu.faircode.xlua.utilities.SettingUtil;
 import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 
 public class LuaHooksGroup {
+    public CheckBox lastBox = null;
+
     public String groupId;
 
     public int id;
     public String name;
     public String title;
+
     public boolean exception = false;
+
     public int installed = 0;
     public int optional = 0;
     public long used = -1;
     public int assigned = 0;
+
     public List<XHook> hooks = new ArrayList<>();
 
     private String titleName = null;

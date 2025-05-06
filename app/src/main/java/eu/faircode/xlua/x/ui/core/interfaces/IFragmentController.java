@@ -8,7 +8,12 @@ import eu.faircode.xlua.x.ui.core.FilterRequest;
 public interface IFragmentController {
     void clear();
     void refresh();
+
     void updatedSortedList(FilterRequest request);
+
+    //default String getShowValue() {
+    //    return null;
+    //}
 
     Fragment getFragment();
     FragmentManager getFragmentMan();

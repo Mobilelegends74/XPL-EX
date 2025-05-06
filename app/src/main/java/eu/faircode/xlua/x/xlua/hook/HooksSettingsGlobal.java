@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XUtil;
@@ -16,6 +17,7 @@ import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.JsonHelperEx;
 import eu.faircode.xlua.x.data.utils.ArrayUtils;
 import eu.faircode.xlua.x.data.utils.ListUtil;
+import eu.faircode.xlua.x.runtime.RuntimeUtils;
 import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.call.GetHookCommand;
@@ -52,7 +54,14 @@ public class HooksSettingsGlobal {
     //public static List<XLuaHook> getAllHooks(Context context) { return GetHooksCommand.getHooks(context, true, true); }
     public static List<String> getCollections(Context context) { return GetSettingExCommand.getCollections(context, Process.myUid()); }
 
-    public static List<String> settingHoldersToNames(SettingsContainer container) { return container != null ? settingHoldersToNames(container.getSettings()) : ListUtil.emptyList(); }
+    public static List<String> settingHoldersToNames(SettingsContainer container) { return settingHoldersToNames(container, false); }
+
+
+    public static List<String> settingHoldersToNames(SettingsContainer container, boolean includeIndexZero) {
+        return container != null ? settingHoldersToNames(container.getSettings(includeIndexZero)) : ListUtil.emptyList();
+    }
+
+
     public static List<String> settingPacketsToNames(List<SettingPacket> settings) { return ListUtil.forEachTo(settings, (o) -> o.name); }
     public static List<String> settingHoldersToNames(List<SettingHolder> settings) { return ListUtil.forEachTo(settings, NameInformationTypeBase::getName); }
 
@@ -130,10 +139,25 @@ public class HooksSettingsGlobal {
                     ListUtil.size(settingNames),
                     ListUtil.size(settingNames) > 0 && settingsMap.containsKey(settingNames.get(0))));
 
+        if(DebugUtil.isDebug())
+            Log.d(TAG, Str.fm("Getting Hook Ids for [%s] Stack=%s",
+                    Str.joinList(settingNames),
+                    Str.ensureNoDoubleNewLines(RuntimeUtils.getStackTraceSafeString(new Exception()))));
+
         if(ListUtil.isValid(settingNames)) {
-            for(String setting : settingNames)
-                if(!Str.isEmpty(setting))
+            for(String setting : settingNames) {
+                if(!Str.isEmpty(setting)) {
                     ListUtil.addAllIfValidEx(all, settingsMap.get(setting));
+
+                    /*if(setting.length() > 5) {
+                        char last = setting.charAt(setting.length() - 1);
+                        if(Character.isDigit(last)) {
+                            String sub = setting.substring(0, setting.length() - 1);
+                            ListUtil.addAllIfValidEx(all, settingsMap.get(sub));
+                        }
+                    }*/
+                }
+            }
         }
 
         if(DebugUtil.isDebug())

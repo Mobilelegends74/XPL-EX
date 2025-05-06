@@ -9,6 +9,7 @@ import android.hardware.camera2.CameraManager;
 import android.media.AudioManager;
 import android.os.BatteryManager;
 import android.os.Build;
+import android.telecom.TelecomManager;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -244,7 +245,6 @@ public class XHookUtil {
             if ("android.app.ActivityManager".equals(className)) {
                 Object service = context.getSystemService(ActivityManager.class);
                 if (service != null) return service.getClass().getName();
-
             } else if ("android.appwidget.AppWidgetManager".equals(className)) {
                 Object service = context.getSystemService(AppWidgetManager.class);
                 if (service != null) return service.getClass().getName();
@@ -293,6 +293,10 @@ public class XHookUtil {
             }
             else if("android.os.BatteryManager".equals(className)) {
                 Object service = context.getSystemService(Context.BATTERY_SERVICE);
+                if(service != null) return service.getClass().getName();
+            }
+            else if("android.telecom.TelecomManager".equals(className)) {
+                Object service = context.getSystemService(Context.TELECOM_SERVICE);
                 if(service != null) return service.getClass().getName();
             }
             else if("java.io.FileSystem".equals(className)) {

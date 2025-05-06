@@ -1,5 +1,52 @@
 [
   {
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "ID/Properties/VBMETA_DIGEST",
+    "author": "OBC",
+    "className": "Intercept.Properties",
+    "methodName": "get",
+    "parameterTypes": ["ro.boot.vbmeta.digest", "ro.bootloader.vbmeta.digest", "persist.sys.vbmeta.digest", "ro.boot.vbmeta.hash", "ro.boot.vbmeta.fingerprint"],
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "This property contains a SHA256 digest (hash) of the device's Verified Boot metadata (vbmeta) partition. It's essentially a cryptographic fingerprint that represents the boot security state and verification data of the device.",
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "notify":false,
+    "luaScript": "",
+    "settings":["props.unique.vbmeta.digest"]
+  },
+
+  {
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "ID/Properties/SERIALS",
+    "author": "OBC",
+    "className": "Intercept.Properties",
+    "methodName": "get",
+    "parameterTypes": ["ril.serialnumber", "ro.boot.ap_serial", "ro.boot.em.did", "persist.sys.lite.uid", "persist.radio.serialno"],
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "Serial Number Related Property IDs! Typically not the Same",
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "notify":false,
+    "luaScript": "",
+    "settings":[
+      "props.unique.ril.serialnumber",
+      "props.unique.ap.serial",
+      "props.unique.em.did",
+      "props.unique.lite.uid",
+      "props.unique.persist.radio.serialno"
+    ]
+  },
+
+
+  {
     "builtin": true,
     "collection": "PrivacyEx",
     "group": "ID.Unique",
@@ -425,6 +472,113 @@
     "usage":true,
     "settings":["unique.android.id"]
   },
+
+
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "ID/Call/baidu_ids",
+    "author": "OBC",
+    "className": "Intercept.Settings.Call",
+    "methodName": "settings",
+    "parameterTypes": [  "com.baidu.deviceid", "com.baidu.deviceid.v2", "com.baidu.uuid", "dxCRMxhQkdGePGnp", "mqBRboGZkQPcAkyk"  ],
+    "version": 1,
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "settings":[
+      "settings.unique.baidu.device.id.1",
+      "settings.unique.baidu.device.id.2",
+      "settings.unique.baidu.device.id.3",
+      "settings.unique.baidu.device.id.4",
+      "settings.unique.baidu.device.id.5"
+    ]
+  },
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "ID/Query/baidu_ids",
+    "author": "OBC",
+    "className": "Intercept.Intent.Query",
+    "methodName": "settings",
+    "parameterTypes": [  "com.baidu.deviceid", "com.baidu.deviceid.v2", "com.baidu.uuid", "dxCRMxhQkdGePGnp", "mqBRboGZkQPcAkyk"  ],
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "settings":[
+      "settings.unique.baidu.device.id.1",
+      "settings.unique.baidu.device.id.2",
+      "settings.unique.baidu.device.id.3",
+      "settings.unique.baidu.device.id.4",
+      "settings.unique.baidu.device.id.5"
+    ]
+  },
+
+
+
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "ID/Call/DeviceNames",
+    "author": "OBC",
+    "className": "Intercept.Settings.Call",
+    "methodName": "settings",
+    "parameterTypes": [ "bluetooth_name", "device_name", "wifi_p2p_device_name" ],
+    "version": 1,
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "settings":["device.unique.bluetooth.name", "device.unique.name", "device.unique.name"]
+  },
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "ID/Query/DeviceNames",
+    "author": "OBC",
+    "className": "Intercept.Intent.Query",
+    "methodName": "settings",
+    "parameterTypes": [ "bluetooth_name", "device_name", "wifi_p2p_device_name" ],
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "settings":["device.unique.bluetooth.name", "device.unique.name", "device.unique.name"]
+  },
+
+
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "ID/Call/pay_session_id",
+    "author": "OBC",
+    "className": "Intercept.Settings.Call",
+    "methodName": "settings",
+    "parameterTypes": [ "pay_session_id" ],
+    "version": 1,
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "settings":["settings.unique.pay.session.id"]
+  },
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "ID.Unique",
+    "name": "ID/Query/pay_session_id",
+    "author": "OBC",
+    "className": "Intercept.Intent.Query",
+    "methodName": "settings",
+    "parameterTypes": [ "pay_session_id" ],
+    "enabled":true,
+    "optional":true,
+    "usage":true,
+    "settings":[ "settings.unique.pay.session.id" ]
+  },
+
   {
     "builtin": true,
     "collection": "PrivacyEx",

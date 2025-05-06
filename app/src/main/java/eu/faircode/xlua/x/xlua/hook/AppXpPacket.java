@@ -18,12 +18,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import eu.faircode.xlua.AdapterApp;
 import eu.faircode.xlua.x.data.string.StrBuilder;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.xlua.IBundleData;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.interfaces.IJsonType;
 import eu.faircode.xlua.x.xlua.interfaces.IParcelType;
+import eu.faircode.xlua.x.xlua.settings.AssignmentFactory;
 
 /*
     To Keep Legacy System we use "UID", though it can mean UID or UserId
@@ -42,6 +44,9 @@ public class AppXpPacket implements IParcelType, IJsonType, Parcelable, IAssignL
     public boolean forceStop = false;
     public final List<AssignmentPacket> assignments = new ArrayList<>();
 
+
+    public AssignmentFactory factory;
+
     private IAssignListener onAssign;
 
     public static final String FIELD_APP = "app_info";
@@ -54,9 +59,19 @@ public class AppXpPacket implements IParcelType, IJsonType, Parcelable, IAssignL
 
     public boolean hasAssignment(AssignmentPacket assignment) { return assignmentIndex(assignment) > -1; }
 
-    public void addAssignment(AssignmentPacket assignment) { if(assignment != null) assignments.add(assignment); }
-    public void addAllAssignments(List<AssignmentPacket> assignments) { if(!ListUtil.isValid(assignments)) ListUtil.addAll(this.assignments, assignments); }
-    public void removeAssignment(AssignmentPacket assignment) { ListUtil.removeAt(assignments, assignmentIndex(assignment)); }
+    public void addAssignment(AssignmentPacket assignment) {
+        if(assignment != null)
+            assignments.add(assignment);
+    }
+
+    public void addAllAssignments(List<AssignmentPacket> assignments) {
+        if(!ListUtil.isValid(assignments))
+            ListUtil.addAll(this.assignments, assignments);
+    }
+
+    public void removeAssignment(AssignmentPacket assignment) {
+        ListUtil.removeAt(assignments, assignmentIndex(assignment));
+    }
 
     public int assignmentIndex(AssignmentPacket assignment) { return ListUtil.indexOf(assignments, assignment, (a, b) -> a.hook.equals(b.hook)); }
 
@@ -66,7 +81,7 @@ public class AppXpPacket implements IParcelType, IJsonType, Parcelable, IAssignL
 
         Collection<AssignmentPacket> filtered = new ArrayList<>();
         for (AssignmentPacket assignment : assignments)
-            if (group.equals(assignment.hookObj.group))
+            if (group.equalsIgnoreCase(assignment.hookObj.group))
                 filtered.add(assignment);
 
         return filtered;
@@ -83,7 +98,9 @@ public class AppXpPacket implements IParcelType, IJsonType, Parcelable, IAssignL
             this.persistent = (in.readByte() != 0);
             this.system = (in.readByte() != 0);
             this.forceStop = (in.readByte() != 0);
-            ListUtil.addAll(assignments, in.createTypedArrayList(AssignmentPacket.CREATOR));
+            try {
+                ListUtil.addAll(assignments, in.createTypedArrayList(AssignmentPacket.CREATOR));
+            } catch (Exception ignored) { }
         }
     }
 
@@ -93,11 +110,15 @@ public class AppXpPacket implements IParcelType, IJsonType, Parcelable, IAssignL
         parcel.writeInt(this.uid);
         parcel.writeInt(this.icon);
         parcel.writeString(this.label);
+
         parcel.writeByte(this.enabled ? (byte) 1 : (byte) 0);
         parcel.writeByte(this.persistent ? (byte) 1 : (byte) 0);
         parcel.writeByte(this.system ? (byte) 1 : (byte) 0);
         parcel.writeByte(this.forceStop ? (byte) 1 : (byte) 0);
-        parcel.writeTypedList(new ArrayList<>(this.assignments));
+
+        try {
+            parcel.writeTypedList(new ArrayList<>(this.assignments));
+        }catch (Exception e) { }
     }
 
     @Override
@@ -187,6 +208,17 @@ public class AppXpPacket implements IParcelType, IJsonType, Parcelable, IAssignL
             this.onAssign = onAssign;
     }
 
+    /*@Override
+    public void updateAssigned(
+            Context context,
+            String groupName,
+            boolean assign,
+            boolean notifyChangeMain,
+            AdapterApp.IOnAssignmentFinished onFinish) {
+        if(onAssign != null)
+            onAssign.updateAssigned(context, groupName, assign, notifyChangeMain, onFinish);
+    }*/
+
     @Override
     public void setAssigned(Context context, String group, boolean assign) {
         if(onAssign != null)
@@ -214,7 +246,7 @@ public class AppXpPacket implements IParcelType, IJsonType, Parcelable, IAssignL
                 .appendFieldLine("Label", this.label)
                 .appendFieldLine("Enabled", this.enabled)
                 .appendFieldLine("Persistent", this.persistent)
-                .appendFieldLine("System", this.forceStop)
+                .appendFieldLine("System", this.system)
                 .appendFieldLine("ForceStop", this.forceStop)
                 .appendFieldLine("Assignment Count", ListUtil.size(assignments))
                 .toString(true);

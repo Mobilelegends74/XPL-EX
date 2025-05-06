@@ -24,6 +24,7 @@ public abstract class ListBaseActivity extends ActivityBase implements IFragment
     private MenuItem menuSearch;
     private SharedViewControl sharedViewControl;
 
+
     protected abstract String getSharedTagId();
 
     public <T extends IFragmentController> void startFragmentTransaction(Class<T> loaderClass, int replaceResource, boolean passArgs) {

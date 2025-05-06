@@ -163,7 +163,8 @@ public class SettingsListManager extends ListViewManager<SettingHolder, Settings
                         .show(stateManager.getFragmentMan(), context.getString(R.string.title_wifi_networks));
             });
         }
-        else if(CoreUiUtils.SPECIAL_TIME_SETTINGS.contains(setting.getName()) || CoreUiUtils.SPECIAL_TIME_APP_SETTINGS.contains(setting.getName())) {
+        else if(CoreUiUtils.SPECIAL_TIME_SETTINGS.contains(setting.getName()) ||
+                CoreUiUtils.SPECIAL_TIME_APP_SETTINGS.contains(setting.getName())) {
 
             setting.setBindings(tvName, textInput, null);
             setting.setNameLabelColor(context);
@@ -215,7 +216,6 @@ public class SettingsListManager extends ListViewManager<SettingHolder, Settings
             setting.setNameLabelColor(context);
 
             textInput.addTextChangedListener(watcher);
-
             //Extra shit
             textInput.setOnFocusChangeListener((v, hasFocus) -> {
                 if (!hasFocus) {
