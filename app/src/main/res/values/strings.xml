@@ -78,7 +78,7 @@
         <![CDATA[<br>]]><![CDATA[<a href="https://github.com/VD171/VD-Infos">GitHub</a>]]>
 
         <![CDATA[<br><br>]]> 1.5.5 XPL155R
-        <![CDATA[<br>]]>• Started Implementation of the CELL/GSM Hooks! Enable Collection (Telephony) to view Them
+        <![CDATA[<br>]]>• Started Implementation of the CELL/GSM Hooks! Enable Collection (Telephony) to view Them (No Cell Towers yet)
         <![CDATA[<br>]]>• Updated Hooks Internal Repo Class
         <![CDATA[<br>]]>• Improved the Database Updater (JSON) Better Detection on Outdated JSON Entries
         <![CDATA[<br>]]>• Revised and Improved the WHOLE Settings Repo Class and its Logic (Worked on Fist Try!)
