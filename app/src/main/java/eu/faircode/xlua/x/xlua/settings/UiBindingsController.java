@@ -69,6 +69,7 @@ public abstract class UiBindingsController extends NameInformationTypeBase imple
     private EditText editText;
     private TextInputEditText inputEditText;
     private TextWatcher textWatcher;
+    private boolean affectedByActiveHook = false;
 
     public TextView getIdentifyingLabel() { return nameLabel != null ? nameLabel : niceNameLabel; }
     public String getIdentification() { return nameLabel != null ? getName() : getNameNice(); }
@@ -79,6 +80,8 @@ public abstract class UiBindingsController extends NameInformationTypeBase imple
 
     public boolean isEnabled() { return isChecked; }
 
+    public void setAffectedByActiveHook(boolean affected) { this.affectedByActiveHook = affected; }
+
 
 
     public void ensureUiUpdated(String inputText) {
@@ -87,7 +90,9 @@ public abstract class UiBindingsController extends NameInformationTypeBase imple
 
     public void setNameLabelColor(Context context, boolean isNotSaved, boolean hasValue) {
         if(context != null && nameLabel != null) {
-            int c = isNotSaved ?  R.attr.colorUnsavedSetting : hasValue ? R.attr.colorAccent : R.attr.colorTextOne;
+            int c = affectedByActiveHook ? R.attr.colorActiveHook :
+                    isNotSaved ? R.attr.colorUnsavedSetting :
+                    hasValue ? R.attr.colorAccent : R.attr.colorTextOne;
             int color = XUtil.resolveColor(context, c);
             CoreUiUtils.setTextColor(nameLabel, color, false);
         }

@@ -7,8 +7,11 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import eu.faircode.xlua.DebugUtil;
@@ -92,16 +95,11 @@ public class HooksSettingsGlobal {
 
     public static String resolveSettingName(Context context, String settingName) {
         init(context);
-        if(Str.isEmpty(settingName))
-            return settingName;
-
-        String newName = remappedSettings.get(settingName);
-        return Str.isEmpty(newName) ? settingName : newName;
+        return resolveSettingNameInternal(settingName);
     }
 
     public static List<String> getHookIdsForSetting(Context context, String settingName) {
-        init(context);
-        return ListUtil.nonNull(!Str.isEmpty(settingName) ? settingsMap.get(settingName) : null);
+        return getHookIdsForSettings(context, settingName);
     }
 
     public static List<String> getHookIdsFromCollections(Context context) {
@@ -132,7 +130,6 @@ public class HooksSettingsGlobal {
     public static List<String> getHookIdsForSettings(Context context, String... settingNames) { return ArrayUtils.isValid(settingNames, 1) ? getHookIdsForSettings(context, Arrays.asList(settingNames)) : ListUtil.emptyList(); }
     public static List<String> getHookIdsForSettings(Context context, List<String> settingNames) {
         init(context);
-        List<String> all = new ArrayList<>();
         if(DebugUtil.isDebug())
             Log.d(TAG, Str.fm("Getting Hook Ids for Settings=[%s] Count=%s Has Setting First [%s]",
                     Str.joinList(settingNames),
@@ -144,21 +141,7 @@ public class HooksSettingsGlobal {
                     Str.joinList(settingNames),
                     Str.ensureNoDoubleNewLines(RuntimeUtils.getStackTraceSafeString(new Exception()))));
 
-        if(ListUtil.isValid(settingNames)) {
-            for(String setting : settingNames) {
-                if(!Str.isEmpty(setting)) {
-                    ListUtil.addAllIfValidEx(all, settingsMap.get(setting));
-
-                    /*if(setting.length() > 5) {
-                        char last = setting.charAt(setting.length() - 1);
-                        if(Character.isDigit(last)) {
-                            String sub = setting.substring(0, setting.length() - 1);
-                            ListUtil.addAllIfValidEx(all, settingsMap.get(sub));
-                        }
-                    }*/
-                }
-            }
-        }
+        List<String> all = getHookIdsFromIndex(settingNames);
 
         if(DebugUtil.isDebug())
             Log.d(TAG, Str.fm("Finished Getting Hook Ids for Settings=[%s] Count=%s All=[%s] All Count=%s",
@@ -167,6 +150,19 @@ public class HooksSettingsGlobal {
                     Str.joinList(all),
                     ListUtil.size(all)));
 
+        return all;
+    }
+
+    static List<String> getHookIdsFromIndex(List<String> settingNames) {
+        List<String> all = new ArrayList<>();
+        if(ListUtil.isValid(settingNames)) {
+            for(String setting : settingNames) {
+                if(!Str.isEmpty(setting)) {
+                    for(String lookupName : getLookupNames(setting))
+                        ListUtil.addAllIfValidEx(all, settingsMap.get(lookupName));
+                }
+            }
+        }
         return all;
     }
 
@@ -282,7 +278,7 @@ public class HooksSettingsGlobal {
                 if(!Str.isEmpty(entry.id)) {
                     for(String oldId : entry.oldIds) {
                         if(!Str.isEmpty(oldId))
-                            remappedSettings.put(oldId, entry.id);
+                            remappedSettings.put(normalizeSettingName(oldId), normalizeSettingName(entry.id));
                     }
                 }
             }
@@ -292,6 +288,13 @@ public class HooksSettingsGlobal {
     }
 
     private static void internalAdd(String settingName, String hookId) {
+        if(!Str.isEmpty(settingName) && !Str.isEmpty(hookId)) {
+            for(String lookupName : getLookupNames(settingName))
+                internalAddExact(lookupName, hookId);
+        }
+    }
+
+    private static void internalAddExact(String settingName, String hookId) {
         if(!Str.isEmpty(settingName) && !Str.isEmpty(hookId)) {
             List<String> hooks = settingsMap.get(settingName);
             if(hooks == null) {
@@ -304,6 +307,61 @@ public class HooksSettingsGlobal {
                 }
             }
         }
+    }
+
+    static List<String> getLookupNames(String settingName) {
+        Set<String> names = new LinkedHashSet<>();
+        String normalized = normalizeSettingName(settingName);
+        String resolved = resolveSettingNameInternal(normalized);
+        if("__delete".equals(resolved))
+            return new ArrayList<>();
+
+        addLookupName(names, normalized);
+        addLookupName(names, resolved);
+
+        return new ArrayList<>(names);
+    }
+
+    private static void addLookupName(Set<String> names, String settingName) {
+        if(Str.isEmpty(settingName) || "__delete".equals(settingName))
+            return;
+
+        names.add(settingName);
+        String baseName = getIndexedBaseName(settingName);
+        if(!Str.isEmpty(baseName))
+            names.add(baseName);
+    }
+
+    private static String resolveSettingNameInternal(String settingName) {
+        String normalized = normalizeSettingName(settingName);
+        if(Str.isEmpty(normalized))
+            return normalized;
+
+        String resolved = remappedSettings.get(normalized);
+        return Str.isEmpty(resolved) ? normalized : resolved;
+    }
+
+    private static String normalizeSettingName(String settingName) {
+        return Str.isEmpty(settingName) ? settingName : settingName.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private static String getIndexedBaseName(String settingName) {
+        if(Str.isEmpty(settingName))
+            return settingName;
+
+        int arrayIndex = settingName.lastIndexOf(".[");
+        if(arrayIndex > 0 && settingName.endsWith("]"))
+            return settingName.substring(0, arrayIndex);
+
+        int separator = settingName.lastIndexOf('.');
+        if(separator < 1 || separator == settingName.length() - 1)
+            return settingName;
+
+        for(int i = separator + 1; i < settingName.length(); i++)
+            if(!Character.isDigit(settingName.charAt(i)))
+                return settingName;
+
+        return settingName.substring(0, separator);
     }
 
     private static void internalAddHook(Context context, String hookId) { internalAddHook(GetHookCommand.getEx(context, hookId)); }

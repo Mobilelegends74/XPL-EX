@@ -97,11 +97,21 @@ public class AppAssignmentsMap {
 
     public boolean isAssigned(String hookId) { return Boolean.TRUE.equals(map.get(hookId)); }
 
+    public boolean hasAssignedHookForSettings(Context context, List<String> settings) {
+        if(HookApp.isGlobalApp(app) || !ListUtil.isValid(settings))
+            return false;
+
+        for(String hookId : HooksSettingsGlobal.getHookIdsForSettings(context, settings))
+            if(isAssigned(hookId))
+                return true;
+
+        return false;
+    }
+
     public void setAssigned(String hookId, boolean isAssigned) {
         if(!Str.isEmpty(hookId)) {
             map.put(hookId, isAssigned);
-            //we need to refresh rest
-            //List<String> settings = HooksSettingsGlobal.
+            assignmentCache.clear();
         }
     }
 

@@ -69,6 +69,9 @@ public class SettingsListManager extends ListViewManager<SettingHolder, Settings
     @Override
     protected void bindItemView(SettingsExItemBinding binding, SettingHolder setting) {
         if(setting != null) {
+            SettingSharedRegistry settingShared = stateRegistry.asSettingShared();
+            setting.setAffectedByActiveHook(settingShared != null &&
+                    settingShared.hasAssignedHook(setting, context));
             binding.tvSettingExNameNice.setText(Str.getNonNullOrEmptyString(setting.getName(), "null"));
             binding.tiSettingExSettingValue.setText(Str.getNonNullString(setting.getNewValue(), Str.EMPTY));
             setupTextInputEx(binding.tvSettingExNameNice, binding.tiSettingExSettingValue, setting);

@@ -18,6 +18,7 @@
     <attr name="hookMenu" format="reference" />
     <attr name="randomButton" format="reference" />
     <attr name="colorUnsavedSetting" format="reference" />
+    <attr name="colorActiveHook" format="reference" />
     <attr name="resetButton" format="reference" />
     <attr name="saveButton" format="reference" />
     <attr name="deleteButton" format="reference" />
@@ -120,6 +121,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorUnsavedSetting">@color/colorUnsavedSetting</item>
+        <item name="colorActiveHook">@color/colorActiveHook</item>
 
 
         <item name="colorSystem">@color/lightColorSystem</item>
@@ -181,6 +183,7 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="colorUnsavedSetting">@color/colorUnsavedSetting</item>
+        <item name="colorActiveHook">@color/colorActiveHook</item>
 
 
         <item name="colorSettingSaved">@color/darkColorSettingSaved</item>

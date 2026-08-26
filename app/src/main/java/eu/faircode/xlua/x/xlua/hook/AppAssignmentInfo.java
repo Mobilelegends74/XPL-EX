@@ -38,7 +38,7 @@ public class AppAssignmentInfo {
 
     // int color = XUtil.resolveColor(context, data.total > 0 ?  R.attr.colorUnsavedSetting  : R.attr.colorTextOne);
 
-    public int getLabelColor(Context context) { return XUtil.resolveColor(context, count > 0 ? R.attr.colorUnsavedSetting : R.attr.colorTextOne); }
+    public int getLabelColor(Context context) { return XUtil.resolveColor(context, assignedCount > 0 ? R.attr.colorActiveHook : R.attr.colorTextOne); }
 
     public boolean isEmpty() { return count < 1; }
 

@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#D94C4C</color>
     <color name="colorAccent">#5FA8D3 </color>
     <color name="colorUnsavedSetting">#D94C4C</color>
+    <color name="colorActiveHook">#2EAD59</color>
 
 
     <!-- Light theme -->

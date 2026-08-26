@@ -30,6 +30,7 @@ import eu.faircode.xlua.x.ui.core.view_registry.ChangedStatesPacket;
 import eu.faircode.xlua.x.ui.core.view_registry.CheckBoxState;
 import eu.faircode.xlua.x.ui.core.view_registry.IStateChanged;
 import eu.faircode.xlua.x.ui.core.view_registry.IIdentifiableObject;
+import eu.faircode.xlua.x.ui.core.view_registry.SettingSharedRegistry;
 import eu.faircode.xlua.x.ui.core.view_registry.SharedRegistry;
 import eu.faircode.xlua.x.ui.core.adapter.EnhancedListAdapter;
 import eu.faircode.xlua.x.ui.core.interfaces.IGenericElementEvent;
@@ -129,6 +130,7 @@ public class OptimizedSettingGroupAdapter
             if(sharedRegistry != null) {
                 UINotifier notifications = sharedRegistry.notifier;
                 notifications.subscribeGroup(this);
+                notifications.subscribe(SettingSharedRegistry.NOTIFY_ACTIVE_HOOKS, this);
                 for(SettingsContainer container : currentItem.getContainers()) {
                     notifications.prepareGroup(getNotifierId(), UINotifier.containerName(container.getContainerName()));
                     for(SettingHolder setting : container.getSettings()) {
@@ -177,6 +179,7 @@ public class OptimizedSettingGroupAdapter
             if(currentItem != null) {
                 sharedRegistry.putGroupChangeListener(null, currentItem.getGroupName());
                 sharedRegistry.notifier.unsubscribeGroup(this);
+                sharedRegistry.notifier.unsubscribe(SettingSharedRegistry.NOTIFY_ACTIVE_HOOKS, this);
                 currentItem = null;
             }
         }
@@ -293,7 +296,8 @@ public class OptimizedSettingGroupAdapter
                 groupStats
                         .update(currentItem, forceUpdate)
                         .updateLabel(binding.tvStatsCount)
-                        .updateColor(binding.tvSettingGroupName, context)
+                        .updateColor(binding.tvSettingGroupName, context,
+                                sharedRegistry.asSettingShared().hasAssignedHook(currentItem, context))
                         .updateIv(binding.ivActionNeeded);
             }
         }
@@ -316,7 +320,8 @@ public class OptimizedSettingGroupAdapter
         @Override
         public void notify(int code, String notifier, Object extra) {
             if(code == UINotifier.CODE_DATA_CHANGED) {
-                if(UINotifier.isSettingPrefix(notifier)) {
+                if(UINotifier.isSettingPrefix(notifier) ||
+                        SettingSharedRegistry.NOTIFY_ACTIVE_HOOKS.equals(notifier)) {
                     updateStats(true, getContext());
                 }
             }

@@ -4,8 +4,10 @@ import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 import eu.faircode.xlua.DebugUtil;
@@ -14,6 +16,7 @@ import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.data.utils.TryRun;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
 import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
+import eu.faircode.xlua.x.ui.core.UINotifier;
 import eu.faircode.xlua.x.ui.core.UserClientAppContext;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.call.GetAppInfoCommand;
@@ -29,6 +32,7 @@ import eu.faircode.xlua.x.xlua.hook.data.AssignmentState;
 import eu.faircode.xlua.x.xlua.identity.UserIdentity;
 import eu.faircode.xlua.x.xlua.settings.SettingHolder;
 import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
+import eu.faircode.xlua.x.xlua.settings.SettingsGroup;
 import eu.faircode.xlua.x.xlua.settings.random.interfaces.IRandomizer;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
 
@@ -37,6 +41,7 @@ import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
  */
 public class SettingSharedRegistry extends SharedRegistry {
     private static final String TAG = LibUtil.generateTag(SettingSharedRegistry.class);
+    public static final String NOTIFY_ACTIVE_HOOKS = "active-hooks";
 
     public static SettingSharedRegistry create() { return new SettingSharedRegistry(); }
 
@@ -50,6 +55,11 @@ public class SettingSharedRegistry extends SharedRegistry {
             if(assignmentsMap == null) assignmentsMap = AppAssignmentsMap.create(app);
             HooksSettingsGlobal.init(context);
             assignmentsMap.refresh(context);
+            TryRun.onMain(() -> notifier.notify(
+                    NOTIFY_ACTIVE_HOOKS,
+                    NOTIFY_ACTIVE_HOOKS,
+                    UINotifier.CODE_DATA_CHANGED,
+                    null));
             if(DebugUtil.isDebug())
                 Log.d(TAG, Str.fm("refreshAssignments[%s] => %s, Randomizers Count=%s Hooks Count=%s",
                         app.appPackageName,
@@ -88,6 +98,41 @@ public class SettingSharedRegistry extends SharedRegistry {
         }
 
         return AppAssignmentInfo.DEFAULT;
+    }
+
+    public boolean hasAssignedHook(SettingHolder setting, Context context) {
+        if(setting == null)
+            return false;
+
+        List<String> names = new ArrayList<>();
+        names.add(setting.getName());
+        return hasAssignedHook(names, context);
+    }
+
+    public boolean hasAssignedHook(SettingsContainer container, Context context) {
+        if(container == null)
+            return false;
+
+        Set<String> names = new LinkedHashSet<>(container.getAllNames());
+        names.addAll(HooksSettingsGlobal.settingHoldersToNames(container, true));
+        return hasAssignedHook(new ArrayList<>(names), context);
+    }
+
+    public boolean hasAssignedHook(SettingsGroup group, Context context) {
+        if(group == null)
+            return false;
+
+        Set<String> names = new LinkedHashSet<>();
+        for(SettingsContainer container : group.getContainers()) {
+            names.addAll(container.getAllNames());
+            names.addAll(HooksSettingsGlobal.settingHoldersToNames(container, true));
+        }
+
+        return hasAssignedHook(new ArrayList<>(names), context);
+    }
+
+    private boolean hasAssignedHook(List<String> settingNames, Context context) {
+        return assignmentsMap != null && assignmentsMap.hasAssignedHookForSettings(context, settingNames);
     }
 
     //ToDo:

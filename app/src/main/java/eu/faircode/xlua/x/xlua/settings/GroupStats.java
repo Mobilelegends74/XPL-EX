@@ -95,8 +95,14 @@ public class GroupStats {
     }
 
     public GroupStats updateColor(TextView tvLabel, Context context) {
+        return updateColor(tvLabel, context, false);
+    }
+
+    public GroupStats updateColor(TextView tvLabel, Context context, boolean affectedByActiveHook) {
         if(tvLabel != null) {
-            int c = hasUnsaved() ?  R.attr.colorUnsavedSetting : totalSavedSettings > 0 ? R.attr.colorAccent : R.attr.colorTextOne;
+            int c = affectedByActiveHook ? R.attr.colorActiveHook :
+                    hasUnsaved() ? R.attr.colorUnsavedSetting :
+                    totalSavedSettings > 0 ? R.attr.colorAccent : R.attr.colorTextOne;
             int color = XUtil.resolveColor(context, c);
             CoreUiUtils.setTextColor(tvLabel, color, false);
         }

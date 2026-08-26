@@ -299,9 +299,9 @@ public class OptimizedContainerAdapter
             settingsManager.clear();
             if(currentItem != null) {
                 sharedRegistry.putGroupChangeListener(null, currentItem.getObjectId());
-                currentItem = null;
-
                 sharedRegistry.notifier.unsubscribeGroup(this);
+                sharedRegistry.notifier.unsubscribe(SettingSharedRegistry.NOTIFY_ACTIVE_HOOKS, this);
+                currentItem = null;
             }
         }
 
@@ -373,6 +373,7 @@ public class OptimizedContainerAdapter
                 binding.ivActionNeeded.setOnClickListener(wire ? this : null);
 
                 sharedRegistry.notifier.subscribeGroup(this);
+                sharedRegistry.notifier.subscribe(SettingSharedRegistry.NOTIFY_ACTIVE_HOOKS, this);
                 if(currentItem != null)
                     sharedRegistry.putGroupChangeListener(this, currentItem.getObjectId());
             }
@@ -477,7 +478,8 @@ public class OptimizedContainerAdapter
             if(currentItem != null && binding != null) {
                 groupStats
                         .update(currentItem, forceUpdate)
-                        .updateColor(binding.tvSettingContainerNameNice, context)
+                        .updateColor(binding.tvSettingContainerNameNice, context,
+                                sharedRegistry.asSettingShared().hasAssignedHook(currentItem, context))
                         .updateIv(binding.ivActionNeeded, currentItem.getName());
             }
         }
@@ -496,9 +498,20 @@ public class OptimizedContainerAdapter
 
         @Override
         public void notify(int code, String notifier, Object extra) {
+            if(currentItem == null)
+                return;
+
             if(code == UINotifier.CODE_DATA_CHANGED) {
-                if(UINotifier.isSettingPrefix(notifier)) {
-                    //Do nothing for now
+                if(SettingSharedRegistry.NOTIFY_ACTIVE_HOOKS.equals(notifier)) {
+                    Context context = getContext();
+                    updateHookCount(context, false, false);
+                    updateStats(true, context);
+                    SharedRegistry.ItemState state = sharedRegistry.getItemState(
+                            SharedRegistry.STATE_TAG_CONTAINERS,
+                            currentItem.getContainerName());
+                    if(state.isExpanded)
+                        settingsManager.submitList(currentItem.getSettings());
+                } else if(UINotifier.isSettingPrefix(notifier)) {
                     updateStats(true, getContext());
                 }
             }

@@ -258,7 +258,10 @@ public class SettingExFragment
 
     @Override
     protected void dataEvent(DataEventKind kind, List<SettingsGroup> settingsGroups) {
-        if(kind == DataEventKind.ON_RESUME) Log.d(TAG, "onResume=Size=" + ListUtil.size(settingsGroups));
+        if(kind == DataEventKind.ON_RESUME) {
+            Log.d(TAG, "onResume=Size=" + ListUtil.size(settingsGroups));
+            SettingFragmentUtils.prepareAssignments(sharedRegistry, tryGetContext(), getUserContext());
+        }
     }
 
 
