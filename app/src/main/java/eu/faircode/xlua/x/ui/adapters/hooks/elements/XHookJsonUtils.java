@@ -14,6 +14,7 @@ import java.util.zip.ZipFile;
 
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XLegacyCore;
+import eu.faircode.xlua.hooks.XHookUtil;
 import eu.faircode.xlua.utilities.StreamUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ArrayUtils;
@@ -50,8 +51,8 @@ public class XHookJsonUtils {
                 try {
                     entry = entries.nextElement();
                     String entryName = entry.getName();
-                    if(Str.isEmpty(entryName) || entryName.toLowerCase().contains("__deprecated")) {
-                        XLegacyCore.logW(TAG, Str.fm("Skipping Entry... (Empty Name) from (%s) Apk Assets, Current Hook Count=%s i=%s",
+                    if(Str.isEmpty(entryName) || !XHookUtil.isProductionAssetEntry(entryName)) {
+                        XLegacyCore.logW(TAG, Str.fm("Skipping non-production asset entry from (%s) Apk Assets, Current Hook Count=%s i=%s",
                                 apk,
                                 hooks.size(),
                                 ix), false);
@@ -60,7 +61,7 @@ public class XHookJsonUtils {
                         continue;
                     }
 
-                    if(isAsset(entryName, JSON_NAME_HOOK)) {
+                    if(XHookUtil.isProductionHookAsset(entryName)) {
                         int originalCount = hooks.size();
                         List<XHook> parsed = parseHooksJson(apk, entry, entryName, zipFile, context);
                         ListUtil.addAll(hooks, parsed, false);
@@ -207,7 +208,7 @@ public class XHookJsonUtils {
                     if(Str.isEmpty(name))
                         continue;
 
-                    if(!name.toLowerCase().endsWith(targetScript) || name.toLowerCase().contains("__deprecated"))
+                    if(!name.toLowerCase().endsWith(targetScript) || !XHookUtil.isProductionAssetEntry(name))
                         continue;
 
                     inputStream = zipFile.getInputStream(entry);

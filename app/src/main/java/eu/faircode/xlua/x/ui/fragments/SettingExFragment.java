@@ -375,10 +375,14 @@ public class SettingExFragment
                                 context,
                                 sharedRegistry);
 
-                Snackbar.make(v, Str.combineEx(
+                String randomizeMessage = Str.combineEx(
                         getString(R.string.msg_succeeded_count),
                                 Str.WHITE_SPACE,
-                                String.valueOf(ctx.getRandomizedCount())), Snackbar.LENGTH_LONG)
+                                String.valueOf(ctx.getRandomizedCount()));
+                if (!Str.isEmpty(ctx.getDeviceProfileSummary()))
+                    randomizeMessage += "\n" + ctx.getDeviceProfileSummary();
+
+                Snackbar.make(v, randomizeMessage, Snackbar.LENGTH_LONG)
                         .show();
                 break;
             case R.id.btAppIslandProfileDialog:

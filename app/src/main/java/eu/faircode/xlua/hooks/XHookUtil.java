@@ -30,6 +30,7 @@ import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.zip.ZipEntry;
@@ -53,6 +54,22 @@ import eu.faircode.xlua.x.xlua.LibUtil;
 
 public class XHookUtil {
     private static final String TAG = LibUtil.generateTag(XHookUtil.class);
+
+    public static boolean isProductionAssetEntry(String entryName) {
+        if (entryName == null)
+            return false;
+
+        String normalized = entryName.toLowerCase(Locale.ROOT);
+        return normalized.startsWith("assets/")
+                && !normalized.contains("/__deprecated/")
+                && !normalized.contains("/test/")
+                && !normalized.contains("/aaatest/");
+    }
+
+    public static boolean isProductionHookAsset(String entryName) {
+        return isProductionAssetEntry(entryName)
+                && entryName.toLowerCase(Locale.ROOT).endsWith("hooks.json");
+    }
 
     public static Globals getHookGlobals(
             Context context,
@@ -157,7 +174,7 @@ public class XHookUtil {
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
-                if (entry.getName().startsWith("assets/") && entry.getName().endsWith("hooks.json")) {
+                if (isProductionHookAsset(entry.getName())) {
                     XLog.i("Found Entry for [hooks.json]: " + entry.getName());
                     ArrayList<XLuaHook> read_hooks = readHooksFromEntry(apk, entry, zipFile);
                     if(!read_hooks.isEmpty()) hooks_all.addAll(read_hooks);
@@ -175,7 +192,7 @@ public class XHookUtil {
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
-                if(entry.getName().endsWith(scriptName)) {
+                if(isProductionAssetEntry(entry.getName()) && entry.getName().endsWith(scriptName)) {
                     InputStream lis = null;
                     try {
                         lis = zipFile.getInputStream(entry);

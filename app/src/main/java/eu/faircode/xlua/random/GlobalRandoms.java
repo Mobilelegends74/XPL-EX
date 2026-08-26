@@ -1,5 +1,7 @@
 package eu.faircode.xlua.random;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -15,14 +17,8 @@ import eu.faircode.xlua.random.randomizers.RandomOAIDMiuiHyper;
 import eu.faircode.xlua.random.randomizers.RandomUUID;
 import eu.faircode.xlua.random.randomizers.RandomAlphaNumeric;
 import eu.faircode.xlua.random.randomizers.RandomAndroidID;
-import eu.faircode.xlua.random.randomizers.RandomAndroidVersion;
-import eu.faircode.xlua.random.randomizers.RandomBaseOs;
 import eu.faircode.xlua.random.randomizers.RandomBluetoothState;
 import eu.faircode.xlua.random.randomizers.RandomBoolean;
-import eu.faircode.xlua.random.randomizers.RandomBuildID;
-import eu.faircode.xlua.random.randomizers.RandomBuildTags;
-import eu.faircode.xlua.random.randomizers.RandomBuildType;
-import eu.faircode.xlua.random.randomizers.RandomBuildUser;
 import eu.faircode.xlua.random.randomizers.RandomCarrierName;
 import eu.faircode.xlua.random.randomizers.RandomDNS;
 import eu.faircode.xlua.random.randomizers.RandomDRM;
@@ -31,7 +27,6 @@ import eu.faircode.xlua.random.randomizers.RandomDateOne;
 import eu.faircode.xlua.random.randomizers.RandomDateThree;
 import eu.faircode.xlua.random.randomizers.RandomDateTwo;
 import eu.faircode.xlua.random.randomizers.RandomDateZero;
-import eu.faircode.xlua.random.randomizers.RandomDevCodeName;
 import eu.faircode.xlua.random.randomizers.RandomFirebaseId;
 import eu.faircode.xlua.random.randomizers.RandomGSF;
 import eu.faircode.xlua.random.randomizers.RandomGameID;
@@ -45,14 +40,12 @@ import eu.faircode.xlua.random.randomizers.RandomKernelVersion;
 import eu.faircode.xlua.random.randomizers.RandomMAC;
 import eu.faircode.xlua.random.randomizers.RandomMEID;
 import eu.faircode.xlua.random.randomizers.RandomMSIN;
-import eu.faircode.xlua.random.randomizers.RandomManufacturer;
 import eu.faircode.xlua.random.randomizers.RandomMemory;
 import eu.faircode.xlua.random.randomizers.RandomNetAddress;
 import eu.faircode.xlua.random.randomizers.RandomNetD;
 import eu.faircode.xlua.random.randomizers.RandomNetworkType;
 import eu.faircode.xlua.random.randomizers.RandomPhoneNumber;
 import eu.faircode.xlua.random.randomizers.RandomPhoneType;
-import eu.faircode.xlua.random.randomizers.RandomSDKInit;
 import eu.faircode.xlua.random.randomizers.RandomSIMCount;
 import eu.faircode.xlua.random.randomizers.RandomSIMID;
 import eu.faircode.xlua.random.randomizers.RandomSIMState;
@@ -69,6 +62,9 @@ import eu.faircode.xlua.random.randomizers.RandomDateEpoch;
 //import eu.faircode.xlua.random.randomizers.RandomZoneParent;
 import eu.faircode.xlua.random.zone.RandomZoneDep;
 import eu.faircode.xlua.x.hook.interceptors.hardware.camera.RandomCameraCount;
+import eu.faircode.xlua.x.xlua.settings.random.profile.DeviceProfileCatalog;
+import eu.faircode.xlua.x.xlua.settings.random.profile.DeviceProfileSelection;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomDeviceProfile;
 
 
 public class GlobalRandoms {
@@ -138,20 +134,11 @@ public class GlobalRandoms {
         putRandomizer(new RandomVoiceMailID());
         putRandomizer(new RandomGameID());
         putRandomizer(new RandomBoolean());
-        putRandomizer(new RandomManufacturer());
-        putRandomizer(new RandomBaseOs());
         putRandomizer(new RandomDateZero());
         putRandomizer(new RandomDateEpoch());
         putRandomizer(new RandomDateOne());
         putRandomizer(new RandomDateTwo());
-        putRandomizer(new RandomBuildID());
-        putRandomizer(new RandomDevCodeName());
         putRandomizer(new RandomDateThree());
-        putRandomizer(new RandomBuildTags());
-        putRandomizer(new RandomBuildType());
-        putRandomizer(new RandomBuildUser());
-        putRandomizer(new RandomAndroidVersion());
-        putRandomizer(new RandomSDKInit());
         putRandomizer(new RandomKernelRelease());
         putRandomizer(new RandomKernelNodeName());
         putRandomizer(new RandomKernelSysName());
@@ -181,13 +168,28 @@ public class GlobalRandoms {
 
     public static boolean isRandomName(String name) { return "%random%".equalsIgnoreCase(name) || "%randomize%".equalsIgnoreCase(name); }
     public static void bindRandomToSettings(Map<String, String> settings) {
+        bindRandomToSettings(null, settings);
+    }
+
+    public static void bindRandomToSettings(Context context, Map<String, String> settings) {
         List<IRandomizerOld> randomizers = getRandomizers();
+        DeviceProfileSelection deviceProfile = null;
         for(Map.Entry<String, String> s : settings.entrySet()) {
             if(isRandomName(s.getValue())) {
+                if (RandomDeviceProfile.isProfileSetting(s.getKey())) {
+                    if (context == null)
+                        continue;
+                    if (deviceProfile == null)
+                        deviceProfile = DeviceProfileCatalog.select(context);
+                    String value = deviceProfile.get(s.getKey());
+                    if (value != null)
+                        settings.put(s.getKey(), value);
+                    continue;
+                }
+
                 for(IRandomizerOld r : randomizers) {
                     if(r.isSetting(s.getKey())) {
-                        String nv = r.generateString();
-                        settings.put(s.getKey(), nv);
+                        settings.put(s.getKey(), r.generateString());
                         break;
                     }
                 }

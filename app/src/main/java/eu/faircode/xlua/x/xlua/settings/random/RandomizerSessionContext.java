@@ -23,6 +23,9 @@ import eu.faircode.xlua.x.ui.fragments.SettingFragmentUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.settings.SettingHolder;
 import eu.faircode.xlua.x.xlua.settings.random.interfaces.IRandomizer;
+import eu.faircode.xlua.x.xlua.settings.random.profile.DeviceProfileCatalog;
+import eu.faircode.xlua.x.xlua.settings.random.profile.DeviceProfileSelection;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomDeviceProfile;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
 import eu.faircode.xlua.x.xlua.settings.test.RandomSettingHolder;
 
@@ -43,8 +46,20 @@ public class RandomizerSessionContext {
     private final Map<String, IRandomizer> randomizers = RandomizersCache.getCopy();
     private final Map<String, RandomSettingHolder> checked = new HashMap<>();
     private final Map<String, RandomSettingHolder> settings = new HashMap<>();
+    private Context applicationContext;
+    private DeviceProfileSelection deviceProfileSelection;
 
     public int getRandomizedCount() { return updated.size(); }
+
+    public String getDeviceProfileValue(String settingName) {
+        if (deviceProfileSelection == null)
+            deviceProfileSelection = DeviceProfileCatalog.select(applicationContext);
+        return deviceProfileSelection.get(settingName);
+    }
+
+    public String getDeviceProfileSummary() {
+        return deviceProfileSelection == null ? null : deviceProfileSelection.summary();
+    }
 
     //public static List<SettingHolder> getAllSettings(IFragmentController controller) { return getAllSettings(controller.getFragment()); }
     public static List<SettingHolder> getAllSettings(Fragment fragment) {
@@ -122,6 +137,8 @@ public class RandomizerSessionContext {
             Context context,
             SharedRegistry sharedRegistry) {
 
+        applicationContext = context == null ? null : context.getApplicationContext();
+
         if(DebugUtil.isDebug())
             Log.d(TAG, "Stage (0) Settings Count=" + ListUtil.size(settings) + " Checked Count=" + ListUtil.size(checked));
 
@@ -167,6 +184,8 @@ public class RandomizerSessionContext {
         if(DebugUtil.isDebug())
             Log.d(TAG, "Stage (2) Checked Count=" + this.checked.size());
 
+        expandDeviceProfileSettings();
+
         for(Map.Entry<String, RandomSettingHolder> entry : new HashMap<>(this.checked).entrySet())
             handleCheckedRequirements(entry.getValue());
 
@@ -211,6 +230,25 @@ public class RandomizerSessionContext {
         }
 
         return this;
+    }
+
+    private void expandDeviceProfileSettings() {
+        RandomDeviceProfile profileRandomizer = null;
+        for (RandomSettingHolder holder : checked.values()) {
+            if (holder != null && holder.randomizer instanceof RandomDeviceProfile) {
+                profileRandomizer = (RandomDeviceProfile) holder.randomizer;
+                break;
+            }
+        }
+
+        if (profileRandomizer == null)
+            return;
+
+        for (String settingName : profileRandomizer.getSettings()) {
+            RandomSettingHolder holder = settings.get(settingName);
+            if (holder != null && !checked.containsKey(settingName))
+                putChecked(holder);
+        }
     }
 
     public List<String> resolveRequirements(List<String> requirements) {

@@ -10,7 +10,9 @@ import eu.faircode.xlua.random.elements.ISpinnerElement;
 //msg_na_randomizer
 
 public class NARandomizer implements IRandomizerOld {
-    public static boolean isNA(IRandomizerOld r) { return r.getID().equalsIgnoreCase("%n_a%"); }
+    public static boolean isNA(IRandomizerOld r) {
+        return r == null || r.getID().equalsIgnoreCase("%n_a%");
+    }
 
     @Override
     public boolean isSetting(String setting) { return setting.equalsIgnoreCase(getSettingName()); }

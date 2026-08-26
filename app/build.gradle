@@ -141,6 +141,9 @@ dependencies {
 
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.14.0'
 
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.json:json:20240303'
+
     def coreVersion = "5.0.2"
     implementation "com.github.topjohnwu.libsu:core:$coreVersion"
     implementation "com.github.topjohnwu.libsu:service:$coreVersion"

@@ -19,29 +19,7 @@ import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
 import eu.faircode.xlua.x.xlua.settings.random.RandomGenericBool;
 import eu.faircode.xlua.x.xlua.settings.random.RandomGenericBoolInt;
 import eu.faircode.xlua.x.xlua.settings.random.interfaces.IRandomizer;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidBuildCodename;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidBuildDescription;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidBuildDisplayId;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidBuildFingerprint;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidBuildFlavor;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidBuildHost;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidBuildId;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidBuildIncremental;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidBuildPatch;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidBuildTags;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidBuildVersion;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidBuildVersionMinSdk;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidBuildVersionSdk;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidEtcBuildRomBaseOs;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidEtcBuildRomUser;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidEtcBuildRomVariant;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomAndroidEtcBuildRomVersionCodename;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomDeviceBootloader;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomDeviceBrand;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomDeviceCodeName;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomDeviceManufacturer;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomDeviceModel;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomDeviceNickName;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomDeviceProfile;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.kernel.RandomAndroidKernelNodeName;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.kernel.RandomAndroidKernelRelease;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.kernel.RandomAndroidKernelSysName;
@@ -65,39 +43,7 @@ import eu.faircode.xlua.x.xlua.settings.random.randomizers.generic.RandomDateISO
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.generic.RandomDateOne;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.generic.RandomDateTwo;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.generic.RandomDateZero;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.SoC.RandomSocBoardConfigCodeName;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.SoC.RandomSocBoardManufacturer;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.SoC.RandomSocBoardManufacturerId;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.SoC.RandomSocBoardModel;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.SoC.RandomSocCpuAbi;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.SoC.RandomSocCpuAbiList;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.SoC.RandomSocCpuAbiList32;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.SoC.RandomSocCpuAbiList64;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.SoC.RandomSocCpuArchitecture;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.SoC.RandomSocCpuInstructionSet32;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.SoC.RandomSocCpuInstructionSet64;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.SoC.RandomSocCpuProcessorCount;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.etc.RandomHardwareCameraApp;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.etc.RandomHardwareCameraCount;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.etc.RandomHardwareEfuse;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.etc.RandomHardwareFpSensor;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.etc.RandomHardwareFpSensorName;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.etc.RandomHardwareGpsModelName;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.etc.RandomHardwareGpsModelYear;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.etc.RandomHardwareNfcControllerInterface;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.etc.RandomHardwareNfcKind;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.gpu.RandomSocBasebandBoardConfigName;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.gpu.RandomSocBasebandBoardImplementor;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.gpu.RandomSocBasebandBoardRadioVersion;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.gpu.RandomSocBluetoothBoardConfigName;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.gpu.RandomSocGpuEglImplementor;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.gpu.RandomSocGpuOpenGlesRenderer;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.gpu.RandomSocGpuOpenGlesVendor;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.gpu.RandomSocGpuOpenGlesVersion;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.gpu.RandomSocGpuOpenGlesVersionEncoded;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.gpu.RandomSocGpuVulkanImplementor;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.memory.RandomHardwareMemoryAvailable;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.hardware.memory.RandomHardwareMemoryTotal;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.network.RandomDhcpServer;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.network.RandomNetAllowedList;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.network.RandomNetDNS;
@@ -235,27 +181,25 @@ public class RandomizersCache {
      */
     public static final String SETTING_PARENT_DEVICE = "device.parent.parent.control";
 
+    // A single real profile owns every linked device/build/SoC setting below.
+    public static final Class<?> SETTING_DEVICE_PROFILE_TYPE = RandomDeviceProfile.class;
+
+    // Manual-only until a verified bootloader value is stored per profile.
     public static final String SETTING_DEVICE_BOOTLOADER = "device.bootloader";
-    public static final Class<?> SETTING_DEVICE_BOOTLOADER_TYPE = RandomDeviceBootloader.class;
 
     public static final String SETTING_DEVICE_BRAND = "device.brand";
-    public static final Class<?> SETTING_DEVICE_BRAND_TYPE = RandomDeviceBrand.class;
 
     // Device Manufacturer
     public static final String SETTING_DEVICE_MANUFACTURER = "device.manufacturer";
-    public static final Class<?> SETTING_DEVICE_MANUFACTURER_TYPE = RandomDeviceManufacturer.class;
 
     // Device Nickname
     public static final String SETTING_DEVICE_NICKNAME = "device.nick.name";
-    public static final Class<?> SETTING_DEVICE_NICKNAME_TYPE = RandomDeviceNickName.class;
 
     // Device Model
     public static final String SETTING_DEVICE_MODEL = "device.model";
-    public static final Class<?> SETTING_DEVICE_MODEL_TYPE = RandomDeviceModel.class;
 
     // Device Codename
     public static final String SETTING_DEVICE_CODENAME = "device.codename";
-    public static final Class<?> SETTING_DEVICE_CODENAME_TYPE = RandomDeviceCodeName.class;
 
 
     /*
@@ -277,71 +221,55 @@ public class RandomizersCache {
 
     // Android Build Version
     public static final String SETTING_ANDROID_BUILD_VERSION = "android.build.version";
-    public static final Class<?> SETTING_ANDROID_BUILD_VERSION_TYPE = RandomAndroidBuildVersion.class;
 
     // Android Build Version SDK
     public static final String SETTING_ANDROID_BUILD_VERSION_SDK = "android.build.version.sdk";
-    public static final Class<?> SETTING_ANDROID_BUILD_VERSION_SDK_TYPE = RandomAndroidBuildVersionSdk.class;
 
     // Android Build Version Min SDK
     public static final String SETTING_ANDROID_BUILD_VERSION_MIN_SDK = "android.build.version.min.sdk";
-    public static final Class<?> SETTING_ANDROID_BUILD_VERSION_MIN_SDK_TYPE = RandomAndroidBuildVersionMinSdk.class;
 
     // Android Build Tags
     public static final String SETTING_ANDROID_BUILD_TAGS = "android.build.tags";
-    public static final Class<?> SETTING_ANDROID_BUILD_TAGS_TYPE = RandomAndroidBuildTags.class;
 
     // Android Build Incremental
     public static final String SETTING_ANDROID_BUILD_INCREMENTAL = "android.build.incremental";
-    public static final Class<?> SETTING_ANDROID_BUILD_INCREMENTAL_TYPE = RandomAndroidBuildIncremental.class;
 
     // Android Build Description
     public static final String SETTING_ANDROID_BUILD_DESCRIPTION = "android.build.description";
-    public static final Class<?> SETTING_ANDROID_BUILD_DESCRIPTION_TYPE = RandomAndroidBuildDescription.class;
 
     // Android Build ID
     public static final String SETTING_ANDROID_BUILD_ID = "android.build.id";
-    public static final Class<?> SETTING_ANDROID_BUILD_ID_TYPE = RandomAndroidBuildId.class;
 
     // Android Build Display ID
+    // Manual-only: a fingerprint does not reliably provide DISPLAY, HOST or SECURITY_PATCH.
     public static final String SETTING_ANDROID_BUILD_DISPLAY_ID = "android.build.display.id";
-    public static final Class<?> SETTING_ANDROID_BUILD_DISPLAY_ID_TYPE = RandomAndroidBuildDisplayId.class;
 
     // Android Build Flavor
     public static final String SETTING_ANDROID_BUILD_FLAVOR = "android.build.flavor";
-    public static final Class<?> SETTING_ANDROID_BUILD_FLAVOR_TYPE = RandomAndroidBuildFlavor.class;
 
     // Android Build Host
     public static final String SETTING_ANDROID_BUILD_HOST = "android.build.host";
-    public static final Class<?> SETTING_ANDROID_BUILD_HOST_TYPE = RandomAndroidBuildHost.class;
 
     // Android Build Patch
     public static final String SETTING_ANDROID_BUILD_PATCH = "android.build.patch";
-    public static final Class<?> SETTING_ANDROID_BUILD_PATCH_TYPE = RandomAndroidBuildPatch.class;
 
     // Android Build Codename
     public static final String SETTING_ANDROID_BUILD_CODENAME = "android.build.codename";
-    public static final Class<?> SETTING_ANDROID_BUILD_CODENAME_TYPE = RandomAndroidBuildCodename.class;
 
     // Android Build Fingerprint
     public static final String SETTING_ANDROID_BUILD_FINGERPRINT = "android.build.fingerprint";
-    public static final Class<?> SETTING_ANDROID_BUILD_FINGERPRINT_TYPE = RandomAndroidBuildFingerprint.class;
 
     // Android Build ETC - Base OS
     public static final String SETTING_ANDROID_ETC_BUILD_ROM_BASE_OS = "android.etc.build.rom.base.os";
-    public static final Class<?> SETTING_ANDROID_ETC_BUILD_ROM_BASE_OS_TYPE = RandomAndroidEtcBuildRomBaseOs.class;
 
     // Android Build ETC - ROM User
     public static final String SETTING_ANDROID_ETC_BUILD_ROM_USER = "android.etc.build.rom.user";
-    public static final Class<?> SETTING_ANDROID_ETC_BUILD_ROM_USER_TYPE = RandomAndroidEtcBuildRomUser.class;
 
     // Android Build ETC - ROM Version Codename
     public static final String SETTING_ANDROID_ETC_BUILD_ROM_VERSION_CODENAME = "android.etc.build.rom.version.codename";
-    public static final Class<?> SETTING_ANDROID_ETC_BUILD_ROM_VERSION_CODENAME_TYPE = RandomAndroidEtcBuildRomVersionCodename.class;
 
     // Android Build ETC - ROM Variant
     public static final String SETTING_ANDROID_ETC_BUILD_ROM_VARIANT = "android.etc.build.rom.variant";
-    public static final Class<?> SETTING_ANDROID_ETC_BUILD_ROM_VARIANT_TYPE = RandomAndroidEtcBuildRomVariant.class;
 
     // Android Kernel - System Name
     public static final String SETTING_ANDROID_KERNEL_SYS_NAME = "android.kernel.sys.name";
@@ -364,96 +292,76 @@ public class RandomizersCache {
     public static final String SETTING_HARDWARE_EFUSE = "hardware.efuse";
     public static final Class<?> SETTING_HARDWARE_EFUSE_TYPE = RandomHardwareEfuse.class;
 
+    // Device-specific hardware values stay manually editable until verified profile data exists.
     // Hardware NFC Kind
     public static final String SETTING_HARDWARE_NFC_KIND = "hardware.nfc.kind";
-    public static final Class<?> SETTING_HARDWARE_NFC_KIND_TYPE = RandomHardwareNfcKind.class;
 
     // Hardware NFC Controller Interface
     public static final String SETTING_HARDWARE_NFC_CONTROLLER_INTERFACE = "hardware.nfc.controller.interface";
-    public static final Class<?> SETTING_HARDWARE_NFC_CONTROLLER_INTERFACE_TYPE = RandomHardwareNfcControllerInterface.class;
 
     // Hardware Fingerprint Sensor
     public static final String SETTING_HARDWARE_FP_SENSOR = "hardware.fp.sensor";
-    public static final Class<?> SETTING_HARDWARE_FP_SENSOR_TYPE = RandomHardwareFpSensor.class;
 
     // Hardware Fingerprint Sensor Name
     public static final String SETTING_HARDWARE_FP_SENSOR_NAME = "hardware.fp.sensor.name";
-    public static final Class<?> SETTING_HARDWARE_FP_SENSOR_NAME_TYPE = RandomHardwareFpSensorName.class;
 
     // Hardware GPS Model Name
     public static final String SETTING_HARDWARE_GPS_MODEL_NAME = "hardware.gps.model.name";
-    public static final Class<?> SETTING_HARDWARE_GPS_MODEL_NAME_TYPE = RandomHardwareGpsModelName.class;
 
     // Hardware GPS Model Year
     public static final String SETTING_HARDWARE_GPS_MODEL_YEAR = "hardware.gps.model.year";
-    public static final Class<?> SETTING_HARDWARE_GPS_MODEL_YEAR_TYPE = RandomHardwareGpsModelYear.class;
 
     // Hardware Camera Count
     public static final String SETTING_HARDWARE_CAMERA_COUNT = "hardware.camera.count";
-    public static final Class<?> SETTING_HARDWARE_CAMERA_COUNT_TYPE = RandomHardwareCameraCount.class;
 
     // Hardware Camera App
     public static final String SETTING_HARDWARE_CAMERA_APP = "hardware.camera.app";
-    public static final Class<?> SETTING_HARDWARE_CAMERA_APP_TYPE = RandomHardwareCameraApp.class;
 
     // Hardware Memory Total
     public static final String SETTING_HARDWARE_MEMORY_TOTAL = "hardware.memory.total";
-    public static final Class<?> SETTING_HARDWARE_MEMORY_TOTAL_TYPE = RandomHardwareMemoryTotal.class;
 
     // Hardware Memory Available
     public static final String SETTING_HARDWARE_MEMORY_AVAILABLE = "hardware.memory.available";
-    public static final Class<?> SETTING_HARDWARE_MEMORY_AVAILABLE_TYPE = RandomHardwareMemoryAvailable.class;
 
 
 
     //SOC Info
     // SOC Board Model
     public static final String SETTING_SOC_BOARD_MODEL = "soc.board.model";
-    public static final Class<?> SETTING_SOC_BOARD_MODEL_TYPE = RandomSocBoardModel.class;
 
     // SOC Board Config Code Name
     public static final String SETTING_SOC_BOARD_CONFIG_CODE_NAME = "soc.board.config.code.name";
-    public static final Class<?> SETTING_SOC_BOARD_CONFIG_CODE_NAME_TYPE = RandomSocBoardConfigCodeName.class;
 
     // SOC Board Manufacturer
     public static final String SETTING_SOC_BOARD_MANUFACTURER = "soc.board.manufacturer";
-    public static final Class<?> SETTING_SOC_BOARD_MANUFACTURER_TYPE = RandomSocBoardManufacturer.class;
 
     // SOC Board Manufacturer ID
     public static final String SETTING_SOC_BOARD_MANUFACTURER_ID = "soc.board.manufacturer.id";
-    public static final Class<?> SETTING_SOC_BOARD_MANUFACTURER_ID_TYPE = RandomSocBoardManufacturerId.class;
 
     // SOC CPU Processor Count
     public static final String SETTING_SOC_CPU_PROCESSOR_COUNT = "soc.cpu.processor.count";
-    public static final Class<?> SETTING_SOC_CPU_PROCESSOR_COUNT_TYPE = RandomSocCpuProcessorCount.class;
 
     // SOC CPU Architecture
     public static final String SETTING_SOC_CPU_ARCHITECTURE = "soc.cpu.architecture";
-    public static final Class<?> SETTING_SOC_CPU_ARCHITECTURE_TYPE = RandomSocCpuArchitecture.class;
 
+    // Core instruction-set names vary within heterogeneous SoCs; keep them manual-only.
     // SOC CPU Instruction Set 32-bit
     public static final String SETTING_SOC_CPU_INSTRUCTION_SET_32 = "soc.cpu.instruction.set.32";
-    public static final Class<?> SETTING_SOC_CPU_INSTRUCTION_SET_32_TYPE = RandomSocCpuInstructionSet32.class;
 
     // SOC CPU Instruction Set 64-bit
     public static final String SETTING_SOC_CPU_INSTRUCTION_SET_64 = "soc.cpu.instruction.set.64";
-    public static final Class<?> SETTING_SOC_CPU_INSTRUCTION_SET_64_TYPE = RandomSocCpuInstructionSet64.class;
 
     // SOC CPU ABI
     public static final String SETTING_SOC_CPU_ABI = "soc.cpu.abi";
-    public static final Class<?> SETTING_SOC_CPU_ABI_TYPE = RandomSocCpuAbi.class;
 
     // SOC CPU ABI List
     public static final String SETTING_SOC_CPU_ABI_LIST = "soc.cpu.abi.list";
-    public static final Class<?> SETTING_SOC_CPU_ABI_LIST_TYPE = RandomSocCpuAbiList.class;
 
     // SOC CPU ABI List 32-bit
     public static final String SETTING_SOC_CPU_ABI_LIST_32 = "soc.cpu.abi.list.32";
-    public static final Class<?> SETTING_SOC_CPU_ABI_LIST_32_TYPE = RandomSocCpuAbiList32.class;
 
     // SOC CPU ABI List 64-bit
     public static final String SETTING_SOC_CPU_ABI_LIST_64 = "soc.cpu.abi.list.64";
-    public static final Class<?> SETTING_SOC_CPU_ABI_LIST_64_TYPE = RandomSocCpuAbiList64.class;
 
     // SOC CPU Info Dump
     public static final String SETTING_SOC_CPU_INFO_DUMP = "soc.cpu.info.dump";
@@ -472,29 +380,26 @@ public class RandomizersCache {
     //GPU
     //
 
+    // GPU/baseband/Bluetooth implementation strings are device and driver specific. They remain
+    // manual-only instead of being combined independently with a real DeviceProfile.
+
     // SOC GPU EGL Implementor
     public static final String SETTING_SOC_GPU_EGL_IMPLEMENTOR = "soc.gpu.egl.implementor";
-    public static final Class<?> SETTING_SOC_GPU_EGL_IMPLEMENTOR_TYPE = RandomSocGpuEglImplementor.class;
 
     // SOC GPU Vulkan Implementor
     public static final String SETTING_SOC_GPU_VULKAN_IMPLEMENTOR = "soc.gpu.vulkan.implementor";
-    public static final Class<?> SETTING_SOC_GPU_VULKAN_IMPLEMENTOR_TYPE = RandomSocGpuVulkanImplementor.class;
 
     // SOC GPU OpenGLES Version Encoded
     public static final String SETTING_SOC_GPU_OPEN_GLES_VERSION_ENCODED = "soc.gpu.open.gles.version.encoded";
-    public static final Class<?> SETTING_SOC_GPU_OPEN_GLES_VERSION_ENCODED_TYPE = RandomSocGpuOpenGlesVersionEncoded.class;
 
     // SOC GPU OpenGLES Vendor
     public static final String SETTING_SOC_GPU_OPEN_GLES_VENDOR = "soc.gpu.open.gles.vendor";
-    public static final Class<?> SETTING_SOC_GPU_OPEN_GLES_VENDOR_TYPE = RandomSocGpuOpenGlesVendor.class;
 
     // SOC GPU OpenGLES Renderer
     public static final String SETTING_SOC_GPU_OPEN_GLES_RENDERER = "soc.gpu.open.gles.renderer";
-    public static final Class<?> SETTING_SOC_GPU_OPEN_GLES_RENDERER_TYPE = RandomSocGpuOpenGlesRenderer.class;
 
     // SOC GPU OpenGLES Version
     public static final String SETTING_SOC_GPU_OPEN_GLES_VERSION = "soc.gpu.open.gles.version";
-    public static final Class<?> SETTING_SOC_GPU_OPEN_GLES_VERSION_TYPE = RandomSocGpuOpenGlesVersion.class;
 
 
 
@@ -509,19 +414,15 @@ public class RandomizersCache {
 
     // SOC Baseband Board Config Name
     public static final String SETTING_SOC_BASEBAND_BOARD_CONFIG_NAME = "soc.baseband.board.config.name";
-    public static final Class<?> SETTING_SOC_BASEBAND_BOARD_CONFIG_NAME_TYPE = RandomSocBasebandBoardConfigName.class;
 
     // SOC Baseband Board Radio Version
     public static final String SETTING_SOC_BASEBAND_BOARD_RADIO_VERSION = "soc.baseband.board.radio.version";
-    public static final Class<?> SETTING_SOC_BASEBAND_BOARD_RADIO_VERSION_TYPE = RandomSocBasebandBoardRadioVersion.class;
 
     // SOC Baseband Board Implementor
     public static final String SETTING_SOC_BASEBAND_BOARD_IMPLEMENTOR = "soc.baseband.board.implementor";
-    public static final Class<?> SETTING_SOC_BASEBAND_BOARD_IMPLEMENTOR_TYPE = RandomSocBasebandBoardImplementor.class;
 
     // SOC Bluetooth Board Config Name
     public static final String SETTING_SOC_BLUETOOTH_BOARD_CONFIG_NAME = "soc.bluetooth.board.config.name";
-    public static final Class<?> SETTING_SOC_BLUETOOTH_BOARD_CONFIG_NAME_TYPE = RandomSocBluetoothBoardConfigName.class;
 
 
     public static final String SETTING_UNIQUE_BLUETOOTH = "unique.bluetooth.address";

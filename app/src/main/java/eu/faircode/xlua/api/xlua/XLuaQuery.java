@@ -5,7 +5,6 @@ import android.database.Cursor;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import eu.faircode.xlua.api.app.XLuaApp;
@@ -18,7 +17,6 @@ import eu.faircode.xlua.api.xlua.query.GetAppsCommand;
 import eu.faircode.xlua.api.xlua.query.GetHooksCommand;
 import eu.faircode.xlua.api.xlua.query.GetSettingsCommand;
 import eu.faircode.xlua.random.GlobalRandoms;
-import eu.faircode.xlua.random.IRandomizerOld;
 import eu.faircode.xlua.utilities.CursorUtil;
 import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 
@@ -45,21 +43,8 @@ public class XLuaQuery {
             CursorUtil.closeCursor(c);
         }
 
-        if(randomizeRandoms && !settings.isEmpty()) {
-            List<IRandomizerOld> randomizers = GlobalRandoms.getRandomizers();
-            for (Map.Entry<String, String> p : settings.entrySet()) {
-                if(p.getValue() != null) {
-                    if(p.getValue().equalsIgnoreCase("%random%")) {
-                        for(IRandomizerOld r : randomizers) {
-                            if(r.isSetting(p.getKey().toLowerCase())) {
-                                String randomValue = r.generateString();
-                                settings.put(p.getKey(), randomValue);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        if(randomizeRandoms && !settings.isEmpty())
+            GlobalRandoms.bindRandomToSettings(context, settings);
 
         return settings;
     }
