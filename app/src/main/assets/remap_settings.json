@@ -171,7 +171,8 @@
       "gsm.index.sim.slot",
       "gsm.sim.card.id",
       "gsm.sim.state",
-      "gsm.subscription.usage.setting"
+      "gsm.subscription.usage.setting",
+      "battery.charge.time.remaining"
     ]
   },
 
