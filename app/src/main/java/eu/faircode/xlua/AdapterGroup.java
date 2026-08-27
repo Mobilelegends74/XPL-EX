@@ -133,15 +133,15 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
             LuaHooksGroup group = groups.get(getAdapterPosition());
             switch (view.getId()) {
                 case R.id.ivInfo:
-                    String name = group.getCleanTitle();
-                    String msg = HookInfoDialog.getMessage(view.getContext(), name);
+                    String title = group.getCleanTitle();
+                    String msg = HookInfoDialog.getMessage(view.getContext(), group.name);
                     if(DebugUtil.isDebug())
-                        Log.d(LibUtil.generateTag(AdapterGroup.class), "INFO CLICK, Name=" + name + " Msg=" + msg);
+                        Log.d(LibUtil.generateTag(AdapterGroup.class), "INFO CLICK, Group=" + group.name + " Title=" + title + " Msg=" + msg);
 
                     //Trying to call it here
                     if(!Str.isEmpty(msg))
                         HookInfoDialog.create()
-                                .setHookGroupName(name)
+                                .setHookGroupName(title)
                                 .setHookGroupMessage(msg)
                                 .show(fragmentLoader.getManager(), "hook_info");
                     break;

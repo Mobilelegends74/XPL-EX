@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import eu.faircode.xlua.DebugUtil;
@@ -29,11 +30,13 @@ public class HookInfoDialog extends AppCompatDialogFragment {
 
 
     public static String getMessage(Context context, String groupName) {
-        if(context == null || Str.isEmpty(groupName))
-            return context.getString(R.string.error_no_description_hook);
+        if(context == null)
+            return Str.EMPTY;
+        if(Str.isEmpty(groupName))
+            return context.getString(R.string.description_ru_hook_group_unknown);
 
         // Normalize group name for cache lookup
-        String normalizedName = groupName.toLowerCase().replaceAll("[^a-z0-9_]", "_");
+        String normalizedName = groupName.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9_]", "_");
 
         // Check cache first
         String cached = MAPPED_CACHE.get(normalizedName);
@@ -44,13 +47,13 @@ public class HookInfoDialog extends AppCompatDialogFragment {
         }
 
         // Build resource name from group name
-        String resourceName = "description_hook_group_" + normalizedName;
+        String resourceName = "description_ru_hook_group_" + normalizedName;
         int resId = context.getResources().getIdentifier(resourceName, "string", context.getPackageName());
 
         if(resId == 0) {
             if(DebugUtil.isDebug())
                 Log.d(TAG, "No description found for hook group: " + groupName);
-            return context.getString(R.string.error_no_description_hook);
+            return context.getString(R.string.description_ru_hook_group_unknown);
         }
 
         String message = context.getString(resId);
