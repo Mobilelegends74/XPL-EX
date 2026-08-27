@@ -187,8 +187,7 @@ public class TimeHookUtils {
 
             XParam param) {
 
-        if(!isApp && isMapsCore(objectName))
-            return originalValue;
+        boolean preserveGmsTimestamp = !isApp && isGMSFile(objectName);
 
         //[1] First always cache in Original
         GroupedMap original = param.getGroupedMap(isApp ? GROUP_APPS_ORIGINAL : GROUP_FILES_ORIGINAL);
@@ -211,6 +210,17 @@ public class TimeHookUtils {
                     syncTime,
                     subTime,
                     groupName));
+
+        // Google Play services validates timestamps of more than just Chimera APKs.
+        // Preserve the cached real value for all GMS-related paths so timestamp
+        // spoofing does not create an internally inconsistent GMS file timeline.
+        if(preserveGmsTimestamp) {
+            if(DebugUtil.isDebug())
+                Log.d(TAG, Str.fm("Preserving original timestamp for GMS file [%s]: %s",
+                        objectName,
+                        originalTime));
+            return originalTime;
+        }
 
         if(RAND_ALWAYS.equalsIgnoreCase(settingValue))
             return finalizeValue(originalTime, offset, subTime, currentTime);
@@ -367,5 +377,27 @@ public class TimeHookUtils {
         if(res && DebugUtil.isDebug())
             Log.d(TAG, "GMS Core Chimera APK! File=" + file + " Stack=" + RuntimeUtils.getStackTraceSafeString(new Exception()));
         return res;
+    }
+
+    /**
+     * Returns whether changing this file timestamp can make the Google Play services
+     * file set internally inconsistent. This intentionally covers more paths than the
+     * legacy MapsCore-only check used before XPL-EX 1.5.8.
+     */
+    public static boolean isGMSFile(String file) {
+        if(Str.isEmpty(file))
+            return false;
+
+        if(file.startsWith("/data/user_de") && file.contains("com.google.android.gms/app_chimera"))
+            return true;
+
+        boolean gmsDataPath = file.startsWith("/data/app/")
+                || file.startsWith("/data/misc/")
+                || file.startsWith("/data/dalvik-cache/");
+        boolean gmsPackage = file.contains("/com.google.android.gms")
+                || file.contains("@com.google.android.gms");
+
+        return (gmsDataPath && gmsPackage)
+                || file.endsWith("com.android.location.provider.jar");
     }
 }

@@ -1,14 +1,10 @@
 package eu.faircode.xlua.x.hook.interceptors.file;
 
 import android.content.pm.PackageInfo;
-import android.util.Log;
-
-import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XParam;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.hook.interceptors.pkg.TimeHookUtils;
 import eu.faircode.xlua.x.hook.interceptors.zone.RandomDateHelper;
-import eu.faircode.xlua.x.runtime.RuntimeUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
 
 public class TimeInterceptor {
@@ -56,71 +52,55 @@ public class TimeInterceptor {
     //public long getModifiedOffset() { return isMapsCore(fileOrApp) ? 0 : modifiedOffset; }
 
     public long getCreation(long original) {
-        if(isMapsCore(fileOrApp)) {
-            return getOriginalCreated(original);
-        } else {
-            return TimeHookUtils.getTimeStamp(
-                    TimeHookUtils.GROUP_CREATION,
-                    fileOrApp,
-                    TimeHookUtils.getSettingValue(isApp, TimeHookUtils.GROUP_CREATION, param, isCurrentApk),
-                    sync,
-                    subtract,
-                    RandomDateHelper.generateSeconds(),
-                    getOriginalCreated(original),
-                    isApp,
-                    param);
-        }
+        return TimeHookUtils.getTimeStamp(
+                TimeHookUtils.GROUP_CREATION,
+                fileOrApp,
+                TimeHookUtils.getSettingValue(isApp, TimeHookUtils.GROUP_CREATION, param, isCurrentApk),
+                sync,
+                subtract,
+                RandomDateHelper.generateSeconds(),
+                getOriginalCreated(original),
+                isApp,
+                param);
     }
 
     public long getAccess(long original) {
-        if(isMapsCore(fileOrApp)) {
-            return getOriginalAccess(original);
-        } else {
-            return TimeHookUtils.getTimeStamp(
-                    TimeHookUtils.GROUP_ACCESS,
-                    fileOrApp,
-                    TimeHookUtils.getSettingValue(isApp, TimeHookUtils.GROUP_ACCESS, param, isCurrentApk),
-                    sync,
-                    subtract,
-                    RandomDateHelper.generateSeconds(),
-                    getOriginalAccess(original),
-                    isApp,
-                    param);
-        }
+        return TimeHookUtils.getTimeStamp(
+                TimeHookUtils.GROUP_ACCESS,
+                fileOrApp,
+                TimeHookUtils.getSettingValue(isApp, TimeHookUtils.GROUP_ACCESS, param, isCurrentApk),
+                sync,
+                subtract,
+                RandomDateHelper.generateSeconds(),
+                getOriginalAccess(original),
+                isApp,
+                param);
     }
 
     public long getModify(long original) {
-        if(isMapsCore(fileOrApp)) {
-            return getModify(original);
-        } else {
-            return TimeHookUtils.getTimeStamp(
-                    TimeHookUtils.GROUP_MODIFY,
-                    fileOrApp,
-                    TimeHookUtils.getSettingValue(isApp, TimeHookUtils.GROUP_MODIFY, param, isCurrentApk),
-                    sync,
-                    subtract,
-                    RandomDateHelper.generateSeconds(),
-                    getOriginalModify(original),
-                    isApp,
-                    param);
-        }
+        return TimeHookUtils.getTimeStamp(
+                TimeHookUtils.GROUP_MODIFY,
+                fileOrApp,
+                TimeHookUtils.getSettingValue(isApp, TimeHookUtils.GROUP_MODIFY, param, isCurrentApk),
+                sync,
+                subtract,
+                RandomDateHelper.generateSeconds(),
+                getOriginalModify(original),
+                isApp,
+                param);
     }
 
     public long getChange(long original) {
-        if(isMapsCore(fileOrApp)) {
-            return getChange(original);
-        } else {
-            return TimeHookUtils.getTimeStamp(
-                    TimeHookUtils.GROUP_CHANGE,
-                    fileOrApp,
-                    TimeHookUtils.getSettingValue(isApp, TimeHookUtils.GROUP_CHANGE, param, isCurrentApk),
-                    sync,
-                    subtract,
-                    RandomDateHelper.generateSeconds(),
-                    getOriginalChange(original),
-                    isApp,
-                    param);
-        }
+        return TimeHookUtils.getTimeStamp(
+                TimeHookUtils.GROUP_CHANGE,
+                fileOrApp,
+                TimeHookUtils.getSettingValue(isApp, TimeHookUtils.GROUP_CHANGE, param, isCurrentApk),
+                sync,
+                subtract,
+                RandomDateHelper.generateSeconds(),
+                getOriginalChange(original),
+                isApp,
+                param);
     }
 
     public long getOriginalChange(long val) {
@@ -228,47 +208,6 @@ public class TimeInterceptor {
             return valueIfInvalidOrNull;
         }
     }*/
-    public static boolean isMapsCore(String file) {
-        if(Str.isEmpty(file))
-            return false;
-
-        //
-        //
-        //
-        //  Make sure NULLs (0) are not Spoofed!
-        //  /system/framework/com.android.location.provider.jar (1230768000000)
-        //  /system/framework/com.android.media.remotedisplay.jar (1230768000000)
-
-        //  /data/app/~~Qtb8Mr3KrD1JmUIbaEr02A==/com.google.android.gms-Gz8oxnp2qvPKKtd3tew_kg==/base.apk
-        //  (1743828852772) =>  Saturday, 5 April 2025 04:54:12.772
-
-        //  /data/app/~~Qtb8Mr3KrD1JmUIbaErO2A==/com.google.android.gms-Gz8oxnp2qvPKKtd3tew_kg==/split_MeasurementDynamite_installtime.apk
-        //  (1743828854364) => Saturday, 5 April 2025 04:54:14.364
-
-        //  /product/media/theme/default/com.google.android.gms (0)
-
-        //  /data/user_de/0/com.google.android.gms/app_chimera/current_config.fb
-        //  /data/user_de/0/com.google.android.gms/app_chimera/m/000000a5/dl-MapsCoreDynamite.integ_250625400100400.apk
-        //  (1743196486846) => Friday, 28 March 2025 21:14:46.846
-
-
-        /*
-                        createdOffset = statMap.getValueOrDefault(GROUP_CREATED, file, times[0], false, true);
-                accessOffset = statMap.getValueOrDefault(GROUP_ACCESS, file, times[1], false, true);
-                modifiedOffset = statMap.getValueOrDefault(GROUP_MODIFIED, file, times[2], false, true);
-                changeOffset = statMap.getValueOrDefault(GROUP_CHANGE, file, times[3], false, true);
-         */
-        //RandomDateHelper.generateSecondsInMilliseconds(5, 2000);
-
-        //File.lastModified(/data/app/~~O7rUjcoz9oKfxIKK4-I29A==/com.google.android.gms-Y_u0GvzA9Xzdd9pTsctOlw==/split_MeasurementDynamite_installtime.apk) Interceptor File=(/data/app/~~O7rUjcoz9oKfxIKK4-I29A==/com.google.android.gms-Y_u0GvzA9Xzdd9pTsctOlw==/split_MeasurementDynamite_installtime.apk) Offset=105613860 Original MS=1745120318580 Fake MS=1745225932440
-
-        boolean res = (file.startsWith("/data/user_de") && file.contains("/com.google.android.gms/app_chimera/") && file.endsWith(".apk"))
-                || (file.startsWith("/data/app") && file.contains("/com.google.android.gms") && file.endsWith("split_MeasurementDynamite_installtime.apk"));
-        if(res && DebugUtil.isDebug())
-            Log.d(TAG, "GMS Core Chimera APK! File=" + file + " Stack=" + RuntimeUtils.getStackTraceSafeString(new Exception()));
-        return res;
-    }
-
     private void internalInitialize() {
         this.sync = TimeHookUtils.shouldSync(isApp, this.param);
         this.subtract = TimeHookUtils.shouldSubtract(isApp, this.param);
