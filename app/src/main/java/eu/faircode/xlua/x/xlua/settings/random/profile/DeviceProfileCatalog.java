@@ -11,13 +11,19 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import eu.faircode.xlua.x.data.utils.random.RandomGenerator;
 
 public final class DeviceProfileCatalog {
     public static final String ASSET_NAME = "device_profiles.json";
     private static volatile List<DeviceProfile> cached;
+    private static final Object SELECTION_LOCK = new Object();
+    private static final List<String> unusedBrands = new ArrayList<>();
+    private static String previousBrand;
 
     private DeviceProfileCatalog() { }
 
@@ -55,10 +61,47 @@ public final class DeviceProfileCatalog {
     }
 
     public static DeviceProfileSelection select(Context context) {
-        List<DeviceProfile> profiles = get(context);
-        DeviceProfile device = profiles.get(RandomGenerator.nextInt(profiles.size()));
-        DeviceBuildProfile build = device.builds.get(RandomGenerator.nextInt(device.builds.size()));
-        return new DeviceProfileSelection(device, build);
+        return selectBalanced(get(context));
+    }
+
+    static DeviceProfileSelection selectBalanced(List<DeviceProfile> profiles) {
+        if (profiles == null || profiles.isEmpty())
+            throw new IllegalArgumentException("Device profiles are required");
+
+        Map<String, List<DeviceProfile>> profilesByBrand = new LinkedHashMap<>();
+        for (DeviceProfile profile : profiles) {
+            String brand = selectionBrand(profile);
+            List<DeviceProfile> brandProfiles = profilesByBrand.get(brand);
+            if (brandProfiles == null) {
+                brandProfiles = new ArrayList<>();
+                profilesByBrand.put(brand, brandProfiles);
+            }
+            brandProfiles.add(profile);
+        }
+
+        synchronized (SELECTION_LOCK) {
+            if (unusedBrands.isEmpty() || !profilesByBrand.keySet().containsAll(unusedBrands))
+                refillBrandBag(profilesByBrand.keySet());
+
+            String brand = unusedBrands.remove(0);
+            List<DeviceProfile> brandProfiles = profilesByBrand.get(brand);
+            DeviceProfile device = brandProfiles.get(RandomGenerator.nextInt(brandProfiles.size()));
+            DeviceBuildProfile build = device.builds.get(RandomGenerator.nextInt(device.builds.size()));
+            previousBrand = brand;
+            return new DeviceProfileSelection(device, build);
+        }
+    }
+
+    static String selectionBrand(DeviceProfile profile) {
+        String brand = profile.brand.toLowerCase(Locale.ROOT);
+        return "redmagic".equals(brand) ? "nubia" : brand;
+    }
+
+    static void resetSelectionForTests() {
+        synchronized (SELECTION_LOCK) {
+            unusedBrands.clear();
+            previousBrand = null;
+        }
     }
 
     public static DeviceProfileSelection select(List<DeviceProfile> profiles, int profileIndex, int buildIndex) {
@@ -73,5 +116,26 @@ public final class DeviceProfileCatalog {
         while ((count = input.read(buffer)) >= 0)
             output.write(buffer, 0, count);
         return new String(output.toByteArray(), StandardCharsets.UTF_8);
+    }
+
+    private static void refillBrandBag(Iterable<String> brands) {
+        unusedBrands.clear();
+        for (String brand : brands)
+            unusedBrands.add(brand);
+
+        for (int i = unusedBrands.size() - 1; i > 0; i--) {
+            int other = RandomGenerator.nextInt(i + 1);
+            Collections.swap(unusedBrands, i, other);
+        }
+
+        if (previousBrand != null && unusedBrands.size() > 1
+                && previousBrand.equals(unusedBrands.get(0))) {
+            for (int i = 1; i < unusedBrands.size(); i++) {
+                if (!previousBrand.equals(unusedBrands.get(i))) {
+                    Collections.swap(unusedBrands, 0, i);
+                    break;
+                }
+            }
+        }
     }
 }

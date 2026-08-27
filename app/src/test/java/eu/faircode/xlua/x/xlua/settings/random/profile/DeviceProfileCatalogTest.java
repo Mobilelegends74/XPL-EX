@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,8 +35,60 @@ public class DeviceProfileCatalogTest {
 
     @Test
     public void catalogContainsOnlyValidProfiles() {
-        assertEquals(11, profiles.size());
+        assertEquals(33, profiles.size());
         assertTrue(DeviceProfileValidator.validate(profiles).isEmpty());
+    }
+
+    @Test
+    public void requestedFlagshipBrandsContainFiveRealModelsEach() {
+        Map<String, Integer> counts = new HashMap<>();
+        for (DeviceProfile profile : profiles) {
+            String brand = DeviceProfileCatalog.selectionBrand(profile);
+            Integer count = counts.get(brand);
+            counts.put(brand, count == null ? 1 : count + 1);
+        }
+
+        assertEquals(Integer.valueOf(5), counts.get("nubia"));
+        assertEquals(Integer.valueOf(5), counts.get("samsung"));
+        assertEquals(Integer.valueOf(5), counts.get("oneplus"));
+        assertEquals(Integer.valueOf(5), counts.get("xiaomi"));
+        assertEquals(Integer.valueOf(5), counts.get("poco"));
+    }
+
+    @Test
+    public void requestedProfilesUseFlagshipClassQualcommPlatforms() {
+        List<String> supportedPlatforms = Arrays.asList(
+                "SM8550", "SM8550-AC", "SM8650", "SM8650-AB",
+                "SM8735", "SM8750-AB", "SM8850-AC");
+
+        for (DeviceProfile profile : profiles) {
+            String brand = DeviceProfileCatalog.selectionBrand(profile);
+            if ("google".equals(brand))
+                continue;
+            assertEquals(profile.id, "Qualcomm", profile.socManufacturer);
+            assertTrue(profile.id + ": " + profile.socModel,
+                    supportedPlatforms.contains(profile.socModel));
+        }
+    }
+
+    @Test
+    public void randomSelectionIsBalancedByBrandWithoutConsecutiveRepeats() {
+        DeviceProfileCatalog.resetSelectionForTests();
+        Map<String, Integer> counts = new HashMap<>();
+        String previous = null;
+
+        for (int i = 0; i < 60; i++) {
+            DeviceProfileSelection selection = DeviceProfileCatalog.selectBalanced(profiles);
+            String brand = DeviceProfileCatalog.selectionBrand(selection.device);
+            assertNotEquals("Brand repeated at selection " + i, previous, brand);
+            Integer count = counts.get(brand);
+            counts.put(brand, count == null ? 1 : count + 1);
+            previous = brand;
+        }
+
+        assertEquals(6, counts.size());
+        for (Integer count : counts.values())
+            assertEquals(Integer.valueOf(10), count);
     }
 
     @Test
