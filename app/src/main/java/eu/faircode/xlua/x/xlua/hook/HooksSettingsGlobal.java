@@ -183,7 +183,9 @@ public class HooksSettingsGlobal {
         synchronized (lock) {
             if(settingsMap.isEmpty()) {
                 internalInitReMappedSettings(context);
-                List<XHook> hooks = GetHooksCommand.getHooks(context, true, true);
+                // Keep the dependency index aligned with the hooks that can be
+                // selected in the main Hook List on the current Android version.
+                List<XHook> hooks = GetHooksCommand.getHooks(context, true, false);
                 if(DebugUtil.isDebug()) {
                     Log.d(TAG, "Got Hooks Count=" + ListUtil.size(hooks));
                 }

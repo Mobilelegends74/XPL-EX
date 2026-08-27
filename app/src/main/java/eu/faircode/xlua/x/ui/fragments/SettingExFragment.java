@@ -65,6 +65,7 @@ import eu.faircode.xlua.x.xlua.database.A_CODE;
 import eu.faircode.xlua.x.xlua.database.ActionFlag;
 import eu.faircode.xlua.x.xlua.database.ActionPacket;
 import eu.faircode.xlua.x.xlua.hook.PackageHookContext;
+import eu.faircode.xlua.x.xlua.hook.SettingHookAutoActivator;
 import eu.faircode.xlua.x.xlua.identity.UserIdentity;
 import eu.faircode.xlua.x.xlua.settings.SettingHolder;
 import eu.faircode.xlua.x.xlua.settings.SettingsGroup;
@@ -358,7 +359,14 @@ public class SettingExFragment
                         }
                     }
 
+                    List<String> activatedHookIds = SettingHookAutoActivator.activate(
+                            context,
+                            getUserContext(),
+                            succeeded);
+
                     new Handler(Looper.getMainLooper()).post(() -> {
+                        if(ListUtil.isValid(activatedHookIds))
+                            sharedRegistry.refreshAssignments(context, getUserContext());
                         if(ListUtil.isValid(succeeded) || ListUtil.isValid(failed))
                             Snackbar.make(v,
                                     Str.fm(context.getString(R.string.result_settings_update),

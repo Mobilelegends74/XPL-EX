@@ -15,7 +15,9 @@ import android.widget.Spinner;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import eu.faircode.xlua.DebugUtil;
@@ -47,6 +49,7 @@ import eu.faircode.xlua.x.xlua.commands.call.PutSettingExCommand;
 import eu.faircode.xlua.x.xlua.database.A_CODE;
 import eu.faircode.xlua.x.xlua.hook.AppAssignmentInfo;
 import eu.faircode.xlua.x.xlua.hook.PackageHookContext;
+import eu.faircode.xlua.x.xlua.hook.SettingHookAutoActivator;
 import eu.faircode.xlua.x.xlua.settings.GroupStats;
 import eu.faircode.xlua.x.xlua.settings.SettingHolder;
 import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
@@ -354,21 +357,28 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
 
                     break;
                 case R.id.ivBtSettingContainerSave:
+                    List<String> savedSettingNames = new ArrayList<>();
                     for(SettingHolder holder : settingShared.getSettingsForContainer(currentItem)) {
                         if(holder.isNotSaved()) {
                             A_CODE code = PutSettingExCommand.call(view.getContext(), holder, userContext, userContext.isKill(sharedRegistry), false);
-                            if(code == A_CODE.FAILED)
+                            if(!A_CODE.isSuccessful(code))
                                 Snackbar.make(view, res.getString(R.string.save_setting_error), Snackbar.LENGTH_LONG)
                                         .show();
                             else {
                                 holder.setValue(holder.getNewValue(), true);
                                 holder.setNameLabelColor(view.getContext());
                                 holder.notifyUpdate(sharedRegistry);
+                                savedSettingNames.add(holder.getName());
                                 Snackbar.make(view, res.getString(R.string.save_setting_success), Snackbar.LENGTH_LONG)
                                         .show();
                             }
                         }
                     }
+                    if(ListUtil.isValid(SettingHookAutoActivator.activate(
+                            context,
+                            userContext,
+                            savedSettingNames)))
+                        settingShared.refreshAssignments(context, userContext);
                     break;
                 case R.id.ivBtSettingContainerRandomize:
                     RandomizerSessionContext ctx = new RandomizerSessionContext()

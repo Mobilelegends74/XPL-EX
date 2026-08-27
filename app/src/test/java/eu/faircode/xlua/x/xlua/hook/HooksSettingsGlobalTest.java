@@ -73,6 +73,17 @@ public class HooksSettingsGlobalTest {
                 HooksSettingsGlobal.getHookIdsFromIndex(Arrays.asList("unique.android.id")));
     }
 
+    @Test
+    public void mapsOneSettingToEveryRequiredHookWithoutDuplicates() throws Exception {
+        indexSetting("hardware.cpu", "PrivacyEx.HardwareCpu");
+        indexSetting("hardware.cpu", "PrivacyEx.HardwareInfo");
+        indexSetting("hardware.cpu", "PrivacyEx.HardwareCpu");
+
+        assertEquals(
+                Arrays.asList("PrivacyEx.HardwareCpu", "PrivacyEx.HardwareInfo"),
+                HooksSettingsGlobal.getHookIdsFromIndex(Arrays.asList("hardware.cpu")));
+    }
+
     @SuppressWarnings("unchecked")
     private Map<String, String> remaps() throws Exception {
         Field field = HooksSettingsGlobal.class.getDeclaredField("remappedSettings");
