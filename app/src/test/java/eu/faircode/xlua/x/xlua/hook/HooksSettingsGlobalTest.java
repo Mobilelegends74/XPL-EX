@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
@@ -84,11 +85,40 @@ public class HooksSettingsGlobalTest {
                 HooksSettingsGlobal.getHookIdsFromIndex(Arrays.asList("hardware.cpu")));
     }
 
+    @Test
+    public void resolvesMatchedHooksToTheirVisibleGroups() throws Exception {
+        indexSetting("device.model", "PrivacyEx.ID.Build.MODEL");
+        indexSetting("device.model", "PrivacyEx.Intercept.MODEL");
+        groups().put("PrivacyEx.ID.Build.MODEL", "ID.Build");
+        groups().put("PrivacyEx.ID.Build.BRAND", "ID.Build");
+        groups().put("PrivacyEx.Intercept.MODEL", "Intercept.Properties");
+
+        assertEquals(
+                Arrays.asList("ID.Build"),
+                visibleGroupsForSettings(Arrays.asList("device.model")));
+    }
+
     @SuppressWarnings("unchecked")
     private Map<String, String> remaps() throws Exception {
         Field field = HooksSettingsGlobal.class.getDeclaredField("remappedSettings");
         field.setAccessible(true);
         return (Map<String, String>) field.get(null);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, String> groups() throws Exception {
+        Field field = HooksSettingsGlobal.class.getDeclaredField("groups");
+        field.setAccessible(true);
+        return (Map<String, String>) field.get(null);
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<String> visibleGroupsForSettings(List<String> settingNames) throws Exception {
+        Method method = HooksSettingsGlobal.class.getDeclaredMethod(
+                "getVisibleGroupsForSettings",
+                List.class);
+        method.setAccessible(true);
+        return (List<String>) method.invoke(null, settingNames);
     }
 
     private void indexSetting(String settingName, String hookId) throws Exception {

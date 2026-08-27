@@ -37,8 +37,9 @@ public final class SettingHookAutoActivator {
             return Collections.emptyList();
 
         try {
-            List<String> requiredHookIds = HooksSettingsGlobal.getHookIdsForSettings(
+            List<String> requiredHookIds = HooksSettingsGlobal.getHookIdsForSettingGroups(
                     context,
+                    app.appPackageName,
                     changedSettingNames);
             if(!ListUtil.isValid(requiredHookIds))
                 return Collections.emptyList();

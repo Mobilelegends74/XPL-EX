@@ -7,6 +7,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -46,6 +47,7 @@ public class HooksSettingsGlobal {
 
     private static final Map<String, String> groups = new HashMap<>();
     private static final Map<String, String> collections = new HashMap<>();
+    private static final Map<String, XHook> hooksById = new LinkedHashMap<>();
     private static final Map<String, List<String>> settingsMap = new HashMap<>();
     private static final Map<String, String> remappedSettings = new HashMap<>();
 
@@ -100,6 +102,56 @@ public class HooksSettingsGlobal {
 
     public static List<String> getHookIdsForSetting(Context context, String settingName) {
         return getHookIdsForSettings(context, settingName);
+    }
+
+    /**
+     * Resolves setting dependencies to complete visible Hook List groups.
+     * This mirrors AdapterApp's group toggle: once a setting needs one hook in
+     * a group, every available hook in that group is assigned to the app.
+     */
+    public static List<String> getHookIdsForSettingGroups(
+            Context context,
+            String packageName,
+            List<String> settingNames) {
+        init(context);
+
+        Set<String> requiredGroups = new LinkedHashSet<>(getVisibleGroupsForSettings(settingNames));
+
+        if(requiredGroups.isEmpty())
+            return ListUtil.emptyList();
+
+        List<String> activeCollections = getCollections(context);
+        List<String> hookIds = new ArrayList<>();
+        for(XHook hook : hooksById.values()) {
+            if(hook == null || Str.isEmpty(hook.group) ||
+                    !requiredGroups.contains(hook.group) ||
+                    !hook.isAvailable(packageName, activeCollections))
+                continue;
+
+            String hookId = hook.getObjectId();
+            if(!Str.isEmpty(hookId) && !hookIds.contains(hookId))
+                hookIds.add(hookId);
+        }
+
+        if(DebugUtil.isDebug())
+            Log.d(TAG, Str.fm(
+                    "Resolved Settings=[%s] to Groups=[%s] and Hook Ids=[%s] for Package=%s",
+                    Str.joinList(settingNames),
+                    Str.joinList(new ArrayList<>(requiredGroups)),
+                    Str.joinList(hookIds),
+                    packageName));
+
+        return hookIds;
+    }
+
+    static List<String> getVisibleGroupsForSettings(List<String> settingNames) {
+        Set<String> requiredGroups = new LinkedHashSet<>();
+        for(String hookId : getHookIdsFromIndex(settingNames)) {
+            String group = groups.get(hookId);
+            if(!Str.isEmpty(group) && !group.toLowerCase(Locale.ROOT).startsWith("intercept."))
+                requiredGroups.add(group);
+        }
+        return new ArrayList<>(requiredGroups);
     }
 
     public static List<String> getHookIdsFromCollections(Context context) {
@@ -170,6 +222,7 @@ public class HooksSettingsGlobal {
         synchronized (lock) {
             groups.clear();
             collections.clear();
+            hooksById.clear();
             settingsMap.clear();
             remappedSettings.clear();
         }
@@ -202,6 +255,9 @@ public class HooksSettingsGlobal {
 
 
                         try {
+                            // Index every available member so auto activation
+                            // can reproduce a complete main-menu group toggle.
+                            internalAddHook(hook);
                             String hookId = hook.getObjectId();
                             List<String> settings = hook.settings;
                             if(DebugUtil.isDebug())
@@ -377,6 +433,7 @@ public class HooksSettingsGlobal {
                     groups.put(id, group);
                 if(!Str.isEmpty(collection))
                     collections.put(id, collection);
+                hooksById.put(id, hook);
             }
         }
     }
