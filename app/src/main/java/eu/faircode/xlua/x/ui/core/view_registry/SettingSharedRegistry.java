@@ -135,6 +135,44 @@ public class SettingSharedRegistry extends SharedRegistry {
         return assignmentsMap != null && assignmentsMap.hasAssignedHookForSettings(context, settingNames);
     }
 
+    /**
+     * Selects only values consumed by hooks currently assigned to the opened app.
+     * Existing manual selections are preserved and unrelated values are left untouched.
+     */
+    public int selectAssignedHookSettings(List<SettingsGroup> settingsGroups, Context context) {
+        if(context == null || assignmentsMap == null || !ListUtil.isValid(settingsGroups))
+            return 0;
+
+        int selected = 0;
+        Set<String> visited = new LinkedHashSet<>();
+        for(SettingsGroup group : settingsGroups) {
+            if(group == null || !ListUtil.isValid(group.getContainers()))
+                continue;
+
+            for(SettingsContainer container : group.getContainers()) {
+                if(container == null || !ListUtil.isValid(container.getSettings()))
+                    continue;
+
+                for(SettingHolder setting : container.getSettings()) {
+                    if(setting == null)
+                        continue;
+
+                    String settingId = setting.getObjectId();
+                    if(Str.isEmpty(settingId) || !visited.add(settingId))
+                        continue;
+
+                    if(hasAssignedHook(setting, context)
+                            && !isChecked(STATE_TAG_SETTINGS, settingId)) {
+                        setChecked(STATE_TAG_SETTINGS, settingId, true);
+                        selected++;
+                    }
+                }
+            }
+        }
+
+        return selected;
+    }
+
     //ToDo:
     //private final Map<String, SettingsContainer> settings = new WeakHashMap<>();
     private HookGroupOrganizer groups;

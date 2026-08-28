@@ -104,6 +104,7 @@ public class SettingExFragment
     public static SettingExFragment newInstance(UserClientAppContext context) { return ListFragmentUtils.newInstance(SettingExFragment.class, context); }
 
     private boolean isViewOpen = true;
+    private boolean didPreselectAssignedSettings = false;
     private final SettingSharedRegistry sharedRegistry = new SettingSharedRegistry();
     private SettingsExActivity.enumShow show = SettingsExActivity.enumShow.none;
 
@@ -263,6 +264,20 @@ public class SettingExFragment
             Log.d(TAG, "onResume=Size=" + ListUtil.size(settingsGroups));
             SettingFragmentUtils.prepareAssignments(sharedRegistry, tryGetContext(), getUserContext());
         }
+    }
+
+    @Override
+    public void onDataChanged(List<SettingsGroup> settingsGroups) {
+        if(didPreselectAssignedSettings || !ListUtil.isValid(settingsGroups))
+            return;
+
+        int selected = sharedRegistry.selectAssignedHookSettings(
+                settingsGroups,
+                tryGetContext());
+        didPreselectAssignedSettings = true;
+
+        if(DebugUtil.isDebug())
+            Log.d(TAG, "Preselected settings used by assigned hooks: " + selected);
     }
 
 
