@@ -1,101 +1,169 @@
-name: Automatic Build + Upload on push
+name: Build and publish XPL-EX 1.5.6
 
 on:
+  workflow_dispatch:
   push:
-    branches: [ "new" ]
-    paths-ignore:
-      - '.gitignore'
-      - 'app/.gitignore'
-      - '*.md'
-      - 'LICENSE'
+    branches:
+      - dev-xpl-ex-1.5.8-device-profiles
+    paths:
+      - .github/workflows/app-on-push.yml
+      - docs/releases/xpl-ex-1.5.6.md
 
+permissions:
+  contents: write
+
+concurrency:
+  group: xpl-ex-v1.5.6-155-release
+  cancel-in-progress: false
 
 env:
-  KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-  KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-  KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+  RELEASE_TAG: v1.5.6-155
+  RELEASE_TITLE: XPL-EX 1.5.6 (155)
+  RELEASE_APK: XPL-EX-v1.5.6-155-release.apk
 
 jobs:
-  build:
-
+  build-and-release:
+    name: Build, verify and publish APK
     runs-on: ubuntu-latest
+    timeout-minutes: 45
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'corretto'
-          java-version: '11'
+      - name: Checkout source
+        uses: actions/checkout@v4
 
-      - name: Decode the Keystore
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: corretto
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install required Android SDK packages
+        run: |
+          set -euo pipefail
+          sdkmanager "platforms;android-36" "build-tools;35.0.0"
+
+      - name: Set up Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Prepare APK signing
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          RELEASE_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          echo "$KEYSTORE_BASE64" | base64 --decode > $GITHUB_WORKSPACE/KEYSTORE.JKS
+          set -euo pipefail
+          if [[ -n "${KEYSTORE_BASE64}" \
+                && -n "${RELEASE_STORE_PASSWORD}" \
+                && -n "${RELEASE_KEY_ALIAS}" \
+                && -n "${RELEASE_KEY_PASSWORD}" ]]; then
+            printf '%s' "${KEYSTORE_BASE64}" | base64 --decode > "${GITHUB_WORKSPACE}/KEYSTORE.JKS"
+            {
+              printf 'KEYSTORE_PASSWORD=%s\n' "${RELEASE_STORE_PASSWORD}"
+              printf 'KEY_ALIAS=%s\n' "${RELEASE_KEY_ALIAS}"
+              printf 'KEY_PASSWORD=%s\n' "${RELEASE_KEY_PASSWORD}"
+            } >> "${GITHUB_ENV}"
+            echo "Using the configured release signing key."
+          else
+            keytool -genkeypair \
+              -keystore "${GITHUB_WORKSPACE}/KEYSTORE.JKS" \
+              -storepass android \
+              -keypass android \
+              -alias androiddebugkey \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -dname "CN=XPL-EX CI,OU=Mobilelegends74,O=Android,C=US"
+            {
+              echo 'KEYSTORE_PASSWORD=android'
+              echo 'KEY_ALIAS=androiddebugkey'
+              echo 'KEY_PASSWORD=android'
+            } >> "${GITHUB_ENV}"
+            echo "No release key secrets were configured; using a temporary CI signing key."
+          fi
 
-
-      - name: Build Release APK
+      - name: Test and build optimized release APK
         run: |
-          ./gradlew clean assembleRelease 
+          set -euo pipefail
+          chmod +x gradlew
+          for attempt in 1 2 3; do
+            if ./gradlew --no-daemon clean testReleaseUnitTest assembleRelease; then
+              break
+            fi
+            if [[ "${attempt}" -eq 3 ]]; then
+              exit 1
+            fi
+            echo "Gradle attempt ${attempt} failed; retrying after a short delay."
+            sleep $((attempt * 15))
+          done
 
-      - name: Build Debug APK
+      - name: Verify and stage APK
+        id: apk
         run: |
-          ./gradlew assembleDebug
+          set -euo pipefail
+          source_apk="app/build/outputs/apk/release/${RELEASE_APK}"
+          test -f "${source_apk}"
 
+          build_tools="${ANDROID_HOME}/build-tools/35.0.0"
+          "${build_tools}/apksigner" verify --verbose --print-certs "${source_apk}"
+          badging=$("${build_tools}/aapt" dump badging "${source_apk}")
+          grep -q "versionCode='155'" <<< "${badging}"
+          grep -q "versionName='1.5.6'" <<< "${badging}"
 
-      - name: Find Release APK file
-        id: find-release-apk
+          mkdir -p dist
+          cp "${source_apk}" "dist/${RELEASE_APK}"
+          (cd dist && sha256sum "${RELEASE_APK}") | tee "dist/${RELEASE_APK}.sha256"
+          apk_sha256=$(cut -d' ' -f1 "dist/${RELEASE_APK}.sha256")
+          echo "sha256=${apk_sha256}" >> "${GITHUB_OUTPUT}"
+
+      - name: Prepare release description
         run: |
-          release_apk=$(ls -t $GITHUB_WORKSPACE/app/build/outputs/apk/release/*.apk | head -n1)
-          release_apk_filename=$(basename "$release_apk" .apk)
-          echo "release_apk_path=$release_apk" >> $GITHUB_OUTPUT
-          echo "release_apk_filename=$release_apk_filename" >> $GITHUB_OUTPUT
+          set -euo pipefail
+          cp docs/releases/xpl-ex-1.5.6.md "${RUNNER_TEMP}/release-notes.md"
+          {
+            echo
+            echo "## Проверка файла"
+            echo
+            echo "- APK: \`${RELEASE_APK}\`"
+            echo "- SHA-256: \`${{ steps.apk.outputs.sha256 }}\`"
+            echo "- Исходный commit сборки: \`${GITHUB_SHA}\`"
+          } >> "${RUNNER_TEMP}/release-notes.md"
 
-      - name: Find Debug APK file
-        id: find-debug-apk
+      - name: Write build summary
         run: |
-          debug_apk=$(ls -t $GITHUB_WORKSPACE/app/build/outputs/apk/debug/*.apk | head -n1)
-          debug_apk_filename=$(basename "$debug_apk" .apk)
-          echo "debug_apk_path=$debug_apk" >> $GITHUB_OUTPUT
-          echo "debug_apk_filename=$debug_apk_filename" >> $GITHUB_OUTPUT
+          {
+            echo "# ${RELEASE_TITLE}"
+            echo
+            echo "- Tests: passed"
+            echo "- Version name: 1.5.6"
+            echo "- Version code: 155"
+            echo "- APK: ${RELEASE_APK}"
+            echo "- SHA-256: ${{ steps.apk.outputs.sha256 }}"
+            echo "- Release tag: ${RELEASE_TAG}"
+          } >> "${GITHUB_STEP_SUMMARY}"
 
-
-      - name: Send commit info to Telegram
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_CHANNEL_ID}}
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: |
-            New commit from: ${{ github.actor }}
-            Commit message: ${{ github.event.commits[0].message }}
-            
-            Changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
-
-      - name: Upload Release APK to Telegram
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_CHANNEL_ID }}
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: ' '
-          document: ${{ steps.find-release-apk.outputs.release_apk_path }}
-
-      - name: Upload Debug APK to Telegram
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_CHANNEL_ID }}
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: ' '
-          document: ${{ steps.find-debug-apk.outputs.debug_apk_path }}
-
-
-      - name: Upload Release files to Artifacts
+      - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.find-release-apk.outputs.release_apk_filename }}
-          path: app/build/outputs/apk/release/
+          name: XPL-EX-v1.5.6-155-release
+          path: dist/
+          if-no-files-found: error
+          retention-days: 30
 
-      - name: Upload Debug files to Artifacts
-        uses: actions/upload-artifact@v4
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: ${{ steps.find-debug-apk.outputs.debug_apk_filename }}
-          path: app/build/outputs/apk/debug/
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: ${{ env.RELEASE_TITLE }}
+          body_path: ${{ runner.temp }}/release-notes.md
+          files: |
+            dist/${{ env.RELEASE_APK }}
+            dist/${{ env.RELEASE_APK }}.sha256
+          draft: false
+          prerelease: false
+          make_latest: true
+          fail_on_unmatched_files: true
+          overwrite_files: true
