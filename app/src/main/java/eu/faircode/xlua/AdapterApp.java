@@ -66,6 +66,7 @@ import eu.faircode.xlua.api.hook.assignment.LuaAssignmentPacket;
 
 import eu.faircode.xlua.logger.XLog;
 import eu.faircode.xlua.ui.GroupHelper;
+import eu.faircode.xlua.ui.UniversalGamingSpoof;
 import eu.faircode.xlua.ui.interfaces.ILoader;
 import eu.faircode.xlua.utilities.ViewUtil;
 import eu.faircode.xlua.x.Str;
@@ -370,18 +371,28 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
             final String pkgName = app.packageName;
             Log.i(TAG, pkgName + " " + groupName + "=" + assign);
             final ArrayList<String> hookIds = new ArrayList<>();
+            final boolean isUniversalGamingSpoof = UniversalGamingSpoof.isVirtualGroup(groupName);
             for (XHook hook : hooks) {
-                if (hook.isAvailable(pkgName, collection) && (groupName == null || groupName.equals(hook.group))) {
-                    hookIds.add(hook.getObjectId());
-                    if(assign)
-                        app.addAssignment(AssignmentPacket.create(hook));
-                    else
-                        app.removeAssignment(AssignmentPacket.create(hook));
+                boolean matchesGroup = groupName == null
+                        || groupName.equals(hook.group)
+                        || (isUniversalGamingSpoof && UniversalGamingSpoof.includesGroup(hook.group));
+                if (hook.isAvailable(pkgName, collection) && matchesGroup) {
+                    AssignmentPacket assignment = AssignmentPacket.create(hook);
+                    boolean isAlreadyAssigned = app.hasAssignment(assignment);
+                    if (assign && !isAlreadyAssigned) {
+                        hookIds.add(hook.getObjectId());
+                        app.addAssignment(assignment);
+                    } else if (!assign && isAlreadyAssigned) {
+                        hookIds.add(hook.getObjectId());
+                        app.removeAssignment(assignment);
+                    }
                 }
             }
 
-            executor.submit(() ->
-                    AssignHooksCommand.call(context, AssignmentsPacket.create(app.uid, app.packageName, hookIds, !assign, app.forceStop)));
+            if (!hookIds.isEmpty()) {
+                executor.submit(() ->
+                        AssignHooksCommand.call(context, AssignmentsPacket.create(app.uid, app.packageName, hookIds, !assign, app.forceStop)));
+            }
         }
 
         void updateExpand() {

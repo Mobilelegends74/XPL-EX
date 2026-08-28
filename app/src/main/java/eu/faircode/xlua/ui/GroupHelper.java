@@ -29,6 +29,9 @@ public class GroupHelper {
     }
 
     public static String getGroupId(String str) {
+        if(UniversalGamingSpoof.isVirtualGroup(str))
+            return UniversalGamingSpoof.CATEGORY_TITLE;
+
         String firstString = Str.getFirstString(str, ".", "Unknown");
         return (firstString.equalsIgnoreCase("record") ||
                 firstString.equalsIgnoreCase("send") ||

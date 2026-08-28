@@ -53,6 +53,7 @@ import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.api.xstandard.interfaces.IDividerKind;
 import eu.faircode.xlua.ui.GroupHelper;
 import eu.faircode.xlua.ui.HookWarnings;
+import eu.faircode.xlua.ui.UniversalGamingSpoof;
 import eu.faircode.xlua.ui.dialogs.HookWarningDialog;
 import eu.faircode.xlua.ui.interfaces.ILoader;
 import eu.faircode.xlua.utilities.SettingUtil;
@@ -208,10 +209,21 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
         this.app = app;
         TryRun.silent(() -> {
             Map<String, LuaHooksGroup> map = new HashMap<>();
+            LuaHooksGroup universalGamingSpoof = new LuaHooksGroup();
+            universalGamingSpoof.id = R.string.group_universalgaming_spoof_device;
+            universalGamingSpoof.name = UniversalGamingSpoof.GROUP_NAME;
+            universalGamingSpoof.title = context.getString(R.string.group_universalgaming_spoof_device);
+            universalGamingSpoof.groupId = UniversalGamingSpoof.CATEGORY_TITLE;
+            universalGamingSpoof.hasWarning = false;
+
             for (XHook hook : hooks) {
                 if(!Str.isEmpty(hook.group) &&
                         !hook.group.toLowerCase().startsWith("intercept.") &&
                         (hook.enabled == null || Boolean.TRUE.equals(hook.enabled))) {
+                    if(UniversalGamingSpoof.includesGroup(hook.group)
+                            && hook.isAvailable(app.packageName, null, true, true))
+                        universalGamingSpoof.hooks.add(hook);
+
                     LuaHooksGroup group = map.get(hook.group);
                     if(group == null) {
                         group = new LuaHooksGroup();
@@ -230,6 +242,9 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
                 }
             }
 
+            if(!universalGamingSpoof.hooks.isEmpty())
+                map.put(UniversalGamingSpoof.GROUP_NAME, universalGamingSpoof);
+
             for (String groupId : map.keySet()) {
                 for (AssignmentPacket assignment : app.assignments) {
                     if(assignment.hookObj != null && !Str.isEmpty(assignment.getHookId())) {
@@ -237,7 +252,10 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
                         if(!Str.isEmpty(groupName) &&
                                 !groupName.toLowerCase().startsWith("intercept.") &&
                                 (assignment.hookObj.enabled == null || Boolean.TRUE.equals(assignment.hookObj.enabled))) {
-                            if (assignment.hookObj.group.equals(groupId)) {
+                            boolean matchesGroup = assignment.hookObj.group.equals(groupId)
+                                    || (UniversalGamingSpoof.isVirtualGroup(groupId)
+                                    && universalGamingSpoof.hooks.contains(assignment.hookObj));
+                            if (matchesGroup) {
                                 LuaHooksGroup group = map.get(groupId);
                                 if(group == null)
                                     continue;
@@ -261,7 +279,14 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
             this.groups = new ArrayList<>(map.values());
             final Collator collator = Collator.getInstance(Locale.getDefault());
             collator.setStrength(Collator.SECONDARY); // Case insensitive, process accents etc
-            Collections.sort(this.groups, (group1, group2) -> collator.compare(group1.groupId, group2.groupId));
+            Collections.sort(this.groups, (group1, group2) -> {
+                boolean firstIsUniversal = UniversalGamingSpoof.isVirtualGroup(group1.name);
+                boolean secondIsUniversal = UniversalGamingSpoof.isVirtualGroup(group2.name);
+                if(firstIsUniversal && secondIsUniversal) return 0;
+                if(firstIsUniversal) return -1;
+                if(secondIsUniversal) return 1;
+                return collator.compare(group1.groupId, group2.groupId);
+            });
 
             TryRun.onMain(() -> {
                 notifyDataSetChanged();//Invoke to Update the UI
@@ -300,7 +325,9 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
 
 
         holder.tvGroup.setText(group.getCleanTitle());
-        holder.cbAssigned.setChecked(group.hasAssigned());
+        holder.cbAssigned.setChecked(UniversalGamingSpoof.isVirtualGroup(group.name)
+                ? group.allAssigned()
+                : group.hasAssigned());
         holder.cbAssigned.setButtonTintList(ColorStateList.valueOf(resources.getColor(
                 group.allAssigned() ? R.color.colorAccent : android.R.color.darker_gray, null)));
 
