@@ -156,6 +156,13 @@ public class DeviceProfileCatalogTest {
                 assertEquals(profile.product, values.get(RandomizersCache.SETTING_ANDROID_BUILD_CODENAME));
                 assertEquals(profile.hardware, values.get(RandomizersCache.SETTING_SOC_BOARD_MANUFACTURER_ID));
                 assertEquals(profile.board, values.get(RandomizersCache.SETTING_SOC_BOARD_CONFIG_CODE_NAME));
+                assertEquals(profile.socModel, values.get(RandomizersCache.SETTING_SOC_BOARD_MODEL));
+                String cpuInfo = values.get(RandomizersCache.SETTING_SOC_CPU_INFO_DUMP);
+                assertNotNull(cpuInfo);
+                assertTrue(cpuInfo.contains("Hardware\t:"));
+                assertTrue(cpuInfo.contains(profile.socModel));
+                assertTrue(cpuInfo.contains(CpuInfoProfile.chipsetName(profile.socModel)));
+                assertEquals(profile.cpuCount, count(cpuInfo, "processor\t:"));
                 assertEquals(build.release, values.get(RandomizersCache.SETTING_ANDROID_BUILD_VERSION));
                 assertEquals(String.valueOf(build.apiLevel), values.get(RandomizersCache.SETTING_ANDROID_BUILD_VERSION_SDK));
                 assertEquals(build.fingerprint, values.get(RandomizersCache.SETTING_ANDROID_BUILD_FINGERPRINT));
@@ -249,5 +256,15 @@ public class DeviceProfileCatalogTest {
             if (value.contains(expected))
                 return true;
         return false;
+    }
+
+    private static int count(String value, String token) {
+        int count = 0;
+        int offset = 0;
+        while ((offset = value.indexOf(token, offset)) >= 0) {
+            count++;
+            offset += token.length();
+        }
+        return count;
     }
 }

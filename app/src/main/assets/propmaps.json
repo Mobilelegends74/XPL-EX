@@ -176,13 +176,13 @@
 
 
   //cpu.soc.model
-  { "settingName": "soc.hardware.model", "propNames": [ "ro.soc.model", "ro.vendor.soc.model", "ro.vendor.soc.model_name", "vendor.cpu.model_name" ] },
+  { "settingName": "soc.board.model", "propNames": [ "ro.soc.model", "ro.vendor.soc.model", "ro.vendor.soc.model_name", "vendor.cpu.model_name" ] },
   //cpu.hardware.name
-  { "settingName": "soc.hardware.manufacturer.id", "propNames": [ "ro.hardware", "ro.boot.hardware" ] },  //qcom
+  { "settingName": "soc.board.manufacturer.id", "propNames": [ "ro.hardware", "ro.boot.hardware" ] },  //qcom
   //cpu.platform.name
-  { "settingName": "soc.hardware.config.code.name", "propNames": [ "ro.board.platform", "ro.product.board" ] },
+  { "settingName": "soc.board.config.code.name", "propNames": [ "ro.board.platform", "ro.product.board" ] },
   //cpu.soc.manufacturer
-  { "settingName": "soc.hardware.manufacturer", "propNames": [ "ro.soc.manufacturer" ] },
+  { "settingName": "soc.board.manufacturer", "propNames": [ "ro.soc.manufacturer" ] },
 
   //cpu.dalvik.vm.variant
   { "settingName": "soc.cpu.instruction.set.32", "propNames": [ "dalvik.vm.isa.arm.variant" ] },
@@ -206,11 +206,11 @@
   { "settingName": "soc.gpu.gfx.driver.name.[1,2]", "propNames": [ "ro.gfx.driver.1", "ro.gfx.driver.0" ] },
 
   //cpu.base.band
-  { "settingName": "soc.baseband.hardware.config.name", "propNames": [ "ro.baseband", "ro.baseband.arch", "ro.boot.baseband" ] },
+  { "settingName": "soc.baseband.board.config.name", "propNames": [ "ro.baseband", "ro.baseband.arch", "ro.boot.baseband" ] },
   //hardware.gsm.band.version
-  { "settingName": "soc.baseband.hardware.radio.version", "propNames": [ "gsm.version.baseband", "vendor.gsm.project.baseband"] },
+  { "settingName": "soc.baseband.board.radio.version", "propNames": [ "gsm.version.baseband", "vendor.gsm.project.baseband"] },
   //hardware.gsm.version
-  { "settingName": "soc.baseband.hardware.implementor", "propNames": [ "gsm.version.ril-impl" ] },
+  { "settingName": "soc.baseband.board.implementor", "propNames": [ "gsm.version.ril-impl" ] },
 
   //bluetooth.soc
   { "settingName": "soc.bluetooth.board.config.name", "propNames": [ "vendor.bluetooth.soc", "ro.vendor.bluetooth.soc" , "vendor.qcom.bluetooth.soc", "ro.bluetooth.soc", "persist.bluetooth.soc" ] },
@@ -356,4 +356,3 @@
   //User Agent Properties
   { "settingName": "user.agent", "propNames": [ "http.agent", "user.agent", "user-agent" ] }
 ]
-

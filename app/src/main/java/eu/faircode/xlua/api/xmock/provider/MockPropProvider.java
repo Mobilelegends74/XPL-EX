@@ -99,13 +99,42 @@ public class MockPropProvider {
                     //Still null even after lock que
                     HashMap<String, MockPropMap> maps = new HashMap<>();
                     Collection<MockPropMap> settings = MockPropManager.forceCheckMapsDatabase(context, db);
-                    for (MockPropMap set : settings)
+                    for (MockPropMap set : settings) {
+                        // Older releases persisted these aliases in mock.db.  The asset is now
+                        // corrected, but existing primary-key rows are not replaced during the
+                        // database check, so normalize them whenever the runtime cache is built.
+                        set.setSettingName(canonicalSettingName(set.getSettingName()));
                         maps.put(set.getName(), set);
+                    }
 
                     mappedProperties = maps;
                     Log.i(TAG, "mapped settings =" + maps.size());
                 }
             }
+        }
+    }
+
+    static String canonicalSettingName(String settingName) {
+        if (settingName == null)
+            return null;
+
+        switch (settingName) {
+            case "soc.hardware.model":
+                return "soc.board.model";
+            case "soc.hardware.manufacturer.id":
+                return "soc.board.manufacturer.id";
+            case "soc.hardware.config.code.name":
+                return "soc.board.config.code.name";
+            case "soc.hardware.manufacturer":
+                return "soc.board.manufacturer";
+            case "soc.baseband.hardware.config.name":
+                return "soc.baseband.board.config.name";
+            case "soc.baseband.hardware.radio.version":
+                return "soc.baseband.board.radio.version";
+            case "soc.baseband.hardware.implementor":
+                return "soc.baseband.board.implementor";
+            default:
+                return settingName;
         }
     }
 }

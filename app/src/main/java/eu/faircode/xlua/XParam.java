@@ -622,10 +622,20 @@ public class XParam extends XParamExtra {
     public ActivityManager.MemoryInfo getFakeMemoryInfo(int totalMemoryInGB, int availableMemoryInGB) { return MemoryUtilEx.getMemory(totalMemoryInGB, availableMemoryInGB); }
 
     @SuppressWarnings("unused")
-    public FileDescriptor createFakeCpuinfoFileDescriptor() { return MockFileUtil.generateFakeFileDescriptor(XMockCall.getSelectedMockCpu(getApplicationContext())); }
+    public FileDescriptor createFakeCpuinfoFileDescriptor() {
+        String profileContents = getSetting("soc.cpu.info.dump");
+        if (profileContents != null && !profileContents.trim().isEmpty())
+            return MockFileUtil.generateFakeCpuInfoFileDescriptor(profileContents);
+        return MockFileUtil.generateFakeFileDescriptor(XMockCall.getSelectedMockCpu(getApplicationContext()));
+    }
 
     @SuppressWarnings("unused")
-    public File createFakeCpuinfoFile() { return MockFileUtil.generateFakeFile(XMockCall.getSelectedMockCpu(getApplicationContext())); }
+    public File createFakeCpuinfoFile() {
+        String profileContents = getSetting("soc.cpu.info.dump");
+        if (profileContents != null && !profileContents.trim().isEmpty())
+            return MockFileUtil.generateFakeCpuInfoFile(profileContents);
+        return MockFileUtil.generateFakeFile(XMockCall.getSelectedMockCpu(getApplicationContext()));
+    }
 
     @SuppressWarnings("unused")
     public FileDescriptor createFakeUUIDFileDescriptor() { return MockFileUtil.generateFakeBootUUIDDescriptor(getSetting("unique.boot.id")); }

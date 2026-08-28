@@ -62,6 +62,7 @@ public final class DeviceProfileSelection {
         values.put(RandomizersCache.SETTING_SOC_CPU_ABI_LIST, device.abiList);
         values.put(RandomizersCache.SETTING_SOC_CPU_ABI_LIST_32, device.abiList32);
         values.put(RandomizersCache.SETTING_SOC_CPU_ABI_LIST_64, device.abiList64);
+        values.put(RandomizersCache.SETTING_SOC_CPU_INFO_DUMP, CpuInfoProfile.generate(device));
 
         String gpuRenderer = gpuRendererFor(device.socModel);
         boolean maliGpu = gpuRenderer.startsWith("Mali") || gpuRenderer.startsWith("Immortalis");

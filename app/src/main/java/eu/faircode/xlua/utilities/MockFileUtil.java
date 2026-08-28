@@ -39,4 +39,12 @@ public class MockFileUtil {
         if(BuildConfig.DEBUG) Log.i(TAG, "MOCK File For: " + map);
         return FileUtil.generateTempFakeFile(map.getContents());
     }
+
+    public static FileDescriptor generateFakeCpuInfoFileDescriptor(String contents) {
+        return FileUtil.generateFakeFileDescriptor(contents);
+    }
+
+    public static File generateFakeCpuInfoFile(String contents) {
+        return FileUtil.generateTempFakeFile(contents);
+    }
 }

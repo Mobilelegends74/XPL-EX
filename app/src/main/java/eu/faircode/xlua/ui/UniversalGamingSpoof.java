@@ -43,12 +43,13 @@ public final class UniversalGamingSpoof {
 
     /*
      * Only hardware hooks backed by the selected real-device profile belong in the master
-     * switch.  Hardware.Spoof.CPU depends on a separately selected /proc/cpuinfo map and
-     * Hardware.Spoof.GPS.Model needs a vendor-specific GNSS string which is not published for
-     * every model.  Enabling those blindly would create a mixed, detectable identity.
+     * switch. Hardware.Spoof.CPU now consumes the /proc/cpuinfo contents generated from the same
+     * real-device profile. Hardware.Spoof.GPS.Model still needs a vendor-specific GNSS string
+     * which is not published for every model, so it remains excluded.
      */
     private static final Set<String> PROFILE_BACKED_HARDWARE_GROUPS = new HashSet<>(Arrays.asList(
             "hardware.spoof.cpu.ex",
+            "hardware.spoof.cpu",
             "hardware.spoof.gpu",
             "hardware.spoof.camera.count",
             "hardware.spoof.memory"

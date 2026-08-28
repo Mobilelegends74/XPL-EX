@@ -33,6 +33,7 @@ public class RandomDeviceProfile extends RandomElement {
             RandomizersCache.SETTING_SOC_CPU_ABI_LIST,
             RandomizersCache.SETTING_SOC_CPU_ABI_LIST_32,
             RandomizersCache.SETTING_SOC_CPU_ABI_LIST_64,
+            RandomizersCache.SETTING_SOC_CPU_INFO_DUMP,
             RandomizersCache.SETTING_SOC_GPU_EGL_IMPLEMENTOR,
             RandomizersCache.SETTING_SOC_GPU_VULKAN_IMPLEMENTOR,
             RandomizersCache.SETTING_SOC_GPU_OPEN_GLES_VERSION_ENCODED,
