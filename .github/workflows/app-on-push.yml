@@ -83,7 +83,7 @@ jobs:
             echo "No release key secrets were configured; using a temporary CI signing key."
           fi
 
-      - name: Test and build optimized release APK
+      - name: Test and build Xposed-compatible release APK
         run: |
           set -euo pipefail
           chmod +x gradlew
@@ -138,6 +138,7 @@ jobs:
             echo "- Tests: passed"
             echo "- Version name: 1.5.6"
             echo "- Version code: 155"
+            echo "- R8 minification: disabled for Xposed/Lua hook compatibility"
             echo "- APK: ${RELEASE_APK}"
             echo "- SHA-256: ${{ steps.apk.outputs.sha256 }}"
             echo "- Release tag: ${RELEASE_TAG}"

@@ -61,9 +61,10 @@ android {
     buildTypes {
         release {
             shrinkResources false
-            // XPL-EX 1.5.8 uses R8. Keep resource shrinking disabled because hook
-            // group labels and help texts are resolved dynamically by name.
-            minifyEnabled true
+            // XPL-EX loads hooks, Lua bridges and JSON-backed classes dynamically.
+            // R8 breaks this runtime path even when the app classes are kept, so
+            // release must preserve the same hook behavior as the working debug APK.
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (signingConfigs.release.storeFile) {
                 signingConfig signingConfigs.release
