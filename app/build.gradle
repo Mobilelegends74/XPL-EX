@@ -16,7 +16,10 @@ android {
     defaultConfig {
         applicationId "eu.faircode.xlua"
         minSdk 23
-        targetSdk 36
+        // The legacy AppCompat screens do not yet consume system-bar insets.
+        // Target 35+ enforces edge-to-edge and places action items below the
+        // status bar, so stay on 34 until the Material 3 UI migration is ready.
+        targetSdk 34
         versionCode 155
         versionName "1.5.5"
         archivesBaseName = "XPL-EX-v$versionName-$versionCode"
