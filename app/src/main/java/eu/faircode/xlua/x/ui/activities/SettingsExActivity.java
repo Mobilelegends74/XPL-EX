@@ -32,10 +32,17 @@ public class SettingsExActivity extends ListBaseActivity {
     public static final PrefManager manager = PrefManager.create(null, PrefManager.SETTINGS_NAMESPACE);
 
     @Override
+    protected boolean useCustomToolbar() {
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         manager.ensureIsOpen(this, PrefManager.SETTINGS_NAMESPACE);
         setContentView(R.layout.settings_ex_activity);
+        setupCustomToolbar(R.id.toolbar_settings, R.id.app_bar_layout_settings,
+                R.id.content_frame_settings_ex, R.string.menu_settings);
         super.startFragmentTransaction(SettingExFragment.class, R.id.content_frame_settings_ex, true);
     }
 
@@ -82,6 +89,9 @@ public class SettingsExActivity extends ListBaseActivity {
         manager.ensureIsOpen(SettingsExActivity.this, PrefManager.SETTINGS_NAMESPACE);
         SettingExFragment fragment = getSettingsFragment();
         switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
             case R.id.menu_show_settings:
                 enumShow show = (fragment == null ? enumShow.none : fragment.getShow());
                 this.menu.findItem(R.id.menu_show_settings_all).setEnabled(show != enumShow.none);

@@ -1,6 +1,7 @@
 package eu.faircode.xlua.x.ui.core.fragment;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -237,6 +238,9 @@ public abstract class ListFragment<TElement extends IDiffFace, TBinding extends 
         if(ArrayUtils.isValid(floatingActionButtons))
             recyclerViewWrapper.ensureFloatingActionsAreLinked(
                     FloatingActionButtonContext.create().initAnimations(getContext())
+                            .setHideOnScroll(PreferenceManager
+                                    .getDefaultSharedPreferences(requireContext())
+                                    .getBoolean("fab_hide_on_scroll", true))
                             .add(this, this, floatingActionButtons));
     }
     @Override

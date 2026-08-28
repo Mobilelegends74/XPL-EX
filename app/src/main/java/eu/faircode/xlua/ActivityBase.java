@@ -19,121 +19,191 @@
 
 package eu.faircode.xlua;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.Process;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import java.util.Locale;
 
-import eu.faircode.xlua.api.XResult;
-import eu.faircode.xlua.api.xlua.XLuaCall;
-import eu.faircode.xlua.utilities.PrefUtil;
+import eu.faircode.xlua.utilities.UiInsets;
 import eu.faircode.xlua.x.xlua.commands.call.GetSettingExCommand;
 
 public class ActivityBase extends AppCompatActivity {
     private static final String TAG = "XLua.ActivityBase";
-    private String theme;
-    private boolean isForceEnglish;
-    //private Locale mCurrentLocale;
+    public static final String THEME_AUTO = "system";
+    public static final String THEME_DARK = "dark";
+    public static final String THEME_LIGHT = "light";
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //PrefUtil.setString(this, "language", "es");
-        //mCurrentLocale = getResources().getConfiguration().locale;
-        //mCurrentLocale = new Locale("es");
+    private String theme = THEME_DARK;
+    private String resolvedTheme = THEME_DARK;
+    private boolean monetEnabled;
+
+    /** Screens ported to the 1.5.8 MaterialToolbar layout override this. */
+    protected boolean useCustomToolbar() {
+        return false;
     }
 
-    public void setForceEnglish(boolean force) {
-        try {
-            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            prefs.edit().putBoolean("forceenglish", force).apply();
-        }catch (Exception ignored) { }
+    /** The Advanced Settings screen uses the full Material 3 surface palette. */
+    protected boolean useAdvancedSettingsTheme() {
+        return false;
     }
 
-    public boolean getIsForceEnglish() {
-        try {
-            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            if(!prefs.contains("forceenglish")) {
-                prefs.edit().putBoolean("forceenglish", false).apply();
-                return false;
+    private SharedPreferences preferences() {
+        return PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    }
+
+    private String readThemePreference() {
+        SharedPreferences prefs = preferences();
+        if (!prefs.contains("theme")) {
+            String legacyTheme = THEME_DARK;
+            try {
+                legacyTheme = GetSettingExCommand.getTheme(this, Process.myUid());
+            } catch (Throwable ignored) {
+                // The service may not be available on the first start. Dark is the safe default.
             }
-
-            return prefs.getBoolean("forceenglish", false);
-        }catch (Exception ignored) {
-            return false;
+            if (!THEME_LIGHT.equals(legacyTheme))
+                legacyTheme = THEME_DARK;
+            prefs.edit().putString("theme", legacyTheme).apply();
         }
+
+        String selected = prefs.getString("theme", THEME_DARK);
+        if (!THEME_AUTO.equals(selected) && !THEME_LIGHT.equals(selected))
+            selected = THEME_DARK;
+        return selected;
+    }
+
+    private String resolveTheme(String selected) {
+        if (!THEME_AUTO.equals(selected))
+            return selected;
+        return (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                == Configuration.UI_MODE_NIGHT_YES ? THEME_DARK : THEME_LIGHT;
+    }
+
+    private int getThemeStyle() {
+        boolean dark = THEME_DARK.equals(resolvedTheme);
+        boolean dynamic = monetEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
+
+        if (useAdvancedSettingsTheme()) {
+            if (dynamic)
+                return dark ? R.style.AdvancedSettingsThemeDarkMonet : R.style.AdvancedSettingsThemeLightMonet;
+            return dark ? R.style.AdvancedSettingsThemeDark : R.style.AdvancedSettingsThemeLight;
+        }
+
+        if (useCustomToolbar()) {
+            if (dynamic)
+                return dark ? R.style.AppThemeDark_NoActionBar_Monet : R.style.AppThemeLight_NoActionBar_Monet;
+            return dark ? R.style.AppThemeDark_NoActionBar : R.style.AppThemeLight_NoActionBar;
+        }
+
+        return dark ? R.style.AppThemeDark : R.style.AppThemeLight;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        theme = GetSettingExCommand.getTheme(this, Process.myUid());
-        if(DebugUtil.isDebug())
-            Log.d(TAG, "OnCreate Theme=" + theme);
+        theme = readThemePreference();
+        resolvedTheme = resolveTheme(theme);
+        monetEnabled = preferences().getBoolean("monet_enabled", false);
+        setTheme(getThemeStyle());
 
-        isForceEnglish = getIsForceEnglish();
-        setTheme("dark".equals(theme) ? R.style.AppThemeDark : R.style.AppThemeLight);
-        if(isForceEnglish) {
+        if (DebugUtil.isDebug())
+            Log.d(TAG, "Theme=" + theme + " resolved=" + resolvedTheme + " monet=" + monetEnabled);
+
+        if (getIsForceEnglish()) {
             try {
-                String languageToLoad  = "en"; // your language
-                Locale locale = new Locale(languageToLoad);
+                Locale locale = Locale.ENGLISH;
                 Locale.setDefault(locale);
-                Configuration config = new Configuration();
-                config.locale = locale;
-                getBaseContext().getResources().updateConfiguration(config,
-                        getBaseContext().getResources().getDisplayMetrics());
-            }catch (Exception ignored) {
-
+                Configuration config = new Configuration(getResources().getConfiguration());
+                config.setLocale(locale);
+                getBaseContext().getResources().updateConfiguration(
+                        config, getBaseContext().getResources().getDisplayMetrics());
+            } catch (Exception ignored) {
             }
         }
 
-        //Both methods work tho the first one not sure how to change and keeps ovveriding to english this one one alone works as well
-        /*String languageToLoad  = "es"; // your language
-        Locale locale = new Locale(languageToLoad);
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-        getBaseContext().getResources().updateConfiguration(config,
-                getBaseContext().getResources().getDisplayMetrics());*/
-
         super.onCreate(savedInstanceState);
+        applyNavigationBarPreference();
     }
 
-
-    /*@Override
-    protected void onRestart() {
-        //set theme ?
-        super.onRestart();
-        Locale locale = getLocale(this);
-        if (!locale.equals(mCurrentLocale)) {
-            mCurrentLocale = locale;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String selected = readThemePreference();
+        String resolved = resolveTheme(selected);
+        boolean dynamic = preferences().getBoolean("monet_enabled", false);
+        if (!selected.equals(theme) || !resolved.equals(resolvedTheme) || dynamic != monetEnabled)
             recreate();
-        }
-    }*/
+    }
 
-    public String getThemeName() { return (theme == null ? "dark" : theme); }
+    public void forceEdgeToEdgeUpdate() {
+        UiInsets.enableEdgeToEdge(this, THEME_LIGHT.equals(resolvedTheme), getTransparentNavbar());
+    }
 
-    /*public static Locale getLocale(Context context){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String lang = sharedPreferences.getString("language", "es");
-        switch (lang) {
-            case "English":
-                lang = "en";
-                break;
-            case "Spanish":
-                lang = "es";
-                break;
+    /** Connects the 1.5.8-style in-layout toolbar without duplicating inset code. */
+    protected void setupCustomToolbar(int toolbarId, int appBarId, int contentId, int titleId) {
+        forceEdgeToEdgeUpdate();
+        Toolbar toolbar = findViewById(toolbarId);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            if (titleId != 0)
+                getSupportActionBar().setTitle(titleId);
         }
-        return new Locale(lang);
-    }*/
+        UiInsets.applyToolbarInsets(findViewById(appBarId), findViewById(contentId));
+    }
+
+    private void applyNavigationBarPreference() {
+        UiInsets.updateSystemBarAppearance(this, THEME_LIGHT.equals(resolvedTheme), getTransparentNavbar());
+    }
+
+    public String getThemeName() {
+        return theme;
+    }
+
+    public String getCurrentResolvedTheme() {
+        return resolvedTheme;
+    }
+
+    public boolean isMonetEnabled() {
+        return monetEnabled;
+    }
+
+    public void setForceEnglish(boolean force) {
+        preferences().edit().putBoolean("forceenglish", force).apply();
+    }
+
+    public boolean getIsForceEnglish() {
+        return preferences().getBoolean("forceenglish", false);
+    }
+
+    public void setSkipWarning(boolean skip) {
+        preferences().edit().putBoolean("skipwarning", skip).apply();
+    }
+
+    public boolean getSkipWarning() {
+        return preferences().getBoolean("skipwarning", false);
+    }
+
+    public void setSystemAppsColor(boolean enabled) {
+        preferences().edit().putBoolean("system_apps_color", enabled).apply();
+    }
+
+    public boolean getSystemAppsColor() {
+        return preferences().getBoolean("system_apps_color", false);
+    }
+
+    public void setTransparentNavbar(boolean enabled) {
+        preferences().edit().putBoolean("transparent_navbar", enabled).apply();
+        applyNavigationBarPreference();
+    }
+
+    public boolean getTransparentNavbar() {
+        return preferences().getBoolean("transparent_navbar", false);
+    }
 }

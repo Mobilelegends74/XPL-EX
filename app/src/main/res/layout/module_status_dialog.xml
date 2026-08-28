@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp">
+
+    <ImageView
+        android:id="@+id/ivWarning"
+        android:layout_width="112dp"
+        android:layout_height="112dp"
+        android:contentDescription="@string/module_status_title"
+        android:src="?attr/warningIcon"
+        android:tint="@color/colorUnsavedSetting"
+        app:layout_constraintBottom_toTopOf="@id/tvTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="@string/module_status_title"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/tvMessage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivWarning" />
+
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="@string/module_status_unavailable"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        app:layout_constraintBottom_toTopOf="@id/btnContinue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnContinue"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:layout_marginTop="40dp"
+        android:text="@string/module_status_continue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvMessage" />
+</androidx.constraintlayout.widget.ConstraintLayout>

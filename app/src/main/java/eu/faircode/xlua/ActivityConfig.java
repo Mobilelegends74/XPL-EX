@@ -14,10 +14,17 @@ public class ActivityConfig extends ActivityBase {
     private FragmentConfig fragmentConfig;
 
     @Override
+    protected boolean useCustomToolbar() {
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.configeditorview);
+        setupCustomToolbar(R.id.toolbar_config, R.id.app_bar_layout_config,
+                R.id.content_frame_configs, R.string.menu_configs);
 
         Log.i(TAG, "Creating Fragment");
 
@@ -56,6 +63,10 @@ public class ActivityConfig extends ActivityBase {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return false;
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

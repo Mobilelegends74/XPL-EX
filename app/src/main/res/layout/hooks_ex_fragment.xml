@@ -27,7 +27,8 @@
         app:layout_constraintBottom_toTopOf="@+id/flSettingsButtonTwo"
         app:layout_constraintEnd_toEndOf="@+id/flSettingsButtonTwo"
         app:layout_constraintStart_toStartOf="@+id/flSettingsButtonTwo"
-        app:srcCompat="@drawable/ic_add18" />
+        app:srcCompat="@drawable/ic_add18"
+        app:tint="?attr/colorOnSecondary" />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/flSettingsButtonTwo"
         android:layout_width="wrap_content"
@@ -39,7 +40,8 @@
         app:layout_constraintBottom_toTopOf="@+id/flSettingsButtonOne"
         app:layout_constraintEnd_toEndOf="@+id/flSettingsButtonOne"
         app:layout_constraintStart_toStartOf="@+id/flSettingsButtonOne"
-        app:srcCompat="@drawable/ic_file_import" />
+        app:srcCompat="@drawable/ic_file_import"
+        app:tint="?attr/colorOnSecondary" />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/flSettingsButtonOne"
         android:layout_width="wrap_content"
@@ -51,7 +53,8 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_edit_button" />
+        app:srcCompat="@drawable/ic_edit_button"
+        app:tint="?attr/colorOnSecondary" />
 
 
 

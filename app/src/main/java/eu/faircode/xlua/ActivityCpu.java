@@ -16,10 +16,17 @@ public class ActivityCpu extends ActivityBase {
     private Menu menu;
 
     @Override
+    protected boolean useCustomToolbar() {
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.cpuview);
+        setupCustomToolbar(R.id.toolbar_cpu, R.id.app_bar_layout_cpu,
+                R.id.content_frame_cpu, 0);
 
         //Show Fragment
         FragmentManager fragmentManager = getSupportFragmentManager();

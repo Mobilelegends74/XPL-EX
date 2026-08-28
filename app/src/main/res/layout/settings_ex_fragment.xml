@@ -28,7 +28,8 @@
         app:layout_constraintBottom_toTopOf="@+id/flSettingsButtonFive"
         app:layout_constraintEnd_toEndOf="@+id/flSettingsButtonFive"
         app:layout_constraintStart_toStartOf="@+id/flSettingsButtonFive"
-        app:srcCompat="@drawable/ic_rnd18" />
+        app:srcCompat="@drawable/ic_rnd18"
+        app:tint="?attr/colorOnSecondary" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/flSettingsButtonFive"
@@ -41,7 +42,8 @@
         app:layout_constraintBottom_toTopOf="@+id/flSettingsButtonFour"
         app:layout_constraintEnd_toEndOf="@+id/flSettingsButtonFour"
         app:layout_constraintStart_toStartOf="@+id/flSettingsButtonFour"
-        app:srcCompat="@drawable/ic_delete18" />
+        app:srcCompat="@drawable/ic_delete18"
+        app:tint="?attr/colorOnSecondary" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/flSettingsButtonFour"
@@ -54,7 +56,8 @@
         app:layout_constraintBottom_toTopOf="@+id/flSettingsButtonThree"
         app:layout_constraintEnd_toEndOf="@+id/flSettingsButtonThree"
         app:layout_constraintStart_toStartOf="@+id/flSettingsButtonThree"
-        app:srcCompat="@drawable/ic_save18" />
+        app:srcCompat="@drawable/ic_save18"
+        app:tint="?attr/colorOnSecondary" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -68,7 +71,8 @@
         app:layout_constraintBottom_toTopOf="@+id/flSettingsButtonTwo"
         app:layout_constraintEnd_toEndOf="@+id/flSettingsButtonTwo"
         app:layout_constraintStart_toStartOf="@+id/flSettingsButtonTwo"
-        app:srcCompat="@drawable/ic_add18" />
+        app:srcCompat="@drawable/ic_add18"
+        app:tint="?attr/colorOnSecondary" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -82,7 +86,8 @@
         app:layout_constraintBottom_toTopOf="@+id/flSettingsButtonOne"
         app:layout_constraintEnd_toEndOf="@+id/flSettingsButtonOne"
         app:layout_constraintStart_toStartOf="@+id/flSettingsButtonOne"
-        app:srcCompat="@drawable/ic_random18" />
+        app:srcCompat="@drawable/ic_random18"
+        app:tint="?attr/colorOnSecondary" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/flSettingsButtonOne"
@@ -95,7 +100,8 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_edit_button" />
+        app:srcCompat="@drawable/ic_edit_button"
+        app:tint="?attr/colorOnSecondary" />
 
 
 

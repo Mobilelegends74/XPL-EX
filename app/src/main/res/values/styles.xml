@@ -9,6 +9,8 @@
     <attr name="colorSystem" format="reference" />
     <attr name="colorDrawerScrim" format="reference" />
     <attr name="colorDrawerBackground" format="reference" />
+    <attr name="colorCheckboxTint" format="reference" />
+    <attr name="hookCountColor" format="reference" />
 
     <attr name="colorTextOne" format="reference" />
     <attr name="colorSettingSaved" format="reference" />
@@ -129,6 +131,21 @@
         <item name="colorDrawerBackground">@color/lightColorDrawerBackground</item>
     </style>
 
+    <!-- Embedded MaterialToolbar variant used by the redesigned 1.5.8 screens. -->
+    <style name="AppThemeLight.NoActionBar" parent="AppThemeLight">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="colorOnSurface">#1A1A1A</item>
+        <item name="colorOnSurfaceVariant">#4A4A4A</item>
+        <item name="colorSurface">#FEFEFE</item>
+        <item name="colorSurfaceContainer">@color/app_legacy_light_surface_container</item>
+        <item name="colorSurfaceContainerHigh">@color/app_legacy_light_surface_container_high</item>
+        <item name="colorOutline">#777777</item>
+        <item name="colorOutlineVariant">@color/app_legacy_light_outline_variant</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+    </style>
+
     <style name="AppThemeDark" parent="Theme.AppCompat">
         <item name="android:windowDisablePreview">true</item>
 
@@ -195,5 +212,62 @@
         <item name="colorSystem">@color/darkColorSystem</item>
         <item name="colorDrawerScrim">@color/darkColorDrawerScrim</item>
         <item name="colorDrawerBackground">@color/darkColorDrawerBackground</item>
+    </style>
+
+    <style name="AppThemeDark.NoActionBar" parent="AppThemeDark">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="colorOnSurface">#EEEEEE</item>
+        <item name="colorOnSurfaceVariant">#CCCCCC</item>
+        <item name="colorSurface">#121212</item>
+        <item name="colorSurfaceContainer">@color/app_legacy_dark_surface_container</item>
+        <item name="colorSurfaceContainerHigh">@color/app_legacy_dark_surface_container_high</item>
+        <item name="colorOutline">#777777</item>
+        <item name="colorOutlineVariant">@color/app_legacy_dark_outline_variant</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+    </style>
+
+    <style name="AdvancedSettingsThemeLight" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:colorBackground">#FEFEFE</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="colorPrimary">@color/app_legacy_primary_red_light</item>
+        <item name="colorPrimaryContainer">@color/app_legacy_primary_red_container_light</item>
+        <item name="colorSecondary">@color/colorPrimary</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+        <item name="colorSurface">#FEFEFE</item>
+        <item name="colorSurfaceContainer">@color/app_legacy_light_surface_container</item>
+        <item name="colorSurfaceContainerHigh">@color/app_legacy_light_surface_container_high</item>
+        <item name="colorOnSurface">#1A1A1A</item>
+        <item name="colorOnSurfaceVariant">#4A4A4A</item>
+        <item name="colorOutline">#777777</item>
+        <item name="colorOutlineVariant">@color/app_legacy_light_outline_variant</item>
+    </style>
+
+    <style name="AdvancedSettingsThemeDark" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:colorBackground">#121212</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="colorPrimary">@color/app_legacy_primary_red_dark</item>
+        <item name="colorPrimaryContainer">@color/app_legacy_primary_red_container_dark</item>
+        <item name="colorSecondary">@color/colorPrimaryDark</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+        <item name="colorSurface">#121212</item>
+        <item name="colorSurfaceContainer">@color/app_legacy_dark_surface_container</item>
+        <item name="colorSurfaceContainerHigh">@color/app_legacy_dark_surface_container_high</item>
+        <item name="colorOnSurface">#EEEEEE</item>
+        <item name="colorOnSurfaceVariant">#CCCCCC</item>
+        <item name="colorOutline">#777777</item>
+        <item name="colorOutlineVariant">@color/app_legacy_dark_outline_variant</item>
+    </style>
+
+    <style name="ToolbarThemeWhite" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">@android:color/white</item>
+        <item name="android:tint">@android:color/white</item>
     </style>
 </resources>

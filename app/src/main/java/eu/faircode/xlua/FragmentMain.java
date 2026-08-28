@@ -304,7 +304,8 @@ public class FragmentMain extends Fragment implements ILoader {
 
             DataHolder data = new DataHolder();
             try {
-                data.theme = GetSettingExCommand.getTheme(getContext(), Process.myUid());
+                data.theme = PreferenceManager.getDefaultSharedPreferences(getContext())
+                        .getString("theme", ActivityBase.THEME_DARK);
 
                 // Define hooks
                 /*if (BuildConfig.DEBUG) {

@@ -6,11 +6,29 @@
     <color name="colorUnsavedSetting">#D94C4C</color>
     <color name="colorActiveHook">#2EAD59</color>
 
+    <!-- 1.5.8 interface palette. These colors keep the original red XPL-EX
+         identity while exposing the Material surface roles used by the new UI. -->
+    <color name="app_legacy_primary_red_light">#CC5555</color>
+    <color name="app_legacy_primary_red_dark">#E55555</color>
+    <color name="app_legacy_primary_red_container_light">#FFEBEB</color>
+    <color name="app_legacy_primary_red_container_dark">#4A2D2D</color>
+    <color name="app_legacy_light_surface_container">#F5F5F5</color>
+    <color name="app_legacy_light_surface_container_high">#F0F0F0</color>
+    <color name="app_legacy_light_surface_container_low">#FAFAFA</color>
+    <color name="app_legacy_light_outline_variant">#D0D0D0</color>
+    <color name="app_legacy_dark_surface_container">#2D2D2D</color>
+    <color name="app_legacy_dark_surface_container_high">#353535</color>
+    <color name="app_legacy_dark_surface_container_low">#252525</color>
+    <color name="app_legacy_dark_outline_variant">#555555</color>
+    <color name="app_legacy_ripple_light">#FFCDD2</color>
+    <color name="app_legacy_ripple_dark">#FF8A80</color>
+
 
     <!-- Light theme -->
     <color name="lightColorDrawerScrim">#99000000</color>
     <color name="lightColorDrawerBackground">#EEE</color>
     <color name="lightColorSystem">#20B10000</color>
+    <color name="lightColorSystemAlternative">#1A4A7F7F</color>
 
     <color name="lightColorTextOne">#99000000</color>
     <color name="lightColorTextDivider">#99000000</color>
@@ -28,6 +46,7 @@
     <color name="darkColorDrawerScrim">#997F7F7F</color>
     <color name="darkColorDrawerBackground">#222</color>
     <color name="darkColorSystem">#40B10000</color>
+    <color name="darkColorSystemAlternative">#2A5FA8D3</color>
 
     <color name="darkColorTextOne">#EEE</color>
     <color name="darkColorTextDivider">#CCC6C6</color>

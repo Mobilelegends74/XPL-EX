@@ -33,6 +33,7 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
 
@@ -198,6 +199,24 @@ public class XUtil {
         return typedValue.data;
         //boolean found = theme.resolveAttribute(attr, typedValue, true);
         //return found ? typedValue.data : 0;  // Fallback to default color or handle error
+    }
+
+    /** 1.5.8 option: replace the old red system-app marker with a neutral tint. */
+    public static int resolveSystemAppColor(Context context) {
+        try {
+            if (!PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("system_apps_color", false))
+                return resolveColor(context, R.attr.colorSystem);
+
+            TypedValue background = new TypedValue();
+            context.getTheme().resolveAttribute(android.R.attr.colorBackground, background, true);
+            boolean darkBackground = (background.data & 0x00FFFFFF) < 0x00808080;
+            return context.getColor(darkBackground
+                    ? R.color.darkColorSystemAlternative
+                    : R.color.lightColorSystemAlternative);
+        } catch (Exception ignored) {
+            return resolveColor(context, R.attr.colorSystem);
+        }
     }
 
     //Hmm we have this

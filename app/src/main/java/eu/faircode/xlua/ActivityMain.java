@@ -28,7 +28,6 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Process;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.TextUtils;
@@ -61,6 +60,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -71,11 +71,13 @@ import eu.faircode.xlua.api.xlua.call.CleanHooksCommand;
 import eu.faircode.xlua.api.xlua.provider.XLuaHookProvider;
 import eu.faircode.xlua.logger.XLog;
 import eu.faircode.xlua.utilities.PrefUtil;
+import eu.faircode.xlua.utilities.UiInsets;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.PrefManager;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.ui.FileDialogUtils;
 import eu.faircode.xlua.x.ui.activities.HooksExActivity;
+import eu.faircode.xlua.x.ui.activities.AdvancedSettingsActivity;
 import eu.faircode.xlua.x.ui.activities.SettingsExActivity;
 import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.ui.core.UserClientAppContext;
@@ -107,6 +109,7 @@ public class ActivityMain extends ActivityBase {
 
     private FragmentMain fragmentMain = null;
     private DrawerLayout drawerLayout = null;
+    private View drawerContainer;
     private ListView drawerList;
     private ActionBarDrawerToggle drawerToggle = null;
 
@@ -116,36 +119,46 @@ public class ActivityMain extends ActivityBase {
 
     public static final int LOADER_DATA = 1;
     public static final String EXTRA_SEARCH_PACKAGE = "package";
+    public static boolean continueWithoutModule = false;
 
     public static final PrefManager manager = PrefManager.create(null, PrefManager.SETTINGS_MAIN);
 
     private final XBackup backup = new XBackup();
 
     @Override
+    protected boolean useCustomToolbar() {
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         manager.ensureIsOpen(this, PrefManager.SETTINGS_MAIN);
-        // Check if service is running
-        if (!XLuaHookProvider.isAvailable(this)) {
-            Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.msg_no_service), Snackbar.LENGTH_INDEFINITE);
-            final Intent intent = getPackageManager().getLaunchIntentForPackage("de.robv.android.xposed.installer");
-            if (intent != null && intent.resolveActivity(getPackageManager()) != null)
-                snackbar.setAction(R.string.title_fix, view -> startActivity(intent));
+        if (!continueWithoutModule)
+            continueWithoutModule = getSkipWarning();
 
-            snackbar.show();
+        // 1.5.8 replaces an unreachable Snackbar with a full, readable status
+        // screen. "Continue" only bypasses this UI check for the current process;
+        // it does not alter hooks, assignments or any saved spoofing values.
+        if (!continueWithoutModule && !XLuaHookProvider.isAvailable(this)) {
+            showModuleStatus();
             return;
         }
 
-
-        if(!invokeNeedsRebootCheck() || !invokeDatabaseCheck())
+        if (!continueWithoutModule && (!invokeNeedsRebootCheck() || !invokeDatabaseCheck()))
             return;
 
         // Set layout
         setContentView(R.layout.main);
+        forceEdgeToEdgeUpdate();
 
         // Prepare action bar
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        UiInsets.applyToolbarInsets(findViewById(R.id.app_bar_layout), findViewById(R.id.content_frame));
 
         // Show fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -156,21 +169,35 @@ public class ActivityMain extends ActivityBase {
 
         // Get drawer layout
         drawerLayout = findViewById(R.id.drawer_layout);
-        drawerLayout.setScrimColor(XUtil.resolveColor(this, R.attr.colorDrawerScrim));
+        drawerContainer = findViewById(R.id.drawer_container);
+        View customScrim = findViewById(R.id.custom_scrim);
+        drawerLayout.setScrimColor(android.graphics.Color.TRANSPARENT);
+        UiInsets.applyDrawerInsets(findViewById(R.id.drawer_header_spacer), findViewById(R.id.drawer_content));
+        customScrim.setOnClickListener(view -> drawerLayout.closeDrawer(drawerContainer));
 
         // Create drawer toggle
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.app_name, R.string.app_name) {
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name) {
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getSupportActionBar().setTitle(getString(R.string.app_name));
+                if (getSupportActionBar() != null)
+                    getSupportActionBar().setTitle(getString(R.string.app_name));
             }
 
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle(getString(R.string.app_name));
+                if (getSupportActionBar() != null)
+                    getSupportActionBar().setTitle(getString(R.string.app_name));
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                customScrim.setVisibility(slideOffset > 0f ? View.VISIBLE : View.GONE);
+                customScrim.setAlpha(slideOffset);
             }
         };
         drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
 
         // Get drawer list
         drawerList = findViewById(R.id.drawer_list);
@@ -183,18 +210,14 @@ public class ActivityMain extends ActivityBase {
                 //Log.i(TAG, "Drawer selected " + item.getTitle());
                 item.onClick();
                 if (!item.isCheckable())
-                    drawerLayout.closeDrawer(drawerList);
+                    drawerLayout.closeDrawer(drawerContainer);
             }
         });
 
         boolean notifyNew = GetSettingExCommand.notifyOnNewApps(this);
         boolean restrictNew = GetSettingExCommand.restrictNewApps(this);
-        boolean isVerbose = GetSettingExCommand.getVerboseLogs(this);
-        boolean isDark = GetSettingExCommand.SETTING_THEME_DEFAULT.equalsIgnoreCase(GetSettingExCommand.getTheme(this, Process.myUid()));
         if(DebugUtil.isDebug())
-            Log.d(TAG, Str.fm("Notify New=%s Restrict New=%s IsDark=%s", notifyNew, restrictNew, isDark));
-
-        final boolean forceEnglish = getIsForceEnglish();
+            Log.d(TAG, Str.fm("Notify New=%s Restrict New=%s", notifyNew, restrictNew));
 
         final ArrayAdapterDrawer drawerArray = new ArrayAdapterDrawer(ActivityMain.this, R.layout.draweritem);
 
@@ -269,50 +292,6 @@ public class ActivityMain extends ActivityBase {
             }
         }));
 
-        if (!XposedUtil.isVirtualXposed())
-            drawerArray.add(new DrawerItem(this,R.string.menu_dark, isDark, new DrawerItem.IListener() {
-                @Override
-                public void onClick(DrawerItem item) {
-                    String oldTheme = GetSettingExCommand.getTheme(ActivityMain.this, Process.myUid());
-                    String newTheme = item.isChecked() ? "dark" : "light";
-
-                    A_CODE code = PutSettingExCommand.putTheme(ActivityMain.this, newTheme);
-                    drawerArray.notifyDataSetChanged();
-                    handleCodeToSnack(code, getString(R.string.result_prefix_theme) + "=" + newTheme);
-
-                    if(A_CODE.isSuccessful(code)) {
-                        if(!oldTheme.equals(newTheme)) {
-                            setTheme(GetSettingExCommand.SETTING_THEME_DEFAULT.equals(newTheme) ? R.style.AppThemeDark : R.style.AppThemeLight);
-                            recreate();
-                        }
-                    }
-                }
-            }));
-
-        drawerArray.add(new DrawerItem(this, R.string.menu_debug_logs, isVerbose, new DrawerItem.IListener() {
-            @Override
-            public void onClick(DrawerItem item) {
-                boolean isChecked = item.isChecked();
-                DebugUtil.setForceDebug(isChecked);
-                handleCodeToSnack(PutSettingExCommand.putVerboseLogging(ActivityMain.this, isChecked),  getString(R.string.result_prefix_debug) + "=" + isChecked);
-                drawerArray.notifyDataSetChanged();
-            }
-        }));
-
-        drawerArray.add(new DrawerItem(this, R.string.menu_force_english, forceEnglish, new DrawerItem.IListener() {
-            @Override
-            public void onClick(DrawerItem item) {
-                boolean oldFlag = getIsForceEnglish();
-                boolean newFlag = item.isChecked();
-                setForceEnglish(newFlag);
-                drawerArray.notifyDataSetChanged();//fix context issues
-                if(oldFlag != forceEnglish) {
-                    recreate();
-                }
-            }
-        }));
-
-
         drawerArray.add(new DrawerItem(this, R.string.menu_settings, new DrawerItem.IListener() {
             @Override
             public void onClick(DrawerItem item) {
@@ -367,10 +346,27 @@ public class ActivityMain extends ActivityBase {
             }
         }));
 
+        drawerArray.add(new DrawerItem(this, R.string.menu_advanced_settings, new DrawerItem.IListener() {
+            @Override
+            public void onClick(DrawerItem item) {
+                startActivity(new Intent(ActivityMain.this, AdvancedSettingsActivity.class));
+            }
+        }));
+
 
         drawerList.setAdapter(drawerArray);
         //whatsNew
         initCore();
+    }
+
+    private void showModuleStatus() {
+        setContentView(R.layout.module_status_dialog);
+        TextView message = findViewById(R.id.tvMessage);
+        message.setText(R.string.module_status_unavailable);
+        findViewById(R.id.btnContinue).setOnClickListener(view -> {
+            continueWithoutModule = true;
+            recreate();
+        });
     }
 
     private boolean invokeNeedsRebootCheck() {
@@ -587,8 +583,8 @@ public class ActivityMain extends ActivityBase {
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout != null && drawerLayout.isDrawerOpen(drawerList))
-            drawerLayout.closeDrawer(drawerList);
+        if (drawerLayout != null && drawerContainer != null && drawerLayout.isDrawerOpen(drawerContainer))
+            drawerLayout.closeDrawer(drawerContainer);
         else
             finish();
     }

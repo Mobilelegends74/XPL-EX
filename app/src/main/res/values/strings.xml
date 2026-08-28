@@ -1129,4 +1129,46 @@
     </string-array>
 
     <string name="pro_fingerprint" translatable="false">1062ae961d78854f6c9cd872c4388232849c799</string>
+
+    <!-- XPL-EX 1.5.8 interface -->
+    <string name="menu_advanced_settings">Advanced Settings</string>
+    <string name="advanced_theming">THEMING</string>
+    <string name="advanced_theme">Theme</string>
+    <string name="advanced_theme_auto">Auto</string>
+    <string name="advanced_theme_light">Light</string>
+    <string name="advanced_theme_dark">Dark</string>
+    <string name="advanced_monet">Monet</string>
+    <string name="advanced_monet_summary">Use colors from your wallpaper on Android 12 and newer</string>
+    <string name="advanced_primary_color">Primary color</string>
+    <string name="advanced_interface">INTERFACE</string>
+    <string name="advanced_gray_system_apps">Gray System Apps</string>
+    <string name="advanced_gray_system_apps_summary">Show system apps with a neutral gray background</string>
+    <string name="advanced_snackbar_duration">Snackbar Duration</string>
+    <string name="advanced_snackbar_duration_summary">How long notifications remain visible</string>
+    <string name="advanced_force_english">Force English</string>
+    <string name="advanced_force_english_summary">Use English regardless of the system language</string>
+    <string name="advanced_hide_fab">Hide FAB on Scroll</string>
+    <string name="advanced_hide_fab_summary">Hide floating action buttons when scrolling down</string>
+    <string name="advanced_developer">DEVELOPER OPTIONS</string>
+    <string name="advanced_debug_logs">Debug Logs</string>
+    <string name="advanced_debug_logs_summary">Enable detailed logs for troubleshooting</string>
+    <string name="advanced_skip_warnings">Skip Warnings</string>
+    <string name="advanced_skip_warnings_summary">Do not show module status warnings at startup</string>
+    <string name="advanced_navigation">NAVIGATION</string>
+    <string name="advanced_transparent_navbar">Transparent Navigation Bar</string>
+    <string name="advanced_transparent_navbar_summary">Draw the application behind the navigation area</string>
+    <string name="advanced_experimental">EXPERIMENTAL</string>
+    <string name="advanced_custom_color">Custom Theme Color</string>
+    <string name="advanced_custom_color_summary">Override the main interface color</string>
+    <string name="advanced_custom_color_hint">#RRGGBB</string>
+    <string name="advanced_apply">Apply</string>
+    <string name="advanced_reset">Reset</string>
+    <string name="advanced_hide_experimental">Hide Experimental Section</string>
+    <string name="advanced_easter_unlocked">Experimental interface options unlocked</string>
+    <string name="advanced_setting_applied">Setting applied</string>
+    <string name="advanced_restart_applied">Setting applied. Reopening the screen…</string>
+    <string name="advanced_invalid_color">Enter a color in #RRGGBB format</string>
+    <string name="module_status_title">WARNING</string>
+    <string name="module_status_continue">Continue Anyway</string>
+    <string name="module_status_unavailable">The XPL-EX module is not active. Enable it in LSPosed and restart the device.</string>
 </resources>

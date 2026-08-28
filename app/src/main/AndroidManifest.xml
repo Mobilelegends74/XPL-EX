@@ -37,7 +37,7 @@
         <activity
             android:name=".ActivityMain"
             android:exported="true"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|uiMode"
             android:launchMode="singleTask"
             android:resizeableActivity="true">
             <intent-filter>
@@ -46,6 +46,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".x.ui.activities.AdvancedSettingsActivity"
+            android:configChanges="orientation|screenSize|uiMode"
+            android:exported="false"
+            android:label="@string/menu_advanced_settings"
+            android:parentActivityName=".ActivityMain" />
 
         <activity
             android:name=".ActivityHelp"

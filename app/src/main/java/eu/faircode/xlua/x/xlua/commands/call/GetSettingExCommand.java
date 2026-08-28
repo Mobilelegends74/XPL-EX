@@ -3,6 +3,7 @@ package eu.faircode.xlua.x.xlua.commands.call;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Process;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -78,7 +79,19 @@ public class GetSettingExCommand extends CallCommandHandlerEx {
 
     public static List<String> getCollections(Context context, int uid) { return Str.splitToList(get(context, SETTING_COLLECTION, uid, SettingPacket.GLOBAL_CATEGORY).value); }
 
-    public static String getTheme(Context context, int uid) { return SettingsApiUtils.ensureIsTheme(get(context, SETTING_THEME, uid, SettingPacket.GLOBAL_CATEGORY).value); }
+    public static String getTheme(Context context, int uid) {
+        String selected = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(SETTING_THEME, null);
+        if (selected != null)
+            return "system".equals(selected) ? selected : SettingsApiUtils.ensureIsTheme(selected);
+        return SettingsApiUtils.ensureIsTheme(
+                get(context, SETTING_THEME, uid, SettingPacket.GLOBAL_CATEGORY).value);
+    }
+
+    public static boolean isMonetEnabled(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("monet_enabled", false);
+    }
 
     public static boolean getBool(Context context, String settingName, int uid, String packageName) { return Str.toBool(get(context, settingName, uid, packageName).value); }
 

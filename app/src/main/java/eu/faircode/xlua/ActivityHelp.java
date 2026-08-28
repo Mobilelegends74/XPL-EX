@@ -36,12 +36,16 @@ public class ActivityHelp extends ActivityBase {
     private static final String TAG = "XLua.Help";
 
     @Override
+    protected boolean useCustomToolbar() {
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.help);
-
-        getSupportActionBar().setTitle(R.string.menu_help);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setupCustomToolbar(R.id.toolbar_help, R.id.app_bar_layout_help,
+                R.id.scroll_view_help, R.string.menu_help);
 
         TextView tvVersion = findViewById(R.id.tvVersion);
         TextView tvLicense = findViewById(R.id.tvLicense);

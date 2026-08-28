@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -383,12 +384,12 @@ public class SettingExFragment
                         if(ListUtil.isValid(activatedHookIds))
                             sharedRegistry.refreshAssignments(context, getUserContext());
                         if(ListUtil.isValid(succeeded) || ListUtil.isValid(failed))
-                            Snackbar.make(v,
+                            showConfiguredSnackbar(v,
                                     Str.fm(context.getString(R.string.result_settings_update),
                                             ListUtil.size(succeeded),
-                                            ListUtil.size(failed)), Snackbar.LENGTH_LONG).show();
+                                            ListUtil.size(failed)));
                         else {
-                            Snackbar.make(v, context.getString(R.string.result_settings_update_empty), Snackbar.LENGTH_LONG).show();
+                            showConfiguredSnackbar(v, context.getString(R.string.result_settings_update_empty));
                         }
                     });
                 }).start();
@@ -408,8 +409,7 @@ public class SettingExFragment
                 if (!Str.isEmpty(ctx.getDeviceProfileSummary()))
                     randomizeMessage += "\n" + ctx.getDeviceProfileSummary();
 
-                Snackbar.make(v, randomizeMessage, Snackbar.LENGTH_LONG)
-                        .show();
+                showConfiguredSnackbar(v, randomizeMessage);
                 break;
             case R.id.btAppIslandProfileDialog:
                 /*ProfileDialog.create()
@@ -588,10 +588,18 @@ public class SettingExFragment
     }
 
     public void handleCodeToSnack(A_CODE code, String extraIfSucceeded, View v) {
-        Snackbar.make(v,
+        showConfiguredSnackbar(v,
                 A_CODE.isSuccessful(code) ?
                         Str.combine(getString(R.string.msg_task_finished_command), TextUtils.isEmpty(extraIfSucceeded) ? "" :  " >> " + extraIfSucceeded) :
-                        Str.combine(getString(R.string.msg_task_failure), " >> " + code.name(), false) , Snackbar.LENGTH_LONG).show();
+                        Str.combine(getString(R.string.msg_task_failure), " >> " + code.name(), false));
+    }
+
+    private void showConfiguredSnackbar(View view, CharSequence message) {
+        int duration = PreferenceManager.getDefaultSharedPreferences(requireContext())
+                .getInt("snackbar_duration_ms", 2750);
+        Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT);
+        snackbar.setDuration(duration);
+        snackbar.show();
     }
 
     public Context tryGetContext() {

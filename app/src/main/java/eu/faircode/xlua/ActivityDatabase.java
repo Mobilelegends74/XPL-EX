@@ -21,10 +21,17 @@ public class ActivityDatabase extends ActivityBase {
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
+    protected boolean useCustomToolbar() {
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.dbview);
+        setupCustomToolbar(R.id.toolbar_database, R.id.app_bar_layout_database,
+                R.id.content_frame_db, 0);
 
         //Show Fragment
         FragmentManager fragmentManager = getSupportFragmentManager();

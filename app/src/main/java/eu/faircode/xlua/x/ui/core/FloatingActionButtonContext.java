@@ -27,6 +27,7 @@ public class FloatingActionButtonContext {
     private FloatingActionButton _mainActionButton;
     private boolean _isActionOpen = false;
     private boolean _isMainActionVisible = false;
+    private boolean _hideOnScroll = true;
     private final List<FloatingActionButton> _buttons = new ArrayList<>();
 
     public FloatingActionButton getMainActionButton() { return _mainActionButton;  }
@@ -93,7 +94,7 @@ public class FloatingActionButtonContext {
     }
 
     public void linkRecyclerViewToControlVisibility(final RecyclerView rv) {
-        if(rv != null && _mainActionButton != null) {
+        if(rv != null && _mainActionButton != null && _hideOnScroll) {
             try {
                 rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
                     @Override
@@ -116,6 +117,11 @@ public class FloatingActionButtonContext {
                 Log.e(TAG, "Failed to link Recycler View to Floating Action Buttons Visibility State when on Scroll. Error=" + e + " Stack=" + RuntimeUtils.getStackTraceSafeString(e));
             }
         }
+    }
+
+    public FloatingActionButtonContext setHideOnScroll(boolean hideOnScroll) {
+        _hideOnScroll = hideOnScroll;
+        return this;
     }
 
     protected void hideMainActionButton(boolean hide) {

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Android 12+ dynamic wallpaper colors, adapted from XPL-EX 1.5.8. -->
+    <style name="AppThemeLight.NoActionBar.Monet" parent="@style/AppThemeLight.NoActionBar">
+        <item name="android:colorBackground">@android:color/system_neutral1_50</item>
+        <item name="android:windowBackground">@android:color/system_neutral1_50</item>
+        <item name="android:textColorPrimary">@android:color/system_neutral1_900</item>
+        <item name="android:textColorSecondary">@android:color/system_neutral1_700</item>
+        <item name="colorPrimary">@android:color/system_accent1_600</item>
+        <item name="colorPrimaryDark">@android:color/system_accent1_700</item>
+        <item name="colorAccent">@android:color/system_accent2_600</item>
+        <item name="colorSecondary">@android:color/system_accent2_600</item>
+        <item name="colorOnSecondary">@android:color/system_accent2_0</item>
+        <item name="colorSurface">@android:color/system_neutral1_50</item>
+        <item name="colorSurfaceContainer">@android:color/system_neutral1_100</item>
+        <item name="colorSurfaceContainerHigh">@android:color/system_neutral1_200</item>
+        <item name="colorOnSurface">@android:color/system_neutral1_900</item>
+        <item name="colorOnSurfaceVariant">@android:color/system_neutral1_700</item>
+        <item name="colorOutline">@android:color/system_neutral1_500</item>
+        <item name="colorOutlineVariant">@android:color/system_neutral1_300</item>
+        <item name="colorDrawerBackground">@android:color/system_neutral1_50</item>
+        <item name="colorSystem">@color/lightColorSystemAlternative</item>
+        <item name="colorSettingSaved">@android:color/system_neutral1_100</item>
+        <item name="colorUnsavedSetting">@android:color/system_accent3_600</item>
+    </style>
+
+    <style name="AppThemeDark.NoActionBar.Monet" parent="@style/AppThemeDark.NoActionBar">
+        <item name="android:colorBackground">@android:color/system_neutral1_900</item>
+        <item name="android:windowBackground">@android:color/system_neutral1_900</item>
+        <item name="android:textColorPrimary">@android:color/system_neutral1_100</item>
+        <item name="android:textColorSecondary">@android:color/system_neutral1_300</item>
+        <item name="colorPrimary">@android:color/system_accent1_200</item>
+        <item name="colorPrimaryDark">@android:color/system_accent1_300</item>
+        <item name="colorAccent">@android:color/system_accent2_200</item>
+        <item name="colorSecondary">@android:color/system_accent2_200</item>
+        <item name="colorOnSecondary">@android:color/system_accent2_800</item>
+        <item name="colorSurface">@android:color/system_neutral1_800</item>
+        <item name="colorSurfaceContainer">@android:color/system_neutral1_800</item>
+        <item name="colorSurfaceContainerHigh">@android:color/system_neutral1_700</item>
+        <item name="colorOnSurface">@android:color/system_neutral1_100</item>
+        <item name="colorOnSurfaceVariant">@android:color/system_neutral1_300</item>
+        <item name="colorOutline">@android:color/system_neutral1_500</item>
+        <item name="colorOutlineVariant">@android:color/system_neutral1_700</item>
+        <item name="colorDrawerBackground">@android:color/system_neutral1_900</item>
+        <item name="colorSystem">@color/darkColorSystemAlternative</item>
+        <item name="colorSettingSaved">@android:color/system_accent1_800</item>
+        <item name="colorUnsavedSetting">@android:color/system_accent3_200</item>
+    </style>
+
+    <style name="AdvancedSettingsThemeLightMonet" parent="@style/AdvancedSettingsThemeLight">
+        <item name="android:colorBackground">@android:color/system_neutral1_50</item>
+        <item name="colorPrimary">@android:color/system_accent1_600</item>
+        <item name="colorSecondary">@android:color/system_accent2_600</item>
+        <item name="colorSurface">@android:color/system_neutral1_50</item>
+        <item name="colorSurfaceContainer">@android:color/system_neutral1_100</item>
+        <item name="colorSurfaceContainerHigh">@android:color/system_neutral1_200</item>
+        <item name="colorOnSurface">@android:color/system_neutral1_900</item>
+        <item name="colorOnSurfaceVariant">@android:color/system_neutral1_700</item>
+        <item name="colorOutline">@android:color/system_neutral1_500</item>
+        <item name="colorOutlineVariant">@android:color/system_neutral1_300</item>
+    </style>
+
+    <style name="AdvancedSettingsThemeDarkMonet" parent="@style/AdvancedSettingsThemeDark">
+        <item name="android:colorBackground">@android:color/system_neutral1_900</item>
+        <item name="colorPrimary">@android:color/system_accent1_200</item>
+        <item name="colorSecondary">@android:color/system_accent2_200</item>
+        <item name="colorSurface">@android:color/system_neutral1_800</item>
+        <item name="colorSurfaceContainer">@android:color/system_neutral1_800</item>
+        <item name="colorSurfaceContainerHigh">@android:color/system_neutral1_700</item>
+        <item name="colorOnSurface">@android:color/system_neutral1_100</item>
+        <item name="colorOnSurfaceVariant">@android:color/system_neutral1_300</item>
+        <item name="colorOutline">@android:color/system_neutral1_500</item>
+        <item name="colorOutlineVariant">@android:color/system_neutral1_700</item>
+    </style>
+</resources>
