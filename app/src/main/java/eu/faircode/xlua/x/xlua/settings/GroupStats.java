@@ -51,6 +51,21 @@ public class GroupStats {
         return this;
     }
 
+    /**
+     * The group-level action icon doubles as an unsaved warning and as the
+     * entry point for the Setting Values help text.
+     */
+    public GroupStats updateInfoIv(ImageView ivInfo) {
+        if(ivInfo != null) {
+            ivInfo.setVisibility(View.VISIBLE);
+            ivInfo.setImageResource(hasUnsaved()
+                    ? android.R.drawable.ic_dialog_alert
+                    : R.drawable.ic_finger_print18);
+        }
+
+        return this;
+    }
+
     public static boolean isSettingAndroid(String name) {
         if(Str.isEmpty(name))
             return false;

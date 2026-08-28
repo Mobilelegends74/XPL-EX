@@ -41,7 +41,9 @@ import eu.faircode.xlua.x.ui.core.view_registry.IStateChanged;
 import eu.faircode.xlua.x.ui.core.view_registry.SettingSharedRegistry;
 import eu.faircode.xlua.x.ui.core.view_registry.SharedRegistry;
 import eu.faircode.xlua.x.ui.dialogs.HooksDialog;
+import eu.faircode.xlua.x.ui.dialogs.HookInfoDialog;
 import eu.faircode.xlua.x.ui.dialogs.MessageDialog;
+import eu.faircode.xlua.x.ui.dialogs.SettingGroupInfo;
 import eu.faircode.xlua.x.ui.dialogs.SettingDeleteDialog;
 import eu.faircode.xlua.x.ui.dialogs.utils.DialogUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
@@ -423,11 +425,13 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                                 .setMessage(res.getString(R.string.message_warning_hooks_message))
                                 .show(manager.getFragmentMan(), res.getString(R.string.menu_info));
                     } else {
-                        MessageDialog.create()
+                        HookInfoDialog.create()
                                 .setIcon(R.drawable.ic_finger_print18)
-                                .setName(res.getString(R.string.message_unique_title))
-                                .setMessage(res.getString(R.string.message_unique_message))
-                                .show(manager.getFragmentMan(), res.getString(R.string.menu_info));
+                                .setHookGroupName(currentItem.getNameNice())
+                                .setHookGroupMessage(SettingGroupInfo.getMessage(
+                                        context,
+                                        currentItem.getGroup()))
+                                .show(manager.getFragmentMan(), "setting_container_info");
                     }
 
                     break;

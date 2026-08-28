@@ -37,7 +37,9 @@ import eu.faircode.xlua.x.ui.core.interfaces.IGenericElementEvent;
 import eu.faircode.xlua.x.ui.core.interfaces.IListAdapter;
 import eu.faircode.xlua.x.ui.core.interfaces.IStateManager;
 import eu.faircode.xlua.x.ui.core.util.CoreUiUtils;
+import eu.faircode.xlua.x.ui.dialogs.HookInfoDialog;
 import eu.faircode.xlua.x.ui.dialogs.MessageDialog;
+import eu.faircode.xlua.x.ui.dialogs.SettingGroupInfo;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.settings.GroupStats;
 import eu.faircode.xlua.x.xlua.settings.SettingHolder;
@@ -199,11 +201,21 @@ public class OptimizedSettingGroupAdapter
                     handleExpandClickForGroup(currentItem);
                     break;
                 case R.id.ivActionNeeded:
-                    MessageDialog.create()
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setName(context.getString(R.string.message_warning_hooks_title))
-                            .setMessage(context.getString(R.string.message_warning_hooks_message))
-                            .show(manager.getFragmentMan(), context.getString(R.string.menu_info));
+                    if(groupStats.hasUnsaved()) {
+                        MessageDialog.create()
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setName(context.getString(R.string.message_warning_hooks_title))
+                                .setMessage(context.getString(R.string.message_warning_hooks_message))
+                                .show(manager.getFragmentMan(), context.getString(R.string.menu_info));
+                    } else {
+                        HookInfoDialog.create()
+                                .setIcon(R.drawable.ic_finger_print18)
+                                .setHookGroupName(currentItem.getGroupName())
+                                .setHookGroupMessage(SettingGroupInfo.getMessage(
+                                        context,
+                                        currentItem.getGroupName()))
+                                .show(manager.getFragmentMan(), "setting_group_info");
+                    }
                     break;
             }
         }
@@ -217,7 +229,9 @@ public class OptimizedSettingGroupAdapter
                 int resId = 0;
                 switch (id) {
                     case R.id.ivActionNeeded:
-                        resId = R.string.msg_hint_warning_save;
+                        resId = groupStats.hasUnsaved()
+                                ? R.string.msg_hint_warning_save
+                                : R.string.description_ru_setting_group_info_hint;
                         break;
                     case R.id.tvStatsCount:
                         resId = R.string.msg_hint_settings_stat;
@@ -298,7 +312,7 @@ public class OptimizedSettingGroupAdapter
                         .updateLabel(binding.tvStatsCount)
                         .updateColor(binding.tvSettingGroupName, context,
                                 sharedRegistry.asSettingShared().hasAssignedHook(currentItem, context))
-                        .updateIv(binding.ivActionNeeded);
+                        .updateInfoIv(binding.ivActionNeeded);
             }
         }
 

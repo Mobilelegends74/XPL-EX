@@ -857,8 +857,8 @@
     <string name="message_warning_hooks_title" translatable="false">Warning!</string>
     <string name="message_warning_hooks_message" translatable="false">Warning! It seems a Setting in this Group and or Container is NOT saved! Ensure you save your modified Changes unless you wish to not save the new values or value!</string>
 
-    <string name="message_unique_title" translatable="false">Unique</string>
-    <string name="message_unique_message" translatable="false">This Setting is a Unique Setting meaning it is and or Can be used in part of trying to Identify as a User. Unlike the Other Settings like your F*cking Model Name, these are what actually used to ID you as a Person. These you should focus on Spoofing</string>
+    <string name="message_unique_title" translatable="false">Уникальные данные</string>
+    <string name="message_unique_message" translatable="false">Этот значок отмечает данные, по которым приложение может повторно узнать телефон или пользователя. В первую очередь обращайте внимание на Android ID, рекламные идентификаторы, серийные номера, UUID и другие постоянные значения.</string>
 
 
     <string name="msg_no_service">Module not running or updated</string>
