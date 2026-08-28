@@ -26,9 +26,7 @@ import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.kernel
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.kernel.RandomAndroidKernelVersion;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.apps.RandomAppCurrentFlag;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.apps.RandomAppTime;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.battery.RandomBatteryPercent;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.battery.RandomBatteryStatus;
-import eu.faircode.xlua.x.xlua.settings.random.randomizers.battery.RandomChargingCycles;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.battery.RandomBatteryProfile;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomMCC;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomMNC;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.cell.RandomMSIN;
@@ -323,6 +321,11 @@ public class RandomizersCache {
     // Hardware Memory Available
     public static final String SETTING_HARDWARE_MEMORY_AVAILABLE = "hardware.memory.available";
 
+    public static final String SETTING_DISPLAY_WIDTH = "display.width";
+    public static final String SETTING_DISPLAY_HEIGHT = "display.height";
+    public static final String SETTING_DISPLAY_DENSITY_DPI = "display.density.dpi";
+    public static final String SETTING_DISPLAY_REFRESH_RATE_HZ = "display.refresh.rate.hz";
+
 
 
     //SOC Info
@@ -456,18 +459,26 @@ public class RandomizersCache {
     public static final Class<?> SETTING_GENERIC_BOOL_TYPE = RandomGenericBool.class;
     //Delete this
     public static final String SETTING_BATTERY_IS_CHARGING = "battery.is.charging.bool";
+    public static final Class<?> SETTING_BATTERY_IS_CHARGING_TYPE = RandomBatteryProfile.class;
     public static final String SETTING_BATTERY_IS_POWER_SAVE_MODE = "battery.is.power.save.mode.bool";
 
     public static final String SETTING_BATTERY_CHARGING_CYCLES = "battery.charging.cycles";
-    public static final Class<?> SETTING_BATTERY_CHARGING_CYCLES_TYPE = RandomChargingCycles.class;
+    public static final Class<?> SETTING_BATTERY_CHARGING_CYCLES_TYPE = RandomBatteryProfile.class;
 
     public static final String SETTING_BATTERY_PERCENT = "battery.charge.percent";
-    public static final Class<?> SETTING_BATTERY_PERCENT_TYPE = RandomBatteryPercent.class;
+    public static final Class<?> SETTING_BATTERY_PERCENT_TYPE = RandomBatteryProfile.class;
 
     public static final String SETTING_BATTERY_STATUS = "battery.status";
-    public static final Class<?> SETTING_BATTERY_STATUS_TYPE = RandomBatteryStatus.class;
+    public static final Class<?> SETTING_BATTERY_STATUS_TYPE = RandomBatteryProfile.class;
 
     public static final String SETTING_BATTERY_IS_PLUGGED = "battery.is.plugged.in.bool";
+    public static final Class<?> SETTING_BATTERY_IS_PLUGGED_TYPE = RandomBatteryProfile.class;
+    public static final String SETTING_BATTERY_CAPACITY_MAH = "battery.capacity.mah";
+    public static final Class<?> SETTING_BATTERY_CAPACITY_MAH_TYPE = RandomBatteryProfile.class;
+    public static final String SETTING_BATTERY_VOLTAGE_MV = "battery.voltage.mv";
+    public static final Class<?> SETTING_BATTERY_VOLTAGE_MV_TYPE = RandomBatteryProfile.class;
+    public static final String SETTING_BATTERY_TEMPERATURE_TENTHS_C = "battery.temperature.tenths.celsius";
+    public static final Class<?> SETTING_BATTERY_TEMPERATURE_TENTHS_C_TYPE = RandomBatteryProfile.class;
 
     public static final String SETTING_UNIQUE_VB_META_DIGEST = "props.unique.vbmeta.digest";
     public static final Class<?> SETTING_UNIQUE_VB_META_DIGEST_TYPE = RandomVbmetaDigest.class;

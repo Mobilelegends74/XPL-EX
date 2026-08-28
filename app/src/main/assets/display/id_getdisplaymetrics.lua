@@ -6,7 +6,8 @@ function after(hook, param)
 
     local height = param:getSettingInt("display.height", 3100)
     local width = param:getSettingInt("display.width", 1400)
-    if height == nil or width == nil then
+    local densityDpi = param:getSettingInt("display.density.dpi", 560)
+    if height == nil or width == nil or densityDpi == nil then
         return false
     end
 
@@ -15,6 +16,9 @@ function after(hook, param)
 
     res.heightPixels = height
     res.widthPixels = width
+    res.densityDpi = densityDpi
+    res.density = densityDpi / 160.0
+    res.scaledDensity = densityDpi / 160.0
 
     param:setResult(res)
     return true, old, new

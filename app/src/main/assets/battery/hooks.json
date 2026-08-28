@@ -19,7 +19,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@spoof_battery_intent_parcel_one",
-    "settings": [ "battery.is.plugged.in.bool", "battery.is.charging.bool", "battery.status", "battery.charge.percent", "battery.charging.cycles"]
+    "settings": [ "battery.is.plugged.in.bool", "battery.is.charging.bool", "battery.status", "battery.charge.percent", "battery.charging.cycles", "battery.capacity.mah", "battery.voltage.mv", "battery.temperature.tenths.celsius"]
   },
   {
     "builtin": true,
@@ -61,7 +61,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@spoof_batterymanager_get",
-    "settings":["battery.charge.percent", "battery.status", "battery.is.charging.bool", "battery.charging.cycles"]
+    "settings":["battery.charge.percent", "battery.status", "battery.is.charging.bool", "battery.charging.cycles", "battery.capacity.mah", "battery.voltage.mv"]
   },
 
   {

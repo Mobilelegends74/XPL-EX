@@ -45,6 +45,24 @@ public final class DeviceProfileValidator {
             require(errors, prefix, "launchRelease", profile.launchRelease);
             require(errors, prefix, "source", profile.source);
 
+            DeviceCharacteristics characteristics = profile.characteristics;
+            if (characteristics == null) {
+                errors.add(prefix + ": model characteristics are missing");
+            } else {
+                if (characteristics.displayWidthPx < 720 || characteristics.displayHeightPx < 1280)
+                    errors.add(prefix + ": invalid display resolution");
+                if (characteristics.displayDensityDpi < 240 || characteristics.displayDensityDpi > 700)
+                    errors.add(prefix + ": invalid display density");
+                if (characteristics.displayRefreshRateHz < 60 || characteristics.displayRefreshRateHz > 240)
+                    errors.add(prefix + ": invalid display refresh rate");
+                if (characteristics.batteryCapacityMah < 3000 || characteristics.batteryCapacityMah > 10000)
+                    errors.add(prefix + ": invalid battery capacity");
+                if (characteristics.ramGb < 6 || characteristics.ramGb > 32)
+                    errors.add(prefix + ": invalid RAM size");
+                if (characteristics.cameraCount < 2 || characteristics.cameraCount > 8)
+                    errors.add(prefix + ": invalid camera count");
+            }
+
             if (profile.cpuCount < 1)
                 errors.add(prefix + ": invalid cpuCount");
             if (!AndroidRelease.matches(profile.launchRelease, profile.launchApiLevel))

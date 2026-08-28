@@ -847,6 +847,212 @@
       "builds": [
         { "release": "14", "apiLevel": 34, "fingerprint": "samsung/e3qxxx/e3q:14/UP1A.231005.007/S928BXXU1AXBA:user/release-keys" }
       ]
+    },
+    {
+      "id": "asus_zenfone_10", "manufacturer": "asus", "brand": "asus",
+      "marketingName": "Zenfone 10", "model": "ASUS_AI2302", "device": "ASUS_AI2302", "product": "WW_AI2302",
+      "hardware": "qcom", "board": "kalama", "socManufacturer": "Qualcomm", "socModel": "SM8550", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "13", "launchApiLevel": 33,
+      "source": "https://www.asus.com/mobile-handhelds/phones/zenfone/zenfone-10/techspec/",
+      "builds": [{ "release": "13", "apiLevel": 33, "fingerprint": "asus/WW_AI2302/ASUS_AI2302:13/TKQ1.220807.001/33.0220.0220.75:user/release-keys" }]
+    },
+    {
+      "id": "asus_rog_phone_7", "manufacturer": "asus", "brand": "asus",
+      "marketingName": "ROG Phone 7", "model": "ASUS_AI2205", "device": "ASUS_AI2205", "product": "WW_AI2205",
+      "hardware": "qcom", "board": "kalama", "socManufacturer": "Qualcomm", "socModel": "SM8550", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "13", "launchApiLevel": 33, "source": "https://rog.asus.com/phones/rog-phone-7/spec/",
+      "builds": [{ "release": "13", "apiLevel": 33, "fingerprint": "asus/WW_AI2205/ASUS_AI2205:13/TKQ1.220807.001/33.0820.0810.121:user/release-keys" }]
+    },
+    {
+      "id": "asus_rog_phone_8_pro", "manufacturer": "asus", "brand": "asus",
+      "marketingName": "ROG Phone 8 Pro", "model": "ASUS_AI2401_D", "device": "ASUS_AI2401_D", "product": "WW_AI2401_D",
+      "hardware": "qcom", "board": "pineapple", "socManufacturer": "Qualcomm", "socModel": "SM8650", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "14", "launchApiLevel": 34, "source": "https://rog.asus.com/phones/rog-phone-8-pro/spec/",
+      "builds": [{ "release": "14", "apiLevel": 34, "fingerprint": "asus/WW_AI2401_D/ASUS_AI2401_D:14/UKQ1.231003.002/34.1420.1420.387:user/release-keys" }]
+    },
+    {
+      "id": "asus_zenfone_11_ultra", "manufacturer": "asus", "brand": "asus",
+      "marketingName": "Zenfone 11 Ultra", "model": "ASUS_AI2401_H", "device": "ASUS_AI2401_H", "product": "WW_AI2401_H",
+      "hardware": "qcom", "board": "pineapple", "socManufacturer": "Qualcomm", "socModel": "SM8650", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "14", "launchApiLevel": 34, "source": "https://www.asus.com/mobile-handhelds/phones/zenfone/zenfone-11-ultra/techspec/",
+      "builds": [{ "release": "14", "apiLevel": 34, "fingerprint": "asus/WW_AI2401_H/ASUS_AI2401_H:14/UKQ1.231003.002/34.1420.1420.407:user/release-keys" }]
+    },
+    {
+      "id": "asus_rog_phone_9_pro", "manufacturer": "asus", "brand": "asus",
+      "marketingName": "ROG Phone 9 Pro", "model": "ASUS_AI2501_A", "device": "ASUS_AI2501_A", "product": "WW_AI2501_A",
+      "hardware": "qcom", "board": "sun", "socManufacturer": "Qualcomm", "socModel": "SM8750-AB", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "15", "launchApiLevel": 35, "source": "https://rog.asus.com/phones/rog-phone-9-pro/spec/",
+      "builds": [{ "release": "15", "apiLevel": 35, "fingerprint": "asus/WW_AI2501_A/ASUS_AI2501_A:15/AP3A.240905.015.A2/35.1810.1810.411:user/release-keys" }]
+    },
+    {
+      "id": "meizu_20", "manufacturer": "Meizu", "brand": "meizu",
+      "marketingName": "MEIZU 20", "model": "M381Q", "device": "meizu20", "product": "meizu_20_CN",
+      "hardware": "qcom", "board": "kalama", "socManufacturer": "Qualcomm", "socModel": "SM8550", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "13", "launchApiLevel": 33, "source": "https://www.meizu.com/20/spec",
+      "builds": [{ "release": "13", "apiLevel": 33, "fingerprint": "meizu/meizu_20_CN/meizu20:13/TKQ1.221114.001/1673355743:user/release-keys" }]
+    },
+    {
+      "id": "meizu_20_pro", "manufacturer": "Meizu", "brand": "meizu",
+      "marketingName": "MEIZU 20 Pro", "model": "M391Q", "device": "meizu20Pro", "product": "meizu_20Pro_CN",
+      "hardware": "qcom", "board": "kalama", "socManufacturer": "Qualcomm", "socModel": "SM8550", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "13", "launchApiLevel": 33, "source": "https://www.meizu.com/20pro/spec",
+      "builds": [{ "release": "13", "apiLevel": 33, "fingerprint": "meizu/meizu_20Pro_CN/meizu20Pro:13/TKQ1.221114.001/1679904000:user/release-keys" }]
+    },
+    {
+      "id": "meizu_20_infinity", "manufacturer": "Meizu", "brand": "meizu",
+      "marketingName": "MEIZU 20 Infinity", "model": "M392Q", "device": "meizu20Infinity", "product": "meizu_20_Infinity_CN",
+      "hardware": "qcom", "board": "kalama", "socManufacturer": "Qualcomm", "socModel": "SM8550-AB", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "13", "launchApiLevel": 33, "source": "https://www.meizu.com/20infinity/spec",
+      "builds": [{ "release": "13", "apiLevel": 33, "fingerprint": "meizu/meizu_20_Infinity_CN/meizu20Infinity:13/TKQ1.221114.001/1686528000:user/release-keys" }]
+    },
+    {
+      "id": "meizu_21", "manufacturer": "Meizu", "brand": "meizu",
+      "marketingName": "MEIZU 21", "model": "M461Q", "device": "meizu21", "product": "meizu_21_CN",
+      "hardware": "qcom", "board": "pineapple", "socManufacturer": "Qualcomm", "socModel": "SM8650", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "13", "launchApiLevel": 33, "source": "https://www.meizu.com/global/product/meizu-21/specs",
+      "builds": [{ "release": "13", "apiLevel": 33, "fingerprint": "meizu/meizu_21_CN/meizu21:13/TKQ1.221114.001/1701302400:user/release-keys" }]
+    },
+    {
+      "id": "meizu_21_pro", "manufacturer": "Meizu", "brand": "meizu",
+      "marketingName": "MEIZU 21 Pro", "model": "M481Q", "device": "meizu21Pro", "product": "meizu_21Pro_CN",
+      "hardware": "qcom", "board": "pineapple", "socManufacturer": "Qualcomm", "socModel": "SM8650", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "14", "launchApiLevel": 34, "source": "https://www.meizu.com/ae/product/meizu-21-pro/specs",
+      "builds": [{ "release": "14", "apiLevel": 34, "fingerprint": "meizu/meizu_21Pro_CN/meizu21Pro:14/UKQ1.230917.001/1709164800:user/release-keys" }]
+    },
+    {
+      "id": "vivo_x90_pro_plus", "manufacturer": "vivo", "brand": "vivo",
+      "marketingName": "vivo X90 Pro+", "model": "V2227A", "device": "PD2227", "product": "PD2227",
+      "hardware": "qcom", "board": "kalama", "socManufacturer": "Qualcomm", "socModel": "SM8550", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a,armeabi-v7a,armeabi", "abiList32": "armeabi-v7a,armeabi", "abiList64": "arm64-v8a",
+      "launchRelease": "13", "launchApiLevel": 33, "source": "https://www.vivo.com.cn/vivo/param/x90proplus",
+      "builds": [{ "release": "13", "apiLevel": 33, "fingerprint": "vivo/PD2227/PD2227:13/TP1A.220624.014/compiler02180032:user/release-keys" }]
+    },
+    {
+      "id": "vivo_x100_ultra", "manufacturer": "vivo", "brand": "vivo",
+      "marketingName": "vivo X100 Ultra", "model": "V2366GA", "device": "PD2366", "product": "PD2366",
+      "hardware": "qcom", "board": "pineapple", "socManufacturer": "Qualcomm", "socModel": "SM8650", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "14", "launchApiLevel": 34, "source": "https://www.vivo.com.cn/vivo/x100ultra/",
+      "builds": [{ "release": "14", "apiLevel": 34, "fingerprint": "vivo/PD2366/PD2366:14/UP1A.231005.007/compiler2405130000:user/release-keys" }]
+    },
+    {
+      "id": "vivo_x200_ultra", "manufacturer": "vivo", "brand": "vivo",
+      "marketingName": "vivo X200 Ultra", "model": "V2457A", "device": "PD2457", "product": "PD2457",
+      "hardware": "qcom", "board": "sun", "socManufacturer": "Qualcomm", "socModel": "SM8750-AB", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "15", "launchApiLevel": 35, "source": "https://www.vivo.com.cn/vivo/param/x200ultra",
+      "builds": [{ "release": "15", "apiLevel": 35, "fingerprint": "vivo/PD2457/PD2457:15/AP3A.240905.015.A2/compiler2504210000:user/release-keys" }]
+    },
+    {
+      "id": "iqoo_12_global", "manufacturer": "vivo", "brand": "vivo",
+      "marketingName": "iQOO 12", "model": "I2220", "device": "I2220", "product": "I2220",
+      "hardware": "qcom", "board": "pineapple", "socManufacturer": "Qualcomm", "socModel": "SM8650", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "14", "launchApiLevel": 34, "source": "https://shop.iqoo.com/in/product/2041",
+      "builds": [{ "release": "14", "apiLevel": 34, "fingerprint": "vivo/I2220/I2220:14/UP1A.231005.007/compiler12200000:user/release-keys" }]
+    },
+    {
+      "id": "iqoo_13_global", "manufacturer": "vivo", "brand": "vivo",
+      "marketingName": "iQOO 13", "model": "I2401", "device": "I2401", "product": "I2401",
+      "hardware": "qcom", "board": "sun", "socManufacturer": "Qualcomm", "socModel": "SM8750-AB", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "15", "launchApiLevel": 35, "source": "https://www.iqoo.com/en/products/param/iqoo-13",
+      "builds": [{ "release": "15", "apiLevel": 35, "fingerprint": "vivo/I2401/I2401:15/AP3A.240905.015.A2/compiler12030000:user/release-keys" }]
+    },
+    {
+      "id": "lenovo_legion_phone_duel", "manufacturer": "Lenovo", "brand": "Lenovo",
+      "marketingName": "Lenovo Legion Phone Duel", "model": "Lenovo L79031", "device": "moba", "product": "moba_row",
+      "hardware": "qcom", "board": "kona", "socManufacturer": "Qualcomm", "socModel": "SM8250-AB", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a,armeabi-v7a,armeabi", "abiList32": "armeabi-v7a,armeabi", "abiList64": "arm64-v8a",
+      "launchRelease": "10", "launchApiLevel": 29,
+      "source": "https://news.lenovo.com/wp-content/uploads/2020/07/Lenovo-Legion-Phone-Duel-Datasheet_final.pdf",
+      "builds": [{ "release": "10", "apiLevel": 29, "fingerprint": "Lenovo/moba_row/moba:10/QKQ1.200510.002/12.0.332_210202:user/release-keys" }]
+    },
+    {
+      "id": "lenovo_legion_phone_duel_2", "manufacturer": "Lenovo", "brand": "Lenovo",
+      "marketingName": "Lenovo Legion Phone Duel 2", "model": "Lenovo L70081", "device": "doom", "product": "doom",
+      "hardware": "qcom", "board": "lahaina", "socManufacturer": "Qualcomm", "socModel": "SM8350", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a,armeabi-v7a,armeabi", "abiList32": "armeabi-v7a,armeabi", "abiList64": "arm64-v8a",
+      "launchRelease": "11", "launchApiLevel": 30,
+      "source": "https://news.lenovo.com/pressroom/press-releases/next-mobile-gaming-powerhouse-lenovo-legion-phone-duel-2/",
+      "builds": [{ "release": "11", "apiLevel": 30, "fingerprint": "Lenovo/doom/doom:11/RKQ1.201112.002/12.5.591_210514:user/release-keys" }]
+    },
+    {
+      "id": "lenovo_legion_y90", "manufacturer": "Lenovo", "brand": "Lenovo",
+      "marketingName": "Lenovo Legion Y90", "model": "Lenovo L71061", "device": "diablo", "product": "diablo",
+      "hardware": "qcom", "board": "taro", "socManufacturer": "Qualcomm", "socModel": "SM8450", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a,armeabi-v7a,armeabi", "abiList32": "armeabi-v7a,armeabi", "abiList64": "arm64-v8a",
+      "launchRelease": "12", "launchApiLevel": 31,
+      "source": "https://4pda.to/forum/index.php?showtopic=1039953&st=2580",
+      "builds": [{ "release": "12", "apiLevel": 31, "fingerprint": "Lenovo/diablo/diablo:12/SKQ1.211113.001/13.5.711_220611:user/release-keys" }]
+    },
+    {
+      "id": "lenovo_legion_y70", "manufacturer": "Lenovo", "brand": "Lenovo",
+      "marketingName": "Lenovo Legion Y70", "model": "Lenovo L71091", "device": "halo", "product": "halo",
+      "hardware": "qcom", "board": "taro", "socManufacturer": "Qualcomm", "socModel": "SM8475", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a,armeabi-v7a,armeabi", "abiList32": "armeabi-v7a,armeabi", "abiList64": "arm64-v8a",
+      "launchRelease": "12", "launchApiLevel": 31,
+      "source": "https://t.me/s/mysticgsi?before=2416",
+      "builds": [{ "release": "12", "apiLevel": 31, "fingerprint": "Lenovo/halo/halo:12/SKQ1.220519.001/14.0.772_230301:user/release-keys" }]
+    },
+    {
+      "id": "lenovo_z6_pro", "manufacturer": "Lenovo", "brand": "Lenovo",
+      "marketingName": "Lenovo Z6 Pro", "model": "Lenovo L78051", "device": "zippo", "product": "zippo",
+      "hardware": "qcom", "board": "msmnile", "socManufacturer": "Qualcomm", "socModel": "SM8150", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a,armeabi-v7a,armeabi", "abiList32": "armeabi-v7a,armeabi", "abiList64": "arm64-v8a",
+      "launchRelease": "11", "launchApiLevel": 30,
+      "source": "https://gist.github.com/ThEMarD/7d54877e97d4b932f0906847bb141910",
+      "builds": [{ "release": "11", "apiLevel": 30, "fingerprint": "Lenovo/zippo/zippo:11/RKQ1.200928.002/12.5.365_210831:user/release-keys" }]
+    },
+    {
+      "id": "motorola_edge_40_pro", "manufacturer": "motorola", "brand": "motorola",
+      "marketingName": "motorola edge 40 pro", "model": "XT2301-4", "device": "rtwo", "product": "rtwo_g",
+      "hardware": "qcom", "board": "kalama", "socManufacturer": "Qualcomm", "socModel": "SM8550", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "13", "launchApiLevel": 33, "source": "https://en-us.support.motorola.com/app/answers/detail/a_id/175797/",
+      "builds": [{ "release": "13", "apiLevel": 33, "fingerprint": "motorola/rtwo_g/rtwo:13/T1TR33.43-20-15/a7538-6cf6e:user/release-keys" }]
+    },
+    {
+      "id": "motorola_edge_plus_2023", "manufacturer": "motorola", "brand": "motorola",
+      "marketingName": "motorola edge+ 2023", "model": "XT2301-1", "device": "rtwo", "product": "rtwo_na",
+      "hardware": "qcom", "board": "kalama", "socManufacturer": "Qualcomm", "socModel": "SM8550", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "13", "launchApiLevel": 33, "source": "https://en-us.support.motorola.com/app/answers/detail/a_id/175444/",
+      "builds": [{ "release": "13", "apiLevel": 33, "fingerprint": "motorola/rtwo_na/rtwo:13/T1TR33.43-48-35/4e8c1-6cf6e:user/release-keys" }]
+    },
+    {
+      "id": "motorola_moto_x40", "manufacturer": "motorola", "brand": "motorola",
+      "marketingName": "moto X40", "model": "XT2301-5", "device": "rtwo", "product": "rtwo_cn",
+      "hardware": "qcom", "board": "kalama", "socManufacturer": "Qualcomm", "socModel": "SM8550", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "13", "launchApiLevel": 33, "source": "https://github.com/LineageOS/android_device_motorola_rtwo",
+      "builds": [{ "release": "13", "apiLevel": 33, "fingerprint": "motorola/rtwo_cn/rtwo:13/T1TR33M.4-30-36/88571:user/release-keys" }]
+    },
+    {
+      "id": "motorola_razr_60_ultra", "manufacturer": "motorola", "brand": "motorola",
+      "marketingName": "motorola razr 60 ultra", "model": "XT2551-6", "device": "orion", "product": "orion_g",
+      "hardware": "qcom", "board": "sun", "socManufacturer": "Qualcomm", "socModel": "SM8750-AB", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "15", "launchApiLevel": 35, "source": "https://en-apac.support.motorola.com/app/answers/detail/a_id/187134/",
+      "builds": [{ "release": "15", "apiLevel": 35, "fingerprint": "motorola/orion_g/orion:15/V1VV35.3-12-4/ab12c:user/release-keys" }]
+    },
+    {
+      "id": "motorola_signature", "manufacturer": "motorola", "brand": "motorola",
+      "marketingName": "motorola signature", "model": "XT2603-2", "device": "vantage", "product": "vantage_g",
+      "hardware": "qcom", "board": "canoe", "socManufacturer": "Qualcomm", "socModel": "SM8845", "cpuCount": 8,
+      "cpuArchitecture": "aarch64", "abi": "arm64-v8a", "abiList": "arm64-v8a", "abiList32": "", "abiList64": "arm64-v8a",
+      "launchRelease": "16", "launchApiLevel": 36, "source": "https://en-us.support.motorola.com/app/answers/detail/a_id/191001",
+      "builds": [{ "release": "16", "apiLevel": 36, "fingerprint": "motorola/vantage_g/vantage:16/W2WV36.22/2a84e:user/release-keys" }]
     }
   ]
 }

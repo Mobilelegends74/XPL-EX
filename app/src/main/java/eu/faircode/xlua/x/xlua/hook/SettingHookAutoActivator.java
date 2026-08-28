@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import eu.faircode.xlua.DebugUtil;
@@ -39,6 +40,7 @@ public final class SettingHookAutoActivator {
         try {
             List<String> requiredHookIds = HooksSettingsGlobal.getHookIdsForSettingGroups(
                     context,
+                    app.appUid,
                     app.appPackageName,
                     changedSettingNames);
             if(!ListUtil.isValid(requiredHookIds))
@@ -55,6 +57,28 @@ public final class SettingHookAutoActivator {
             }
 
             List<String> missingHookIds = getMissingHookIds(requiredHookIds, assignedHookIds);
+            List<String> staleManufacturerHookIds = changesDeviceIdentity(changedSettingNames)
+                    ? HooksSettingsGlobal.getMismatchedManufacturerHookIds(
+                    context, app.appUid, app.appPackageName, assignedHookIds)
+                    : Collections.emptyList();
+
+            if(ListUtil.isValid(staleManufacturerHookIds)) {
+                A_CODE removeResult = AssignHooksCommand.call(
+                        context,
+                        AssignmentsPacket.create(
+                                app.appUid,
+                                app.appPackageName,
+                                staleManufacturerHookIds,
+                                true,
+                                false));
+                if(!A_CODE.isSuccessful(removeResult))
+                    Log.e(TAG, Str.fm(
+                            "Failed to remove mismatched manufacturer hooks for %s, hooks=[%s], result=%s",
+                            app.appPackageName,
+                            Str.joinList(staleManufacturerHookIds),
+                            removeResult));
+            }
+
             if(!ListUtil.isValid(missingHookIds))
                 return Collections.emptyList();
 
@@ -115,5 +139,15 @@ public final class SettingHookAutoActivator {
                 missing.add(hookId);
 
         return new ArrayList<>(missing);
+    }
+
+    static boolean changesDeviceIdentity(List<String> settingNames) {
+        if(!ListUtil.isValid(settingNames))
+            return false;
+        for(String settingName : settingNames)
+            if(!Str.isEmpty(settingName)
+                    && settingName.trim().toLowerCase(Locale.ROOT).startsWith("device."))
+                return true;
+        return false;
     }
 }

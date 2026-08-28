@@ -29,6 +29,7 @@ public final class DeviceProfile {
     public final String launchRelease;
     public final int launchApiLevel;
     public final String source;
+    public final DeviceCharacteristics characteristics;
     public final List<DeviceBuildProfile> builds;
 
     public DeviceProfile(String id, String manufacturer, String brand, String marketingName,
@@ -57,6 +58,7 @@ public final class DeviceProfile {
         this.launchRelease = launchRelease;
         this.launchApiLevel = launchApiLevel;
         this.source = source;
+        this.characteristics = DeviceCharacteristics.forProfile(id);
         this.builds = Collections.unmodifiableList(new ArrayList<>(builds));
     }
 

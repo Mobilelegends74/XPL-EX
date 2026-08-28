@@ -12,6 +12,7 @@ import java.util.Map;
 
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomDeviceProfile;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.battery.RandomBatteryProfile;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -35,7 +36,7 @@ public class DeviceProfileCatalogTest {
 
     @Test
     public void catalogContainsOnlyValidProfiles() {
-        assertEquals(33, profiles.size());
+        assertEquals(58, profiles.size());
         assertTrue(DeviceProfileValidator.validate(profiles).isEmpty());
     }
 
@@ -53,13 +54,19 @@ public class DeviceProfileCatalogTest {
         assertEquals(Integer.valueOf(5), counts.get("oneplus"));
         assertEquals(Integer.valueOf(5), counts.get("xiaomi"));
         assertEquals(Integer.valueOf(5), counts.get("poco"));
+        assertEquals(Integer.valueOf(5), counts.get("asus"));
+        assertEquals(Integer.valueOf(5), counts.get("meizu"));
+        assertEquals(Integer.valueOf(5), counts.get("vivo"));
+        assertEquals(Integer.valueOf(5), counts.get("lenovo"));
+        assertEquals(Integer.valueOf(5), counts.get("motorola"));
     }
 
     @Test
     public void requestedProfilesUseFlagshipClassQualcommPlatforms() {
         List<String> supportedPlatforms = Arrays.asList(
-                "SM8550", "SM8550-AC", "SM8650", "SM8650-AB",
-                "SM8735", "SM8750-AB", "SM8850-AC");
+                "SM8550", "SM8550-AB", "SM8550-AC", "SM8650", "SM8650-AB",
+                "SM8735", "SM8750-AB", "SM8845", "SM8850-AC",
+                "SM8150", "SM8250-AB", "SM8350", "SM8450", "SM8475");
 
         for (DeviceProfile profile : profiles) {
             String brand = DeviceProfileCatalog.selectionBrand(profile);
@@ -77,7 +84,7 @@ public class DeviceProfileCatalogTest {
         Map<String, Integer> counts = new HashMap<>();
         String previous = null;
 
-        for (int i = 0; i < 60; i++) {
+        for (int i = 0; i < 66; i++) {
             DeviceProfileSelection selection = DeviceProfileCatalog.selectBalanced(profiles);
             String brand = DeviceProfileCatalog.selectionBrand(selection.device);
             assertNotEquals("Brand repeated at selection " + i, previous, brand);
@@ -86,9 +93,9 @@ public class DeviceProfileCatalogTest {
             previous = brand;
         }
 
-        assertEquals(6, counts.size());
+        assertEquals(11, counts.size());
         for (Integer count : counts.values())
-            assertEquals(Integer.valueOf(10), count);
+            assertEquals(Integer.valueOf(6), count);
     }
 
     @Test
@@ -154,9 +161,61 @@ public class DeviceProfileCatalogTest {
                 assertEquals(build.fingerprint, values.get(RandomizersCache.SETTING_ANDROID_BUILD_FINGERPRINT));
                 assertEquals(build.buildType, values.get(RandomizersCache.SETTING_ANDROID_ETC_BUILD_ROM_VARIANT));
                 assertEquals("REL", values.get(RandomizersCache.SETTING_ANDROID_ETC_BUILD_ROM_VERSION_CODENAME));
+                assertEquals(String.valueOf(profile.characteristics.displayWidthPx),
+                        values.get(RandomizersCache.SETTING_DISPLAY_WIDTH));
+                assertEquals(String.valueOf(profile.characteristics.displayHeightPx),
+                        values.get(RandomizersCache.SETTING_DISPLAY_HEIGHT));
+                assertEquals(String.valueOf(profile.characteristics.displayRefreshRateHz),
+                        values.get(RandomizersCache.SETTING_DISPLAY_REFRESH_RATE_HZ));
+                assertEquals(String.valueOf(profile.characteristics.batteryCapacityMah),
+                        values.get(RandomizersCache.SETTING_BATTERY_CAPACITY_MAH));
+                assertEquals(String.valueOf(profile.characteristics.ramGb),
+                        values.get(RandomizersCache.SETTING_HARDWARE_MEMORY_TOTAL));
+                assertTrue(values.get(RandomizersCache.SETTING_SOC_GPU_OPEN_GLES_RENDERER)
+                        .startsWith("Adreno")
+                        || values.get(RandomizersCache.SETTING_SOC_GPU_OPEN_GLES_RENDERER)
+                        .startsWith("Mali")
+                        || values.get(RandomizersCache.SETTING_SOC_GPU_OPEN_GLES_RENDERER)
+                        .startsWith("Immortalis"));
+                assertEquals("OpenGL ES 3.2",
+                        values.get(RandomizersCache.SETTING_SOC_GPU_OPEN_GLES_VERSION));
+                assertFalse(values.get(RandomizersCache.SETTING_HARDWARE_CAMERA_APP).isEmpty());
                 assertTrue(build.fingerprint.contains("/" + profile.product + "/" + profile.device + ":"));
+
+                int percent = Integer.parseInt(values.get(RandomizersCache.SETTING_BATTERY_PERCENT));
+                int voltage = Integer.parseInt(values.get(RandomizersCache.SETTING_BATTERY_VOLTAGE_MV));
+                int totalRam = Integer.parseInt(values.get(RandomizersCache.SETTING_HARDWARE_MEMORY_TOTAL));
+                int availableRam = Integer.parseInt(values.get(RandomizersCache.SETTING_HARDWARE_MEMORY_AVAILABLE));
+                boolean charging = Boolean.parseBoolean(values.get(RandomizersCache.SETTING_BATTERY_IS_CHARGING));
+                boolean plugged = Boolean.parseBoolean(values.get(RandomizersCache.SETTING_BATTERY_IS_PLUGGED));
+                assertTrue(percent >= 25 && percent < 95);
+                assertTrue(voltage >= 3300 && voltage <= 4350);
+                assertEquals(charging, plugged);
+                assertTrue(availableRam > 0 && availableRam < totalRam);
             }
         }
+    }
+
+    @Test
+    public void newRequestedBrandsUseRealModelCharacteristics() {
+        for (String id : Arrays.asList(
+                "asus_zenfone_10", "meizu_21_pro", "vivo_x200_ultra",
+                "lenovo_legion_y90", "motorola_signature")) {
+            DeviceProfile profile = find(id);
+            assertNotNull(profile.characteristics);
+            assertTrue(profile.characteristics.displayWidthPx >= 1080);
+            assertTrue(profile.characteristics.displayHeightPx > profile.characteristics.displayWidthPx);
+            assertTrue(profile.characteristics.batteryCapacityMah >= 4300);
+            assertTrue(profile.characteristics.ramGb >= 8);
+        }
+    }
+
+    @Test
+    public void batteryRandomizationUsesOneCoherentProfile() {
+        assertEquals(RandomBatteryProfile.class, RandomizersCache.SETTING_BATTERY_PERCENT_TYPE);
+        assertEquals(RandomBatteryProfile.class, RandomizersCache.SETTING_BATTERY_STATUS_TYPE);
+        assertEquals(RandomBatteryProfile.class, RandomizersCache.SETTING_BATTERY_IS_CHARGING_TYPE);
+        assertEquals(RandomBatteryProfile.class, RandomizersCache.SETTING_BATTERY_CAPACITY_MAH_TYPE);
     }
 
     @Test

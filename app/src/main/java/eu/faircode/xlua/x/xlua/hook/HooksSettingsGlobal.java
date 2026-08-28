@@ -1,6 +1,7 @@
 package eu.faircode.xlua.x.xlua.hook;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Process;
 import android.util.Log;
 
@@ -33,6 +34,7 @@ import eu.faircode.xlua.x.xlua.settings.SettingReMappedItem;
 import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
 import eu.faircode.xlua.x.xlua.settings.data.SettingPacket;
 import eu.faircode.xlua.x.xlua.settings.interfaces.NameInformationTypeBase;
+import eu.faircode.xlua.ui.UniversalGamingSpoof;
 
 public class HooksSettingsGlobal {
     private static final String TAG = LibUtil.generateTag(HooksSettingsGlobal.class);
@@ -111,6 +113,7 @@ public class HooksSettingsGlobal {
      */
     public static List<String> getHookIdsForSettingGroups(
             Context context,
+            int uid,
             String packageName,
             List<String> settingNames) {
         init(context);
@@ -122,10 +125,15 @@ public class HooksSettingsGlobal {
 
         List<String> activeCollections = getCollections(context);
         List<String> hookIds = new ArrayList<>();
+        String[] deviceIdentity = getDeviceIdentity(context, uid, packageName);
         for(XHook hook : hooksById.values()) {
             if(hook == null || Str.isEmpty(hook.group) ||
                     !requiredGroups.contains(hook.group) ||
                     !hook.isAvailable(packageName, activeCollections))
+                continue;
+            if(UniversalGamingSpoof.isManufacturerGroup(hook.group)
+                    && !UniversalGamingSpoof.includesGroup(
+                    hook.group, deviceIdentity[0], deviceIdentity[1]))
                 continue;
 
             String hookId = hook.getObjectId();
@@ -142,6 +150,41 @@ public class HooksSettingsGlobal {
                     packageName));
 
         return hookIds;
+    }
+
+    public static List<String> getMismatchedManufacturerHookIds(
+            Context context,
+            int uid,
+            String packageName,
+            List<String> assignedHookIds) {
+        init(context);
+        if(!ListUtil.isValid(assignedHookIds))
+            return ListUtil.emptyList();
+
+        String[] deviceIdentity = getDeviceIdentity(context, uid, packageName);
+        List<String> staleHookIds = new ArrayList<>();
+        for(String hookId : assignedHookIds) {
+            XHook hook = hooksById.get(hookId);
+            if(hook != null
+                    && UniversalGamingSpoof.isManufacturerGroup(hook.group)
+                    && !UniversalGamingSpoof.includesGroup(
+                    hook.group, deviceIdentity[0], deviceIdentity[1]))
+                staleHookIds.add(hookId);
+        }
+        return staleHookIds;
+    }
+
+    private static String[] getDeviceIdentity(Context context, int uid, String packageName) {
+        SettingPacket brand = GetSettingExCommand.get(context, "device.brand", uid, packageName);
+        SettingPacket manufacturer = GetSettingExCommand.get(
+                context, "device.manufacturer", uid, packageName);
+        String brandValue = brand == null ? null : brand.value;
+        String manufacturerValue = manufacturer == null ? null : manufacturer.value;
+        if(Str.isEmpty(brandValue))
+            brandValue = Build.BRAND;
+        if(Str.isEmpty(manufacturerValue))
+            manufacturerValue = Build.MANUFACTURER;
+        return new String[] { brandValue, manufacturerValue };
     }
 
     static List<String> getVisibleGroupsForSettings(List<String> settingNames) {

@@ -32,7 +32,30 @@ public class RandomDeviceProfile extends RandomElement {
             RandomizersCache.SETTING_SOC_CPU_ABI,
             RandomizersCache.SETTING_SOC_CPU_ABI_LIST,
             RandomizersCache.SETTING_SOC_CPU_ABI_LIST_32,
-            RandomizersCache.SETTING_SOC_CPU_ABI_LIST_64
+            RandomizersCache.SETTING_SOC_CPU_ABI_LIST_64,
+            RandomizersCache.SETTING_SOC_GPU_EGL_IMPLEMENTOR,
+            RandomizersCache.SETTING_SOC_GPU_VULKAN_IMPLEMENTOR,
+            RandomizersCache.SETTING_SOC_GPU_OPEN_GLES_VERSION_ENCODED,
+            RandomizersCache.SETTING_SOC_GPU_OPEN_GLES_VENDOR,
+            RandomizersCache.SETTING_SOC_GPU_OPEN_GLES_RENDERER,
+            RandomizersCache.SETTING_SOC_GPU_OPEN_GLES_VERSION,
+            RandomizersCache.SETTING_DISPLAY_WIDTH,
+            RandomizersCache.SETTING_DISPLAY_HEIGHT,
+            RandomizersCache.SETTING_DISPLAY_DENSITY_DPI,
+            RandomizersCache.SETTING_DISPLAY_REFRESH_RATE_HZ,
+            RandomizersCache.SETTING_BATTERY_CAPACITY_MAH,
+            RandomizersCache.SETTING_BATTERY_PERCENT,
+            RandomizersCache.SETTING_BATTERY_STATUS,
+            RandomizersCache.SETTING_BATTERY_IS_CHARGING,
+            RandomizersCache.SETTING_BATTERY_IS_PLUGGED,
+            RandomizersCache.SETTING_BATTERY_CHARGING_CYCLES,
+            RandomizersCache.SETTING_BATTERY_VOLTAGE_MV,
+            RandomizersCache.SETTING_BATTERY_TEMPERATURE_TENTHS_C,
+            RandomizersCache.SETTING_HARDWARE_MEMORY_TOTAL,
+            RandomizersCache.SETTING_HARDWARE_MEMORY_AVAILABLE,
+            RandomizersCache.SETTING_HARDWARE_CAMERA_COUNT,
+            RandomizersCache.SETTING_HARDWARE_CAMERA_APP,
+            RandomizersCache.SETTING_HARDWARE_GPS_MODEL_YEAR
     };
 
     public RandomDeviceProfile() {

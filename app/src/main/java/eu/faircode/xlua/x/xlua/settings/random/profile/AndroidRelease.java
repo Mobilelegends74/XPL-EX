@@ -9,6 +9,9 @@ public final class AndroidRelease {
 
     static {
         Map<String, Integer> values = new LinkedHashMap<>();
+        values.put("9", 28);
+        values.put("10", 29);
+        values.put("11", 30);
         values.put("12", 31);
         values.put("12L", 32);
         values.put("13", 33);

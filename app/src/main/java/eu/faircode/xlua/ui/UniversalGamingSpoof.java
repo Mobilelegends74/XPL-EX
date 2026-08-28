@@ -41,6 +41,19 @@ public final class UniversalGamingSpoof {
             "user.creation.time"
     ));
 
+    /*
+     * Only hardware hooks backed by the selected real-device profile belong in the master
+     * switch.  Hardware.Spoof.CPU depends on a separately selected /proc/cpuinfo map and
+     * Hardware.Spoof.GPS.Model needs a vendor-specific GNSS string which is not published for
+     * every model.  Enabling those blindly would create a mixed, detectable identity.
+     */
+    private static final Set<String> PROFILE_BACKED_HARDWARE_GROUPS = new HashSet<>(Arrays.asList(
+            "hardware.spoof.cpu.ex",
+            "hardware.spoof.gpu",
+            "hardware.spoof.camera.count",
+            "hardware.spoof.memory"
+    ));
+
     private UniversalGamingSpoof() { }
 
     public static boolean isVirtualGroup(String groupName) {
@@ -54,7 +67,52 @@ public final class UniversalGamingSpoof {
         String normalized = groupName.trim().toLowerCase(Locale.ROOT);
         return normalized.startsWith("apps.spoof.")
                 || normalized.startsWith("device.id.")
-                || normalized.startsWith("hardware.spoof.")
+                || PROFILE_BACKED_HARDWARE_GROUPS.contains(normalized)
                 || INCLUDED_GROUPS.contains(normalized);
+    }
+
+    public static boolean includesGroup(String groupName, String brand, String manufacturer) {
+        if (groupName == null)
+            return false;
+
+        String normalized = groupName.trim().toLowerCase(Locale.ROOT);
+        if (!isManufacturerGroup(normalized))
+            return includesGroup(groupName);
+
+        String expected = manufacturerGroupFor(brand, manufacturer);
+        return expected != null && expected.equalsIgnoreCase(groupName);
+    }
+
+    public static boolean isManufacturerGroup(String groupName) {
+        return groupName != null
+                && groupName.trim().toLowerCase(Locale.ROOT).startsWith("device.id.");
+    }
+
+    public static String manufacturerGroupFor(String brand, String manufacturer) {
+        String identity = ((brand == null ? "" : brand) + " "
+                + (manufacturer == null ? "" : manufacturer)).toLowerCase(Locale.ROOT);
+
+        if (containsAny(identity, "lenovo"))
+            return "Device.ID.Lenovo";
+        if (containsAny(identity, "asus"))
+            return "Device.ID.Asus";
+        if (containsAny(identity, "meizu"))
+            return "Device.ID.Meizu";
+        if (containsAny(identity, "vivo", "iqoo"))
+            return "Device.ID.Vivo";
+        if (containsAny(identity, "oneplus"))
+            return "Device.ID.OnePlus";
+        if (containsAny(identity, "samsung"))
+            return "Device.ID.Samsung";
+        if (containsAny(identity, "xiaomi", "redmi", "poco"))
+            return "Device.ID.Xiaomi";
+        return null;
+    }
+
+    private static boolean containsAny(String value, String... candidates) {
+        for (String candidate : candidates)
+            if (value.contains(candidate))
+                return true;
+        return false;
     }
 }

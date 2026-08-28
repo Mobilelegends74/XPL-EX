@@ -26,6 +26,7 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Handler;
+import android.os.Build;
 import android.os.Looper;
 import android.os.Process;
 import android.preference.PreferenceManager;
@@ -67,6 +68,8 @@ import eu.faircode.xlua.api.hook.assignment.LuaAssignmentPacket;
 import eu.faircode.xlua.logger.XLog;
 import eu.faircode.xlua.ui.GroupHelper;
 import eu.faircode.xlua.ui.UniversalGamingSpoof;
+import eu.faircode.xlua.x.xlua.commands.call.GetSettingExCommand;
+import eu.faircode.xlua.x.xlua.settings.data.SettingPacket;
 import eu.faircode.xlua.ui.interfaces.ILoader;
 import eu.faircode.xlua.utilities.ViewUtil;
 import eu.faircode.xlua.x.Str;
@@ -370,29 +373,63 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
         private void updateAssignments(final Context context, final AppXpPacket app, String groupName, final boolean assign) {
             final String pkgName = app.packageName;
             Log.i(TAG, pkgName + " " + groupName + "=" + assign);
-            final ArrayList<String> hookIds = new ArrayList<>();
+            final ArrayList<String> assignIds = new ArrayList<>();
+            final ArrayList<String> removeIds = new ArrayList<>();
             final boolean isUniversalGamingSpoof = UniversalGamingSpoof.isVirtualGroup(groupName);
+            String deviceBrand = null;
+            String deviceManufacturer = null;
+            if (isUniversalGamingSpoof && assign) {
+                SettingPacket brand = GetSettingExCommand.get(context, "device.brand", app.uid, pkgName);
+                SettingPacket manufacturer = GetSettingExCommand.get(
+                        context, "device.manufacturer", app.uid, pkgName);
+                deviceBrand = brand == null ? null : brand.value;
+                deviceManufacturer = manufacturer == null ? null : manufacturer.value;
+                if (Str.isEmpty(deviceBrand))
+                    deviceBrand = Build.BRAND;
+                if (Str.isEmpty(deviceManufacturer))
+                    deviceManufacturer = Build.MANUFACTURER;
+            }
+
             for (XHook hook : hooks) {
+                boolean isAvailable = hook.isAvailable(pkgName, collection);
+                AssignmentPacket assignment = AssignmentPacket.create(hook);
+                boolean isAlreadyAssigned = app.hasAssignment(assignment);
+
+                if (isUniversalGamingSpoof && assign && isAvailable
+                        && UniversalGamingSpoof.isManufacturerGroup(hook.group)
+                        && !UniversalGamingSpoof.includesGroup(hook.group, deviceBrand, deviceManufacturer)) {
+                    if (isAlreadyAssigned) {
+                        removeIds.add(hook.getObjectId());
+                        app.removeAssignment(assignment);
+                    }
+                    continue;
+                }
+
                 boolean matchesGroup = groupName == null
                         || groupName.equals(hook.group)
-                        || (isUniversalGamingSpoof && UniversalGamingSpoof.includesGroup(hook.group));
-                if (hook.isAvailable(pkgName, collection) && matchesGroup) {
-                    AssignmentPacket assignment = AssignmentPacket.create(hook);
-                    boolean isAlreadyAssigned = app.hasAssignment(assignment);
+                        || (isUniversalGamingSpoof && (assign
+                        ? UniversalGamingSpoof.includesGroup(hook.group, deviceBrand, deviceManufacturer)
+                        : UniversalGamingSpoof.includesGroup(hook.group)));
+                if (isAvailable && matchesGroup) {
                     if (assign && !isAlreadyAssigned) {
-                        hookIds.add(hook.getObjectId());
+                        assignIds.add(hook.getObjectId());
                         app.addAssignment(assignment);
                     } else if (!assign && isAlreadyAssigned) {
-                        hookIds.add(hook.getObjectId());
+                        removeIds.add(hook.getObjectId());
                         app.removeAssignment(assignment);
                     }
                 }
             }
 
-            if (!hookIds.isEmpty()) {
-                executor.submit(() ->
-                        AssignHooksCommand.call(context, AssignmentsPacket.create(app.uid, app.packageName, hookIds, !assign, app.forceStop)));
-            }
+            if (!assignIds.isEmpty() || !removeIds.isEmpty())
+                executor.submit(() -> {
+                    if (!removeIds.isEmpty())
+                        AssignHooksCommand.call(context, AssignmentsPacket.create(
+                                app.uid, app.packageName, removeIds, true, assignIds.isEmpty() && app.forceStop));
+                    if (!assignIds.isEmpty())
+                        AssignHooksCommand.call(context, AssignmentsPacket.create(
+                                app.uid, app.packageName, assignIds, false, app.forceStop));
+                });
         }
 
         void updateExpand() {

@@ -213,6 +213,8 @@
     <!-- Display, Bluetooth, battery and clipboard -->
     <string name="description_ru_setting_value_display_height" translatable="false">Высота экрана в пикселях. Она должна соответствовать реальному разрешению выбранной модели и быть больше ширины в портретном режиме.</string>
     <string name="description_ru_setting_value_display_width" translatable="false">Ширина экрана в пикселях. Используйте разрешение реально существующей версии выбранного телефона.</string>
+    <string name="description_ru_setting_value_display_density_dpi" translatable="false">Логическая плотность экрана Android. Она влияет на размер элементов интерфейса и должна соответствовать разрешению выбранной модели.</string>
+    <string name="description_ru_setting_value_display_refresh_rate_hz" translatable="false">Частота обновления экрана в герцах. Значение берётся из реально поддерживаемого режима выбранной модели.</string>
     <string name="description_ru_setting_value_bluetooth_state" translatable="false">Числовое состояние Bluetooth-адаптера, например включён или выключен. Оно не переключает настоящий Bluetooth телефона.</string>
     <string name="description_ru_setting_value_bluetooth_allow_discovery_bool" translatable="false">Разрешает выбранному приложению запускать поиск и обнаружение Bluetooth-устройств. Выключение может нарушить подключение аксессуаров.</string>
     <string name="description_ru_setting_value_bluetooth_allowed_bonded_list" translatable="false">Список ранее сопряжённых Bluetooth-устройств, которые разрешено видеть приложению. Можно указывать имена или MAC-адреса.</string>
@@ -222,6 +224,9 @@
     <string name="description_ru_setting_value_battery_status" translatable="false">Состояние аккумулятора: зарядка, разрядка, полный заряд или другое. Оно должно совпадать с параметрами Is Charging и Is Plugged In.</string>
     <string name="description_ru_setting_value_battery_charge_percent" translatable="false">Уровень заряда батареи в процентах от 0 до 100. Неправильное значение может повлиять на поведение приложения при низком заряде.</string>
     <string name="description_ru_setting_value_battery_charging_cycles" translatable="false">Количество полных циклов зарядки аккумулятора. Обычно оно растёт со временем и не должно выглядеть невозможным для возраста телефона.</string>
+    <string name="description_ru_setting_value_battery_capacity_mah" translatable="false">Заводская ёмкость аккумулятора выбранной модели в мА·ч. По ней рассчитывается оставшийся заряд.</string>
+    <string name="description_ru_setting_value_battery_voltage_mv" translatable="false">Текущее напряжение аккумулятора в милливольтах. Оно автоматически согласуется с процентом заряда.</string>
+    <string name="description_ru_setting_value_battery_temperature_tenths_celsius" translatable="false">Температура аккумулятора в десятых долях градуса: 270 означает 27 °C.</string>
     <string name="description_ru_setting_value_clipboard_label" translatable="false">Служебная метка содержимого буфера обмена. Большинство приложений важнее само Contents, но некоторые проверяют и эту метку.</string>
     <string name="description_ru_setting_value_clipboard_contents" translatable="false">Текст, который выбранное приложение получит при чтении буфера обмена вместо настоящих скопированных данных.</string>
 

@@ -94,7 +94,9 @@ public final class DeviceProfileCatalog {
 
     static String selectionBrand(DeviceProfile profile) {
         String brand = profile.brand.toLowerCase(Locale.ROOT);
-        return "redmagic".equals(brand) ? "nubia" : brand;
+        if ("redmagic".equals(brand))
+            return "nubia";
+        return brand;
     }
 
     static void resetSelectionForTests() {

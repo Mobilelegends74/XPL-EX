@@ -144,13 +144,13 @@
   { "name": "hardware.nfc.controller.interface", "description": "NFC Controller Interface", "defaultValue": "nqx.default" },
   { "name": "hardware.fp.sensor", "description": "Fingerprint Sensor Short Name", "defaultValue": "gdx" },
   { "name": "hardware.fp.sensor.name", "description": "Fingerprint Sensor Name","defaultValue": "goodix" },
-  { "name": "hardware.gps.model.name", "description": "Returns the model nam(e including vendor and hardware/software version)", "defaultValue": "dunno" },
+  { "name": "hardware.gps.model.name", "description": "Returns the model name including vendor and hardware/software version", "defaultValue": "" },
   { "name": "hardware.gps.model.year", "description": "Returns the Year of the GPS Model", "defaultValue": "2018" },
-  { "name": "hardware.camera.count", "description": "Amount of Cameras", "defaultValue": "0" },
-  { "name": "hardware.camera.app", "description": "Package Name for Camera APP", "defaultValue": "com.oneplus.camera" },
+  { "name": "hardware.camera.count", "description": "Amount of Cameras", "defaultValue": "4" },
+  { "name": "hardware.camera.app", "description": "Package Name for Camera APP", "defaultValue": "com.android.camera" },
   //HARDWARE Memory
-  { "name": "hardware.memory.total", "description": "Total amount of Memory on the Device", "defaultValue": "900" }, //memory.total
-  { "name": "hardware.memory.available", "description": "Available amount of Memory on the Device", "defaultValue": "500" }, //memory.available
+  { "name": "hardware.memory.total", "description": "Total amount of RAM on the device in GB", "defaultValue": "12" }, //memory.total
+  { "name": "hardware.memory.available", "description": "Available RAM on the device in GB", "defaultValue": "7" }, //memory.available
 
 
   //SOC
@@ -171,12 +171,12 @@
   { "name": "soc.cpu.info.dump", "description": "/proc/cpuinfo contents, all in here please ensure its proper format with tabs for each column", "defaultValue": "" },
 
   //SOC GPU
-  { "name": "soc.gpu.egl.implementor",  "description": "Graphics OpenGl Driver Implementor most common being [adreno]", "defaultValue": "adreno" }, //gpu.egl.code.name
-  { "name": "soc.gpu.vulkan.implementor",  "description": "Graphics Vulcan Driver Implementor most common being [adreno]", "defaultValue": "adreno" },
-  { "name": "soc.gpu.open.gles.version.encoded",  "description": "GPU OpenGLS Version Number", "defaultValue": "19660" }, //gpu.opengls.version
-  { "name": "soc.gpu.open.gles.vendor",  "description": "Vendor for the GLS chip", "defaultValue": "private" }, //gpu.gl.vendor
-  { "name": "soc.gpu.open.gles.renderer",  "description": "Renderer Name of the GLS", "defaultValue": "god" }, //gpu.gl.renderer
-  { "name": "soc.gpu.open.gles.version",  "description": "GL Version String (not just a number) OpenGL ES V@-530.50 (GIT@af2a560751...)", "defaultValue": "OpenGL ES V@-530.50 (GIT@af2a560751...)" }, //gpu.gl.renderer
+  { "name": "soc.gpu.egl.implementor",  "description": "Graphics OpenGL driver implementor", "defaultValue": "Qualcomm" }, //gpu.egl.code.name
+  { "name": "soc.gpu.vulkan.implementor",  "description": "Graphics Vulkan driver implementor", "defaultValue": "Qualcomm" },
+  { "name": "soc.gpu.open.gles.version.encoded",  "description": "GPU OpenGL ES version number", "defaultValue": "196610" }, //gpu.opengls.version
+  { "name": "soc.gpu.open.gles.vendor",  "description": "Vendor for the OpenGL ES chip", "defaultValue": "Qualcomm" }, //gpu.gl.vendor
+  { "name": "soc.gpu.open.gles.renderer",  "description": "OpenGL ES renderer name", "defaultValue": "Adreno 640" }, //gpu.gl.renderer
+  { "name": "soc.gpu.open.gles.version",  "description": "OpenGL ES version string", "defaultValue": "OpenGL ES 3.2" }, //gpu.gl.renderer
   { "name": "soc.gpu.gfx.driver.name.[1,2]",  "description": "Package Name to the GFX Driver, examples: [com.xiaomi.ugd] or [com.qualcomm.qti.gpudrivers.kalama.api33] or [com.qualcomm.qti.gpudrivers.msmnileapi30] or [com.samsung.gpudriver.N9Adreno630_90]", "defaultValue": "com.xiaomi.ugd" },
 
   //SOC BASEBAND (Cell Connection connector band/device)
@@ -355,6 +355,8 @@
   //DISPLAY
   { "name": "display.height", "description": "Height of Display Pixels", "defaultValue": "3100" }, //display.height
   { "name": "display.width", "description": "Width of Display Pixels", "defaultValue": "1400" },   //display.width
+  { "name": "display.density.dpi", "description": "Android logical display density in DPI", "defaultValue": "560" },
+  { "name": "display.refresh.rate.hz", "description": "Display refresh rate in Hz", "defaultValue": "120" },
 
   //BLUETOOTH
   { "name": "bluetooth.state", "description": "Is Bluetooth On Disabled ??", "defaultValue": "10" },
@@ -372,11 +374,14 @@
   //{ "name": "battery.percentage.left", "description": "Battery Percentage Level", "defaultValue": "100" },
   //{ "name": "battery.is.power.save.mode.bool", "description": "Is Battery in Power Save Mode", "defaultValue": "true" },
 
-  { "name": "battery.is.charging.bool", "description": "Is Battery Charging (true or false)", "defaultValue": "true" },
-  { "name": "battery.is.plugged.in.bool", "description": "Is the Battery Plugged in (Is Charger Plugged in, True or False)", "defaultValue": "true" },
-  { "name": "battery.status", "description": "Status of Battery (Charging, Discharging, ....)", "defaultValue": "true" },
-  { "name": "battery.charge.percent", "description": "Battery Charging Cycles", "defaultValue": "100" },
-  { "name": "battery.charging.cycles", "description": "Battery Charging Cycles", "defaultValue": "100" },
+  { "name": "battery.is.charging.bool", "description": "Whether the battery is charging", "defaultValue": "false" },
+  { "name": "battery.is.plugged.in.bool", "description": "Whether a charger is connected", "defaultValue": "false" },
+  { "name": "battery.status", "description": "Android BatteryManager status value", "defaultValue": "3" },
+  { "name": "battery.charge.percent", "description": "Remaining battery percentage", "defaultValue": "68" },
+  { "name": "battery.charging.cycles", "description": "Completed battery charging cycles", "defaultValue": "120" },
+  { "name": "battery.capacity.mah", "description": "Model battery capacity in mAh", "defaultValue": "5000" },
+  { "name": "battery.voltage.mv", "description": "Current battery voltage in mV", "defaultValue": "4014" },
+  { "name": "battery.temperature.tenths.celsius", "description": "Battery temperature in tenths of a degree Celsius", "defaultValue": "270" },
 
   //CLIPBOARD
   { "name": "clipboard.label", "description": "Label that holds the data this inst important", "defaultValue": "l33t" },
@@ -765,5 +770,3 @@
 
   //User Default Values
 ]
-
-

@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Trace;
+import android.os.Build;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -54,6 +55,8 @@ import eu.faircode.xlua.api.xstandard.interfaces.IDividerKind;
 import eu.faircode.xlua.ui.GroupHelper;
 import eu.faircode.xlua.ui.HookWarnings;
 import eu.faircode.xlua.ui.UniversalGamingSpoof;
+import eu.faircode.xlua.x.xlua.commands.call.GetSettingExCommand;
+import eu.faircode.xlua.x.xlua.settings.data.SettingPacket;
 import eu.faircode.xlua.ui.dialogs.HookWarningDialog;
 import eu.faircode.xlua.ui.interfaces.ILoader;
 import eu.faircode.xlua.utilities.SettingUtil;
@@ -215,12 +218,22 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
             universalGamingSpoof.title = context.getString(R.string.group_universalgaming_spoof_device);
             universalGamingSpoof.groupId = UniversalGamingSpoof.CATEGORY_TITLE;
             universalGamingSpoof.hasWarning = false;
+            SettingPacket brand = GetSettingExCommand.get(
+                    context, "device.brand", app.uid, app.packageName);
+            SettingPacket manufacturer = GetSettingExCommand.get(
+                    context, "device.manufacturer", app.uid, app.packageName);
+            String deviceBrand = brand == null ? null : brand.value;
+            String deviceManufacturer = manufacturer == null ? null : manufacturer.value;
+            if (Str.isEmpty(deviceBrand))
+                deviceBrand = Build.BRAND;
+            if (Str.isEmpty(deviceManufacturer))
+                deviceManufacturer = Build.MANUFACTURER;
 
             for (XHook hook : hooks) {
                 if(!Str.isEmpty(hook.group) &&
                         !hook.group.toLowerCase().startsWith("intercept.") &&
                         (hook.enabled == null || Boolean.TRUE.equals(hook.enabled))) {
-                    if(UniversalGamingSpoof.includesGroup(hook.group)
+                    if(UniversalGamingSpoof.includesGroup(hook.group, deviceBrand, deviceManufacturer)
                             && hook.isAvailable(app.packageName, null, true, true))
                         universalGamingSpoof.hooks.add(hook);
 

@@ -26,6 +26,7 @@ import eu.faircode.xlua.x.xlua.settings.random.interfaces.IRandomizer;
 import eu.faircode.xlua.x.xlua.settings.random.profile.DeviceProfileCatalog;
 import eu.faircode.xlua.x.xlua.settings.random.profile.DeviceProfileSelection;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomDeviceProfile;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.battery.RandomBatteryProfile;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
 import eu.faircode.xlua.x.xlua.settings.test.RandomSettingHolder;
 
@@ -185,6 +186,7 @@ public class RandomizerSessionContext {
             Log.d(TAG, "Stage (2) Checked Count=" + this.checked.size());
 
         expandDeviceProfileSettings();
+        expandBatteryProfileSettings();
 
         for(Map.Entry<String, RandomSettingHolder> entry : new HashMap<>(this.checked).entrySet())
             handleCheckedRequirements(entry.getValue());
@@ -245,6 +247,25 @@ public class RandomizerSessionContext {
             return;
 
         for (String settingName : profileRandomizer.getSettings()) {
+            RandomSettingHolder holder = settings.get(settingName);
+            if (holder != null && !checked.containsKey(settingName))
+                putChecked(holder);
+        }
+    }
+
+    private void expandBatteryProfileSettings() {
+        RandomBatteryProfile batteryRandomizer = null;
+        for (RandomSettingHolder holder : checked.values()) {
+            if (holder != null && holder.randomizer instanceof RandomBatteryProfile) {
+                batteryRandomizer = (RandomBatteryProfile) holder.randomizer;
+                break;
+            }
+        }
+
+        if (batteryRandomizer == null)
+            return;
+
+        for (String settingName : batteryRandomizer.getSettings()) {
             RandomSettingHolder holder = settings.get(settingName);
             if (holder != null && !checked.containsKey(settingName))
                 putChecked(holder);

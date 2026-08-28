@@ -287,7 +287,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_getdisplaymetrics",
-    "settings":[ "display.height", "display.width" ]
+    "settings":[ "display.height", "display.width", "display.density.dpi" ]
   },
 
   {
@@ -354,7 +354,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_display_getmetrics",
-    "settings":[ "display.height", "display.width" ]
+    "settings":[ "display.height", "display.width", "display.density.dpi" ]
   },
 
   {
@@ -376,6 +376,48 @@
     "usage":true,
     "notify":false,
     "luaScript": "@id_display_getmetrics",
-    "settings":[ "display.height", "display.width" ]
+    "settings":[ "display.height", "display.width", "display.density.dpi" ]
+  },
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "Spoof.Display",
+    "name": "Display/Display$Mode.getRefreshRate",
+    "author": "XPL-EX",
+    "className": "android.view.Display$Mode",
+    "methodName": "getRefreshRate",
+    "parameterTypes": [],
+    "returnType": "float",
+    "minSdk": 23,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "Returns the refresh rate from the selected real device profile.",
+    "enabled": true,
+    "optional": true,
+    "usage": true,
+    "notify": false,
+    "luaScript": "@id_display_refreshrate",
+    "settings": ["display.refresh.rate.hz"]
+  },
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "Spoof.Display",
+    "name": "Display/Display.getRefreshRate",
+    "author": "XPL-EX",
+    "className": "android.view.Display",
+    "methodName": "getRefreshRate",
+    "parameterTypes": [],
+    "returnType": "float",
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "Returns the refresh rate from the selected real device profile.",
+    "enabled": true,
+    "optional": true,
+    "usage": true,
+    "notify": false,
+    "luaScript": "@id_display_refreshrate",
+    "settings": ["display.refresh.rate.hz"]
   }
 ]
