@@ -16,11 +16,7 @@ public final class SettingValueInfo {
 
     private SettingValueInfo() { }
 
-    public static String getMessage(
-            Context context,
-            String settingName,
-            String settingNiceName,
-            String groupName) {
+    public static String getMessage(Context context, String settingName) {
         if (context == null)
             return Str.EMPTY;
 
@@ -42,12 +38,7 @@ public final class SettingValueInfo {
             }
         }
 
-        String visibleName = Str.getNonNullOrEmptyString(settingNiceName, settingName);
-        String groupHelp = SettingGroupInfo.getMessage(context, groupName);
-        return context.getString(
-                R.string.description_ru_setting_value_unknown,
-                visibleName,
-                groupHelp);
+        return context.getString(R.string.description_ru_setting_value_unknown);
     }
 
     static String normalizeSettingName(String settingName) {

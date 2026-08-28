@@ -430,9 +430,7 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                                 .setHookGroupName(currentItem.getNameNice())
                                 .setHookGroupMessage(SettingValueInfo.getMessage(
                                         context,
-                                        currentItem.getContainerName(),
-                                        currentItem.getNameNice(),
-                                        currentItem.getGroup()))
+                                        currentItem.getName()))
                                 .show(manager.getFragmentMan(), "setting_container_info");
                     }
 

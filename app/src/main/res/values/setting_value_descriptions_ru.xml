@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Individual Setting Values help is intentionally Russian for every interface locale. -->
-    <string name="description_ru_setting_value_unknown" translatable="false">Параметр «%1$s» подменяет одноимённое значение только для выбранного приложения. %2$s</string>
+    <string name="description_ru_setting_value_unknown" translatable="false">Подменяет значение, которое Android передаёт выбранному приложению.</string>
     <string name="description_ru_setting_value_info_hint" translatable="false">Нажмите, чтобы прочитать простое описание этого параметра.</string>
 
     <!-- XPL-EX -->
@@ -109,7 +109,7 @@
 
     <!-- Unique identifiers -->
     <string name="description_ru_setting_value_unique_serial_no" translatable="false">Серийный номер устройства, который могут использовать для постоянного узнавания телефона. Формат зависит от производителя и модели.</string>
-    <string name="description_ru_setting_value_unique_account_email" translatable="false">Адрес электронной почты аккаунта, который приложение получает вместо настоящего. Не используйте реальный личный адрес.</string>
+    <string name="description_ru_setting_value_unique_account_email" translatable="false">Подменяет адрес электронной почты аккаунта, который получает приложение.</string>
     <string name="description_ru_setting_value_unique_bluetooth_address" translatable="false">MAC-адрес Bluetooth-адаптера. Используйте правильный формат из шести пар шестнадцатеричных символов.</string>
     <string name="description_ru_setting_value_unique_network_mac_address" translatable="false">MAC-адрес сетевого интерфейса. Он должен иметь правильный формат и не совпадать с широко известными тестовыми значениями.</string>
     <string name="description_ru_setting_value_unique_google_advertising_id" translatable="false">Рекламный идентификатор Google. Обычно имеет формат UUID и используется рекламой и аналитикой для связывания активности.</string>
