@@ -43,7 +43,7 @@ import eu.faircode.xlua.x.ui.core.view_registry.SharedRegistry;
 import eu.faircode.xlua.x.ui.dialogs.HooksDialog;
 import eu.faircode.xlua.x.ui.dialogs.HookInfoDialog;
 import eu.faircode.xlua.x.ui.dialogs.MessageDialog;
-import eu.faircode.xlua.x.ui.dialogs.SettingGroupInfo;
+import eu.faircode.xlua.x.ui.dialogs.SettingValueInfo;
 import eu.faircode.xlua.x.ui.dialogs.SettingDeleteDialog;
 import eu.faircode.xlua.x.ui.dialogs.utils.DialogUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
@@ -428,8 +428,10 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                         HookInfoDialog.create()
                                 .setIcon(R.drawable.ic_finger_print18)
                                 .setHookGroupName(currentItem.getNameNice())
-                                .setHookGroupMessage(SettingGroupInfo.getMessage(
+                                .setHookGroupMessage(SettingValueInfo.getMessage(
                                         context,
+                                        currentItem.getContainerName(),
+                                        currentItem.getNameNice(),
                                         currentItem.getGroup()))
                                 .show(manager.getFragmentMan(), "setting_container_info");
                     }
@@ -469,7 +471,9 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                         resId = R.string.msg_hint_save_container;
                         break;
                     case R.id.ivActionNeeded:
-                        resId = R.string.msg_hint_warning_save;
+                        resId = groupStats.hasUnsaved()
+                                ? R.string.msg_hint_warning_save
+                                : R.string.description_ru_setting_value_info_hint;
                         break;
                 }
 

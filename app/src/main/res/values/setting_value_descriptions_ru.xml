@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Individual Setting Values help is intentionally Russian for every interface locale. -->
+    <string name="description_ru_setting_value_unknown" translatable="false">Параметр «%1$s» подменяет одноимённое значение только для выбранного приложения. %2$s</string>
+    <string name="description_ru_setting_value_info_hint" translatable="false">Нажмите, чтобы прочитать простое описание этого параметра.</string>
+
+    <!-- XPL-EX -->
+    <string name="description_ru_setting_value_xplex_force_settings_list" translatable="false">Список параметров, для которых XPL-EX должен принудительно вернуть заданное значение, даже когда Android обычно отвечает unknown, null или пустой строкой. Используйте только для тех значений, которые приложение действительно проверяет.</string>
+
+    <!-- Apps -->
+    <string name="description_ru_setting_value_apps_allow_list" translatable="false">Список пакетов, которые выбранное приложение сможет увидеть. Звёздочка разрешает все приложения; отдельные имена пакетов обычно разделяются запятыми.</string>
+    <string name="description_ru_setting_value_apps_block_list" translatable="false">Список пакетов, которые нужно скрыть от выбранного приложения. Сюда можно добавить менеджеры root, модулей и другие нежелательные для обнаружения программы.</string>
+    <string name="description_ru_setting_value_apps_blacklist_mode_bool" translatable="false">Выбирает принцип фильтрации списка приложений. При включении скрываются пакеты из Block List; при выключении показываются только пакеты из Allow List.</string>
+    <string name="description_ru_setting_value_apps_blacklist_allow_vital_apps_bool" translatable="false">Разрешает показывать важные системные пакеты, Google-компоненты и WebView даже при фильтрации. Обычно лучше оставить включённым, чтобы приложение не сломалось.</string>
+    <string name="description_ru_setting_value_apps_time_sync_bool" translatable="false">Делает подменённые даты установки и обновления приложений одинаковыми. Это удобно для согласованного профиля, но не всегда похоже на обычную историю обновлений.</string>
+    <string name="description_ru_setting_value_apps_install_time_offset" translatable="false">Сдвигает дату установки видимых приложений на указанный промежуток времени. Например, значение 1:DAY означает сдвиг на один день.</string>
+    <string name="description_ru_setting_value_apps_update_time_offset" translatable="false">Сдвигает дату последнего обновления видимых приложений на указанный промежуток времени.</string>
+    <string name="description_ru_setting_value_apps_current_install_time_offset" translatable="false">Сдвигает дату установки только того приложения, для которого сейчас настраивается профиль.</string>
+    <string name="description_ru_setting_value_apps_current_update_time_offset" translatable="false">Сдвигает дату последнего обновления только выбранного приложения.</string>
+    <string name="description_ru_setting_value_apps_offset_subtract_bool" translatable="false">Определяет направление сдвига времени. При включении промежуток вычитается из настоящей даты, поэтому полученная дата будет в прошлом.</string>
+
+    <!-- Files -->
+    <string name="description_ru_setting_value_files_time_modify_offset" translatable="false">Сдвигает время последнего изменения файла. Помогает скрыть необычные временные метки, но может повлиять на проверку обновлений файлов.</string>
+    <string name="description_ru_setting_value_files_time_access_offset" translatable="false">Сдвигает время последнего доступа к файлу, которое выбранное приложение получает из файловой системы.</string>
+    <string name="description_ru_setting_value_files_time_created_offset" translatable="false">Сдвигает время создания файла. Значение должно выглядеть правдоподобно относительно времени изменения файла.</string>
+    <string name="description_ru_setting_value_files_time_sync_bool" translatable="false">Делает подменённые времена создания, доступа и изменения файла одинаковыми. Включайте только если приложению действительно нужны одинаковые даты.</string>
+    <string name="description_ru_setting_value_files_offset_subtract_bool" translatable="false">При включении временной сдвиг вычитается из настоящей даты файла. Обычно это безопаснее, потому что файл не оказывается созданным в будущем.</string>
+
+    <!-- Device -->
+    <string name="description_ru_setting_value_device_bootloader" translatable="false">Имя загрузчика устройства. Оно должно соответствовать выбранной модели и её официальной прошивке.</string>
+    <string name="description_ru_setting_value_device_brand" translatable="false">Торговый бренд телефона, например OnePlus, Samsung или Xiaomi. Не путайте его с полным названием производителя.</string>
+    <string name="description_ru_setting_value_device_manufacturer" translatable="false">Название компании-производителя устройства. Оно должно совпадать с брендом и выбранной моделью.</string>
+    <string name="description_ru_setting_value_device_nick_name" translatable="false">Дополнительное или внутреннее имя модели телефона. Некоторые приложения используют его вместе с Model и Codename.</string>
+    <string name="description_ru_setting_value_device_model" translatable="false">Точный идентификатор модели, который Android сообщает приложениям. Используйте реально существующее обозначение выбранного телефона.</string>
+    <string name="description_ru_setting_value_device_codename" translatable="false">Внутреннее кодовое имя устройства, например kalama или pineapple. Оно должно соответствовать модели и fingerprint прошивки.</string>
+    <string name="description_ru_setting_value_device_unique_name" translatable="false">Пользовательское имя телефона, видимое в некоторых системных меню и при подключениях. Подменяет только ответ для выбранного приложения.</string>
+    <string name="description_ru_setting_value_device_unique_bluetooth_name" translatable="false">Имя телефона, которое показывается другим устройствам при поиске Bluetooth. Здесь оно подменяется только для выбранного приложения.</string>
+
+    <!-- Android build and kernel -->
+    <string name="description_ru_setting_value_android_build_date_epoc" translatable="false">Дата сборки прошивки в виде Unix-времени: количество секунд с 1 января 1970 года. Она должна соответствовать обычной дате сборки.</string>
+    <string name="description_ru_setting_value_android_build_date_utc" translatable="false">Дата сборки прошивки в виде Unix-времени UTC. Используйте значение, согласованное с Build Date и выбранной официальной прошивкой.</string>
+    <string name="description_ru_setting_value_android_build_date" translatable="false">Полная текстовая дата и время сборки Android. Она должна соответствовать версии и fingerprint выбранной прошивки.</string>
+    <string name="description_ru_setting_value_android_build_date_one" translatable="false">Дополнительная дата сборки в формате год.месяц.день. Если выбранный профиль её не использует, лучше не задавать случайное значение.</string>
+    <string name="description_ru_setting_value_android_build_date_two" translatable="false">Дополнительная дата сборки без разделителей в формате годмесяцдень. Она должна совпадать с остальными датами прошивки.</string>
+    <string name="description_ru_setting_value_android_build_version" translatable="false">Основная версия Android, например 14 или 15. Она должна соответствовать SDK, fingerprint и данным прошивки.</string>
+    <string name="description_ru_setting_value_android_build_version_sdk" translatable="false">Числовой уровень Android API: например Android 14 — API 34, Android 15 — API 35. Не указывайте его отдельно от версии Android.</string>
+    <string name="description_ru_setting_value_android_build_version_min_sdk" translatable="false">Минимальный уровень Android API, заявленный сборкой. Обычно его берут из реального профиля устройства и не изменяют отдельно.</string>
+    <string name="description_ru_setting_value_android_build_tags" translatable="false">Метки подписи сборки Android. Для официальной пользовательской прошивки обычно используется release-keys.</string>
+    <string name="description_ru_setting_value_android_build_incremental" translatable="false">Внутренний номер конкретного обновления прошивки. Он должен совпадать с Build ID и fingerprint.</string>
+    <string name="description_ru_setting_value_android_build_description" translatable="false">Полное текстовое описание сборки Android: устройство, тип сборки, версия и идентификатор. Лучше копировать его из реального профиля целиком.</string>
+    <string name="description_ru_setting_value_android_build_id" translatable="false">Короткий идентификатор сборки Android, например AP3A.240905.015. Он должен встречаться и в fingerprint выбранной прошивки.</string>
+    <string name="description_ru_setting_value_android_build_display_id" translatable="false">Отображаемый номер или название сборки, которое можно увидеть в сведениях о телефоне. Оно должно соответствовать выбранной прошивке.</string>
+    <string name="description_ru_setting_value_android_build_flavor" translatable="false">Название варианта сборки, обычно состоящее из продукта и типа user. Значение должно соответствовать fingerprint.</string>
+    <string name="description_ru_setting_value_android_build_host" translatable="false">Имя компьютера или сервера, на котором собрали прошивку. Это второстепенное значение, но оно должно выглядеть правдоподобно.</string>
+    <string name="description_ru_setting_value_android_build_patch" translatable="false">Дата обновления безопасности Android в формате ГГГГ-ММ-ДД. Не указывайте патч новее даты самой прошивки.</string>
+    <string name="description_ru_setting_value_android_build_codename" translatable="false">Кодовое имя или название продукта сборки прошивки. Оно должно совпадать с Flavor, Description и fingerprint.</string>
+    <string name="description_ru_setting_value_android_build_dev_codename" translatable="false">Кодовое имя версии Android во время разработки. Для обычной стабильной версии чаще всего используется REL.</string>
+    <string name="description_ru_setting_value_android_build_fingerprint" translatable="false">Главная строка идентификации прошивки: бренд, продукт, устройство, Android, Build ID и тип подписи. Используйте fingerprint от реально существующей прошивки без ручного смешивания частей.</string>
+    <string name="description_ru_setting_value_android_build_base_os" translatable="false">Базовая версия системы, на которой построена текущая прошивка. На многих официальных устройствах это значение может быть пустым.</string>
+    <string name="description_ru_setting_value_android_build_user" translatable="false">Имя пользователя, под которым собиралась прошивка. Это не имя владельца телефона.</string>
+    <string name="description_ru_setting_value_android_build_type" translatable="false">Тип сборки Android. Для обычного серийного телефона безопаснее всего значение user; userdebug и eng относятся к разработке.</string>
+    <string name="description_ru_setting_value_android_etc_build_rom_base_os" translatable="false">Базовая система, на которой основана прошивка. На официальной сборке поле иногда остаётся пустым — это нормально.</string>
+    <string name="description_ru_setting_value_android_etc_build_rom_user" translatable="false">Имя пользователя сборочного сервера прошивки. Оно не связано с аккаунтом владельца телефона.</string>
+    <string name="description_ru_setting_value_android_etc_build_rom_version_codename" translatable="false">Кодовое состояние версии Android. Для законченной стабильной прошивки обычно указывается REL.</string>
+    <string name="description_ru_setting_value_android_etc_build_rom_variant" translatable="false">Вариант сборки прошивки. Значение user соответствует обычной розничной прошивке, а userdebug и eng — тестовым сборкам.</string>
+    <string name="description_ru_setting_value_android_kernel_sys_name" translatable="false">Тип операционной системы ядра. На Android почти всегда должно быть Linux.</string>
+    <string name="description_ru_setting_value_android_kernel_version" translatable="false">Полная строка сведений о сборке ядра: режим, дата и дополнительные признаки. Она должна соответствовать Kernel Release.</string>
+    <string name="description_ru_setting_value_android_kernel_release" translatable="false">Номер версии ядра Linux, например 6.1.118-android14. Указывайте версию, реально используемую выбранным профилем.</string>
+    <string name="description_ru_setting_value_android_kernel_node_name" translatable="false">Сетевое имя узла, указанное при сборке ядра. На Android часто используется localhost.</string>
+
+    <!-- Hardware -->
+    <string name="description_ru_setting_value_hardware_efuse" translatable="false">Состояние аппаратного eFuse, которое встречается прежде всего на Samsung. Неверная подмена может противоречить состоянию загрузчика и безопасности устройства.</string>
+    <string name="description_ru_setting_value_hardware_nfc_kind" translatable="false">Тип или протокол подключения NFC-контроллера. Он должен соответствовать NFC-чипу выбранной модели.</string>
+    <string name="description_ru_setting_value_hardware_nfc_controller_interface" translatable="false">Название интерфейса NFC-контроллера. Не меняйте его отдельно от модели NFC и профиля телефона.</string>
+    <string name="description_ru_setting_value_hardware_fp_sensor" translatable="false">Короткий внутренний код датчика отпечатка пальца. Он должен соответствовать реальному компоненту выбранной модели.</string>
+    <string name="description_ru_setting_value_hardware_fp_sensor_name" translatable="false">Название производителя или модели датчика отпечатка. Используйте значение от реального устройства.</string>
+    <string name="description_ru_setting_value_hardware_gps_model_name" translatable="false">Название аппаратного или программного модуля GPS. Оно должно соответствовать чипу и платформе телефона.</string>
+    <string name="description_ru_setting_value_hardware_gps_model_year" translatable="false">Год выпуска или поколения GPS-модуля. Он должен быть правдоподобен для выбранной модели телефона.</string>
+    <string name="description_ru_setting_value_hardware_camera_count" translatable="false">Количество камер, которое выбранное приложение увидит на устройстве. Не указывайте больше камер, чем может иметь выбранная модель.</string>
+    <string name="description_ru_setting_value_hardware_camera_app" translatable="false">Имя пакета штатного приложения камеры. Оно зависит от производителя и прошивки телефона.</string>
+    <string name="description_ru_setting_value_hardware_memory_total" translatable="false">Общий объём оперативной памяти, показываемый приложению. Значение должно соответствовать существующей версии выбранной модели.</string>
+    <string name="description_ru_setting_value_hardware_memory_available" translatable="false">Доступный сейчас объём оперативной памяти. Он должен быть меньше общего объёма и может меняться при работе системы.</string>
+
+    <!-- SoC, CPU, GPU and radio -->
+    <string name="description_ru_setting_value_soc_board_model" translatable="false">Модель системы на кристалле, например Snapdragon 8 Gen 3 или SM8650. Она должна совпадать с CPU, GPU и профилем устройства.</string>
+    <string name="description_ru_setting_value_soc_board_config_code_name" translatable="false">Внутреннее кодовое имя аппаратной платформы, например kalama или pineapple. Берите его из данных реального устройства.</string>
+    <string name="description_ru_setting_value_soc_board_manufacturer" translatable="false">Производитель основного чипа телефона, например Qualcomm, MediaTek или Samsung.</string>
+    <string name="description_ru_setting_value_soc_board_manufacturer_id" translatable="false">Короткий системный идентификатор производителя SoC, например qcom для Qualcomm.</string>
+    <string name="description_ru_setting_value_soc_cpu_processor_count" translatable="false">Количество логических ядер процессора. Оно должно соответствовать выбранной модели SoC.</string>
+    <string name="description_ru_setting_value_soc_cpu_architecture" translatable="false">Архитектура процессора. Для современных 64-битных Android-устройств обычно используется aarch64.</string>
+    <string name="description_ru_setting_value_soc_cpu_instruction_set_32" translatable="false">Название 32-битного набора команд или варианта процессора. Оно должно поддерживаться выбранным SoC.</string>
+    <string name="description_ru_setting_value_soc_cpu_instruction_set_64" translatable="false">Название 64-битного набора команд или варианта процессора. Не смешивайте данные разных поколений SoC.</string>
+    <string name="description_ru_setting_value_soc_cpu_abi" translatable="false">Основной Android ABI процессора, например arm64-v8a. Он определяет, какие нативные библиотеки может запускать устройство.</string>
+    <string name="description_ru_setting_value_soc_cpu_abi_list" translatable="false">Полный список поддерживаемых ABI. Порядок и состав должны соответствовать 32- и 64-битным спискам ниже.</string>
+    <string name="description_ru_setting_value_soc_cpu_abi_list_32" translatable="false">Список поддерживаемых 32-битных ABI, например armeabi-v7a. Он может быть пустым на полностью 64-битном устройстве.</string>
+    <string name="description_ru_setting_value_soc_cpu_abi_list_64" translatable="false">Список поддерживаемых 64-битных ABI, обычно arm64-v8a на современных телефонах.</string>
+    <string name="description_ru_setting_value_soc_cpu_info_dump" translatable="false">Подменённое содержимое файла /proc/cpuinfo. Формат строк, названия полей и число процессоров должны выглядеть как на реальном выбранном SoC.</string>
+    <string name="description_ru_setting_value_soc_gpu_egl_implementor" translatable="false">Название реализации графического интерфейса EGL. Оно должно соответствовать производителю и драйверу GPU.</string>
+    <string name="description_ru_setting_value_soc_gpu_vulkan_implementor" translatable="false">Название реализации Vulkan. Используйте значение, существующее у выбранного графического чипа и прошивки.</string>
+    <string name="description_ru_setting_value_soc_gpu_open_gles_version_encoded" translatable="false">Версия OpenGL ES в числовом системном формате. Она должна совпадать с текстовой версией драйвера.</string>
+    <string name="description_ru_setting_value_soc_gpu_open_gles_vendor" translatable="false">Производитель графического драйвера OpenGL ES, например Qualcomm или ARM.</string>
+    <string name="description_ru_setting_value_soc_gpu_open_gles_renderer" translatable="false">Название графического процессора, которое возвращает OpenGL, например Adreno 750. Оно должно соответствовать SoC.</string>
+    <string name="description_ru_setting_value_soc_gpu_open_gles_version" translatable="false">Полная текстовая версия драйвера OpenGL ES. Лучше брать строку целиком с реального устройства той же модели.</string>
+    <string name="description_ru_setting_value_soc_gpu_gfx_driver_name" translatable="false">Имена пакетов обновляемых графических драйверов. Указывайте только пакеты, которые действительно существуют для производителя и SoC.</string>
+    <string name="description_ru_setting_value_soc_baseband_board_config_name" translatable="false">Внутреннее имя платформы модема или baseband. Оно должно соответствовать основному SoC телефона.</string>
+    <string name="description_ru_setting_value_soc_baseband_board_radio_version" translatable="false">Полная версия прошивки модема. Это модельно-зависимая строка, поэтому безопаснее брать её из той же официальной прошивки.</string>
+    <string name="description_ru_setting_value_soc_baseband_board_implementor" translatable="false">Название реализации радиоинтерфейса, например Qualcomm RIL. Оно должно совпадать с производителем модема.</string>
+    <string name="description_ru_setting_value_soc_bluetooth_board_config_name" translatable="false">Внутреннее имя Bluetooth-чипа или его платформы. Оно должно существовать у выбранной модели телефона.</string>
+
+    <!-- Unique identifiers -->
+    <string name="description_ru_setting_value_unique_serial_no" translatable="false">Серийный номер устройства, который могут использовать для постоянного узнавания телефона. Формат зависит от производителя и модели.</string>
+    <string name="description_ru_setting_value_unique_account_email" translatable="false">Адрес электронной почты аккаунта, который приложение получает вместо настоящего. Не используйте реальный личный адрес.</string>
+    <string name="description_ru_setting_value_unique_bluetooth_address" translatable="false">MAC-адрес Bluetooth-адаптера. Используйте правильный формат из шести пар шестнадцатеричных символов.</string>
+    <string name="description_ru_setting_value_unique_network_mac_address" translatable="false">MAC-адрес сетевого интерфейса. Он должен иметь правильный формат и не совпадать с широко известными тестовыми значениями.</string>
+    <string name="description_ru_setting_value_unique_google_advertising_id" translatable="false">Рекламный идентификатор Google. Обычно имеет формат UUID и используется рекламой и аналитикой для связывания активности.</string>
+    <string name="description_ru_setting_value_unique_facebook_advertising_id" translatable="false">Рекламный идентификатор, который получают компоненты Facebook. Используйте отдельный правдоподобный UUID вместо личного значения.</string>
+    <string name="description_ru_setting_value_unique_open_anon_advertising_id" translatable="false">OAID — анонимный рекламный идентификатор, распространённый на устройствах некоторых производителей. Обычно выглядит как UUID.</string>
+    <string name="description_ru_setting_value_unique_app_va_id" translatable="false">VAID связывает приложения одного разработчика на одном устройстве. Значение должно быть стабильным внутри одного профиля, но отличаться между профилями.</string>
+    <string name="description_ru_setting_value_unique_app_anon_id" translatable="false">AAID — отдельный анонимный идентификатор приложения. Он обычно различается даже у приложений одного разработчика.</string>
+    <string name="description_ru_setting_value_unique_guid_uuid" translatable="false">Общий GUID или UUID устройства. Используйте корректный случайный UUID и не копируйте значение со своего настоящего телефона.</string>
+    <string name="description_ru_setting_value_unique_boot_id" translatable="false">Идентификатор текущего запуска Android. В реальной системе он меняется после перезагрузки, поэтому постоянное значение может выглядеть подозрительно.</string>
+    <string name="description_ru_setting_value_unique_android_id" translatable="false">Android ID — один из основных идентификаторов установки Android для приложения. Обычно это 16 шестнадцатеричных символов.</string>
+    <string name="description_ru_setting_value_unique_drm_id" translatable="false">Идентификатор DRM-компонента, который может использоваться защитой контента и антифродом. Случайное значение иногда нарушает воспроизведение защищённого видео.</string>
+    <string name="description_ru_setting_value_unique_gsf_id" translatable="false">Идентификатор Google Services Framework. Он связан с Google-сервисами устройства и может использоваться для узнавания профиля.</string>
+    <string name="description_ru_setting_value_unique_network_ssid" translatable="false">SSID — отображаемое имя Wi‑Fi-сети. Выбранное приложение увидит это имя вместо настоящего.</string>
+    <string name="description_ru_setting_value_unique_network_bssid" translatable="false">BSSID — MAC-адрес точки доступа Wi‑Fi. По нему можно определить конкретный роутер и примерное местоположение.</string>
+    <string name="description_ru_setting_value_unique_google_app_set_id" translatable="false">Google App Set ID связывает приложения одного разработчика на устройстве и используется в аналитике и антифроде. Значение должно сохраняться согласованным внутри профиля.</string>
+
+    <!-- System properties -->
+    <string name="description_ru_setting_value_props_unique_vbmeta_digest" translatable="false">SHA-256 хэш метаданных Verified Boot. Подмена может противоречить реальному состоянию загрузчика и проверкам аттестации, поэтому меняйте осторожно.</string>
+    <string name="description_ru_setting_value_props_unique_one_plus_serialno" translatable="false">Дополнительный серийный номер из системных свойств OnePlus. Его формат должен соответствовать настоящим устройствам OnePlus.</string>
+    <string name="description_ru_setting_value_props_unique_ap_serial" translatable="false">Аппаратный серийный номер AP из системных свойств. Это постоянный идентификатор, формат которого зависит от производителя.</string>
+    <string name="description_ru_setting_value_props_unique_em_did" translatable="false">Внутренний идентификатор устройства EM DID из системных свойств. Используется отдельными прошивками и компонентами производителя.</string>
+    <string name="description_ru_setting_value_props_unique_lite_uid" translatable="false">Дополнительный уникальный идентификатор Lite UID из системных свойств производителя. Не используйте настоящее значение своего телефона.</string>
+    <string name="description_ru_setting_value_props_unique_persist_radio_serialno" translatable="false">Постоянный серийный номер радиомодуля из системных свойств. Он должен соответствовать модели модема и формату производителя.</string>
+    <string name="description_ru_setting_value_props_unique_ril_serialnumber" translatable="false">Серийный номер, который сообщает радиоинтерфейс RIL. Не смешивайте его с данными от устройства другой марки.</string>
+
+    <!-- Android Settings provider -->
+    <string name="description_ru_setting_value_settings_unique_baidu_device_id" translatable="false">Набор из пяти идентификаторов Baidu. Они создаются разными способами из Android ID, пакета, серийного номера или случайного UUID и должны быть согласованы между собой.</string>
+    <string name="description_ru_setting_value_settings_xiaomi_extm_uuid" translatable="false">Системный UUID extm_uuid, встречающийся в MIUI и HyperOS. Используйте только в профиле реального Xiaomi или POCO.</string>
+    <string name="description_ru_setting_value_settings_xiaomi_mi_health_id" translatable="false">Идентификатор сервиса Xiaomi Health. Он относится к MIUI и HyperOS и не должен появляться в профиле другого производителя.</string>
+    <string name="description_ru_setting_value_settings_xiaomi_gcbooster_uuid" translatable="false">UUID игрового ускорителя Xiaomi Game Turbo. Используйте корректный UUID только для профиля Xiaomi или POCO.</string>
+    <string name="description_ru_setting_value_settings_xiaomi_key_mqs_uuid" translatable="false">UUID системного сервиса MQS в MIUI и HyperOS. Значение должно выглядеть как обычный UUID Xiaomi.</string>
+    <string name="description_ru_setting_value_settings_xiaomi_mdm_uuid" translatable="false">UUID управления устройством MDM в MIUI и HyperOS. Не используйте его для профилей Samsung, OnePlus и других брендов.</string>
+    <string name="description_ru_setting_value_settings_one_plus_security_uuid" translatable="false">UUID безопасности OnePlus из Android Settings. Он должен присутствовать только в согласованном профиле OnePlus.</string>
+    <string name="description_ru_setting_value_settings_unique_pay_session_id" translatable="false">Идентификатор платёжной сессии из Android Settings. Его могут использовать платёжные и антифрод-компоненты для связывания запусков.</string>
+    <string name="description_ru_setting_value_settings_boot_count" translatable="false">Количество запусков телефона после первоначальной настройки. Значение обычно увеличивается при каждой перезагрузке.</string>
+    <string name="description_ru_setting_value_settings_mock_location" translatable="false">Показывает, разрешены ли фиктивные координаты. Нулевое значение обычно означает, что режим подмены местоположения выключен.</string>
+    <string name="description_ru_setting_value_settings_usb_mass_storage" translatable="false">Показывает состояние старого режима USB-накопителя. На современных устройствах обычно используется выключенное значение.</string>
+    <string name="description_ru_setting_value_settings_device_provisioned" translatable="false">Показывает, завершена ли первоначальная настройка Android. Для обычного уже настроенного телефона ожидается включённое состояние.</string>
+    <string name="description_ru_setting_value_settings_stay_on_while_plugged" translatable="false">Показывает, должен ли экран оставаться включённым при подключённой зарядке. Обычно это выключено у обычного пользователя.</string>
+    <string name="description_ru_setting_value_settings_adb_enabled" translatable="false">Показывает, включена ли отладка ADB по USB. Для обычного пользовательского профиля безопаснее выключенное значение.</string>
+    <string name="description_ru_setting_value_settings_dev_settings_enabled" translatable="false">Показывает, включено ли меню разработчика. Нулевое значение больше похоже на обычный телефон без настройки для разработки.</string>
+
+    <!-- Region and timezone -->
+    <string name="description_ru_setting_value_zone_parent_control_tz" translatable="false">Главный параметр готового профиля страны, языка и часового пояса. Его рандомизация может сразу заполнить связанные региональные значения.</string>
+    <string name="description_ru_setting_value_zone_country_name" translatable="false">Полное название страны, например Germany. Оно должно совпадать с кодом страны, языком и часовым поясом.</string>
+    <string name="description_ru_setting_value_zone_country_code" translatable="false">Код страны, используемый региональными API. Убедитесь, что формат и значение согласованы с Country Name.</string>
+    <string name="description_ru_setting_value_zone_language_name" translatable="false">Полное название языка. Оно должно соответствовать двухбуквенному коду языка и языковому тегу.</string>
+    <string name="description_ru_setting_value_zone_language_iso" translatable="false">Короткий код языка ISO 639-1, например ru, en или de.</string>
+    <string name="description_ru_setting_value_zone_language_tag" translatable="false">Полный языковой тег BCP 47, например ru-RU или en-US. Он объединяет язык и регион.</string>
+    <string name="description_ru_setting_value_zone_timezone_offset" translatable="false">Смещение местного времени относительно UTC, например GMT+5. Оно должно соответствовать выбранному часовому поясу.</string>
+    <string name="description_ru_setting_value_zone_timezone_id" translatable="false">Системный идентификатор часового пояса IANA, например Asia/Yekaterinburg. Он должен соответствовать стране и смещению UTC.</string>
+    <string name="description_ru_setting_value_zone_timezone_display_name" translatable="false">Отображаемое название часового пояса, которое может увидеть приложение. Оно должно соответствовать Timezone ID.</string>
+
+    <!-- Network -->
+    <string name="description_ru_setting_value_network_parent_control_isp" translatable="false">Главный профиль интернет-провайдера. Его рандомизация заполняет связанные DNS, шлюз, адреса и другие сетевые параметры.</string>
+    <string name="description_ru_setting_value_network_dns" translatable="false">Основной адрес DNS-сервера, через который обычно преобразуются имена сайтов в IP-адреса.</string>
+    <string name="description_ru_setting_value_network_dns_list" translatable="false">Список DNS-серверов, обычно разделённых запятыми. Все адреса должны иметь правильный формат IPv4 или IPv6.</string>
+    <string name="description_ru_setting_value_network_domains" translatable="false">Список доменов поиска DNS. Для обычной домашней сети это поле часто пустое.</string>
+    <string name="description_ru_setting_value_network_gateway" translatable="false">IP-адрес сетевого шлюза или роутера. Он должен находиться в той же подсети, что и локальный адрес устройства.</string>
+    <string name="description_ru_setting_value_network_netmask" translatable="false">Маска локальной IPv4-подсети, например 255.255.255.0. Она должна соответствовать адресу и шлюзу.</string>
+    <string name="description_ru_setting_value_network_routes" translatable="false">Сетевые маршруты и диапазоны адресов, доступные через соединение. Неправильный формат может выглядеть невозможным для выбранной сети.</string>
+    <string name="description_ru_setting_value_network_dhcp_server" translatable="false">IP-адрес DHCP-сервера, который выдаёт устройству параметры локальной сети. Чаще всего это адрес роутера.</string>
+    <string name="description_ru_setting_value_network_host_address" translatable="false">Локальный IPv4-адрес телефона в сети. Он должен находиться в одной подсети со шлюзом и не быть публичным адресом.</string>
+    <string name="description_ru_setting_value_network_host_name" translatable="false">Имя сетевого узла телефона. В современных Android оно часто пустое, случайное или не содержит личных данных.</string>
+    <string name="description_ru_setting_value_network_interfaces_allowed_list" translatable="false">Список сетевых интерфейсов, которые разрешено видеть приложению, например wlan0. Префикс восклицательного знака может использоваться для блокировки интерфейса.</string>
+    <string name="description_ru_setting_value_network_allowed_list" translatable="false">Список Wi‑Fi-сетей, которые выбранное приложение сможет увидеть. Это не подключает телефон к сети, а только фильтрует возвращаемый список.</string>
+    <string name="description_ru_setting_value_network_host_address_6_wlan0_local_link_perm" translatable="false">Постоянный локальный IPv6-адрес интерфейса wlan0. Локальные link-local адреса обычно начинаются с fe80.</string>
+    <string name="description_ru_setting_value_network_host_address_6_wlan0_global_perm" translatable="false">Глобальный IPv6-адрес Wi‑Fi-интерфейса wlan0. Он должен иметь правильный IPv6-формат и соответствовать типу сети.</string>
+    <string name="description_ru_setting_value_network_host_address_6_dummy0_local_link_perm" translatable="false">Локальный IPv6-адрес виртуального интерфейса dummy0. Если такой интерфейс не нужен выбранному профилю, безопаснее не задавать необычное значение.</string>
+
+    <!-- Cellular and SIM -->
+    <string name="description_ru_setting_value_cell_phone_type" translatable="false">Тип телефонной сети для каждой SIM: обычно GSM, CDMA, SIP или NONE. Для современных обычных SIM чаще выбирают GSM.</string>
+    <string name="description_ru_setting_value_cell_phone_sim_card_count" translatable="false">Количество поддерживаемых или установленных SIM-карт. Оно должно соответствовать числу заполненных значений SIM 1 и SIM 2.</string>
+    <string name="description_ru_setting_value_cell_unique_meid" translatable="false">MEID — идентификатор телефона в CDMA-сетях. Для устройства только с GSM он может отсутствовать.</string>
+    <string name="description_ru_setting_value_cell_unique_imei" translatable="false">IMEI — основной идентификатор мобильного модема. Для каждой SIM-позиции нужен отдельный корректный 15-значный номер.</string>
+    <string name="description_ru_setting_value_cell_unique_msin" translatable="false">MSIN — часть номера мобильного абонента внутри IMSI. Обычно состоит только из цифр и согласуется с Subscriber ID.</string>
+    <string name="description_ru_setting_value_cell_unique_subscriber_id" translatable="false">Subscriber ID, обычно IMSI, объединяет MCC, MNC и номер абонента MSIN. Все части должны совпадать с выбранным оператором.</string>
+    <string name="description_ru_setting_value_cell_unique_sim_icc_id" translatable="false">ICCID — серийный номер SIM-карты. Обычно начинается с 89 и имеет от 18 до 22 цифр.</string>
+    <string name="description_ru_setting_value_cell_unique_phone_number" translatable="false">Номер телефона SIM-карты, который приложение получает от Android. Он может быть пустым, потому что оператор не всегда записывает его на SIM.</string>
+    <string name="description_ru_setting_value_cell_operator_name" translatable="false">Название мобильного оператора, например T-Mobile или МТС. Оно должно соответствовать MCC, MNC и стране SIM.</string>
+    <string name="description_ru_setting_value_cell_operator_id" translatable="false">Внутренний идентификатор оператора Android. Это не обязательно комбинация MCC и MNC.</string>
+    <string name="description_ru_setting_value_cell_operator_mcc" translatable="false">MCC — трёхзначный код страны мобильной сети. Он должен соответствовать стране SIM и оператору.</string>
+    <string name="description_ru_setting_value_cell_operator_mnc" translatable="false">MNC — код мобильного оператора внутри страны. Вместе с MCC он определяет конкретную сеть.</string>
+    <string name="description_ru_setting_value_cell_operator_icon_tint" translatable="false">Числовой цвет значка SIM в Android. Он помогает различать несколько SIM и не является идентификатором оператора.</string>
+    <string name="description_ru_setting_value_cell_voice_mail_alpha_tag" translatable="false">Текстовое имя службы голосовой почты, например Voice Mail. Оно может зависеть от оператора.</string>
+    <string name="description_ru_setting_value_cell_display_name" translatable="false">Имя SIM или подписки, которое пользователь видит в настройках Android. Оно может быть задано оператором или изменено владельцем.</string>
+    <string name="description_ru_setting_value_cell_display_name_source" translatable="false">Источник отображаемого имени SIM: оператор, данные SIM или ввод пользователя. Значение должно соответствовать самому Display Name.</string>
+    <string name="description_ru_setting_value_cell_sim_type" translatable="false">Тип SIM: физическая локальная SIM или удалённая eSIM. Согласуйте его с параметром Is Embedded.</string>
+    <string name="description_ru_setting_value_cell_sim_subscription_id" translatable="false">Внутренний номер подписки Android, создаваемый при добавлении SIM. У SIM 1 и SIM 2 значения не должны совпадать.</string>
+    <string name="description_ru_setting_value_cell_sim_is_embedded" translatable="false">Показывает, является ли SIM встроенной eSIM. Для обычной физической карты должно быть false.</string>
+    <string name="description_ru_setting_value_cell_sim_country_iso" translatable="false">Двухбуквенный код страны оператора SIM по ISO, например US или DE. Он должен соответствовать MCC.</string>
+    <string name="description_ru_setting_value_cell_data_is_opportunistic" translatable="false">Показывает, используется ли подписка как дополнительная opportunistic SIM для передачи данных. Обычно у основной SIM это выключено.</string>
+    <string name="description_ru_setting_value_cell_data_roaming_enabled_flag" translatable="false">Показывает, разрешил ли пользователь мобильный интернет в роуминге для этой SIM.</string>
+    <string name="description_ru_setting_value_cell_operator_numeric_id" translatable="false">Числовой код оператора, обычно MCC и MNC без разделителя. Он должен точно совпадать с отдельными значениями MCC и MNC.</string>
+    <string name="description_ru_setting_value_cell_operator_display_name" translatable="false">Отображаемое название оператора или подписки, которое может показываться в интерфейсе Android.</string>
+    <string name="description_ru_setting_value_cell_sim_state" translatable="false">Текстовое состояние SIM, например READY, ABSENT или PIN_REQUIRED. Оно должно соответствовать числовому флагу состояния.</string>
+    <string name="description_ru_setting_value_cell_sim_state_flag" translatable="false">Числовой код состояния SIM. Например, READY обычно соответствует коду 5.</string>
+    <string name="description_ru_setting_value_cell_location_lac" translatable="false">LAC — код зоны базовых станций мобильной сети. Вместе с Cell ID он может раскрывать примерное местоположение.</string>
+    <string name="description_ru_setting_value_cell_location_cid" translatable="false">CID — идентификатор конкретной базовой станции. Он должен выглядеть правдоподобно для выбранной сети и района.</string>
+
+    <!-- Display, Bluetooth, battery and clipboard -->
+    <string name="description_ru_setting_value_display_height" translatable="false">Высота экрана в пикселях. Она должна соответствовать реальному разрешению выбранной модели и быть больше ширины в портретном режиме.</string>
+    <string name="description_ru_setting_value_display_width" translatable="false">Ширина экрана в пикселях. Используйте разрешение реально существующей версии выбранного телефона.</string>
+    <string name="description_ru_setting_value_bluetooth_state" translatable="false">Числовое состояние Bluetooth-адаптера, например включён или выключен. Оно не переключает настоящий Bluetooth телефона.</string>
+    <string name="description_ru_setting_value_bluetooth_allow_discovery_bool" translatable="false">Разрешает выбранному приложению запускать поиск и обнаружение Bluetooth-устройств. Выключение может нарушить подключение аксессуаров.</string>
+    <string name="description_ru_setting_value_bluetooth_allowed_bonded_list" translatable="false">Список ранее сопряжённых Bluetooth-устройств, которые разрешено видеть приложению. Можно указывать имена или MAC-адреса.</string>
+    <string name="description_ru_setting_value_battery_is_charging_bool" translatable="false">Показывает приложению, заряжается ли батарея сейчас. Значение должно соответствовать Status и состоянию подключённого питания.</string>
+    <string name="description_ru_setting_value_battery_is_plugged_in_bool" translatable="false">Показывает, подключено ли зарядное устройство. Можно быть подключённым, но временно не заряжаться, поэтому это не то же самое, что Is Charging.</string>
+    <string name="description_ru_setting_value_battery_is_power_save_mode_bool" translatable="false">Показывает, включён ли системный режим энергосбережения. Подмена не включает его в настоящей системе.</string>
+    <string name="description_ru_setting_value_battery_status" translatable="false">Состояние аккумулятора: зарядка, разрядка, полный заряд или другое. Оно должно совпадать с параметрами Is Charging и Is Plugged In.</string>
+    <string name="description_ru_setting_value_battery_charge_percent" translatable="false">Уровень заряда батареи в процентах от 0 до 100. Неправильное значение может повлиять на поведение приложения при низком заряде.</string>
+    <string name="description_ru_setting_value_battery_charging_cycles" translatable="false">Количество полных циклов зарядки аккумулятора. Обычно оно растёт со временем и не должно выглядеть невозможным для возраста телефона.</string>
+    <string name="description_ru_setting_value_clipboard_label" translatable="false">Служебная метка содержимого буфера обмена. Большинство приложений важнее само Contents, но некоторые проверяют и эту метку.</string>
+    <string name="description_ru_setting_value_clipboard_contents" translatable="false">Текст, который выбранное приложение получит при чтении буфера обмена вместо настоящих скопированных данных.</string>
+
+    <!-- Location, notifications and user agent -->
+    <string name="description_ru_setting_value_location_latitude" translatable="false">Широта подменённой точки GPS от -90 до 90. Она должна соответствовать выбранному городу и долготе.</string>
+    <string name="description_ru_setting_value_location_longitude" translatable="false">Долгота подменённой точки GPS от -180 до 180. Используйте координату из той же точки, что и широта.</string>
+    <string name="description_ru_setting_value_location_radius" translatable="false">Радиус случайного отклонения вокруг заданных координат. Небольшое значение делает местоположение менее идеально неподвижным.</string>
+    <string name="description_ru_setting_value_location_type" translatable="false">Режим формирования координат. Если не уверены, используйте обычный точный режим set и задайте Latitude с Longitude.</string>
+    <string name="description_ru_setting_value_location_accuracy" translatable="false">Заявленная точность местоположения в метрах. Слишком идеальная нулевая точность выглядит неправдоподобно.</string>
+    <string name="description_ru_setting_value_location_provider" translatable="false">Источник координат, например gps, network или fused. Он должен соответствовать точности и способу определения местоположения.</string>
+    <string name="description_ru_setting_value_notification_message" translatable="false">Текст уведомления, который выбранное приложение получит вместо настоящего содержимого уведомлений.</string>
+    <string name="description_ru_setting_value_user_agent" translatable="false">Строка User-Agent сообщает сайтам браузер, Android и иногда модель устройства. Она должна соответствовать остальным данным выбранного профиля.</string>
+</resources>

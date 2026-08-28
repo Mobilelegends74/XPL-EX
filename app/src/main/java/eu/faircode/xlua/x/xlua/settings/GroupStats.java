@@ -91,19 +91,10 @@ public class GroupStats {
 
     public GroupStats updateIv(ImageView ivWarning, String name) {
         if(ivWarning != null) {
-            if(isSettingUnique(name)) {
-                if(!hasUnsaved()) {
-                    ivWarning.setVisibility(View.VISIBLE);
-                    ivWarning.setImageResource(R.drawable.ic_finger_print18);
-                } else {
-                    ivWarning.setVisibility(View.VISIBLE);
-                    ivWarning.setImageResource(android.R.drawable.ic_dialog_alert);
-                }
-            } else {
-                ivWarning.setVisibility(hasUnsaved() ?
-                        View.VISIBLE :
-                        View.GONE);
-            }
+            ivWarning.setVisibility(View.VISIBLE);
+            ivWarning.setImageResource(hasUnsaved()
+                    ? android.R.drawable.ic_dialog_alert
+                    : R.drawable.ic_finger_print18);
         }
 
         return this;
