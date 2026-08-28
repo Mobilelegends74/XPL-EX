@@ -24,7 +24,10 @@
 -keep class eu.faircode.xlua.XLua {*; }
 -keep class eu.faircode.xlua.XHook {*; }
 -keep class eu.faircode.xlua.XParam {*; }
--keepnames class eu.faircode.xlua.** {*; }
+# XPL-EX exposes classes and members through Xposed, Lua, JSON and reflection.
+# Preserve the application side exactly; R8 still removes unused dependency code,
+# which provides most of the safe size/method-count reduction.
+-keep class eu.faircode.xlua.** { *; }
 
 #LuaJ
 -dontwarn org.luaj.vm2.**

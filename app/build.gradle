@@ -5,16 +5,18 @@ apply plugin: 'com.android.application'
 //keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
-    compileSdkVersion 33
-    //Upgrade this shit
+    namespace "eu.faircode.xlua"
+    compileSdk 36
+    buildToolsVersion "35.0.0"
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
     defaultConfig {
         applicationId "eu.faircode.xlua"
-        minSdkVersion 23
-        targetSdkVersion 33
+        minSdk 23
+        targetSdk 36
         versionCode 155
         versionName "1.5.5"
         archivesBaseName = "XPL-EX-v$versionName-$versionCode"
@@ -41,7 +43,7 @@ android {
         }
     }
 
-    lintOptions {
+    lint {
         checkReleaseBuilds false
         // Or, if you prefer, you can continue to check for errors in release builds,
         // but continue the build even when errors are found:
@@ -49,14 +51,16 @@ android {
     }
 
     buildFeatures {
+        buildConfig true
         viewBinding true
     }
 
     buildTypes {
         release {
             shrinkResources false
-            minifyEnabled false
-            useProguard = false
+            // XPL-EX 1.5.8 uses R8. Keep resource shrinking disabled because hook
+            // group labels and help texts are resolved dynamically by name.
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (signingConfigs.release.storeFile) {
                 signingConfig signingConfigs.release
@@ -67,7 +71,6 @@ android {
             debuggable true
             shrinkResources false
             minifyEnabled false
-            useProguard = false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (signingConfigs.release.storeFile) {
                 signingConfig signingConfigs.release
@@ -76,12 +79,11 @@ android {
     }
 
 
-    packagingOptions {
-        exclude 'META-INF/kotlinx_coroutines_core.version'
-        exclude 'META-INF/versions/**'
-        exclude 'META-INF/*.kotlin_module'
-        pickFirst 'META-INF/kotlinx_coroutines_core.version'
-        pickFirst 'META-INF/INDEX.LIST'
+    packaging {
+        resources {
+            excludes += ['META-INF/kotlinx_coroutines_core.version', 'META-INF/versions/**', 'META-INF/*.kotlin_module']
+            pickFirsts += ['META-INF/kotlinx_coroutines_core.version', 'META-INF/INDEX.LIST']
+        }
     }
 }
 
