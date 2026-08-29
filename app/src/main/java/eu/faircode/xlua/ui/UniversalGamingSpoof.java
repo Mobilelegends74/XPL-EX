@@ -23,7 +23,6 @@ public final class UniversalGamingSpoof {
             "id.telephony",
             "id.unique",
             "id.uptime",
-            "intercept.properties",
             "network.information.spoof",
             "network.spoof.wifi.list",
             "network.wifi.information.spoof",

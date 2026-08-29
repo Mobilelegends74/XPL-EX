@@ -20,6 +20,35 @@
     "luaScript": "@id_build_soc_model",
     "settings":["soc.board.model"]
   },
+  {
+    "builtin": true,
+    "collection": "PrivacyEx",
+    "group": "Hardware.Spoof.CPU.Ex",
+    "name": "SoC model properties/Rule",
+    "author": "OBC",
+    "className": "Intercept.Properties",
+    "methodName": "get",
+    "parameterTypes": [
+      "ro.soc.model",
+      "ro.vendor.soc.model",
+      "ro.vendor.soc.model_name",
+      "ro.vendor.soc.model.part_name",
+      "ro.hardware.chipname",
+      "ro.product.cpu.name",
+      "ro.vendor.qti.soc_model",
+      "vendor.cpu.model_name"
+    ],
+    "minSdk": 4,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "Expose the selected profile SoC through every common Android property alias.",
+    "enabled": true,
+    "optional": true,
+    "usage": true,
+    "notify": false,
+    "luaScript": "",
+    "settings": ["soc.board.model"]
+  },
 
  /* {
     "builtin": true,
