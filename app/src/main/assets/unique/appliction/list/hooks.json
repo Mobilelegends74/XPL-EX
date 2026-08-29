@@ -130,7 +130,8 @@
     ],
     "returnType": "java.util.List",
     "minSdk": 1,
-    "luaScript": "@generic_filter_by_uid"
+    "luaScript": "@pm_virtual_applications",
+    "settings": ["device.brand", "device.manufacturer", "android.build.version.sdk"]
   },
   {
     "collection": "PrivacyEx",
@@ -144,7 +145,8 @@
     ],
     "returnType": "java.util.List",
     "minSdk": 33,
-    "luaScript": "@generic_filter_by_uid"
+    "luaScript": "@pm_virtual_applications",
+    "settings": ["device.brand", "device.manufacturer", "android.build.version.sdk"]
   },
   {
     "collection": "PrivacyEx",
@@ -158,7 +160,8 @@
     ],
     "returnType": "java.util.List",
     "minSdk": 1,
-    "luaScript": "@generic_filter_by_uid"
+    "luaScript": "@pm_virtual_packages",
+    "settings": ["device.brand", "device.manufacturer", "android.build.version.sdk"]
   },
   {
     "collection": "PrivacyEx",
@@ -172,7 +175,8 @@
     ],
     "returnType": "java.util.List",
     "minSdk": 33,
-    "luaScript": "@generic_filter_by_uid"
+    "luaScript": "@pm_virtual_packages",
+    "settings": ["device.brand", "device.manufacturer", "android.build.version.sdk"]
   },
 
   {
@@ -752,8 +756,8 @@
     "optional":true,
     "usage":true,
     "notify":false,
-    "luaScript": "@pm_filter_packagename",
-    "settings":["apps.allow.list"]
+    "luaScript": "@pm_virtual_package_info",
+    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "android.build.version.sdk"]
   },
   {
     "builtin": true,
@@ -773,8 +777,8 @@
     "optional":true,
     "usage":true,
     "notify":false,
-    "luaScript": "@pm_filter_packagename",
-    "settings":["apps.allow.list"]
+    "luaScript": "@pm_virtual_package_info",
+    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "android.build.version.sdk"]
   },
 
   {
@@ -795,8 +799,8 @@
     "optional":true,
     "usage":true,
     "notify":false,
-    "luaScript": "@pm_filter_packagename",
-    "settings":["apps.allow.list"]
+    "luaScript": "@pm_virtual_package_uid",
+    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "android.build.version.sdk"]
   },
   {
     "builtin": true,
@@ -816,8 +820,8 @@
     "optional":true,
     "usage":true,
     "notify":false,
-    "luaScript": "@pm_filter_packagename",
-    "settings":["apps.allow.list"]
+    "luaScript": "@pm_virtual_package_uid",
+    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "android.build.version.sdk"]
   },
   {
     "builtin": true,
@@ -1101,8 +1105,8 @@
     "optional":true,
     "usage":true,
     "notify":false,
-    "luaScript": "@pm_filter_packagename",
-    "settings":["apps.allow.list"]
+    "luaScript": "@pm_virtual_application_info",
+    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "android.build.version.sdk"]
   },
   {
     "builtin": true,
@@ -1122,8 +1126,8 @@
     "optional":true,
     "usage":true,
     "notify":false,
-    "luaScript": "@pm_filter_packagename",
-    "settings":["apps.allow.list"]
+    "luaScript": "@pm_virtual_application_info",
+    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "android.build.version.sdk"]
   },
   {
     "builtin": true,

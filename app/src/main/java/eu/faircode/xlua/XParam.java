@@ -58,6 +58,7 @@ import eu.faircode.xlua.x.data.utils.random.RandomGenerator;
 import eu.faircode.xlua.x.hook.filter.FilterContainerElement;
 import eu.faircode.xlua.x.hook.filter.kinds.IPCCallFilterContainer;
 import eu.faircode.xlua.x.hook.interceptors.battery.BatteryInterceptor;
+import eu.faircode.xlua.x.hook.interceptors.apps.VirtualAppCatalog;
 import eu.faircode.xlua.x.hook.interceptors.cell.SubscriptionInfoInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.devices.InputDeviceInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.file.FileInterceptor;
@@ -457,6 +458,31 @@ public class XParam extends XParamExtra {
 
     @SuppressWarnings("unused")
     public boolean packageInfoInstallTimeSpoof(boolean isReturn) { return PackageInfoInterceptor.interceptTimeStamps(this, isReturn); }
+
+    @SuppressWarnings("unused")
+    public List<android.content.pm.ApplicationInfo> mergeVirtualApplications(Object result) {
+        return VirtualAppCatalog.mergeApplications(this, result);
+    }
+
+    @SuppressWarnings("unused")
+    public List<android.content.pm.PackageInfo> mergeVirtualPackages(Object result) {
+        return VirtualAppCatalog.mergePackages(this, result);
+    }
+
+    @SuppressWarnings("unused")
+    public android.content.pm.ApplicationInfo getVirtualApplicationInfo(String packageName) {
+        return VirtualAppCatalog.findApplication(this, packageName);
+    }
+
+    @SuppressWarnings("unused")
+    public android.content.pm.PackageInfo getVirtualPackageInfo(String packageName) {
+        return VirtualAppCatalog.findPackage(this, packageName);
+    }
+
+    @SuppressWarnings("unused")
+    public Integer getVirtualPackageUid(String packageName) {
+        return VirtualAppCatalog.findUid(this, packageName);
+    }
 
     @SuppressWarnings("unused")
     public boolean interceptLastModified() { return StatCleaner.cleanFileLastModified(this); }
