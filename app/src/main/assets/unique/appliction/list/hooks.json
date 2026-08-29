@@ -131,7 +131,7 @@
     "returnType": "java.util.List",
     "minSdk": 1,
     "luaScript": "@pm_virtual_applications",
-    "settings": ["device.brand", "device.manufacturer", "android.build.version.sdk"]
+    "settings": ["device.brand", "device.manufacturer", "device.model", "device.nick.name", "android.build.fingerprint", "android.build.version.sdk"]
   },
   {
     "collection": "PrivacyEx",
@@ -146,7 +146,7 @@
     "returnType": "java.util.List",
     "minSdk": 33,
     "luaScript": "@pm_virtual_applications",
-    "settings": ["device.brand", "device.manufacturer", "android.build.version.sdk"]
+    "settings": ["device.brand", "device.manufacturer", "device.model", "device.nick.name", "android.build.fingerprint", "android.build.version.sdk"]
   },
   {
     "collection": "PrivacyEx",
@@ -161,7 +161,7 @@
     "returnType": "java.util.List",
     "minSdk": 1,
     "luaScript": "@pm_virtual_packages",
-    "settings": ["device.brand", "device.manufacturer", "android.build.version.sdk"]
+    "settings": ["device.brand", "device.manufacturer", "device.model", "device.nick.name", "android.build.fingerprint", "android.build.version.sdk"]
   },
   {
     "collection": "PrivacyEx",
@@ -176,7 +176,7 @@
     "returnType": "java.util.List",
     "minSdk": 33,
     "luaScript": "@pm_virtual_packages",
-    "settings": ["device.brand", "device.manufacturer", "android.build.version.sdk"]
+    "settings": ["device.brand", "device.manufacturer", "device.model", "device.nick.name", "android.build.fingerprint", "android.build.version.sdk"]
   },
 
   {
@@ -757,7 +757,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@pm_virtual_package_info",
-    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "android.build.version.sdk"]
+    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "device.model", "device.nick.name", "android.build.fingerprint", "android.build.version.sdk"]
   },
   {
     "builtin": true,
@@ -778,7 +778,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@pm_virtual_package_info",
-    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "android.build.version.sdk"]
+    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "device.model", "device.nick.name", "android.build.fingerprint", "android.build.version.sdk"]
   },
 
   {
@@ -800,7 +800,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@pm_virtual_package_uid",
-    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "android.build.version.sdk"]
+    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "device.model", "device.nick.name", "android.build.fingerprint", "android.build.version.sdk"]
   },
   {
     "builtin": true,
@@ -821,7 +821,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@pm_virtual_package_uid",
-    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "android.build.version.sdk"]
+    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "device.model", "device.nick.name", "android.build.fingerprint", "android.build.version.sdk"]
   },
   {
     "builtin": true,
@@ -1106,7 +1106,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@pm_virtual_application_info",
-    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "android.build.version.sdk"]
+    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "device.model", "device.nick.name", "android.build.fingerprint", "android.build.version.sdk"]
   },
   {
     "builtin": true,
@@ -1127,7 +1127,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "@pm_virtual_application_info",
-    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "android.build.version.sdk"]
+    "settings":["apps.allow.list", "device.brand", "device.manufacturer", "device.model", "device.nick.name", "android.build.fingerprint", "android.build.version.sdk"]
   },
   {
     "builtin": true,

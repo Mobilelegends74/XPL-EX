@@ -11,91 +11,162 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 import eu.faircode.xlua.XParam;
 
-/** Creates a small, coherent package inventory matching the selected device OEM. */
+/** A coherent system/OEM inventory plus a stable random user-app inventory. */
 public final class VirtualAppCatalog {
-    private static final String[] COMMON = {
+    private static final String[] ANDROID_CORE = {
             "android", "com.android.systemui", "com.android.settings",
+            "com.android.permissioncontroller", "com.android.packageinstaller",
+            "com.android.networkstack", "com.android.captiveportallogin",
             "com.android.providers.settings", "com.android.providers.media",
-            "com.android.providers.downloads", "com.android.documentsui",
-            "com.android.permissioncontroller", "com.android.phone",
-            "com.android.contacts", "com.android.mms", "com.android.dialer",
-            "com.android.camera2", "com.android.gallery3d", "com.android.calculator2",
-            "com.android.calendar", "com.android.deskclock"
+            "com.android.providers.downloads", "com.android.providers.contacts",
+            "com.android.providers.calendar", "com.android.documentsui",
+            "com.android.externalstorage", "com.android.bluetooth",
+            "com.android.nfc", "com.android.phone", "com.android.shell"
     };
 
-    private static final String[] GOOGLE = {
-            "com.google.android.gms", "com.android.vending",
-            "com.google.android.gsf", "com.google.android.googlequicksearchbox",
-            "com.google.android.apps.nexuslauncher", "com.google.android.dialer",
-            "com.google.android.contacts", "com.google.android.apps.messaging",
-            "com.google.android.GoogleCamera", "com.google.android.apps.photos",
-            "com.google.android.apps.maps", "com.google.android.youtube",
-            "com.android.chrome", "com.google.android.gm"
+    private static final String[] GOOGLE_CORE = {
+            "com.google.android.gms", "com.android.vending", "com.google.android.gsf",
+            "com.google.android.configupdater", "com.google.android.modulemetadata",
+            "com.google.android.webview", "com.google.android.ext.shared",
+            "com.google.android.ext.services", "com.google.android.permissioncontroller",
+            "com.google.android.networkstack", "com.google.android.captiveportallogin"
     };
 
-    private static final Map<String, String[]> OEM;
+    private static final Map<String, String[]> OEM_SYSTEM;
+    private static final Map<String, String[]> MODEL_SYSTEM;
+
+    private static final String[][] USER_APPS = {
+            {"org.telegram.messenger", "Telegram"}, {"com.whatsapp", "WhatsApp"},
+            {"com.instagram.android", "Instagram"}, {"com.facebook.katana", "Facebook"},
+            {"com.facebook.orca", "Messenger"}, {"com.zhiliaoapp.musically", "TikTok"},
+            {"com.twitter.android", "X"}, {"com.reddit.frontpage", "Reddit"},
+            {"com.discord", "Discord"}, {"com.snapchat.android", "Snapchat"},
+            {"com.spotify.music", "Spotify"}, {"com.netflix.mediaclient", "Netflix"},
+            {"com.amazon.mShop.android.shopping", "Amazon Shopping"},
+            {"com.ebay.mobile", "eBay"}, {"com.alibaba.aliexpresshd", "AliExpress"},
+            {"com.booking", "Booking.com"}, {"com.ubercab", "Uber"},
+            {"com.airbnb.android", "Airbnb"}, {"com.microsoft.office.outlook", "Outlook"},
+            {"com.microsoft.teams", "Microsoft Teams"},
+            {"com.microsoft.office.officehubrow", "Microsoft 365"},
+            {"com.dropbox.android", "Dropbox"}, {"com.google.android.apps.docs", "Google Drive"},
+            {"com.google.android.apps.translate", "Google Translate"},
+            {"com.google.android.apps.authenticator2", "Authenticator"},
+            {"com.valvesoftware.android.steam.community", "Steam"},
+            {"com.supercell.clashofclans", "Clash of Clans"},
+            {"com.supercell.brawlstars", "Brawl Stars"},
+            {"com.miHoYo.GenshinImpact", "Genshin Impact"},
+            {"com.tencent.ig", "PUBG MOBILE"},
+            {"com.activision.callofduty.shooter", "Call of Duty"},
+            {"com.roblox.client", "Roblox"}, {"com.mojang.minecraftpe", "Minecraft"},
+            {"com.king.candycrushsaga", "Candy Crush Saga"},
+            {"com.adobe.reader", "Adobe Acrobat"}, {"com.canva.editor", "Canva"},
+            {"com.shazam.android", "Shazam"}, {"com.duolingo", "Duolingo"},
+            {"com.anydesk.anydeskandroid", "AnyDesk"},
+            {"com.speedsoftware.rootexplorer", "Root Explorer"}
+    };
 
     static {
-        Map<String, String[]> packages = new LinkedHashMap<>();
-        packages.put("google", GOOGLE);
-        packages.put("samsung", new String[]{
-                "com.sec.android.app.launcher", "com.samsung.android.dialer",
-                "com.samsung.android.messaging", "com.samsung.android.contacts",
-                "com.sec.android.app.camera", "com.sec.android.gallery3d",
-                "com.sec.android.app.clockpackage", "com.sec.android.app.myfiles",
-                "com.samsung.android.calendar", "com.samsung.android.game.gamehome",
-                "com.samsung.android.game.gametools", "com.samsung.android.oneconnect"
+        Map<String, String[]> oem = new LinkedHashMap<>();
+        oem.put("google", new String[]{
+                "com.google.android.apps.nexuslauncher", "com.google.android.dialer",
+                "com.google.android.contacts", "com.google.android.apps.messaging",
+                "com.google.android.GoogleCamera", "com.google.android.apps.photos",
+                "com.google.android.apps.nbu.files", "com.google.android.deskclock",
+                "com.google.android.calculator", "com.google.android.calendar",
+                "com.google.android.googlequicksearchbox", "com.google.android.apps.tips",
+                "com.google.android.apps.wellbeing", "com.google.android.safetycenter.resources",
+                "com.google.android.apps.maps", "com.google.android.youtube",
+                "com.android.chrome", "com.google.android.gm"
         });
-        packages.put("xiaomi", new String[]{
+        oem.put("samsung", new String[]{
+                "com.sec.android.app.launcher", "com.samsung.android.dialer",
+                "com.samsung.android.incallui", "com.samsung.android.messaging",
+                "com.samsung.android.contacts", "com.sec.android.app.camera",
+                "com.sec.android.gallery3d", "com.sec.android.app.clockpackage",
+                "com.sec.android.app.myfiles", "com.samsung.android.calendar",
+                "com.sec.android.app.popupcalculator", "com.samsung.android.lool",
+                "com.samsung.android.app.notes", "com.samsung.android.bixby.agent",
+                "com.samsung.android.app.spage", "com.sec.android.app.samsungapps",
+                "com.samsung.android.game.gamehome", "com.samsung.android.game.gametools",
+                "com.samsung.android.oneconnect", "com.samsung.android.knox.containercore"
+        });
+        oem.put("xiaomi", new String[]{
                 "com.miui.home", "com.android.contacts", "com.android.mms",
                 "com.android.camera", "com.miui.gallery", "com.miui.securitycenter",
-                "com.miui.player", "com.miui.videoplayer", "com.miui.notes",
-                "com.mi.android.globalFileexplorer", "com.xiaomi.mipicks",
-                "com.xiaomi.gamecenter"
+                "com.miui.cleanmaster", "com.miui.packageinstaller", "com.android.updater",
+                "com.mi.android.globalFileexplorer", "com.miui.calculator", "com.miui.notes",
+                "com.miui.compass", "com.miui.weather2", "com.miui.screenrecorder",
+                "com.xiaomi.scanner", "com.miui.player", "com.miui.videoplayer",
+                "com.xiaomi.joyose", "com.miui.powerkeeper", "com.xiaomi.gamecenter"
         });
-        packages.put("oneplus", new String[]{
-                "net.oneplus.launcher", "com.oneplus.dialer", "com.oneplus.mms",
-                "com.oneplus.camera", "com.oneplus.gallery", "com.oneplus.filemanager",
-                "com.oneplus.calculator", "com.oneplus.deskclock",
-                "com.oneplus.gamespace", "com.oplus.games"
+        oem.put("oneplus", new String[]{
+                "com.android.launcher", "com.android.dialer", "com.android.contacts",
+                "com.android.mms", "com.oplus.camera", "com.coloros.gallery3d",
+                "com.coloros.filemanager", "com.coloros.calculator", "com.coloros.alarmclock",
+                "com.coloros.weather2", "com.coloros.phonemanager", "com.oplus.safecenter",
+                "com.oplus.games", "com.oneplus.membership", "com.oneplus.account"
         });
-        packages.put("asus", new String[]{
+        oem.put("asus", new String[]{
                 "com.asus.launcher", "com.asus.dialer", "com.asus.contacts",
                 "com.asus.camera", "com.asus.gallery", "com.asus.filemanager",
-                "com.asus.calculator", "com.asus.deskclock", "com.asus.gamecenter"
+                "com.asus.calculator", "com.asus.deskclock", "com.asus.mobilemanager",
+                "com.asus.weather", "com.asus.soundrecorder"
         });
-        packages.put("lenovo", new String[]{
+        oem.put("lenovo", new String[]{
                 "com.zui.launcher", "com.android.dialer", "com.android.contacts",
                 "com.zui.camera", "com.zui.gallery", "com.zui.filemanager",
-                "com.zui.calculator", "com.zui.deskclock", "com.lenovo.gameassistant"
+                "com.zui.calculator", "com.zui.deskclock", "com.zui.safecenter",
+                "com.zui.weather", "com.zui.notes"
         });
-        packages.put("motorola", new String[]{
+        oem.put("motorola", new String[]{
                 "com.motorola.launcher3", "com.google.android.dialer",
-                "com.google.android.contacts", "com.motorola.camera3",
-                "com.motorola.motogallery", "com.motorola.actions",
-                "com.motorola.moto", "com.motorola.gamemode"
+                "com.google.android.contacts", "com.google.android.apps.messaging",
+                "com.motorola.camera3", "com.google.android.apps.photos",
+                "com.google.android.apps.nbu.files", "com.motorola.actions",
+                "com.motorola.moto", "com.motorola.help", "com.motorola.gamemode",
+                "com.motorola.timeweatherwidget", "com.motorola.motosignature.app"
         });
-        packages.put("meizu", new String[]{
+        oem.put("meizu", new String[]{
                 "com.meizu.flyme.launcher", "com.android.dialer", "com.android.contacts",
-                "com.meizu.media.camera", "com.meizu.media.gallery",
-                "com.meizu.filemanager", "com.meizu.safe", "com.meizu.flyme.gamecenter"
+                "com.android.mms", "com.meizu.media.camera", "com.meizu.media.gallery",
+                "com.meizu.filemanager", "com.meizu.safe", "com.meizu.flyme.update",
+                "com.meizu.flyme.weather", "com.meizu.notepaper", "com.meizu.flyme.gamecenter"
         });
-        packages.put("vivo", new String[]{
+        oem.put("vivo", new String[]{
                 "com.bbk.launcher2", "com.android.dialer", "com.android.contacts",
-                "com.android.bbkmusic", "com.android.VideoPlayer",
-                "com.vivo.camera", "com.vivo.gallery", "com.vivo.filemanager",
-                "com.vivo.game", "com.vivo.gamewatch"
+                "com.android.mms", "com.vivo.camera", "com.vivo.gallery",
+                "com.vivo.filemanager", "com.iqoo.secure", "com.bbk.updater",
+                "com.vivo.weather", "com.android.bbkmusic", "com.android.VideoPlayer",
+                "com.vivo.notes", "com.vivo.game", "com.vivo.gamewatch"
         });
-        packages.put("nubia", new String[]{
+        oem.put("nubia", new String[]{
                 "cn.nubia.launcher", "cn.nubia.contacts", "cn.nubia.mms",
                 "cn.nubia.camera", "cn.nubia.gallery3d", "cn.nubia.filebrowser",
-                "cn.nubia.calculator2", "cn.nubia.deskclock.preset",
-                "cn.nubia.security2", "cn.nubia.gamecenter", "cn.nubia.gamelauncher"
+                "cn.nubia.calculator2", "cn.nubia.deskclock.preset", "cn.nubia.weather",
+                "cn.nubia.security2", "cn.nubia.updatesystem", "cn.nubia.neoshare",
+                "cn.nubia.gamecenter", "cn.nubia.gamelauncher", "cn.nubia.gameassist"
         });
-        OEM = Collections.unmodifiableMap(packages);
+        OEM_SYSTEM = Collections.unmodifiableMap(oem);
+
+        Map<String, String[]> models = new LinkedHashMap<>();
+        models.put("pixel", new String[]{"com.google.android.pixel.setupwizard", "com.google.android.apps.restore"});
+        models.put("sm-s918", new String[]{"com.samsung.android.service.aircommand", "com.samsung.android.app.notes.addons"});
+        models.put("sm-s928", new String[]{"com.samsung.android.service.aircommand", "com.samsung.android.visionintelligence"});
+        models.put("sm-f946", new String[]{"com.samsung.android.appcontinuity", "com.samsung.android.honeyboard"});
+        models.put("asus_ai22", new String[]{"com.asus.gamecenter", "com.asus.rog"});
+        models.put("asus_ai24", new String[]{"com.asus.gamecenter", "com.asus.rog"});
+        models.put("asus_ai25", new String[]{"com.asus.gamecenter", "com.asus.rog"});
+        models.put("nx7", new String[]{"cn.nubia.gamehelper", "cn.nubia.redmagiclight"});
+        models.put("nx8", new String[]{"cn.nubia.gamehelper", "cn.nubia.redmagiclight"});
+        models.put("i2220", new String[]{"com.vivo.gamecube", "com.iqoo.gameturbo"});
+        models.put("i2401", new String[]{"com.vivo.gamecube", "com.iqoo.gameturbo"});
+        models.put("lenovo l7", new String[]{"com.lenovo.gameassistant", "com.zui.game.service"});
+        models.put("xt2551", new String[]{"com.motorola.readyfor", "com.motorola.flexui"});
+        MODEL_SYSTEM = Collections.unmodifiableMap(models);
     }
 
     private VirtualAppCatalog() { }
@@ -107,9 +178,9 @@ public final class VirtualAppCatalog {
                 if (item instanceof ApplicationInfo && ((ApplicationInfo) item).uid == param.getUid())
                     result.put(((ApplicationInfo) item).packageName, (ApplicationInfo) item);
         }
-        for (String packageName : packagesFor(param))
-            if (!result.containsKey(packageName))
-                result.put(packageName, applicationInfo(param, packageName));
+        for (CatalogEntry entry : catalogFor(param).values())
+            if (!result.containsKey(entry.packageName))
+                result.put(entry.packageName, applicationInfo(param, entry));
         return new ArrayList<>(result.values());
     }
 
@@ -121,90 +192,133 @@ public final class VirtualAppCatalog {
                         && ((PackageInfo) item).applicationInfo.uid == param.getUid())
                     result.put(((PackageInfo) item).packageName, (PackageInfo) item);
         }
-        for (String packageName : packagesFor(param))
-            if (!result.containsKey(packageName))
-                result.put(packageName, packageInfo(param, packageName));
+        for (CatalogEntry entry : catalogFor(param).values())
+            if (!result.containsKey(entry.packageName))
+                result.put(entry.packageName, packageInfo(param, entry));
         return new ArrayList<>(result.values());
     }
 
     public static ApplicationInfo findApplication(XParam param, String packageName) {
-        return isVirtual(param, packageName) ? applicationInfo(param, packageName) : null;
+        CatalogEntry entry = catalogFor(param).get(packageName);
+        return entry == null ? null : applicationInfo(param, entry);
     }
 
     public static PackageInfo findPackage(XParam param, String packageName) {
-        return isVirtual(param, packageName) ? packageInfo(param, packageName) : null;
+        CatalogEntry entry = catalogFor(param).get(packageName);
+        return entry == null ? null : packageInfo(param, entry);
     }
 
     public static Integer findUid(XParam param, String packageName) {
-        return isVirtual(param, packageName) ? stableUid(packageName) : null;
+        return catalogFor(param).containsKey(packageName) ? stableUid(packageName) : null;
     }
 
-    private static boolean isVirtual(XParam param, String packageName) {
-        if (packageName == null) return false;
-        for (String candidate : packagesFor(param))
-            if (candidate.equals(packageName)) return true;
-        return false;
-    }
+    private static LinkedHashMap<String, CatalogEntry> catalogFor(XParam param) {
+        LinkedHashMap<String, CatalogEntry> result = new LinkedHashMap<>();
+        addSystem(result, ANDROID_CORE);
+        addSystem(result, GOOGLE_CORE);
 
-    private static List<String> packagesFor(XParam param) {
-        ArrayList<String> result = new ArrayList<>(Arrays.asList(COMMON));
-        // Play services and standard Google applications are present on all global profiles.
-        result.addAll(Arrays.asList(GOOGLE));
-        String family = family(param.getSetting("device.brand", ""),
-                param.getSetting("device.manufacturer", ""));
-        String[] oem = OEM.get(family);
-        if (oem != null && !"google".equals(family)) result.addAll(Arrays.asList(oem));
+        String identity = identity(param);
+        String family = familyForIdentity(identity);
+        String[] oem = OEM_SYSTEM.get(family);
+        if (oem != null) addSystem(result, oem);
+        for (Map.Entry<String, String[]> model : MODEL_SYSTEM.entrySet())
+            if (identity.contains(model.getKey())) addSystem(result, model.getValue());
+
+        List<String[]> userApps = new ArrayList<>(Arrays.asList(USER_APPS));
+        long seed = seed(param, identity);
+        Collections.shuffle(userApps, new Random(seed));
+        int count = 10 + (int) Math.floorMod(seed, 9);
+        for (int i = 0; i < count; i++) {
+            String[] app = userApps.get(i);
+            result.put(app[0], new CatalogEntry(app[0], app[1], false));
+        }
         return result;
     }
 
-    private static String family(String brand, String manufacturer) {
-        String value = (brand + " " + manufacturer).toLowerCase(Locale.US);
-        if (value.contains("redmagic") || value.contains("nubia")) return "nubia";
-        if (value.contains("poco") || value.contains("xiaomi") || value.contains("redmi")) return "xiaomi";
-        if (value.contains("iqoo") || value.contains("vivo")) return "vivo";
-        for (String family : OEM.keySet())
-            if (value.contains(family)) return family;
+    private static void addSystem(Map<String, CatalogEntry> result, String[] packages) {
+        for (String packageName : packages)
+            result.put(packageName, new CatalogEntry(packageName, label(packageName), true));
+    }
+
+    private static String identity(XParam param) {
+        String value = join(param.getSetting("device.brand"), param.getSetting("device.manufacturer"),
+                param.getSetting("device.model"), param.getSetting("device.nick.name"));
+        if (value.trim().isEmpty())
+            value = join(Build.BRAND, Build.MANUFACTURER, Build.MODEL, Build.DEVICE);
+        return value.toLowerCase(Locale.US);
+    }
+
+    private static String join(String... values) {
+        StringBuilder result = new StringBuilder();
+        for (String value : values)
+            if (value != null && !value.trim().isEmpty()) result.append(' ').append(value.trim());
+        return result.toString();
+    }
+
+    static String familyForIdentity(String identity) {
+        if (identity.contains("redmagic") || identity.contains("nubia")) return "nubia";
+        if (identity.contains("poco") || identity.contains("xiaomi") || identity.contains("redmi")) return "xiaomi";
+        if (identity.contains("samsung") || identity.contains("sm-s") || identity.contains("sm-f")) return "samsung";
+        if (identity.contains("oneplus") || identity.contains("cph")) return "oneplus";
+        if (identity.contains("asus")) return "asus";
+        if (identity.contains("lenovo")) return "lenovo";
+        if (identity.contains("motorola") || identity.contains("xt2")) return "motorola";
+        if (identity.contains("meizu")) return "meizu";
+        if (identity.contains("iqoo") || identity.contains("vivo")) return "vivo";
+        if (identity.contains("nx7") || identity.contains("nx8")) return "nubia";
+        if (identity.matches(".* 2[0-9]{6,}[a-z].*")) return "xiaomi";
+        if (identity.contains(" i2220") || identity.contains(" i2401")) return "vivo";
+        if (identity.matches(".* m[0-9]{3}q.*")) return "meizu";
         return "google";
     }
 
-    private static ApplicationInfo applicationInfo(XParam param, String packageName) {
+    private static long seed(XParam param, String identity) {
+        String fingerprint = param.getSetting("android.build.fingerprint");
+        String source = identity + '|' + (fingerprint == null ? "" : fingerprint);
+        long result = 1125899906842597L;
+        for (int i = 0; i < source.length(); i++) result = 31L * result + source.charAt(i);
+        return result;
+    }
+
+    private static ApplicationInfo applicationInfo(XParam param, CatalogEntry entry) {
         ApplicationInfo info = new ApplicationInfo();
-        info.packageName = packageName;
-        info.name = packageName;
-        info.processName = packageName;
-        info.uid = stableUid(packageName);
+        info.packageName = entry.packageName;
+        info.name = entry.packageName;
+        info.processName = entry.packageName;
+        info.uid = stableUid(entry.packageName);
         info.enabled = true;
-        info.flags = ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_INSTALLED;
+        info.flags = ApplicationInfo.FLAG_INSTALLED | (entry.system ? ApplicationInfo.FLAG_SYSTEM : 0);
         info.targetSdkVersion = selectedSdk(param);
-        info.sourceDir = "/system/priv-app/" + pathName(packageName) + "/" + pathName(packageName) + ".apk";
+        String path = pathName(entry.packageName);
+        info.sourceDir = entry.system
+                ? "/system/priv-app/" + path + "/" + path + ".apk"
+                : "/data/app/~~" + Integer.toHexString(entry.packageName.hashCode()) + "/" + entry.packageName + "-1/base.apk";
         info.publicSourceDir = info.sourceDir;
-        info.dataDir = "/data/user/0/" + packageName;
-        info.nonLocalizedLabel = label(packageName);
+        info.dataDir = "/data/user/0/" + entry.packageName;
+        info.nonLocalizedLabel = entry.label;
         return info;
     }
 
-    private static PackageInfo packageInfo(XParam param, String packageName) {
+    private static PackageInfo packageInfo(XParam param, CatalogEntry entry) {
         PackageInfo info = new PackageInfo();
-        info.packageName = packageName;
-        info.applicationInfo = applicationInfo(param, packageName);
-        info.versionName = "1.0." + Math.abs(packageName.hashCode() % 1000);
-        info.versionCode = 1 + Math.abs(packageName.hashCode() % 100000);
-        info.firstInstallTime = 1704067200000L;
-        info.lastUpdateTime = 1735689600000L;
+        info.packageName = entry.packageName;
+        info.applicationInfo = applicationInfo(param, entry);
+        info.versionName = entry.system ? "1.0." : "10." + Math.abs(entry.packageName.hashCode() % 100) + ".";
+        info.versionName += Math.abs(entry.packageName.hashCode() % 1000);
+        info.versionCode = 1 + Math.abs(entry.packageName.hashCode() % 900000);
+        info.firstInstallTime = 1704067200000L + Math.abs(entry.packageName.hashCode() % 20000000000L);
+        info.lastUpdateTime = info.firstInstallTime + 86400000L * (30 + Math.abs(entry.packageName.hashCode() % 300));
         return info;
     }
 
     private static int stableUid(String packageName) {
+        if ("android".equals(packageName) || "com.android.systemui".equals(packageName)) return 1000;
         return 10000 + Math.abs(packageName.hashCode() % 40000);
     }
 
     private static int selectedSdk(XParam param) {
         String value = param.getSetting("android.build.version.sdk");
-        if (value != null) {
-            try {
-                return Integer.parseInt(value.trim());
-            } catch (NumberFormatException ignored) { }
-        }
+        if (value != null) try { return Integer.parseInt(value.trim()); } catch (NumberFormatException ignored) { }
         return Build.VERSION.SDK_INT;
     }
 
@@ -216,7 +330,18 @@ public final class VirtualAppCatalog {
     }
 
     private static String label(String packageName) {
-        String value = pathName(packageName).replace('_', ' ');
-        return value.isEmpty() ? packageName : value;
+        return pathName(packageName).replace('_', ' ');
+    }
+
+    private static final class CatalogEntry {
+        final String packageName;
+        final String label;
+        final boolean system;
+
+        CatalogEntry(String packageName, String label, boolean system) {
+            this.packageName = packageName;
+            this.label = label;
+            this.system = system;
+        }
     }
 }

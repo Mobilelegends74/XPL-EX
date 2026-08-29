@@ -152,6 +152,11 @@ public class DeviceProfileCatalogTest {
                 assertEquals(profile.manufacturer, values.get(RandomizersCache.SETTING_DEVICE_MANUFACTURER));
                 assertEquals(profile.brand, values.get(RandomizersCache.SETTING_DEVICE_BRAND));
                 assertEquals(profile.model, values.get(RandomizersCache.SETTING_DEVICE_MODEL));
+                String displayId = values.get(RandomizersCache.SETTING_ANDROID_BUILD_DISPLAY_ID);
+                assertNotNull(profile.id, displayId);
+                assertFalse(profile.id, displayId.contains("REDMAGICOS10.07.MR_EU1"));
+                assertTrue(profile.id, displayId.equals(build.buildId)
+                        || displayId.contains(build.incremental));
                 assertEquals(profile.device, values.get(RandomizersCache.SETTING_DEVICE_CODENAME));
                 assertEquals(profile.product, values.get(RandomizersCache.SETTING_ANDROID_BUILD_CODENAME));
                 assertEquals(profile.hardware, values.get(RandomizersCache.SETTING_SOC_BOARD_MANUFACTURER_ID));

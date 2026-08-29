@@ -46,6 +46,7 @@ public final class DeviceProfileSelection {
         values.put(RandomizersCache.SETTING_ANDROID_BUILD_INCREMENTAL, build.incremental);
         values.put(RandomizersCache.SETTING_ANDROID_BUILD_DESCRIPTION, build.description(device));
         values.put(RandomizersCache.SETTING_ANDROID_BUILD_ID, build.buildId);
+        values.put(RandomizersCache.SETTING_ANDROID_BUILD_DISPLAY_ID, displayId(device, build));
         values.put(RandomizersCache.SETTING_ANDROID_BUILD_FLAVOR, build.flavor(device));
         values.put(RandomizersCache.SETTING_ANDROID_BUILD_CODENAME, device.product);
         values.put(RandomizersCache.SETTING_ANDROID_BUILD_FINGERPRINT, build.fingerprint);
@@ -155,6 +156,23 @@ public final class DeviceProfileSelection {
         if (model.startsWith("SM8845") || model.startsWith("SM8850"))
             return "Adreno 840";
         throw new IllegalArgumentException("Unsupported GPU mapping for " + socModel);
+    }
+
+    private static String displayId(DeviceProfile device, DeviceBuildProfile build) {
+        String identity = (device.brand + " " + device.manufacturer).toLowerCase(Locale.ROOT);
+        if (identity.contains("google"))
+            return build.buildId;
+        if (identity.contains("xiaomi") || identity.contains("poco") || identity.contains("redmi"))
+            return build.incremental;
+        if (identity.contains("samsung"))
+            return build.buildId + "." + build.incremental;
+        if (identity.contains("oneplus"))
+            return device.model + "_" + build.incremental;
+        if (identity.contains("asus"))
+            return device.model + "-" + build.incremental;
+        if (identity.contains("nubia") || identity.contains("redmagic"))
+            return device.model + "_" + build.incremental;
+        return build.buildId + "." + build.incremental;
     }
 
     private static String cameraPackageFor(String brand, String manufacturer) {

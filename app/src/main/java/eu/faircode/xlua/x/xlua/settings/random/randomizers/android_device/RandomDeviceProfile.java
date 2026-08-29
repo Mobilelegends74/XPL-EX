@@ -18,6 +18,7 @@ public class RandomDeviceProfile extends RandomElement {
             RandomizersCache.SETTING_ANDROID_BUILD_INCREMENTAL,
             RandomizersCache.SETTING_ANDROID_BUILD_DESCRIPTION,
             RandomizersCache.SETTING_ANDROID_BUILD_ID,
+            RandomizersCache.SETTING_ANDROID_BUILD_DISPLAY_ID,
             RandomizersCache.SETTING_ANDROID_BUILD_FLAVOR,
             RandomizersCache.SETTING_ANDROID_BUILD_CODENAME,
             RandomizersCache.SETTING_ANDROID_BUILD_FINGERPRINT,
