@@ -25,6 +25,7 @@ import eu.faircode.xlua.hooks.XHookUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.hook.filter.kinds.FileFilterContainer;
+import eu.faircode.xlua.x.hook.filter.kinds.GetPropFilterContainer;
 import eu.faircode.xlua.x.hook.filter.kinds.IPCBinderFilterContainer;
 import eu.faircode.xlua.x.hook.filter.kinds.IPCCallFilterContainer;
 import eu.faircode.xlua.x.hook.filter.kinds.IPCQueryFilterContainer;
@@ -38,6 +39,7 @@ public class XHook extends XHookBase implements IDiffFace {
     public static final String DEFAULT_SCRIPT = "function before(hook, param) end";
     public static final List<String> SPECIAL_FILTERS = Arrays.asList(
             FileFilterContainer.GROUP_NAME,
+            GetPropFilterContainer.GROUP_NAME,
             IPCCallFilterContainer.GROUP_NAME,
             IPCBinderFilterContainer.GROUP_NAME,
             IPCQueryFilterContainer.GROUP_NAME,

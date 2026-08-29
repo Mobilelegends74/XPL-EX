@@ -638,6 +638,14 @@ public class XParam extends XParamExtra {
     }
 
     @SuppressWarnings("unused")
+    public File createFakeBatteryCapacityFile() {
+        int capacityMah = Math.max(1000, Math.min(20000,
+                getSettingInt("battery.capacity.mah", 5000)));
+        // Linux power_supply charge_* attributes are expressed in microampere-hours.
+        return FileUtil.generateTempFakeFile(String.valueOf(capacityMah * 1000L) + "\n");
+    }
+
+    @SuppressWarnings("unused")
     public FileDescriptor createFakeUUIDFileDescriptor() { return MockFileUtil.generateFakeBootUUIDDescriptor(getSetting("unique.boot.id")); }
 
     @SuppressWarnings("unused")

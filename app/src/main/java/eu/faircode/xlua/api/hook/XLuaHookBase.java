@@ -19,6 +19,7 @@ import eu.faircode.xlua.hooks.XHookUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ArrayUtils;
 import eu.faircode.xlua.x.hook.filter.kinds.FileFilterContainer;
+import eu.faircode.xlua.x.hook.filter.kinds.GetPropFilterContainer;
 import eu.faircode.xlua.x.hook.filter.kinds.IPCBinderFilterContainer;
 import eu.faircode.xlua.x.hook.filter.kinds.IPCCallFilterContainer;
 import eu.faircode.xlua.x.hook.filter.kinds.IPCQueryFilterContainer;
@@ -31,6 +32,7 @@ public class XLuaHookBase {
     public static ArrayList<XLuaHook> readHooks(Context context, String apk) throws IOException, JSONException { return XHookUtil.readHooks(apk); }
     public static final List<String> SPECIAL_FILTERS = Arrays.asList(
             FileFilterContainer.GROUP_NAME,
+            GetPropFilterContainer.GROUP_NAME,
             IPCCallFilterContainer.GROUP_NAME,
             IPCBinderFilterContainer.GROUP_NAME,
             IPCQueryFilterContainer.GROUP_NAME,

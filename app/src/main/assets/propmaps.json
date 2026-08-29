@@ -176,7 +176,7 @@
 
 
   //cpu.soc.model
-  { "settingName": "soc.board.model", "propNames": [ "ro.soc.model", "ro.vendor.soc.model", "ro.vendor.soc.model_name", "vendor.cpu.model_name" ] },
+  { "settingName": "soc.board.model", "propNames": [ "ro.soc.model", "ro.vendor.soc.model", "ro.vendor.soc.model_name", "ro.vendor.soc.model.part_name", "ro.hardware.chipname", "ro.product.cpu.name", "vendor.cpu.model_name" ] },
   //cpu.hardware.name
   { "settingName": "soc.board.manufacturer.id", "propNames": [ "ro.hardware", "ro.boot.hardware" ] },  //qcom
   //cpu.platform.name
