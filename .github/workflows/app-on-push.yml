@@ -1,4 +1,4 @@
-name: Build and publish XPL-EX 1.5.6 — UI 1.5.8 Final
+name: Build and publish XPL-EX-NEXT v1.2
 
 on:
   workflow_dispatch:
@@ -10,14 +10,14 @@ permissions:
   contents: write
 
 concurrency:
-  group: xpl-ex-v1.5.6-155-new-ui-1.5.8-final-release
+  group: xpl-ex-next-v1.2-release
   cancel-in-progress: false
 
 env:
-  RELEASE_TAG: v1.5.6-155-new-ui-1.5.8-final
-  RELEASE_TITLE: XPL-EX 1.5.6 (155) — UI 1.5.8 Final
-  BUILD_APK: XPL-EX-v1.5.6-155-release.apk
-  RELEASE_APK: XPL-EX-v1.5.6-155-new-ui-1.5.8-final-release.apk
+  RELEASE_TAG: XPL-EX-NEXT-v1.2
+  RELEASE_TITLE: XPL-EX-NEXT v1.2
+  BUILD_APK: XPL-EX-NEXT-1.5.6-release.apk
+  RELEASE_APK: XPL-EX-NEXT-1.5.6.apk
 
 jobs:
   build-and-release:
@@ -120,15 +120,7 @@ jobs:
       - name: Prepare release description
         run: |
           set -euo pipefail
-          cp docs/releases/xpl-ex-1.5.6-ui-1.5.8.md "${RUNNER_TEMP}/release-notes.md"
-          {
-            echo
-            echo "## Проверка файла"
-            echo
-            echo "- APK: \`${RELEASE_APK}\`"
-            echo "- SHA-256: \`${{ steps.apk.outputs.sha256 }}\`"
-            echo "- Исходный commit сборки: \`${GITHUB_SHA}\`"
-          } >> "${RUNNER_TEMP}/release-notes.md"
+          cp docs/releases/xpl-ex-next-v1.2.md "${RUNNER_TEMP}/release-notes.md"
 
       - name: Write build summary
         run: |
@@ -147,7 +139,7 @@ jobs:
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: XPL-EX-v1.5.6-155-new-ui-1.5.8-final-release
+          name: XPL-EX-NEXT-1.5.6
           path: dist/
           if-no-files-found: error
           retention-days: 30
