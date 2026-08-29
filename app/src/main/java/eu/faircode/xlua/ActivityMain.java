@@ -379,16 +379,16 @@ public class ActivityMain extends ActivityBase {
                     .setErrorMessage(Str.combineEx(
                             Str.combine("Bridge Version=", Str.toStringOrNull(result)),
                             Str.NEW_LINE,
-                            Str.combine("Application Version=", BuildConfig.VERSION_NAME),
+                            Str.combine("Required Bridge Version=", BuildConfig.BRIDGE_VERSION),
                             Str.repeatString(Str.NEW_LINE, 2),
                             getString(R.string.msg_error_service_bridge)))
                     .show(getSupportFragmentManager(), getString(R.string.title_error_generic));
             return false;
         } else {
-            if(!BuildConfig.VERSION_NAME.equalsIgnoreCase(result)) {
+            if(!BuildConfig.BRIDGE_VERSION.equalsIgnoreCase(result)) {
                 ErrorDialog.create()
                         .setErrorTitle(getString(R.string.title_error_service_version))
-                        .setErrorMessage(Str.fm(getString(R.string.msg_error_mismatch_bridge_version), result, BuildConfig.VERSION_NAME))
+                        .setErrorMessage(Str.fm(getString(R.string.msg_error_mismatch_bridge_version), result, BuildConfig.BRIDGE_VERSION))
                         .show(getSupportFragmentManager(), getString(R.string.title_error_generic));
                 return false;
             }

@@ -34,13 +34,13 @@ public class GetBridgeVersionCommand extends CallCommandHandlerEx {
 
     public static void init() {
         if(Str.isEmpty(LAST_VERSION))
-            LAST_VERSION = Str.createCopy(BuildConfig.VERSION_NAME);
+            LAST_VERSION = Str.createCopy(BuildConfig.BRIDGE_VERSION);
     }
 
     @Override
     public Bundle handle(CallPacket commandData) throws Throwable {
         if(Str.isEmpty(LAST_VERSION))
-            LAST_VERSION = Str.createCopy(BuildConfig.VERSION_NAME);
+            LAST_VERSION = Str.createCopy(BuildConfig.BRIDGE_VERSION);
 
         Bundle res = new Bundle();
         res.putString(FIELD_CURRENT, LAST_VERSION);
@@ -50,7 +50,7 @@ public class GetBridgeVersionCommand extends CallCommandHandlerEx {
     public static String get(Context context) {
         String result = Str.ensureIsNotNullOrDefault(internalGet(context), DEFAULT);
         if(DebugUtil.isDebug())
-            Log.d(TAG, "Bridge Version Check Result=" + result + " Current App Version: " + BuildConfig.VERSION_NAME);
+            Log.d(TAG, "Bridge Version Check Result=" + result + " Required Bridge Version: " + BuildConfig.BRIDGE_VERSION);
 
         return result;
     }
