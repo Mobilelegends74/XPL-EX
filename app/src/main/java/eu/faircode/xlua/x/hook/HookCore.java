@@ -52,6 +52,13 @@ public class HookCore {
             //Ask to Force Bypass
             boolean bypassed = HiddenApi.bypassHiddenApiRestrictionsClassLoader(loadParam.classLoader);
             final PackageHookContext app = PackageHookContext.create(loadParam, uid, context);
+
+            // Apply the selected firmware version before resolving any target-app
+            // classes. A class resolver must never get a chance to initialize code
+            // that can cache the real Build.VERSION values first.
+            AndroidVersionSpoofer.installSystemPropertyHooks(app.settings);
+            AndroidVersionSpoofer.applyFrameworkFields(app.settings);
+
             final Collection<XHook> hooks = GetAssignedHooksExCommand.get(context, true, uid, loadParam.packageName);
             if(DebugUtil.isDebug())
                 Log.d(TAG, Str.fm("Loading Hooks for Package=%s UID=%s Hooks Count=%s Settings Count=%s Bypassed Hidden Api=%s",
@@ -277,11 +284,6 @@ public class HookCore {
                     }
                 }
             }
-
-            // Apply profile versions after hook installation but before the target
-            // application starts. This is independent of persisted hook assignments.
-            AndroidVersionSpoofer.installSystemPropertyHooks(app.settings);
-            AndroidVersionSpoofer.applyFrameworkFields(app.settings);
 
         }catch (Exception e) {
             Log.e(TAG, "Failed to InitHooks! UID=" + uid + " Error=" + e);

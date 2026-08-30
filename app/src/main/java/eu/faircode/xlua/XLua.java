@@ -319,32 +319,64 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     private boolean made = false;
 
                     @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            // Instrumentation.newApplication receives the app Context before it
+                            // loads/instantiates the target Application class. Install the hooks
+                            // here so static initializers cannot cache the real Build.VERSION.
+                            if (tiramisuOrHigher && !made) {
+                                Context context = findContextArgument(param.args);
+                                if (context != null)
+                                    initialize(context);
+                            }
+                        } catch (Throwable ex) {
+                            Log.e(TAG, Log.getStackTraceString(ex));
+                            XposedBridge.log(ex);
+                        }
+                    }
+
+                    @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         try {
                             if(!made) {
-                                made = true;
                                 Context context = (Application) param.getResult();
-
-                                //Check for isolate process
-                                int userid = XUtil.getUserId(uid);
-                                int start = XUtil.getUserUid(userid, 99000);
-                                int end = XUtil.getUserUid(userid, 99999);
-                                boolean isolated = (uid >= start && uid <= end);
-                                if (isolated) {
-                                    Log.i(TAG, "Skipping isolated " + lpparam.packageName + ":" + uid);
-                                    return;
-                                }
-
-                                if(lpparam.packageName.equalsIgnoreCase("com.android.phone")) {
-                                    //XposedUtility.logI_xposed(TAG, "!!! Phone App! =" + lpparam.packageName);
-                                    //PhoneServicesHook.deployHook(lpparam, context);
-                                } else {
-                                    hookPackage(lpparam, uid, context);
-                                }
+                                initialize(context);
                             }
                         }catch (Throwable ex) {
                             Log.e(TAG, Log.getStackTraceString(ex));
                             XposedBridge.log(ex);
+                        }
+                    }
+
+                    private Context findContextArgument(Object[] args) {
+                        if (args == null)
+                            return null;
+                        for (Object arg : args)
+                            if (arg instanceof Context)
+                                return (Context) arg;
+                        return null;
+                    }
+
+                    private void initialize(Context context) throws Throwable {
+                        if (made || context == null)
+                            return;
+                        made = true;
+
+                        // Check for isolate process
+                        int userid = XUtil.getUserId(uid);
+                        int start = XUtil.getUserUid(userid, 99000);
+                        int end = XUtil.getUserUid(userid, 99999);
+                        boolean isolated = (uid >= start && uid <= end);
+                        if (isolated) {
+                            Log.i(TAG, "Skipping isolated " + lpparam.packageName + ":" + uid);
+                            return;
+                        }
+
+                        if(lpparam.packageName.equalsIgnoreCase("com.android.phone")) {
+                            //XposedUtility.logI_xposed(TAG, "!!! Phone App! =" + lpparam.packageName);
+                            //PhoneServicesHook.deployHook(lpparam, context);
+                        } else {
+                            hookPackage(lpparam, uid, context);
                         }
                     }
                 });
