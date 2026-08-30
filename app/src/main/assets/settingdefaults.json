@@ -106,7 +106,7 @@
   { "name": "device.codename", "description": "Device Codename (usually is food) or something fun", "defaultValue": "guacamoles" },
 
   //BUILD
-  { "name": "android.build.date.epoc", "description": "Android ROM Build Date (Unix Epoc TimeStamp)",  "defaultValue": "1696343919" },//android.build.date.utc
+  { "name": "android.build.date.utc", "description": "Android ROM Build Date (Unix Epoch Timestamp)",  "defaultValue": "1696343919" },
   { "name": "android.build.date", "description": "Android ROM Build Date (WEEKDAY MONTH DAY HOUR:MINUTE:SECOND YEAR)", "defaultValue": "Tue Oct 3 17:38:39 IDT 2023" },
   { "name": "android.build.date.one", "description": "These do not have to be set, they dont seem to be build date but something else.? YEAR.MONTH.DAY (2000.03.15)",  "defaultValue": "2018.08.15" },
   { "name": "android.build.date.two", "description": "These do not have to be set, they dont seem to be build date but something else.? YEARMONTHDAY (20000315)",  "defaultValue": "20180815" },
@@ -133,8 +133,8 @@
 
   //KERNEL
   { "name": "android.kernel.sys.name", "description": "Kernel Kind Name (Linux, Unix...)", "defaultValue": "Linux" },
-  { "name": "android.kernel.version", "description": "Kernel Version Info long", "defaultValue": "SMP PREEMPT Tue Oct 3 17:44:36 IDT 2023" },
-  { "name": "android.kernel.release", "description": "Kernel Release Number", "defaultValue": "4.14.326" },
+  { "name": "android.kernel.version", "description": "Kernel Version Info long", "defaultValue": "#1 SMP PREEMPT_DYNAMIC Tue Oct 3 17:44:36 UTC 2023" },
+  { "name": "android.kernel.release", "description": "Kernel Release Number", "defaultValue": "5.15.148-android13" },
   { "name": "android.kernel.node.name", "description": "Kernel Build Node Name (localhost)", "defaultValue": "localhost" },
 
 

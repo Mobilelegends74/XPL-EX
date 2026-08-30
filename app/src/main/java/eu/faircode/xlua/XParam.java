@@ -460,6 +460,15 @@ public class XParam extends XParamExtra {
     public boolean packageInfoInstallTimeSpoof(boolean isReturn) { return PackageInfoInterceptor.interceptTimeStamps(this, isReturn); }
 
     @SuppressWarnings("unused")
+    public String epochSecondsToMillis(String seconds) {
+        try {
+            return String.valueOf(Math.multiplyExact(Long.parseLong(seconds.trim()), 1000L));
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    @SuppressWarnings("unused")
     public List<android.content.pm.ApplicationInfo> mergeVirtualApplications(Object result) {
         return VirtualAppCatalog.mergeApplications(this, result);
     }
@@ -661,6 +670,23 @@ public class XParam extends XParamExtra {
         if (profileContents != null && !profileContents.trim().isEmpty())
             return MockFileUtil.generateFakeCpuInfoFile(profileContents);
         return MockFileUtil.generateFakeFile(XMockCall.getSelectedMockCpu(getApplicationContext()));
+    }
+
+    @SuppressWarnings("unused")
+    public File createFakeKernelInfoFile(String requestedPath) {
+        String release = getSetting("android.kernel.release", "5.15.148-android13");
+        String version = getSetting("android.kernel.version", "#1 SMP PREEMPT_DYNAMIC");
+        String nodeName = getSetting("android.kernel.node.name", "localhost");
+        String path = requestedPath == null ? "" : requestedPath;
+        String contents;
+        if (path.endsWith("/osrelease"))
+            contents = release + "\n";
+        else if (path.endsWith("/version") && path.contains("/proc/sys/kernel/"))
+            contents = version + "\n";
+        else
+            contents = "Linux version " + release + " (android-build@" + nodeName + ") "
+                    + "(Android clang version 17.0.2) " + version + "\n";
+        return FileUtil.generateTempFakeFile(contents);
     }
 
     @SuppressWarnings("unused")

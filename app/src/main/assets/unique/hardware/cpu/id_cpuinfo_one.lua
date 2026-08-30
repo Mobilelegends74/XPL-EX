@@ -8,29 +8,34 @@ function before(hook, param)
         return false
     end
 
-    if string.match(f, "cpuinfo$") then 
+    local fake = nil
+    if string.match(f, "cpuinfo$") then
         local m = param:getArgument(1)
-        if m ~= nil then 
+        if m ~= nil then
             log("CPUINFO FLAGS::" .. tostring(m))
         end
 
         log("App is trying to Open CPUINFO File ... Spoofing....")
-        local fake = param:createFakeCpuinfoFile()
-        if fake == nil then
-            log("Error NIL File Object")
-            return false
-        end
-
-        local path = fake:getPath()
-        if path == nil then
-            log("Error NIL Path Object")
-            return false
-        end
-
-        log("Setting Parameter to Point to Path: " .. path)
-        param:setArgumentString(0, path)
-        return true
+        fake = param:createFakeCpuinfoFile()
+    elseif f == "/proc/version" or f == "/proc/sys/kernel/osrelease" or f == "/proc/sys/kernel/version" then
+        log("App is trying to Open Kernel Info File ... Spoofing....")
+        fake = param:createFakeKernelInfoFile(f)
+    else
+        return false
     end
 
-    return false
+    if fake == nil then
+        log("Error NIL File Object")
+        return false
+    end
+
+    local path = fake:getPath()
+    if path == nil then
+        log("Error NIL Path Object")
+        return false
+    end
+
+    log("Setting Parameter to Point to Path: " .. path)
+    param:setArgumentString(0, path)
+    return true
 end

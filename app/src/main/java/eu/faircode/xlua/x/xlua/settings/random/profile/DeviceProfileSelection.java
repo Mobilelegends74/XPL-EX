@@ -39,6 +39,8 @@ public final class DeviceProfileSelection {
         values.put(RandomizersCache.SETTING_DEVICE_MODEL, device.model);
         values.put(RandomizersCache.SETTING_DEVICE_CODENAME, device.device);
 
+        ProfileBuildMetadata metadata = ProfileBuildMetadata.from(device, build);
+
         values.put(RandomizersCache.SETTING_ANDROID_BUILD_VERSION, build.release);
         values.put(RandomizersCache.SETTING_ANDROID_BUILD_VERSION_SDK, String.valueOf(build.apiLevel));
         values.put(RandomizersCache.SETTING_ANDROID_BUILD_VERSION_MIN_SDK, String.valueOf(device.launchApiLevel));
@@ -50,8 +52,18 @@ public final class DeviceProfileSelection {
         values.put(RandomizersCache.SETTING_ANDROID_BUILD_FLAVOR, build.flavor(device));
         values.put(RandomizersCache.SETTING_ANDROID_BUILD_CODENAME, device.product);
         values.put(RandomizersCache.SETTING_ANDROID_BUILD_FINGERPRINT, build.fingerprint);
+        values.put(RandomizersCache.SETTING_ANDROID_BUILD_DATE_EPOC, String.valueOf(metadata.epochSeconds));
+        values.put(RandomizersCache.SETTING_ANDROID_BUILD_DATE, metadata.buildDate);
+        values.put(RandomizersCache.SETTING_ANDROID_BUILD_DATE_ONE, metadata.dottedDate);
+        values.put(RandomizersCache.SETTING_ANDROID_BUILD_DATE_TWO, metadata.compactDate);
+        values.put(RandomizersCache.SETTING_ANDROID_BUILD_PATCH, metadata.securityPatch);
         values.put(RandomizersCache.SETTING_ANDROID_ETC_BUILD_ROM_VERSION_CODENAME, "REL");
         values.put(RandomizersCache.SETTING_ANDROID_ETC_BUILD_ROM_VARIANT, build.buildType);
+
+        values.put(RandomizersCache.SETTING_ANDROID_KERNEL_SYS_NAME, metadata.kernelSystemName);
+        values.put(RandomizersCache.SETTING_ANDROID_KERNEL_NODE_NAME, metadata.kernelNodeName);
+        values.put(RandomizersCache.SETTING_ANDROID_KERNEL_RELEASE, metadata.kernelRelease);
+        values.put(RandomizersCache.SETTING_ANDROID_KERNEL_VERSION, metadata.kernelVersion);
 
         values.put(RandomizersCache.SETTING_SOC_BOARD_MODEL, device.socModel);
         values.put(RandomizersCache.SETTING_SOC_BOARD_CONFIG_CODE_NAME, device.board);

@@ -171,6 +171,17 @@ public class DeviceProfileCatalogTest {
                 assertEquals(build.release, values.get(RandomizersCache.SETTING_ANDROID_BUILD_VERSION));
                 assertEquals(String.valueOf(build.apiLevel), values.get(RandomizersCache.SETTING_ANDROID_BUILD_VERSION_SDK));
                 assertEquals(build.fingerprint, values.get(RandomizersCache.SETTING_ANDROID_BUILD_FINGERPRINT));
+                long buildEpoch = Long.parseLong(values.get(RandomizersCache.SETTING_ANDROID_BUILD_DATE_EPOC));
+                assertTrue(profile.id, buildEpoch > 1546300800L);
+                assertTrue(profile.id, buildEpoch * 1000L < System.currentTimeMillis());
+                assertFalse(profile.id, values.get(RandomizersCache.SETTING_ANDROID_BUILD_DATE).contains("1970"));
+                assertTrue(profile.id, values.get(RandomizersCache.SETTING_ANDROID_BUILD_PATCH).matches("20\\d{2}-\\d{2}-01"));
+                assertEquals("Linux", values.get(RandomizersCache.SETTING_ANDROID_KERNEL_SYS_NAME));
+                assertEquals("localhost", values.get(RandomizersCache.SETTING_ANDROID_KERNEL_NODE_NAME));
+                assertTrue(profile.id, values.get(RandomizersCache.SETTING_ANDROID_KERNEL_RELEASE)
+                        .matches("(4\\.(14|19)|5\\.(10|15)|6\\.(1|6|12))\\..*"));
+                assertTrue(profile.id, values.get(RandomizersCache.SETTING_ANDROID_KERNEL_VERSION)
+                        .startsWith("#1 SMP PREEMPT_DYNAMIC "));
                 assertEquals(build.buildType, values.get(RandomizersCache.SETTING_ANDROID_ETC_BUILD_ROM_VARIANT));
                 assertEquals("REL", values.get(RandomizersCache.SETTING_ANDROID_ETC_BUILD_ROM_VERSION_CODENAME));
                 assertEquals(String.valueOf(profile.characteristics.displayWidthPx),

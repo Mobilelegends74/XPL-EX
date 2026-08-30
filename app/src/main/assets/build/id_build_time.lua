@@ -9,6 +9,11 @@ function after(hook, param)
         return false
     end
 
-    param:setResultToLong(fake)
-    return true, tostring(ret), fake
+    -- ro.build.date.utc is stored in Unix seconds, while Build.TIME is milliseconds.
+    local milliseconds = param:epochSecondsToMillis(fake)
+    if milliseconds == nil then
+        return false
+    end
+    param:setResultToLong(milliseconds)
+    return true, tostring(ret), milliseconds
 end

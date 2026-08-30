@@ -212,6 +212,10 @@ public final class VirtualAppCatalog {
         return catalogFor(param).containsKey(packageName) ? stableUid(packageName) : null;
     }
 
+    public static boolean contains(XParam param, String packageName) {
+        return packageName != null && catalogFor(param).containsKey(packageName);
+    }
+
     private static LinkedHashMap<String, CatalogEntry> catalogFor(XParam param) {
         LinkedHashMap<String, CatalogEntry> result = new LinkedHashMap<>();
         addSystem(result, ANDROID_CORE);
@@ -306,8 +310,22 @@ public final class VirtualAppCatalog {
         info.versionName = entry.system ? "1.0." : "10." + Math.abs(entry.packageName.hashCode() % 100) + ".";
         info.versionName += Math.abs(entry.packageName.hashCode() % 1000);
         info.versionCode = 1 + Math.abs(entry.packageName.hashCode() % 900000);
-        info.firstInstallTime = 1704067200000L + Math.abs(entry.packageName.hashCode() % 20000000000L);
-        info.lastUpdateTime = info.firstInstallTime + 86400000L * (30 + Math.abs(entry.packageName.hashCode() % 300));
+        long day = 86400000L;
+        long today = System.currentTimeMillis() / day * day;
+        long buildTime = selectedBuildTime(param, today - 120L * day);
+        int spread = Math.floorMod(entry.packageName.hashCode(), 45);
+        if (entry.system) {
+            info.firstInstallTime = Math.max(1262304000000L, buildTime - (30L + spread) * day);
+            info.lastUpdateTime = entry.packageName.equals("com.google.android.gms")
+                    ? Math.max(buildTime, today - (3L + spread % 28) * day)
+                    : buildTime;
+        } else {
+            long earliest = Math.max(buildTime, today - 540L * day);
+            info.firstInstallTime = Math.max(buildTime,
+                    Math.min(today - 10L * day, earliest + spread * day));
+            info.lastUpdateTime = Math.max(info.firstInstallTime,
+                    today - (2L + spread % 35) * day);
+        }
         return info;
     }
 
@@ -320,6 +338,17 @@ public final class VirtualAppCatalog {
         String value = param.getSetting("android.build.version.sdk");
         if (value != null) try { return Integer.parseInt(value.trim()); } catch (NumberFormatException ignored) { }
         return Build.VERSION.SDK_INT;
+    }
+
+    private static long selectedBuildTime(XParam param, long fallback) {
+        String value = param.getSetting("android.build.date.utc");
+        if (value != null) {
+            try {
+                long seconds = Long.parseLong(value.trim());
+                if (seconds > 1000000000L) return seconds * 1000L;
+            } catch (NumberFormatException ignored) { }
+        }
+        return fallback;
     }
 
     private static String pathName(String packageName) {

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XParam;
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.hook.interceptors.apps.VirtualAppCatalog;
 import eu.faircode.xlua.x.hook.interceptors.file.TimeInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.zone.RandomDateHelper;
 import eu.faircode.xlua.x.data.GroupedMap;
@@ -102,6 +103,10 @@ public class PackageInfoInterceptor {
             }
 
             PackageInfo pkgInfo = (PackageInfo) obj;
+            // The virtual catalog already supplies coherent profile-based dates. Keep an
+            // older Apps.Spoof.TimeStamps assignment from rewriting those values.
+            if (VirtualAppCatalog.contains(param, pkgInfo.packageName))
+                return false;
             TimeInterceptor interceptor = TimeInterceptor.create(pkgInfo, param);
             pkgInfo.firstInstallTime = interceptor.getCreation(pkgInfo.firstInstallTime);
             pkgInfo.lastUpdateTime = interceptor.getModify(pkgInfo.lastUpdateTime);

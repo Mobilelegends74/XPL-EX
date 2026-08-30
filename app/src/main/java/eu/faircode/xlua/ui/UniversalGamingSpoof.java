@@ -23,6 +23,7 @@ public final class UniversalGamingSpoof {
             "id.telephony",
             "id.unique",
             "id.uptime",
+            "intercept.properties",
             "network.information.spoof",
             "network.spoof.wifi.list",
             "network.wifi.information.spoof",
@@ -66,6 +67,8 @@ public final class UniversalGamingSpoof {
             return false;
 
         String normalized = groupName.trim().toLowerCase(Locale.ROOT);
+        if ("apps.spoof.timestamps".equals(normalized))
+            return false;
         return normalized.startsWith("apps.spoof.")
                 || normalized.startsWith("device.id.")
                 || PROFILE_BACKED_HARDWARE_GROUPS.contains(normalized)

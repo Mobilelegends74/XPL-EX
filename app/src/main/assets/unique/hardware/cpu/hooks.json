@@ -82,13 +82,14 @@
     "returnType": "java.io.FileDescriptor",
     "minSdk": 4,
     "maxSdk": 999,
-    "version": 1,
-    "description": "",
+    "version": 2,
+    "description": "Spoof /proc/cpuinfo and kernel procfs files using the selected device profile.",
     "enabled":true,
     "optional":true,
     "usage":true,
     "notify":false,
-    "luaScript": "@id_cpuinfo_one"
+    "luaScript": "@id_cpuinfo_one",
+    "settings": ["soc.cpu.info.dump", "android.kernel.release", "android.kernel.version", "android.kernel.node.name"]
   },
   {
     "builtin": true,
@@ -102,13 +103,14 @@
     "returnType": "java.io.FileDescriptor",
     "minSdk": 4,
     "maxSdk": 999,
-    "version": 1,
-    "description": "",
+    "version": 2,
+    "description": "Spoof /proc/cpuinfo and kernel procfs files using the selected device profile.",
     "enabled":true,
     "optional":true,
     "usage":true,
     "notify":false,
-    "luaScript": "@id_cpuinfo_one"
+    "luaScript": "@id_cpuinfo_one",
+    "settings": ["soc.cpu.info.dump", "android.kernel.release", "android.kernel.version", "android.kernel.node.name"]
   },
   {
     "builtin": true,
