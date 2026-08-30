@@ -66,6 +66,14 @@ public final class UniversalGamingSpoof {
                 || normalized.contains("zoneid");
     }
 
+    /** Settings that the master Spoof Device action must leave under explicit user control. */
+    public static boolean isEnvironmentSetting(String settingName) {
+        if (settingName == null)
+            return false;
+        String normalized = settingName.trim().toLowerCase(Locale.ROOT);
+        return normalized.equals("zone") || normalized.startsWith("zone.");
+    }
+
     public static boolean isVirtualGroup(String groupName) {
         return GROUP_NAME.equalsIgnoreCase(groupName);
     }

@@ -385,7 +385,8 @@ public class SettingExFragment
                             sharedRegistry.refreshAssignments(context, getUserContext());
                         if(ListUtil.isValid(succeeded) || ListUtil.isValid(failed))
                             showConfiguredSnackbar(v,
-                                    Str.fm(context.getString(R.string.result_settings_update),
+                                    context.getString(
+                                            R.string.result_settings_update,
                                             ListUtil.size(succeeded),
                                             ListUtil.size(failed)));
                         else {

@@ -1,4 +1,4 @@
-name: Build and publish XPL-EX-NEXT v1.2
+name: Build and publish XPL-EX-NEXT v1.5.7
 
 on:
   workflow_dispatch:
@@ -10,14 +10,14 @@ permissions:
   contents: write
 
 concurrency:
-  group: xpl-ex-next-v1.2-release
+  group: xpl-ex-next-v1.5.7-release
   cancel-in-progress: false
 
 env:
-  RELEASE_TAG: XPL-EX-NEXT-v1.2
-  RELEASE_TITLE: XPL-EX-NEXT v1.2
-  BUILD_APK: XPL-EX-NEXT-1.5.6-release.apk
-  RELEASE_APK: XPL-EX-NEXT-1.5.6.apk
+  RELEASE_TAG: XPL-EX-NEXT-v1.5.7
+  RELEASE_TITLE: XPL-EX-NEXT v1.5.7
+  BUILD_APK: XPL-EX-NEXT-1.5.7-release.apk
+  RELEASE_APK: XPL-EX-NEXT-1.5.7.apk
 
 jobs:
   build-and-release:
@@ -109,7 +109,7 @@ jobs:
           "${build_tools}/apksigner" verify --verbose --print-certs "${source_apk}"
           badging=$("${build_tools}/aapt" dump badging "${source_apk}")
           grep -q "versionCode='155'" <<< "${badging}"
-          grep -q "versionName='1.5.6'" <<< "${badging}"
+          grep -q "versionName='1.5.7'" <<< "${badging}"
 
           mkdir -p dist
           cp "${source_apk}" "dist/${RELEASE_APK}"
@@ -120,7 +120,7 @@ jobs:
       - name: Prepare release description
         run: |
           set -euo pipefail
-          cp docs/releases/xpl-ex-next-v1.2.md "${RUNNER_TEMP}/release-notes.md"
+          cp docs/releases/xpl-ex-next-v1.5.7.md "${RUNNER_TEMP}/release-notes.md"
 
       - name: Write build summary
         run: |
@@ -128,7 +128,7 @@ jobs:
             echo "# ${RELEASE_TITLE}"
             echo
             echo "- Tests: passed"
-            echo "- Version name: 1.5.6"
+            echo "- Version name: 1.5.7"
             echo "- Version code: 155"
             echo "- R8 minification: disabled for Xposed/Lua hook compatibility"
             echo "- APK: ${RELEASE_APK}"
@@ -139,7 +139,7 @@ jobs:
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: XPL-EX-NEXT-1.5.6
+          name: XPL-EX-NEXT-1.5.7
           path: dist/
           if-no-files-found: error
           retention-days: 30

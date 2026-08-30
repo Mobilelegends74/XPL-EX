@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import eu.faircode.xlua.DebugUtil;
+import eu.faircode.xlua.ui.UniversalGamingSpoof;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.string.StrBuilder;
 import eu.faircode.xlua.x.data.utils.ListUtil;
@@ -170,7 +171,8 @@ public class RandomizerSessionContext {
                 return this;
 
             for(SettingHolder setting : settings) {
-                if(sharedRegistry.isChecked(SharedRegistry.STATE_TAG_SETTINGS, setting.getObjectId())) {
+                if(shouldRandomizeFromMasterSwitch(setting.getName())
+                        && sharedRegistry.isChecked(SharedRegistry.STATE_TAG_SETTINGS, setting.getObjectId())) {
                     RandomSettingHolder holder = this.settings.get(setting.getName());
                     if(holder != null && holder.hasRandomizer()) {
                         String name = holder.name();
@@ -232,6 +234,10 @@ public class RandomizerSessionContext {
         }
 
         return this;
+    }
+
+    static boolean shouldRandomizeFromMasterSwitch(String settingName) {
+        return !UniversalGamingSpoof.isEnvironmentSetting(settingName);
     }
 
     private void expandDeviceProfileSettings() {

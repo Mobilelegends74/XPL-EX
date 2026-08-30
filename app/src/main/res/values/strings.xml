@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">XPL-EX-NEXT-1.5.6</string>
+    <string name="app_name" translatable="false">XPL-EX-NEXT-1.5.7</string>
     <string name="channel_privacy" translatable="false">XPrivacyLua</string>
 
     <string name="title_license" translatable="false">
@@ -52,22 +52,7 @@
 
     <string name="menu_whats_new_button" translatable="false">What\'s new</string>
 
-    <string name="whats_new" translatable="false">
-        <![CDATA[<b>XPL-EX-NEXT v1.5.6</b>]]>
-        <![CDATA[<br><br><b>Device profiles</b>]]>
-        <![CDATA[<br>]]>• Added coherent real-device profiles covering the model, manufacturer, firmware fingerprint, build data, kernel, CPU, GPU, SoC, memory, display and battery.
-        <![CDATA[<br>]]>• Added manufacturer-specific system application catalogs and randomized popular user application lists.
-        <![CDATA[<br>]]>• Fixed build identifiers, build dates, security patches, kernel data, current Android release and first device release.
-        <![CDATA[<br><br><b>Spoof Device safety</b>]]>
-        <![CDATA[<br>]]>• Spoof Device now preserves the real Android version and selects only firmware matching the host API level.
-        <![CDATA[<br>]]>• Incompatible hooks are rejected before their Android classes are loaded.
-        <![CDATA[<br>]]>• Language, locale, timezone and ZoneId hooks are no longer enabled by the main Spoof Device switch.
-        <![CDATA[<br><br><b>Interface and settings</b>]]>
-        <![CDATA[<br>]]>• Added complete Russian and English interface modes with automatic system-language detection and a manual language selector.
-        <![CDATA[<br>]]>• Added localized descriptions for hooks, setting groups and values.
-        <![CDATA[<br>]]>• Removed mandatory first-launch, update and module-status dialogs.
-        <![CDATA[<br><br>]]><![CDATA[<a href="https://github.com/Mobilelegends74/XPL-EX">GitHub: Mobilelegends74/XPL-EX</a>]]>
-    </string>
+    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.5.7</b><br><br>• Fixed the Russian saved-settings result: successful and failed hook counts are now formatted correctly.<br>• The master Spoof Device action no longer automatically selects or randomizes any <b>zone.*</b> values. Language, locale and timezone remain available only for explicit manual use.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX">GitHub: Mobilelegends74/XPL-EX</a>]]></string>
 
     <string name="warning_bulk_check" translatable="false">Selecting this will Enable Every Hook Possible (Super Highly NOT recommended). Why ? Why use a BOMB causing Chaos, when you should Enable what you think is best Needed for your situation.\n\nRemember, in Settings "unique" Filter is everything that can be used to Identify you, the rest does not matter. \n\nIf you Continue, you are NOT to ask for Help if Target App Crashes or acts abnormally, you accept such behaviour due to a lack of patience. (Do NOT ask for Help if App Crashes when you Select all at once) \n\nSelect what is NEEDED by Testing, Trying, or FAQ. \n\n\nOnce you click (ok) this Dialog will never Appear again hence the Long Timeout (READ THIS DAMN MESSAGE!!!)</string>
     <string name="warning_bulk_check_title" translatable="false">Select all Hooks ?</string>
@@ -183,7 +168,7 @@
     <string name="result_prefix_debug" translatable="false">Debug</string>
     <string name="result_prefix_force_stop" translatable="false">App Force Closed!</string>
     <string name="result_prefix_cleared_app_data" translatable="false">AppData Cleared!</string>
-    <string name="result_settings_update" translatable="false">Updated %s Settings! Failed Count %s</string>
+    <string name="result_settings_update">Updated %1$d Settings! Failed Count %2$d</string>
     <string name="result_settings_update_empty" translatable="false">No Settings were saved! Nothing needs to be Saved!</string>
 
     <string name="search_settings_hint" translatable="false">Search Settings...</string>

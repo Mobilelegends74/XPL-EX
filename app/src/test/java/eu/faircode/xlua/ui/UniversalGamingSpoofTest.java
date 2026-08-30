@@ -13,6 +13,9 @@ public class UniversalGamingSpoofTest {
         assertTrue(UniversalGamingSpoof.isEnvironmentGroup("Spoof.Language"));
         assertTrue(UniversalGamingSpoof.isEnvironmentGroup("Spoof.TimeZone"));
         assertTrue(UniversalGamingSpoof.isEnvironmentGroup("java.time.ZoneId"));
+        assertTrue(UniversalGamingSpoof.isEnvironmentSetting("zone.country.name"));
+        assertTrue(UniversalGamingSpoof.isEnvironmentSetting("ZONE.TIMEZONE.ID"));
+        assertFalse(UniversalGamingSpoof.isEnvironmentSetting("device.model"));
     }
 
     @Test

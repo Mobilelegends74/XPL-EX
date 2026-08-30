@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import eu.faircode.xlua.DebugUtil;
+import eu.faircode.xlua.ui.UniversalGamingSpoof;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.data.utils.TryRun;
@@ -155,6 +156,10 @@ public class SettingSharedRegistry extends SharedRegistry {
 
                 for(SettingHolder setting : container.getSettings()) {
                     if(setting == null)
+                        continue;
+
+                    // Zone values stay opt-in even when a broad hook consumes them indirectly.
+                    if(UniversalGamingSpoof.isEnvironmentSetting(setting.getName()))
                         continue;
 
                     String settingId = setting.getObjectId();

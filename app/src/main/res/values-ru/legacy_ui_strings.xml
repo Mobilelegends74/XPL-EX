@@ -1,11 +1,11 @@
 <resources>
     <!-- Legacy UI resources were incorrectly marked non-translatable upstream. -->
-    <string name="app_name">XPL-EX-NEXT-1.5.6</string>
+    <string name="app_name">XPL-EX-NEXT-1.5.7</string>
     <string name="channel_privacy">XPrivacyLua</string>
     <string name="title_license">XPL-EX предназначен для защиты конфиденциальности. Это свободное программное обеспечение, распространяемое по лицензии GNU GPL версии 3 или более поздней. Copyright 2017–%1$d Marcel Bokhorst и участники проекта.</string>
     <string name="title_use_default">Использовать значение по умолчанию, если Null</string>
     <string name="title_delete_action">Удалить</string>
-    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.5.6</b><br><br><b>Профили устройств</b><br>• Добавлены согласованные профили реальных устройств: модель, производитель, fingerprint прошивки, данные сборки, ядро, CPU, GPU, SoC, память, экран и батарея.<br>• Добавлены фирменные списки системных приложений производителей и случайные списки популярных пользовательских приложений.<br>• Исправлены идентификаторы и даты сборки, патчи безопасности, данные ядра, текущий выпуск Android и первый выпуск устройства.<br><br><b>Безопасность Spoof Device</b><br>• Spoof Device сохраняет настоящую версию Android и выбирает только прошивки для API установленной системы.<br>• Несовместимые хуки отклоняются до загрузки их Android-классов.<br>• Хуки языка, локали, часового пояса и ZoneId больше не включаются общим переключателем Spoof Device.<br><br><b>Интерфейс и настройки</b><br>• Добавлены полноценные русский и английский интерфейсы, автоматическое определение системного языка и ручной выбор языка.<br>• Добавлены локализованные описания хуков, групп настроек и значений.<br>• Убраны обязательные окна первого запуска, обновления и состояния модуля.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX">GitHub: Mobilelegends74/XPL-EX</a>]]></string>
+    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.5.7</b><br><br>• Исправлен русский результат сохранения настроек: количество успешных и неуспешных хуков теперь форматируется правильно.<br>• Глобальный Spoof Device больше не выбирает и не рандомизирует параметры <b>zone.*</b>. Язык, локаль и часовой пояс доступны только при явном ручном включении.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX">GitHub: Mobilelegends74/XPL-EX</a>]]></string>
 
     <string name="warning_bulk_check">Будут включены все доступные хуки. Это может вызвать сбои целевого приложения. Включайте только необходимые группы и проверяйте их по отдельности.</string>
     <string name="warning_bulk_check_title">Включить все хуки?</string>
@@ -71,7 +71,7 @@
     <string name="result_prefix_restrict">Ограничивать</string>
     <string name="result_prefix_force_stop">Приложение остановлено</string>
     <string name="result_prefix_cleared_app_data">Данные приложения очищены</string>
-    <string name="result_settings_update">Обновлено настроек: %1$s; ошибок: %2$s</string>
+    <string name="result_settings_update">Обновлено настроек: %1$d; ошибок: %2$d</string>
     <string name="result_settings_update_empty">Нет несохранённых настроек</string>
     <string name="search_settings_hint">Поиск настроек…</string>
     <string name="search_log_hint">Поиск в журналах…</string>
