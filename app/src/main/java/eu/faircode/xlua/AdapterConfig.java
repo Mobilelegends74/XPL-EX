@@ -245,7 +245,8 @@ public class AdapterConfig extends RecyclerView.Adapter<AdapterConfig.ViewHolder
             }
         }
 
-        Toast.makeText(context, "settings applied=" + succeeded + " failed=" + failed, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, context.getString(
+                R.string.msg_settings_applied_summary, succeeded, failed), Toast.LENGTH_LONG).show();
     }
 
     @SuppressLint("NotifyDataSetChanged")

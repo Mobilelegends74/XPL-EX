@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Individual Setting Values help is intentionally Russian for every interface locale. -->
+    <!-- Russian Setting Values item help. English uses matching resources or a generated English fallback. -->
     <string name="description_ru_setting_value_unknown" translatable="false">Подменяет значение, которое Android передаёт выбранному приложению.</string>
     <string name="description_ru_setting_value_info_hint" translatable="false">Нажмите, чтобы прочитать простое описание этого параметра.</string>
 

@@ -161,7 +161,7 @@ package eu.faircode.xlua;
                 }
             });
         }else {
-            Toast.makeText(context, "Nothing Needs to be Saved !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.result_settings_update_empty, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -190,4 +190,3 @@ package eu.faircode.xlua;
         holder.wire();
     }
 }*/
-

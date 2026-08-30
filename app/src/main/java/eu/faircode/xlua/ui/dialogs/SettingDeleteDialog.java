@@ -58,13 +58,13 @@ public class SettingDeleteDialog extends AppCompatDialogFragment {
         getCbDeleteSettingForceKill = view.findViewById(R.id.cbDeleteSettingForceKill);
 
         builder.setView(view)
-                .setTitle("Setting Deleter")
-                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.title_delete_setting)
+                .setNegativeButton(R.string.option_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.i(TAG, "Add Setting Dialog Was Cancelled");
                     }
-                }).setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                }).setPositiveButton(R.string.option_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(application == null)

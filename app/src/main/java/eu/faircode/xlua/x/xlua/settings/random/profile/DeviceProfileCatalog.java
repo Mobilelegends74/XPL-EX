@@ -1,6 +1,7 @@
 package eu.faircode.xlua.x.xlua.settings.random.profile;
 
 import android.content.Context;
+import android.os.Build;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -61,7 +62,48 @@ public final class DeviceProfileCatalog {
     }
 
     public static DeviceProfileSelection select(Context context) {
-        return selectBalanced(get(context));
+        return selectBalancedForApi(get(context), Build.VERSION.SDK_INT);
+    }
+
+    static DeviceProfileSelection selectBalancedForApi(List<DeviceProfile> profiles, int apiLevel) {
+        if (profiles == null || profiles.isEmpty())
+            throw new IllegalArgumentException("Device profiles are required");
+
+        Map<String, List<CompatibleDevice>> profilesByBrand = new LinkedHashMap<>();
+        for (DeviceProfile profile : profiles) {
+            List<DeviceBuildProfile> compatibleBuilds = new ArrayList<>();
+            for (DeviceBuildProfile build : profile.builds)
+                if (build.apiLevel == apiLevel)
+                    compatibleBuilds.add(build);
+            if (compatibleBuilds.isEmpty())
+                continue;
+
+            String brand = selectionBrand(profile);
+            List<CompatibleDevice> brandProfiles = profilesByBrand.get(brand);
+            if (brandProfiles == null) {
+                brandProfiles = new ArrayList<>();
+                profilesByBrand.put(brand, brandProfiles);
+            }
+            brandProfiles.add(new CompatibleDevice(profile, compatibleBuilds));
+        }
+
+        if (profilesByBrand.isEmpty())
+            throw new IllegalStateException(
+                    "No device profile officially supports Android API " + apiLevel);
+
+        synchronized (SELECTION_LOCK) {
+            if (unusedBrands.isEmpty() || !profilesByBrand.keySet().containsAll(unusedBrands))
+                refillBrandBag(profilesByBrand.keySet());
+
+            String brand = unusedBrands.remove(0);
+            List<CompatibleDevice> brandProfiles = profilesByBrand.get(brand);
+            CompatibleDevice compatible = brandProfiles.get(
+                    RandomGenerator.nextInt(brandProfiles.size()));
+            DeviceBuildProfile build = compatible.builds.get(
+                    RandomGenerator.nextInt(compatible.builds.size()));
+            previousBrand = brand;
+            return new DeviceProfileSelection(compatible.device, build);
+        }
     }
 
     static DeviceProfileSelection selectBalanced(List<DeviceProfile> profiles) {
@@ -89,6 +131,16 @@ public final class DeviceProfileCatalog {
             DeviceBuildProfile build = device.builds.get(RandomGenerator.nextInt(device.builds.size()));
             previousBrand = brand;
             return new DeviceProfileSelection(device, build);
+        }
+    }
+
+    private static final class CompatibleDevice {
+        final DeviceProfile device;
+        final List<DeviceBuildProfile> builds;
+
+        CompatibleDevice(DeviceProfile device, List<DeviceBuildProfile> builds) {
+            this.device = device;
+            this.builds = builds;
         }
     }
 

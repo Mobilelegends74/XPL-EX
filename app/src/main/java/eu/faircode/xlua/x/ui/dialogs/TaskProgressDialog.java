@@ -188,7 +188,7 @@ public class TaskProgressDialog extends AppCompatDialogFragment {
         if (!tasks.isEmpty()) {
             startTaskExecution();
         } else {
-            tvTaskStatus.setText("No tasks to execute");
+            tvTaskStatus.setText(R.string.task_no_tasks);
             pbTaskProgress.setVisibility(View.GONE);
         }
     }
@@ -210,7 +210,7 @@ public class TaskProgressDialog extends AppCompatDialogFragment {
                 // Update status on UI thread
                 new Handler(Looper.getMainLooper()).post(() -> {
                     if (!isDetached() && !isCancelling) {
-                        tvTaskStatus.setText(String.format("Executing: %s (%d/%d)",
+                        tvTaskStatus.setText(getString(R.string.task_executing,
                                 taskName, taskCount.get() + 1, totalTasks));
                         tvTaskDetail.setText("");
                     }
@@ -254,7 +254,7 @@ public class TaskProgressDialog extends AppCompatDialogFragment {
                             }
                         }, 300);
                     } else {
-                        tvTaskStatus.setText("All tasks completed");
+                        tvTaskStatus.setText(R.string.task_all_completed);
 
                         // Hide the progress bar when all tasks are completed
                         pbTaskProgress.setVisibility(View.GONE);

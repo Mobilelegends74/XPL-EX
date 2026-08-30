@@ -20,6 +20,7 @@
 package eu.faircode.xlua;
 
 import android.content.SharedPreferences;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,9 +31,8 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import java.util.Locale;
-
 import eu.faircode.xlua.utilities.UiInsets;
+import eu.faircode.xlua.utilities.AppLanguage;
 import eu.faircode.xlua.x.xlua.commands.call.GetSettingExCommand;
 
 public class ActivityBase extends AppCompatActivity {
@@ -43,7 +43,13 @@ public class ActivityBase extends AppCompatActivity {
 
     private String theme = THEME_DARK;
     private String resolvedTheme = THEME_DARK;
+    private String language = AppLanguage.ENGLISH;
     private boolean monetEnabled;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(AppLanguage.wrap(newBase));
+    }
 
     /** Screens ported to the 1.5.8 MaterialToolbar layout override this. */
     protected boolean useCustomToolbar() {
@@ -107,6 +113,7 @@ public class ActivityBase extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        language = AppLanguage.resolveLanguage(this);
         theme = readThemePreference();
         resolvedTheme = resolveTheme(theme);
         monetEnabled = preferences().getBoolean("monet_enabled", false);
@@ -114,18 +121,6 @@ public class ActivityBase extends AppCompatActivity {
 
         if (DebugUtil.isDebug())
             Log.d(TAG, "Theme=" + theme + " resolved=" + resolvedTheme + " monet=" + monetEnabled);
-
-        if (getIsForceEnglish()) {
-            try {
-                Locale locale = Locale.ENGLISH;
-                Locale.setDefault(locale);
-                Configuration config = new Configuration(getResources().getConfiguration());
-                config.setLocale(locale);
-                getBaseContext().getResources().updateConfiguration(
-                        config, getBaseContext().getResources().getDisplayMetrics());
-            } catch (Exception ignored) {
-            }
-        }
 
         super.onCreate(savedInstanceState);
         applyNavigationBarPreference();
@@ -137,7 +132,9 @@ public class ActivityBase extends AppCompatActivity {
         String selected = readThemePreference();
         String resolved = resolveTheme(selected);
         boolean dynamic = preferences().getBoolean("monet_enabled", false);
-        if (!selected.equals(theme) || !resolved.equals(resolvedTheme) || dynamic != monetEnabled)
+        String currentLanguage = AppLanguage.resolveLanguage(this);
+        if (!selected.equals(theme) || !resolved.equals(resolvedTheme)
+                || dynamic != monetEnabled || !currentLanguage.equals(language))
             recreate();
     }
 
@@ -172,22 +169,6 @@ public class ActivityBase extends AppCompatActivity {
 
     public boolean isMonetEnabled() {
         return monetEnabled;
-    }
-
-    public void setForceEnglish(boolean force) {
-        preferences().edit().putBoolean("forceenglish", force).apply();
-    }
-
-    public boolean getIsForceEnglish() {
-        return preferences().getBoolean("forceenglish", false);
-    }
-
-    public void setSkipWarning(boolean skip) {
-        preferences().edit().putBoolean("skipwarning", skip).apply();
-    }
-
-    public boolean getSkipWarning() {
-        return preferences().getBoolean("skipwarning", false);
     }
 
     public void setSystemAppsColor(boolean enabled) {

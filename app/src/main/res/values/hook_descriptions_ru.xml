@@ -2,7 +2,7 @@
 <resources>
     <!-- These help texts intentionally stay in Russian for every interface locale. -->
     <string name="description_ru_hook_group_unknown" translatable="false">Этот пункт управляет группой перехватов XPL-EX. Подробное описание для новой или пользовательской группы пока не добавлено. Перед включением рекомендуется сохранить резервную копию настроек приложения.</string>
-    <string name="description_ru_hook_group_universalgaming_spoof_device" translatable="false">Одновременно включает полную подмену модели устройства, Android Build, CPU, GPU, SoC, памяти, экрана, системных и рекламных идентификаторов, данных SIM, сети и фирменных ID производителей. Использует значения, сохранённые для приложения в Setting Values.</string>
+    <string name="description_ru_hook_group_universalgaming_spoof_device" translatable="false">Одновременно включает согласованную подмену модели устройства, Android Build, CPU, GPU, SoC, памяти, экрана, идентификаторов, данных SIM и сети. Выбирается только прошивка для реальной версии Android; язык и часовой пояс не изменяются.</string>
 
     <string name="description_ru_hook_group_ad_analytics" translatable="false">Перехватывает обращения приложения к рекламным и аналитическим сервисам. Помогает ограничить передачу событий об использовании приложения, но иногда может нарушить работу статистики, рекламы или бонусов за просмотр рекламы.</string>
     <string name="description_ru_hook_group_ad_analytics_spoof" translatable="false">Подменяет данные, которые приложение передаёт рекламным и аналитическим библиотекам: идентификаторы, сведения об устройстве и другие параметры. Используется, чтобы сервисам было сложнее связать действия с реальным устройством.</string>

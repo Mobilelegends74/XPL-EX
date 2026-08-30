@@ -29,6 +29,7 @@ import eu.faircode.xlua.ActivityBase;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.R;
 import eu.faircode.xlua.utilities.UiInsets;
+import eu.faircode.xlua.utilities.AppLanguage;
 import eu.faircode.xlua.x.xlua.commands.call.GetSettingExCommand;
 import eu.faircode.xlua.x.xlua.commands.call.PutSettingExCommand;
 
@@ -86,6 +87,7 @@ public class AdvancedSettingsActivity extends ActivityBase {
     private void bindSettings() {
         bindTheme();
         bindMonet();
+        bindLanguage();
         bindSimpleSwitches();
         bindSnackbarDuration();
         bindExperimentalSettings();
@@ -150,13 +152,6 @@ public class AdvancedSettingsActivity extends ActivityBase {
             showMessage(R.string.advanced_setting_applied);
         });
 
-        MaterialSwitch forceEnglish = settingsView.findViewById(R.id.switch_force_english);
-        forceEnglish.setChecked(getIsForceEnglish());
-        forceEnglish.setOnCheckedChangeListener((button, checked) -> {
-            setForceEnglish(checked);
-            restartForVisualChange();
-        });
-
         MaterialSwitch hideFab = settingsView.findViewById(R.id.switch_fab_hide_on_scroll);
         hideFab.setChecked(preferences.getBoolean("fab_hide_on_scroll", true));
         hideFab.setOnCheckedChangeListener((button, checked) -> {
@@ -177,19 +172,32 @@ public class AdvancedSettingsActivity extends ActivityBase {
             showMessage(R.string.advanced_setting_applied);
         });
 
-        MaterialSwitch skipWarnings = settingsView.findViewById(R.id.switch_skip_warning);
-        skipWarnings.setChecked(getSkipWarning());
-        skipWarnings.setOnCheckedChangeListener((button, checked) -> {
-            setSkipWarning(checked);
-            showMessage(R.string.advanced_setting_applied);
-        });
-
         MaterialSwitch transparentNavbar = settingsView.findViewById(R.id.switch_transparent_navbar);
         transparentNavbar.setChecked(getTransparentNavbar());
         transparentNavbar.setOnCheckedChangeListener((button, checked) -> {
             setTransparentNavbar(checked);
             forceEdgeToEdgeUpdate();
             showMessage(R.string.advanced_setting_applied);
+        });
+    }
+
+    private void bindLanguage() {
+        MaterialButtonToggleGroup group = settingsView.findViewById(R.id.language_toggle_group);
+        String selected = AppLanguage.getSelection(this);
+        int checked = AppLanguage.ENGLISH.equals(selected) ? R.id.btn_language_english
+                : AppLanguage.RUSSIAN.equals(selected) ? R.id.btn_language_russian
+                : R.id.btn_language_system;
+        group.check(checked);
+        group.addOnButtonCheckedListener((buttonGroup, checkedId, isChecked) -> {
+            if (!isChecked)
+                return;
+            String value = checkedId == R.id.btn_language_english ? AppLanguage.ENGLISH
+                    : checkedId == R.id.btn_language_russian ? AppLanguage.RUSSIAN
+                    : AppLanguage.SYSTEM;
+            if (value.equals(AppLanguage.getSelection(this)))
+                return;
+            AppLanguage.setSelection(this, value);
+            restartForVisualChange();
         });
     }
 

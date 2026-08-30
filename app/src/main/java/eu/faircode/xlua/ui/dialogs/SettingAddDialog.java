@@ -52,13 +52,13 @@ public class SettingAddDialog extends AppCompatDialogFragment {
         cbCreateDefaultSetting = view.findViewById(R.id.cbAddSettingDefaultSettingAddCheck);
 
         builder.setView(view)
-                .setTitle("Setting Builder")
-                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.title_add_dialog_setting_builder)
+                .setNegativeButton(R.string.option_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.i(TAG, "Add Setting Dialog Was Cancelled");
                     }
-                }).setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                }).setPositiveButton(R.string.option_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String settingName = edSettingName.getText().toString();

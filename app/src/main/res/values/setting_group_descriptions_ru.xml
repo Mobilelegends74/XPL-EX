@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Setting Values help is intentionally Russian for every interface locale. -->
+    <!-- Russian Setting Values group help. English counterparts are in setting_descriptions_en.xml. -->
     <string name="description_ru_setting_group_unknown" translatable="false">В этом разделе собраны связанные параметры подмены. Изменение значения само по себе не меняет настоящий телефон: XPL-EX показывает выбранные данные только отмеченному приложению.</string>
 
     <string name="description_ru_setting_group_android" translatable="false">Здесь находятся основные сведения Android: версия системы, номер сборки, fingerprint и другие системные данные. Лучше использовать согласованные значения от одного реального устройства, чтобы приложение не увидело противоречий.</string>

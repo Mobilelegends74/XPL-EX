@@ -54,13 +54,13 @@ public class PropertyAddDialog extends AppCompatDialogFragment  {
         edPropertyName = view.findViewById(R.id.etPropSettingAddName);
 
         builder.setView(view)
-                .setTitle("Property Map Builder")
-                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.title_add_property)
+                .setNegativeButton(R.string.option_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.i(TAG, "Add Property Dialog Was Cancelled");
                     }
-                }).setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                }).setPositiveButton(R.string.option_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String propertyName = edPropertyName.getText().toString();

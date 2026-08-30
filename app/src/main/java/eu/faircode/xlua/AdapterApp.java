@@ -395,6 +395,18 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
                 AssignmentPacket assignment = AssignmentPacket.create(hook);
                 boolean isAlreadyAssigned = app.hasAssignment(assignment);
 
+                // Locale and timezone are never part of Spoof Device. Remove
+                // assignments left by older versions when the master switch is
+                // touched, without affecting explicit use of their own groups.
+                if (isUniversalGamingSpoof
+                        && UniversalGamingSpoof.isEnvironmentGroup(hook.group)) {
+                    if (isAlreadyAssigned) {
+                        removeIds.add(hook.getObjectId());
+                        app.removeAssignment(assignment);
+                    }
+                    continue;
+                }
+
                 if (isUniversalGamingSpoof && assign && isAvailable
                         && UniversalGamingSpoof.isManufacturerGroup(hook.group)
                         && !UniversalGamingSpoof.includesGroup(hook.group, deviceBrand, deviceManufacturer)) {

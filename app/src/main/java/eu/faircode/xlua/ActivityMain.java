@@ -22,7 +22,6 @@ package eu.faircode.xlua;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -33,7 +32,6 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,11 +43,9 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -68,9 +64,9 @@ import androidx.fragment.app.FragmentTransaction;
 import eu.faircode.xlua.api.XResult;
 import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.api.xlua.call.CleanHooksCommand;
-import eu.faircode.xlua.api.xlua.provider.XLuaHookProvider;
 import eu.faircode.xlua.logger.XLog;
 import eu.faircode.xlua.utilities.PrefUtil;
+import eu.faircode.xlua.utilities.AppLanguage;
 import eu.faircode.xlua.utilities.UiInsets;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.PrefManager;
@@ -83,13 +79,10 @@ import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.ui.core.UserClientAppContext;
 import eu.faircode.xlua.x.ui.dialogs.BackupDialog;
 import eu.faircode.xlua.x.ui.dialogs.CollectionsDialog;
-import eu.faircode.xlua.x.ui.dialogs.ErrorDialog;
 import eu.faircode.xlua.x.ui.dialogs.TaskProgressDialog;
 import eu.faircode.xlua.x.ui.dialogs.utils.BackupDialogUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.call.DropTableCommand;
-import eu.faircode.xlua.x.xlua.commands.call.GetBridgeVersionCommand;
-import eu.faircode.xlua.x.xlua.commands.call.GetDatabaseStatusCommand;
 import eu.faircode.xlua.x.xlua.commands.call.GetSettingExCommand;
 import eu.faircode.xlua.x.xlua.commands.call.PutAssignmentCommand;
 import eu.faircode.xlua.x.xlua.commands.call.PutHookExCommand;
@@ -97,7 +90,6 @@ import eu.faircode.xlua.x.xlua.commands.call.PutSettingExCommand;
 import eu.faircode.xlua.x.xlua.database.A_CODE;
 import eu.faircode.xlua.x.xlua.database.ActionFlag;
 import eu.faircode.xlua.x.xlua.database.ActionPacket;
-import eu.faircode.xlua.x.xlua.database.DatabasePathUtil;
 import eu.faircode.xlua.x.xlua.hook.AssignmentPacket;
 import eu.faircode.xlua.x.xlua.settings.data.SettingPacket;
 import eu.faircode.xlua.x.xlua.settings.data.XBackup;
@@ -115,11 +107,8 @@ public class ActivityMain extends ActivityBase {
 
     private Menu menu = null;
 
-    private AlertDialog firstRunDialog = null;
-
     public static final int LOADER_DATA = 1;
     public static final String EXTRA_SEARCH_PACKAGE = "package";
-    public static boolean continueWithoutModule = false;
 
     public static final PrefManager manager = PrefManager.create(null, PrefManager.SETTINGS_MAIN);
 
@@ -135,19 +124,9 @@ public class ActivityMain extends ActivityBase {
         super.onCreate(savedInstanceState);
 
         manager.ensureIsOpen(this, PrefManager.SETTINGS_MAIN);
-        if (!continueWithoutModule)
-            continueWithoutModule = getSkipWarning();
-
-        // 1.5.8 replaces an unreachable Snackbar with a full, readable status
-        // screen. "Continue" only bypasses this UI check for the current process;
-        // it does not alter hooks, assignments or any saved spoofing values.
-        if (!continueWithoutModule && !XLuaHookProvider.isAvailable(this)) {
-            showModuleStatus();
-            return;
-        }
-
-        if (!continueWithoutModule && (!invokeNeedsRebootCheck() || !invokeDatabaseCheck()))
-            return;
+        // Startup is intentionally non-blocking. Module/database diagnostics are
+        // available elsewhere, but first launch, update and module activation must
+        // never force the user through a warning or confirmation dialog.
 
         // Set layout
         setContentView(R.layout.main);
@@ -281,6 +260,13 @@ public class ActivityMain extends ActivityBase {
             }
         }));
 
+        drawerArray.add(new DrawerItem(this, R.string.menu_language, new DrawerItem.IListener() {
+            @Override
+            public void onClick(DrawerItem item) {
+                showLanguageDialog();
+            }
+        }));
+
 
         drawerArray.add(new DrawerItem(this, R.string.menu_collections, new DrawerItem.IListener() {
             @Override
@@ -358,60 +344,6 @@ public class ActivityMain extends ActivityBase {
         //whatsNew
         initCore();
     }
-
-    private void showModuleStatus() {
-        setContentView(R.layout.module_status_dialog);
-        TextView message = findViewById(R.id.tvMessage);
-        message.setText(R.string.module_status_unavailable);
-        findViewById(R.id.btnContinue).setOnClickListener(view -> {
-            continueWithoutModule = true;
-            recreate();
-        });
-    }
-
-    private boolean invokeNeedsRebootCheck() {
-        String result = GetBridgeVersionCommand.get(ActivityMain.this);
-        DatabasePathUtil.deleteAndroidDirectories();
-        //DatabasePathUtil.ensureDataDirectoryIsDeleted(true);
-        if(Str.isEmpty(result) || result.equalsIgnoreCase(GetBridgeVersionCommand.DEFAULT)) {
-            ErrorDialog.create()
-                    .setErrorTitle(getString(R.string.title_error_service_version))
-                    .setErrorMessage(Str.combineEx(
-                            Str.combine("Bridge Version=", Str.toStringOrNull(result)),
-                            Str.NEW_LINE,
-                            Str.combine("Required Bridge Version=", BuildConfig.BRIDGE_VERSION),
-                            Str.repeatString(Str.NEW_LINE, 2),
-                            getString(R.string.msg_error_service_bridge)))
-                    .show(getSupportFragmentManager(), getString(R.string.title_error_generic));
-            return false;
-        } else {
-            if(!BuildConfig.BRIDGE_VERSION.equalsIgnoreCase(result)) {
-                ErrorDialog.create()
-                        .setErrorTitle(getString(R.string.title_error_service_version))
-                        .setErrorMessage(Str.fm(getString(R.string.msg_error_mismatch_bridge_version), result, BuildConfig.BRIDGE_VERSION))
-                        .show(getSupportFragmentManager(), getString(R.string.title_error_generic));
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private boolean invokeDatabaseCheck() {
-        Pair<Integer, String> result = GetDatabaseStatusCommand.get(ActivityMain.this);
-        if(result != null) {
-            if(result.first == GetDatabaseStatusCommand.CODE_ERROR) {
-                ErrorDialog.create()
-                        .setErrorTitle(getString(R.string.title_error_database_service))
-                        .setErrorMessage(result.second)
-                        .show(getSupportFragmentManager(), getString(R.string.title_error_generic));
-                return false;
-            }
-        }
-
-        return true;
-    }
-
 
     public void handleCodeToSnack(A_CODE code, String extraIfSucceeded) {
         Snackbar.make(findViewById(android.R.id.content),
@@ -758,17 +690,28 @@ public class ActivityMain extends ActivityBase {
             //int year = Calendar.getInstance().get(Calendar.YEAR);
             tvLicence.setText(Html.fromHtml(getString(R.string.whats_new)));
 
-            firstRunDialog = new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this)
                     .setView(view)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.option_thanks, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(getApplicationContext(), "ObedCode Says good luck", Toast.LENGTH_SHORT).show();
-                        }
-                    }).create();
-            firstRunDialog.show();
+                    .setCancelable(true)
+                    .setPositiveButton(R.string.option_thanks, null)
+                    .show();
         } catch (Exception ignored) { }
+    }
+
+    private void showLanguageDialog() {
+        String[] values = { AppLanguage.SYSTEM, AppLanguage.ENGLISH, AppLanguage.RUSSIAN };
+        String selected = AppLanguage.getSelection(this);
+        int checked = AppLanguage.ENGLISH.equals(selected) ? 1
+                : AppLanguage.RUSSIAN.equals(selected) ? 2 : 0;
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.menu_language)
+                .setSingleChoiceItems(R.array.app_language_options, checked, (dialog, which) -> {
+                    AppLanguage.setSelection(this, values[which]);
+                    dialog.dismiss();
+                    recreate();
+                })
+                .setNegativeButton(R.string.option_cancel, null)
+                .show();
     }
 
     public void initCore() {
@@ -787,55 +730,15 @@ public class ActivityMain extends ActivityBase {
             }
         }
 
-        checkFirstRun();
+        markStartupPromptsHandled();
     }
 
-    public void checkFirstRun() {
+    private void markStartupPromptsHandled() {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean firstRun = prefs.getBoolean("firstrun", true);
-        if (firstRun && firstRunDialog == null) {
-            final XUtil.DialogObserver observer = new XUtil.DialogObserver();
-
-            LayoutInflater inflater = LayoutInflater.from(this);
-            View view = inflater.inflate(R.layout.license, null, false);
-            TextView tvLicence = view.findViewById(R.id.tvLicense);
-            tvLicence.setMovementMethod(LinkMovementMethod.getInstance());
-
-            int year = Calendar.getInstance().get(Calendar.YEAR);
-            tvLicence.setText(Html.fromHtml(getString(R.string.title_license, year)));
-
-            firstRunDialog = new AlertDialog.Builder(this)
-                    .setView(view)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.title_accept, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            prefs.edit().putBoolean("firstrun", false).apply();
-                        }
-                    })
-                    .setNegativeButton(R.string.title_deny, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            System.exit(0);
-                        }
-                    })
-                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialogInterface) {
-                            firstRunDialog = null;
-                            observer.stopObserving();
-                        }
-                    })
-                    .create();
-            firstRunDialog.show();
-
-            observer.startObserving(this, firstRunDialog);
-        }
-
-        if(!PrefUtil.getBoolean(this, "welcome", false, true)) {
+        if (prefs.getBoolean("firstrun", true))
+            prefs.edit().putBoolean("firstrun", false).apply();
+        if (!PrefUtil.getBoolean(this, "welcome", false, true))
             PrefUtil.setBoolean(this, "welcome", true);
-            whatsNew();
-        }
     }
 
     private static class DrawerItem {

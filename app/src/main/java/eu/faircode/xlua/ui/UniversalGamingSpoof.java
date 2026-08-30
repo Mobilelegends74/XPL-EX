@@ -32,11 +32,9 @@ public final class UniversalGamingSpoof {
             "spoof.battery",
             "spoof.display",
             "spoof.features",
-            "spoof.language",
             "spoof.soc",
             "spoof.status.cell",
             "spoof.telephony",
-            "spoof.timezone",
             "spoof.useragent",
             "storage.spoof.size",
             "user.creation.time"
@@ -58,6 +56,16 @@ public final class UniversalGamingSpoof {
 
     private UniversalGamingSpoof() { }
 
+    /** Groups that must remain under explicit user control. */
+    public static boolean isEnvironmentGroup(String groupName) {
+        if (groupName == null)
+            return false;
+        String normalized = groupName.trim().toLowerCase(Locale.ROOT);
+        return "spoof.language".equals(normalized)
+                || "spoof.timezone".equals(normalized)
+                || normalized.contains("zoneid");
+    }
+
     public static boolean isVirtualGroup(String groupName) {
         return GROUP_NAME.equalsIgnoreCase(groupName);
     }
@@ -67,6 +75,8 @@ public final class UniversalGamingSpoof {
             return false;
 
         String normalized = groupName.trim().toLowerCase(Locale.ROOT);
+        if (isEnvironmentGroup(normalized))
+            return false;
         if ("apps.spoof.timestamps".equals(normalized))
             return false;
         return normalized.startsWith("apps.spoof.")

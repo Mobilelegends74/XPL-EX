@@ -1,5 +1,6 @@
 package eu.faircode.xlua.x.runtime;
 
+import android.os.Build;
 import android.util.Log;
 
 import java.lang.reflect.Field;
@@ -10,7 +11,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import eu.faircode.xlua.x.runtime.reflect.StaticFieldWriter;
 
-/** Applies the exact current and launch Android versions of the selected device profile. */
+/** Keeps the current Android version native while exposing the profile's real launch version. */
 public final class AndroidVersionSpoofer {
     private static final String TAG = "XLua.AndroidVersion";
     private static boolean propertyHooksInstalled;
@@ -18,12 +19,12 @@ public final class AndroidVersionSpoofer {
     private AndroidVersionSpoofer() { }
 
     /**
-     * Makes every later hook consume the same current release/API as the
-     * selected firmware fingerprint. This also repairs older saved profiles
-     * whose individual version settings were not updated atomically.
+     * Makes every later hook consume the process' native current release/API.
+     * This also repairs older saved profiles whose individual version settings
+     * came from a different Android generation.
      */
     public static boolean normalizeSettings(Map<String, String> settings) {
-        VersionValues values = VersionValues.from(settings);
+        VersionValues values = runtimeValues(settings);
         if (values == null)
             return false;
         try {
@@ -36,7 +37,7 @@ public final class AndroidVersionSpoofer {
     }
 
     public static boolean applyFrameworkFields(Map<String, String> settings) {
-        VersionValues values = VersionValues.from(settings);
+        VersionValues values = runtimeValues(settings);
         if (values == null)
             return false;
 
@@ -63,7 +64,7 @@ public final class AndroidVersionSpoofer {
     public static synchronized boolean installSystemPropertyHooks(Map<String, String> settings) {
         if (propertyHooksInstalled)
             return true;
-        final VersionValues values = VersionValues.from(settings);
+        final VersionValues values = runtimeValues(settings);
         if (values == null)
             return false;
 
@@ -112,6 +113,12 @@ public final class AndroidVersionSpoofer {
         }
     }
 
+    private static VersionValues runtimeValues(Map<String, String> settings) {
+        // Spoof Device must never change the process Android generation. The
+        // selected catalog build is constrained to this same API separately.
+        return VersionValues.from(settings, Build.VERSION.RELEASE, Build.VERSION.SDK_INT);
+    }
+
     static final class VersionValues {
         final String currentRelease;
         final int currentApi;
@@ -126,23 +133,17 @@ public final class AndroidVersionSpoofer {
             this.firstApi = firstApi;
         }
 
-        static VersionValues from(Map<String, String> settings) {
+        static VersionValues from(Map<String, String> settings,
+                                  String realRelease, int realApi) {
             if (settings == null)
                 return null;
             try {
-                String currentRelease = releaseFromFingerprint(
-                        settings.get("android.build.fingerprint"));
-                if (currentRelease == null)
-                    currentRelease = settings.get("android.build.version");
-                String currentApiText = settings.get("android.build.version.sdk");
                 String firstApiText = settings.get("android.build.version.min.sdk");
-                if (currentRelease == null || currentApiText == null || firstApiText == null)
+                if (realRelease == null || firstApiText == null)
                     return null;
-                int configuredCurrentApi = Integer.parseInt(currentApiText.trim());
-                int currentApi = apiForRelease(currentRelease, configuredCurrentApi);
                 int firstApi = Integer.parseInt(firstApiText.trim());
                 String firstRelease = releaseForApi(firstApi);
-                return new VersionValues(currentRelease.trim(), currentApi, firstRelease, firstApi);
+                return new VersionValues(realRelease.trim(), realApi, firstRelease, firstApi);
             } catch (RuntimeException ignored) {
                 return null;
             }
@@ -194,33 +195,5 @@ public final class AndroidVersionSpoofer {
             }
         }
 
-        private static int apiForRelease(String release, int fallback) {
-            if (release == null)
-                return fallback;
-            switch (release.trim()) {
-                case "9": return 28;
-                case "10": return 29;
-                case "11": return 30;
-                case "12": return 31;
-                case "13": return 33;
-                case "14": return 34;
-                case "15": return 35;
-                case "16": return 36;
-                default: return fallback;
-            }
-        }
-
-        private static String releaseFromFingerprint(String fingerprint) {
-            if (fingerprint == null)
-                return null;
-            int colon = fingerprint.indexOf(':');
-            if (colon < 0 || colon + 1 >= fingerprint.length())
-                return null;
-            int slash = fingerprint.indexOf('/', colon + 1);
-            if (slash < 0)
-                return null;
-            String release = fingerprint.substring(colon + 1, slash).trim();
-            return release.matches("(?:9|1[0-6])") ? release : null;
-        }
     }
 }

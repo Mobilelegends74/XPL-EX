@@ -857,8 +857,8 @@
     <string name="message_warning_hooks_title" translatable="false">Warning!</string>
     <string name="message_warning_hooks_message" translatable="false">Warning! It seems a Setting in this Group and or Container is NOT saved! Ensure you save your modified Changes unless you wish to not save the new values or value!</string>
 
-    <string name="message_unique_title" translatable="false">Уникальные данные</string>
-    <string name="message_unique_message" translatable="false">Этот значок отмечает данные, по которым приложение может повторно узнать телефон или пользователя. В первую очередь обращайте внимание на Android ID, рекламные идентификаторы, серийные номера, UUID и другие постоянные значения.</string>
+    <string name="message_unique_title">Unique data</string>
+    <string name="message_unique_message">This icon marks values that an application can use to recognize the phone or user again. Pay particular attention to Android ID, advertising identifiers, serial numbers, UUIDs and other persistent values.</string>
 
 
     <string name="msg_no_service">Module not running or updated</string>
@@ -1132,6 +1132,16 @@
 
     <!-- XPL-EX 1.5.8 interface -->
     <string name="menu_advanced_settings">Advanced Settings</string>
+    <string name="menu_language">Language</string>
+    <string name="language_system">System</string>
+    <string name="language_english">English</string>
+    <string name="language_russian">Russian</string>
+    <string name="advanced_language_summary">Choose the application language without changing Android language settings</string>
+    <string-array name="app_language_options">
+        <item>System language</item>
+        <item>English</item>
+        <item>Русский</item>
+    </string-array>
     <string name="advanced_theming">THEMING</string>
     <string name="advanced_theme">Theme</string>
     <string name="advanced_theme_auto">Auto</string>
@@ -1158,6 +1168,10 @@
     <string name="advanced_transparent_navbar">Transparent Navigation Bar</string>
     <string name="advanced_transparent_navbar_summary">Draw the application behind the navigation area</string>
     <string name="advanced_experimental">EXPERIMENTAL</string>
+    <string name="msg_settings_applied_summary">Settings applied: %1$d; failed: %2$d</string>
+    <string name="task_no_tasks">No tasks to execute</string>
+    <string name="task_executing">Executing: %1$s (%2$d/%3$d)</string>
+    <string name="task_all_completed">All tasks completed</string>
     <string name="advanced_custom_color">Custom Theme Color</string>
     <string name="advanced_custom_color_summary">Override the main interface color</string>
     <string name="advanced_custom_color_hint">#RRGGBB</string>

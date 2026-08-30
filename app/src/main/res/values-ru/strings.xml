@@ -37,6 +37,8 @@
     <string name="msg_exception" comment="msg_exception&#10;Error in &lt;hook name&gt;">Ошибка в %1$s</string>
     <string name="msg_restrict_sure">Вы действительно хотите переключить \'%1$s\' для всех приложений?</string>
     <string name="msg_no_browser">Отсутствует браузер для открытия ссылки</string>
+    <string name="message_unique_title">Уникальные данные</string>
+    <string name="message_unique_message">Этот значок отмечает данные, по которым приложение может повторно узнать телефон или пользователя. В первую очередь обращайте внимание на Android ID, рекламные идентификаторы, серийные номера, UUID и другие постоянные значения.</string>
     <string name="group_determine_activity">Определение активности</string>
     <string name="group_get_applications">Чтение списка приложений</string>
     <string name="group_get_calendars">Чтение календаря</string>
@@ -60,6 +62,18 @@
     <string name="group_use_tracking">Использование отслеживания</string>
     <!-- Интерфейс XPL-EX 1.5.8 -->
     <string name="menu_advanced_settings">Расширенные настройки</string>
+    <string name="menu_language">Язык</string>
+    <string name="language_system">Система</string>
+    <string name="language_english">English</string>
+    <string name="language_russian">Русский</string>
+    <string name="advanced_language_summary">Выберите язык приложения, не изменяя системный язык Android</string>
+    <string name="description_setting_group_info_hint">Нажмите, чтобы прочитать описание этого раздела параметров.</string>
+    <string name="description_setting_value_info_hint">Нажмите, чтобы прочитать описание этого параметра.</string>
+    <string-array name="app_language_options">
+        <item>Язык системы</item>
+        <item>English</item>
+        <item>Русский</item>
+    </string-array>
     <string name="advanced_theming">ОФОРМЛЕНИЕ</string>
     <string name="advanced_theme">Тема</string>
     <string name="advanced_theme_auto">Авто</string>
@@ -99,4 +113,111 @@
     <string name="module_status_title">ВНИМАНИЕ</string>
     <string name="module_status_continue">Всё равно продолжить</string>
     <string name="module_status_unavailable">Модуль XPL-EX не активен. Включите его в LSPosed и перезагрузите устройство.</string>
+
+    <!-- Основные экраны XPL-EX Next -->
+    <string name="group_universalgaming_spoof_device">Подмена устройства</string>
+    <string name="menu_whats_new_button">Список изменений</string>
+    <string name="menu_collections">Коллекции</string>
+    <string name="menu_settings">Параметры подмены</string>
+    <string name="menu_hooks">Хуки</string>
+    <string name="menu_import_settings">Импорт настроек</string>
+    <string name="menu_export_settings">Экспорт настроек</string>
+    <string name="menu_info">Информация</string>
+    <string name="menu_save">Сохранить</string>
+    <string name="menu_filter">Фильтр</string>
+    <string name="menu_filter_all">Все</string>
+    <string name="menu_filter_groups">Группы</string>
+    <string name="menu_filter_hooks">Хуки</string>
+    <string name="menu_filter_settings">Параметры</string>
+    <string name="menu_show_system">Показывать системные приложения</string>
+    <string name="menu_show_hook">Показывать хуки</string>
+    <string name="menu_show_settings_all">Все параметры</string>
+    <string name="menu_show_settings_android">Параметры Android</string>
+    <string name="menu_show_settings_unique">Уникальные параметры</string>
+    <string name="menu_configs">Конфигурации</string>
+    <string name="menu_database">База данных</string>
+    <string name="menu_debug_logs">Журналы отладки</string>
+    <string name="menu_props">Системные свойства</string>
+    <string name="menu_dark">Тёмная тема</string>
+
+    <string name="button_create_profile">Создать профиль</string>
+    <string name="button_profiles">Профили</string>
+    <string name="button_configs">Конфигурации</string>
+    <string name="button_create_config">Создать конфигурацию</string>
+    <string name="button_select_config">Выбрать конфигурацию</string>
+    <string name="button_logs">Журналы</string>
+    <string name="button_properties">Свойства</string>
+    <string name="button_reset_settings">Сбросить настройки</string>
+    <string name="button_settings_save_checked">Сохранить отмеченные</string>
+    <string name="button_clear_app_data">Очистить данные приложения</string>
+    <string name="button_force_stop">Остановить приложение</string>
+    <string name="button_terminate">Завершить</string>
+    <string name="btn_create_network">Добавить сеть</string>
+
+    <string name="option_add">Добавить</string>
+    <string name="option_apply">Применить</string>
+    <string name="option_cancel">Отмена</string>
+    <string name="option_clear">Очистить</string>
+    <string name="option_close">Закрыть</string>
+    <string name="option_create">Создать</string>
+    <string name="option_delete">Удалить</string>
+    <string name="option_edit">Изменить</string>
+    <string name="option_export">Экспортировать</string>
+    <string name="option_not_ask">Больше не спрашивать</string>
+    <string name="option_ok">ОК</string>
+    <string name="option_open">Открыть</string>
+    <string name="option_rename">Переименовать</string>
+    <string name="option_save">Сохранить</string>
+    <string name="option_thanks">Спасибо</string>
+    <string name="option_update">Обновить</string>
+
+    <string name="title_app">Приложение</string>
+    <string name="title_global">Глобальные настройки</string>
+    <string name="title_groups">Группы</string>
+    <string name="title_logs">Журналы</string>
+    <string name="title_backup">Резервная копия</string>
+    <string name="title_confirm">Подтверждение</string>
+    <string name="title_config_manager">Менеджер конфигураций</string>
+    <string name="title_profile_manager">Менеджер профилей</string>
+    <string name="title_settings_search">Поиск параметров</string>
+    <string name="title_wifi_networks">Сети Wi‑Fi</string>
+    <string name="title_edit_wifi_network">Изменить сеть Wi‑Fi</string>
+    <string name="title_hook_edit">Редактирование хука</string>
+    <string name="title_hooks_assign">Назначение хуков</string>
+    <string name="title_settings_reset">Сброс настроек</string>
+    <string name="title_delete_setting">Удаление параметра</string>
+    <string name="title_delete_config">Удаление конфигурации</string>
+    <string name="title_delete_appdata">Очистка данных приложения</string>
+    <string name="title_save_options">Параметры сохранения</string>
+    <string name="title_select_file">Выбор файла</string>
+    <string name="title_save_file">Сохранение файла</string>
+
+    <string name="hook_button_delete">Удалить</string>
+    <string name="hook_button_edit">Изменить</string>
+    <string name="hook_button_export">Экспортировать</string>
+    <string name="hook_label_name">Название</string>
+    <string name="hook_label_author">Автор</string>
+    <string name="hook_label_class">Класс</string>
+    <string name="hook_label_method">Метод</string>
+    <string name="hook_label_description">Описание</string>
+    <string name="hook_label_version">Версия</string>
+    <string name="hook_label_sdk">SDK</string>
+    <string name="hook_label_optional">Необязательный</string>
+    <string name="hook_label_notify">Уведомлять</string>
+    <string name="hook_label_usage">Статистика использования</string>
+
+    <string name="msg_task_finished_command">Операция выполнена</string>
+    <string name="msg_task_failure">Операция не выполнена</string>
+    <string name="msg_settings_reset">Настройки сброшены</string>
+    <string name="msg_settings_imported">Настройки импортированы</string>
+    <string name="msg_shared_prefs_saved">Настройки сохранены</string>
+    <string name="msg_no_groups">Группы не найдены</string>
+    <string name="msg_no_config_selected">Конфигурация не выбрана</string>
+    <string name="msg_error_generic">Произошла ошибка</string>
+    <string name="msg_error_processing">Ошибка обработки данных</string>
+    <string name="msg_error_no_hooks">Хуки не найдены</string>
+    <string name="msg_error_no_description">Описание отсутствует</string>
+    <string name="msg_error_randomizer_none">Для этого параметра нет генератора</string>
+    <string name="msg_result_randomized">Значения сгенерированы</string>
+    <string name="msg_result_deleted">Удалено</string>
 </resources>

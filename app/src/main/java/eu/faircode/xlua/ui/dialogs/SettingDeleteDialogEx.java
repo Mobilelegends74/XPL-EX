@@ -80,7 +80,7 @@ public class SettingDeleteDialogEx extends AppCompatDialogFragment{
 
                             que.deleteSetting(context, setting, adapterPosition, deleteSetting, deleteDefault, forceKill, callback);
                         }else {
-                            Toast.makeText(context, "NULL NULL For settings delete", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, R.string.msg_error_generic_null, Toast.LENGTH_LONG).show();
                         }
                     }
                 });

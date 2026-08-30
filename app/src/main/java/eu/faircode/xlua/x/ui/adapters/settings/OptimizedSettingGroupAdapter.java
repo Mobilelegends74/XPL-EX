@@ -231,7 +231,7 @@ public class OptimizedSettingGroupAdapter
                     case R.id.ivActionNeeded:
                         resId = groupStats.hasUnsaved()
                                 ? R.string.msg_hint_warning_save
-                                : R.string.description_ru_setting_group_info_hint;
+                                : R.string.description_setting_group_info_hint;
                         break;
                     case R.id.tvStatsCount:
                         resId = R.string.msg_hint_settings_stat;

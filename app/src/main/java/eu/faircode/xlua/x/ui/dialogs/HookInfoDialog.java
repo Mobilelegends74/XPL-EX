@@ -20,6 +20,7 @@ import java.util.Map;
 
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.R;
+import eu.faircode.xlua.utilities.AppLanguage;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.xlua.LibUtil;
 
@@ -32,14 +33,18 @@ public class HookInfoDialog extends AppCompatDialogFragment {
     public static String getMessage(Context context, String groupName) {
         if(context == null)
             return Str.EMPTY;
+        boolean russian = AppLanguage.isRussian(context);
+        int unknown = russian ? R.string.description_ru_hook_group_unknown
+                : R.string.description_hook_group_unknown;
         if(Str.isEmpty(groupName))
-            return context.getString(R.string.description_ru_hook_group_unknown);
+            return context.getString(unknown);
 
         // Normalize group name for cache lookup
         String normalizedName = groupName.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9_]", "_");
 
         // Check cache first
-        String cached = MAPPED_CACHE.get(normalizedName);
+        String cacheKey = (russian ? "ru:" : "en:") + normalizedName;
+        String cached = MAPPED_CACHE.get(cacheKey);
         if(cached != null) {
             if(DebugUtil.isDebug())
                 Log.d(TAG, "Got cached description for: " + groupName);
@@ -47,19 +52,20 @@ public class HookInfoDialog extends AppCompatDialogFragment {
         }
 
         // Build resource name from group name
-        String resourceName = "description_ru_hook_group_" + normalizedName;
+        String resourceName = (russian ? "description_ru_hook_group_"
+                : "description_hook_group_") + normalizedName;
         int resId = context.getResources().getIdentifier(resourceName, "string", context.getPackageName());
 
         if(resId == 0) {
             if(DebugUtil.isDebug())
                 Log.d(TAG, "No description found for hook group: " + groupName);
-            return context.getString(R.string.description_ru_hook_group_unknown);
+            return context.getString(unknown);
         }
 
         String message = context.getString(resId);
 
         // Cache the result
-        MAPPED_CACHE.put(normalizedName, message);
+        MAPPED_CACHE.put(cacheKey, message);
 
         if(DebugUtil.isDebug())
             Log.d(TAG, "Cached new description for: " + groupName);

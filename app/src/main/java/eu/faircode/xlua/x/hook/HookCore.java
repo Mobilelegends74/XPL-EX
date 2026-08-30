@@ -2,6 +2,7 @@ package eu.faircode.xlua.x.hook;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
+import android.os.Build;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -49,13 +50,16 @@ public class HookCore {
 
     public static void initHooks(final XC_LoadPackage.LoadPackageParam loadParam, int uid, final Context context) {
         try {
+            // Capture the host API before any profile data is applied. Hook
+            // compatibility must always be decided by the Android runtime
+            // that actually owns this process.
+            final int runtimeSdk = Build.VERSION.SDK_INT;
             //Ask to Force Bypass
             boolean bypassed = HiddenApi.bypassHiddenApiRestrictionsClassLoader(loadParam.classLoader);
             final PackageHookContext app = PackageHookContext.create(loadParam, uid, context);
 
-            // Apply the selected firmware version before resolving any target-app
-            // classes. A class resolver must never get a chance to initialize code
-            // that can cache the real Build.VERSION values first.
+            // Normalize legacy/cross-version saved settings back to the host
+            // Android generation before resolving any target-app classes.
             AndroidVersionSpoofer.normalizeSettings(app.settings);
             AndroidVersionSpoofer.installSystemPropertyHooks(app.settings);
             AndroidVersionSpoofer.applyFrameworkFields(app.settings);
@@ -73,6 +77,11 @@ public class HookCore {
             PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 
             for(XHook hook :  HookRepository.create().initializeHooks(context, hooks, app.settings).getHooks()) {
+                // Old assignments can outlive an OS upgrade or an imported backup.
+                // Reject incompatible hooks before resolving their classes so an API
+                // from another Android generation is never touched.
+                if (runtimeSdk < hook.minSdk || runtimeSdk > hook.maxSdk)
+                    continue;
                 List<HookDefinition> definitions = HookResolver.resolveHook(context, context.getClassLoader(), hook);
                 if(DebugUtil.isDebug())
                     Log.d(TAG, Str.fm("Creating Hook [%s][%s] Class [%s] Method [%s] Definitions Found Count=%s Pkg=%s",

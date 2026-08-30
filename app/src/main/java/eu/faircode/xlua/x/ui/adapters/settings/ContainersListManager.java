@@ -471,7 +471,7 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                     case R.id.ivActionNeeded:
                         resId = groupStats.hasUnsaved()
                                 ? R.string.msg_hint_warning_save
-                                : R.string.description_ru_setting_value_info_hint;
+                                : R.string.description_setting_value_info_hint;
                         break;
                 }
 

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="description_hook_group_unknown" translatable="false">Controls a group of XPL-EX hooks. A detailed description has not yet been added for this custom or newly introduced group.</string>
+    <string name="description_hook_group_universalgaming_spoof_device" translatable="false">Enables one coherent device identity covering the model, Android build, CPU, GPU, SoC, memory, display, identifiers, SIM and network data. Only firmware matching the real Android version is selected; language and timezone are not changed.</string>
+    <string name="description_hook_group_ad_analytics" translatable="false">Intercepts advertising and analytics services to limit usage-event collection. It can affect statistics, advertising or rewarded ads.</string>
+    <string name="description_hook_group_ad_analytics_spoof" translatable="false">Replaces identifiers, device details and other data sent to advertising and analytics libraries.</string>
+    <string name="description_hook_group_determine_activity" translatable="false">Limits detection of walking, running, driving and other physical activity states.</string>
+    <string name="description_hook_group_device_id_oneplus" translatable="false">Replaces OnePlus and OxygenOS identifiers such as security UUIDs, serial properties and vendor-specific values.</string>
+    <string name="description_hook_group_get_applications" translatable="false">Limits access to installed and running application lists and may return empty or filtered results.</string>
+    <string name="description_hook_group_get_location" translatable="false">Intercepts location requests and returns the configured location or no coordinates, depending on settings.</string>
+    <string name="description_hook_group_hide_app_dome" translatable="false">Handles selected Appdome protection checks and can hide signs of root, modifications and analysis tools.</string>
+    <string name="description_hook_group_hide_environment" translatable="false">Hides signs of root, Xposed/LSPosed, emulation, debugging and suspicious system values.</string>
+    <string name="description_hook_group_id_boot_id" translatable="false">Replaces the boot identifier normally regenerated after a device restart.</string>
+    <string name="description_hook_group_id_keyboard" translatable="false">Limits identification of connected or selected keyboards and input devices.</string>
+    <string name="description_hook_group_id_network" translatable="false">Replaces network identifiers such as MAC, SSID and BSSID without changing the real network.</string>
+    <string name="description_hook_group_id_network_linkproperties" translatable="false">Replaces detailed LinkProperties data including interfaces, DNS servers and routes.</string>
+    <string name="description_hook_group_id_uptime" translatable="false">Replaces elapsed time since boot so uptime cannot be used as a stable fingerprint signal.</string>
+    <string name="description_hook_group_log_io" translatable="false">Intercepts file and stream input/output used to inspect the device environment.</string>
+    <string name="description_hook_group_log_shell" translatable="false">Intercepts shell commands and their output to hide responses that reveal root or system modifications.</string>
+    <string name="description_hook_group_read_account" translatable="false">Limits access to account names and types configured on the device.</string>
+    <string name="description_hook_group_read_clipboard" translatable="false">Blocks or replaces clipboard reads for the selected application.</string>
+    <string name="description_hook_group_read_identifiers" translatable="false">Limits access to persistent device and user identifiers across multiple Android APIs.</string>
+    <string name="description_hook_group_read_network" translatable="false">Limits access to the real network state, addresses and interface details.</string>
+    <string name="description_hook_group_read_sync" translatable="false">Limits access to synchronization accounts, adapters and status.</string>
+    <string name="description_hook_group_read_telephony" translatable="false">Limits access to mobile network, SIM, operator and telephony information.</string>
+    <string name="description_hook_group_settings_spoof" translatable="false">Replaces values read from Android System, Secure and Global settings.</string>
+    <string name="description_hook_group_spoof_accounts" translatable="false">Replaces account lists and account details with configured or empty data.</string>
+    <string name="description_hook_group_spoof_contacts" translatable="false">Replaces contact-query results with empty or prepared data.</string>
+    <string name="description_hook_group_spoof_embed_paypal" translatable="false">Replaces selected identifiers processed by PayPal components and may affect payment security checks.</string>
+    <string name="description_hook_group_spoof_soc" translatable="false">Replaces SoC model, manufacturer, platform and related properties; values must match CPU and GPU data.</string>
+    <string name="description_hook_group_spoof_telephony" translatable="false">Replaces operator, network, SIM, phone-number and Telephony API data.</string>
+    <string name="description_hook_group_storage_spoof_size" translatable="false">Replaces total/free storage capacity and selected partition information.</string>
+    <string name="description_hook_group_use_analytics" translatable="false">Intercepts analytics libraries that collect screens, actions, errors and usage duration.</string>
+    <string name="description_hook_group_use_tracking" translatable="false">Intercepts known user/device tracking used by advertising, attribution and anti-fraud systems.</string>
+    <string name="description_hook_group_user_creation_time" translatable="false">Replaces Android user/profile creation time to hide the age of the current profile.</string>
+    <string name="description_en_setting_value_unknown" translatable="false">Controls the value Android reports to the selected application.</string>
+
+    <string name="description_en_setting_group_unknown" translatable="false">Contains related spoofing values. Changing a value does not modify the real phone; XPL-EX only reports it to the selected application.</string>
+    <string name="description_en_setting_group_android" translatable="false">Android system identity: OS version, build number, fingerprint and related build data. Use values from one coherent real firmware.</string>
+    <string name="description_en_setting_group_apps" translatable="false">Controls which installed applications are visible and the reported install/update times.</string>
+    <string name="description_en_setting_group_battery" translatable="false">Battery capacity, charge, temperature, health and cycle data. Keep all values physically plausible.</string>
+    <string name="description_en_setting_group_bluetooth" translatable="false">Bluetooth adapter identity and visible paired-device information. It does not switch the real Bluetooth radio.</string>
+    <string name="description_en_setting_group_cell" translatable="false">Mobile network and cell-tower identifiers, signal data and subscription state.</string>
+    <string name="description_en_setting_group_clipboard" translatable="false">Controls the clipboard content reported to the selected application.</string>
+    <string name="description_en_setting_group_device" translatable="false">Device model, manufacturer, brand and code names. Prefer a complete real-device profile over mixed values.</string>
+    <string name="description_en_setting_group_display" translatable="false">Screen resolution, density, size and refresh characteristics for the selected device profile.</string>
+    <string name="description_en_setting_group_files" translatable="false">Reported file creation, modification and access timestamps and related file metadata.</string>
+    <string name="description_en_setting_group_hardware" translatable="false">CPU, GPU, memory, camera, GPS and other hardware characteristics. They must match the selected model.</string>
+    <string name="description_en_setting_group_network" translatable="false">Reported Wi-Fi, IP, DNS, network name, MAC address and connection data.</string>
+    <string name="description_en_setting_group_notification" translatable="false">Controls notification information visible to the selected application.</string>
+    <string name="description_en_setting_group_props" translatable="false">Android build properties and SystemProperties used to identify the firmware, bootloader and system state.</string>
+    <string name="description_en_setting_group_settings" translatable="false">Values read from Android System, Secure and Global settings.</string>
+    <string name="description_en_setting_group_soc" translatable="false">SoC model, platform, manufacturer and baseband data. Keep it consistent with CPU and GPU values.</string>
+    <string name="description_en_setting_group_unique" translatable="false">Android ID, advertising IDs, serials, UUIDs and other identifiers used to recognize a device.</string>
+    <string name="description_en_setting_group_user" translatable="false">Android user/profile information such as profile creation time.</string>
+    <string name="description_en_setting_group_xplex" translatable="false">Internal XPL-EX behavior settings. Change them only when their effect is understood.</string>
+    <string name="description_en_setting_group_zone" translatable="false">Regional values such as country, language and timezone. These remain outside automatic Spoof Device activation.</string>
+
+    <string name="description_setting_group_info_hint">Tap to read a description of this Setting Values section.</string>
+    <string name="description_setting_value_info_hint">Tap to read a description of this value.</string>
+</resources>

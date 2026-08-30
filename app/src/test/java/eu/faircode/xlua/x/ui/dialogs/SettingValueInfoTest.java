@@ -31,4 +31,11 @@ public class SettingValueInfoTest {
         assertEquals("", SettingValueInfo.normalizeSettingName(null));
         assertEquals("", SettingValueInfo.normalizeSettingName(""));
     }
+
+    @Test
+    public void generatesEnglishFallbackWithoutRussianText() {
+        assertEquals(
+                "Controls the reported Android Build Fingerprint value for the selected application. Keep it consistent with the active device profile.",
+                SettingValueInfo.englishFallback("android_build_fingerprint"));
+    }
 }

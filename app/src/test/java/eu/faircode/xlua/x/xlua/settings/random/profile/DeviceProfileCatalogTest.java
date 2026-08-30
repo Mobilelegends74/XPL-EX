@@ -113,6 +113,30 @@ public class DeviceProfileCatalogTest {
     }
 
     @Test
+    public void android13SelectsOnlyOfficialAndroid13Builds() {
+        assertSelectionsStayOnApi(33, "13");
+    }
+
+    @Test
+    public void android14SelectsOnlyOfficialAndroid14Builds() {
+        assertSelectionsStayOnApi(34, "14");
+    }
+
+    @Test
+    public void everyCatalogSupportedAndroidKeepsItsOwnRelease() {
+        int[] apis = {29, 30, 31, 33, 34, 35, 36};
+        String[] releases = {"10", "11", "12", "13", "14", "15", "16"};
+        for (int index = 0; index < apis.length; index++)
+            assertSelectionsStayOnApi(apis[index], releases[index]);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void missingExactApiNeverFallsBackToAnotherAndroidVersion() {
+        DeviceProfileCatalog.resetSelectionForTests();
+        DeviceProfileCatalog.selectBalancedForApi(profiles, 32);
+    }
+
+    @Test
     public void xiaomiAndNubiaIdentitiesCannotBeMixed() {
         DeviceProfile xiaomi = find("xiaomi_14_cn");
         DeviceProfile nubia = find("nubia_redmagic_9_pro");
@@ -287,6 +311,17 @@ public class DeviceProfileCatalogTest {
             if (value.contains(expected))
                 return true;
         return false;
+    }
+
+    private static void assertSelectionsStayOnApi(int apiLevel, String release) {
+        DeviceProfileCatalog.resetSelectionForTests();
+        for (int index = 0; index < 100; index++) {
+            DeviceProfileSelection selection =
+                    DeviceProfileCatalog.selectBalancedForApi(profiles, apiLevel);
+            assertEquals(apiLevel, selection.build.apiLevel);
+            assertEquals(release, selection.build.release);
+            assertTrue(selection.build.fingerprint.contains(":" + release + "/"));
+        }
     }
 
     private static int count(String value, String token) {

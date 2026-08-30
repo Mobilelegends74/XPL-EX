@@ -7,6 +7,15 @@ import static org.junit.Assert.assertTrue;
 
 public class UniversalGamingSpoofTest {
     @Test
+    public void leavesLanguageAndTimezoneUnderExplicitUserControl() {
+        assertFalse(UniversalGamingSpoof.includesGroup("Spoof.Language"));
+        assertFalse(UniversalGamingSpoof.includesGroup("Spoof.TimeZone"));
+        assertTrue(UniversalGamingSpoof.isEnvironmentGroup("Spoof.Language"));
+        assertTrue(UniversalGamingSpoof.isEnvironmentGroup("Spoof.TimeZone"));
+        assertTrue(UniversalGamingSpoof.isEnvironmentGroup("java.time.ZoneId"));
+    }
+
+    @Test
     public void includesDeviceIdentityGroups() {
         assertTrue(UniversalGamingSpoof.includesGroup("ID.Build"));
         assertTrue(UniversalGamingSpoof.includesGroup("ID.Unique"));
