@@ -172,6 +172,8 @@ public class DeviceProfileCatalogTest {
                 assertEquals(String.valueOf(build.apiLevel), values.get(RandomizersCache.SETTING_ANDROID_BUILD_VERSION_SDK));
                 assertEquals(build.fingerprint, values.get(RandomizersCache.SETTING_ANDROID_BUILD_FINGERPRINT));
                 long buildEpoch = Long.parseLong(values.get(RandomizersCache.SETTING_ANDROID_BUILD_DATE_EPOC));
+                assertEquals(profile.id, buildEpoch, ProfileBuildMetadata.deriveEpochSeconds(
+                        build.fingerprint, build.buildId, build.incremental, build.release));
                 assertTrue(profile.id, buildEpoch > 1546300800L);
                 assertTrue(profile.id, buildEpoch * 1000L < System.currentTimeMillis());
                 assertFalse(profile.id, values.get(RandomizersCache.SETTING_ANDROID_BUILD_DATE).contains("1970"));
@@ -231,6 +233,17 @@ public class DeviceProfileCatalogTest {
             assertTrue(profile.characteristics.batteryCapacityMah >= 4300);
             assertTrue(profile.characteristics.ramGb >= 8);
         }
+    }
+
+    @Test
+    public void lenovoZ6BuildDateComesFromItsFirmwareIncremental() {
+        DeviceProfile profile = find("lenovo_z6_pro");
+        DeviceProfileSelection selection = new DeviceProfileSelection(profile, profile.builds.get(0));
+
+        assertEquals("20210831",
+                selection.get(RandomizersCache.SETTING_ANDROID_BUILD_DATE_TWO));
+        assertTrue(selection.get(RandomizersCache.SETTING_ANDROID_BUILD_DATE)
+                .contains("2021"));
     }
 
     @Test

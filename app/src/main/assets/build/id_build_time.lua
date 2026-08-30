@@ -1,5 +1,6 @@
 function after(hook, param)
-	local ret = param:getResult()
+    param:applyAndroidVersionFields()
+    local ret = param:getResult()
 	if ret == nil then
 		return false
 	end
@@ -10,7 +11,7 @@ function after(hook, param)
     end
 
     -- ro.build.date.utc is stored in Unix seconds, while Build.TIME is milliseconds.
-    local milliseconds = param:epochSecondsToMillis(fake)
+    local milliseconds = param:coherentBuildTimeMillis(fake)
     if milliseconds == nil then
         return false
     end

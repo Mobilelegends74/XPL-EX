@@ -72,6 +72,8 @@ import eu.faircode.xlua.x.hook.interceptors.network.LinkPropertiesInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.network.NetworkInfoInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.network.NetworkInterfaceInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.network.WifiInfoInterceptor;
+import eu.faircode.xlua.x.runtime.reflect.StaticFieldWriter;
+import eu.faircode.xlua.x.xlua.settings.random.profile.ProfileBuildMetadata;
 import eu.faircode.xlua.random.randomizers.RandomMediaCodec;
 import eu.faircode.xlua.random.randomizers.RandomMediaCodecInfo;
 import eu.faircode.xlua.utilities.Evidence;
@@ -466,6 +468,54 @@ public class XParam extends XParamExtra {
         } catch (Exception ignored) {
             return null;
         }
+    }
+
+    @SuppressWarnings("unused")
+    public String coherentBuildTimeMillis(String fallbackSeconds) {
+        try {
+            long derivedSeconds = ProfileBuildMetadata.deriveEpochSeconds(
+                    getSetting("android.build.fingerprint"),
+                    getSetting("android.build.id"),
+                    getSetting("android.build.incremental"),
+                    getSetting("android.build.version"));
+            if (derivedSeconds > 0L)
+                return String.valueOf(Math.multiplyExact(derivedSeconds, 1000L));
+        } catch (Exception ignored) { }
+        return epochSecondsToMillis(fallbackSeconds);
+    }
+
+    @SuppressWarnings("unused")
+    public boolean applyAndroidVersionFields() {
+        try {
+            Class<?> versionClass = Class.forName("android.os.Build$VERSION");
+            String release = getSetting("android.build.version");
+            String sdkText = getSetting("android.build.version.sdk");
+            String initialSdkText = getSetting("android.build.version.min.sdk");
+            if (release == null || sdkText == null || initialSdkText == null)
+                return false;
+
+            int sdk = Integer.parseInt(sdkText.trim());
+            int initialSdk = Integer.parseInt(initialSdkText.trim());
+            setStaticFieldIfPresent(versionClass, "RELEASE", release);
+            setStaticFieldIfPresent(versionClass, "RELEASE_OR_CODENAME", release);
+            setStaticFieldIfPresent(versionClass, "RELEASE_OR_PREVIEW_DISPLAY", release);
+            setStaticFieldIfPresent(versionClass, "SDK", String.valueOf(sdk));
+            setStaticFieldIfPresent(versionClass, "SDK_INT", sdk);
+            setStaticFieldIfPresent(versionClass, "RESOURCES_SDK_INT", sdk);
+            setStaticFieldIfPresent(versionClass, "DEVICE_INITIAL_SDK_INT", initialSdk);
+            return true;
+        } catch (Throwable error) {
+            Log.e(TAG, "Failed applying coherent Android version fields", error);
+            return false;
+        }
+    }
+
+    private static void setStaticFieldIfPresent(Class<?> clazz, String fieldName, Object value)
+            throws Throwable {
+        try {
+            Field target = clazz.getDeclaredField(fieldName);
+            StaticFieldWriter.set(target, value);
+        } catch (NoSuchFieldException ignored) { }
     }
 
     @SuppressWarnings("unused")
@@ -904,7 +954,7 @@ public class XParam extends XParamExtra {
             if (result instanceof Throwable) this.param.setThrowable((Throwable) result);
             else this.param.setResult(result);
         else
-            this.field.set(null, result);
+            StaticFieldWriter.set(this.field, result);
     }
 
     @SuppressWarnings("unused")

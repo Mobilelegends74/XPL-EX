@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /** Values that must stay coherent with the selected stock fingerprint. */
-final class ProfileBuildMetadata {
+public final class ProfileBuildMetadata {
     private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
     private static final Pattern DATE_EIGHT = Pattern.compile("(?:^|\\D)(20\\d{6})(?:\\D|$)");
     private static final Pattern DATE_SIX = Pattern.compile("(?:^|\\D)(2\\d{5})(?:\\D|$)");
@@ -24,7 +24,7 @@ final class ProfileBuildMetadata {
     final String kernelVersion;
 
     private ProfileBuildMetadata(DeviceProfile device, DeviceBuildProfile build) {
-        Calendar date = dateFromFingerprint(build);
+        Calendar date = dateFromValues(build.fingerprint, build.buildId, build.incremental, build.release);
         this.epochSeconds = date.getTimeInMillis() / 1000L;
         this.buildDate = format(date, "EEE MMM d HH:mm:ss 'UTC' yyyy");
         this.compactDate = format(date, "yyyyMMdd");
@@ -41,13 +41,22 @@ final class ProfileBuildMetadata {
         return new ProfileBuildMetadata(device, build);
     }
 
-    private static Calendar dateFromFingerprint(DeviceBuildProfile build) {
-        Calendar parsed = parseDate(build.incremental, DATE_EIGHT, true);
-        if (parsed == null) parsed = parseDate(build.buildId, DATE_EIGHT, true);
-        if (parsed == null) parsed = parseDate(build.buildId, DATE_SIX, false);
-        if (parsed == null) parsed = fallbackDate(build.release, build.fingerprint.hashCode());
+    public static long deriveEpochSeconds(String fingerprint, String buildId,
+                                          String incremental, String release) {
+        if (fingerprint == null || fingerprint.trim().isEmpty())
+            return 0L;
+        return dateFromValues(fingerprint, buildId, incremental, release).getTimeInMillis() / 1000L;
+    }
 
-        int seconds = Math.floorMod(build.fingerprint.hashCode(), 12 * 60 * 60);
+    private static Calendar dateFromValues(String fingerprint, String buildId,
+                                           String incremental, String release) {
+        Calendar parsed = parseDate(incremental, DATE_EIGHT, true);
+        if (parsed == null) parsed = parseDate(buildId, DATE_EIGHT, true);
+        if (parsed == null) parsed = parseDate(incremental, DATE_SIX, false);
+        if (parsed == null) parsed = parseDate(buildId, DATE_SIX, false);
+        if (parsed == null) parsed = fallbackDate(release, fingerprint.hashCode());
+
+        int seconds = Math.floorMod(fingerprint.hashCode(), 12 * 60 * 60);
         parsed.set(Calendar.HOUR_OF_DAY, 8 + seconds / 3600);
         parsed.set(Calendar.MINUTE, seconds / 60 % 60);
         parsed.set(Calendar.SECOND, seconds % 60);

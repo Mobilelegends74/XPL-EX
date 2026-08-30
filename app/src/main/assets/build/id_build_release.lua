@@ -1,4 +1,5 @@
 function after(hook, param)
+	param:applyAndroidVersionFields()
 	local ret = param:getResult()
 	if ret == nil then
 		return false

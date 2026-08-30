@@ -718,6 +718,11 @@ public class RandomizersCache {
                             }
                         }
                     }
+
+                    // A selected real-device profile must remain one atomic identity.
+                    // Reflection order is not guaranteed and generic date/kernel/battery
+                    // randomizers must never replace only part of the profile.
+                    ensureDeviceProfilePrecedence(randomizers);
                 }
             }
         }catch (Exception e) {
@@ -726,5 +731,11 @@ public class RandomizersCache {
 
         if(DebugUtil.isDebug())
             Log.d(TAG, "Exiting Init Randomizers, Count=" + randomizers.size());
+    }
+
+    static void ensureDeviceProfilePrecedence(Map<String, IRandomizer> target) {
+        IRandomizer deviceProfile = new RandomDeviceProfile();
+        for (String setting : deviceProfile.getSettings())
+            target.put(setting, deviceProfile);
     }
 }
