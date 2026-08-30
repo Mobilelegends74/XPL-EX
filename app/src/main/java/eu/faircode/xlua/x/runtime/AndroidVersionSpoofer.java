@@ -17,21 +17,43 @@ public final class AndroidVersionSpoofer {
 
     private AndroidVersionSpoofer() { }
 
-    public static boolean applyFrameworkFields(Map<String, String> settings) {
+    /**
+     * Makes every later hook consume the same current release/API as the
+     * selected firmware fingerprint. This also repairs older saved profiles
+     * whose individual version settings were not updated atomically.
+     */
+    public static boolean normalizeSettings(Map<String, String> settings) {
+        VersionValues values = VersionValues.from(settings);
+        if (values == null)
+            return false;
         try {
-            VersionValues values = VersionValues.from(settings);
-            if (values == null)
-                return false;
+            values.normalize(settings);
+            return true;
+        } catch (RuntimeException error) {
+            Log.e(TAG, "Failed normalizing profile Android version settings", error);
+            return false;
+        }
+    }
 
+    public static boolean applyFrameworkFields(Map<String, String> settings) {
+        VersionValues values = VersionValues.from(settings);
+        if (values == null)
+            return false;
+
+        normalizeSettings(settings);
+        try {
             Class<?> versionClass = Class.forName("android.os.Build$VERSION");
-            setStaticFieldIfPresent(versionClass, "RELEASE", values.currentRelease);
+
+            // Keep every write independent. Some Android releases protect one
+            // of the String fields; that must not prevent SDK_INT from changing.
+            boolean sdkInt = setStaticFieldIfPresent(versionClass, "SDK_INT", values.currentApi);
+            setStaticFieldIfPresent(versionClass, "RESOURCES_SDK_INT", values.currentApi);
+            setStaticFieldIfPresent(versionClass, "SDK", String.valueOf(values.currentApi));
+            boolean release = setStaticFieldIfPresent(versionClass, "RELEASE", values.currentRelease);
             setStaticFieldIfPresent(versionClass, "RELEASE_OR_CODENAME", values.currentRelease);
             setStaticFieldIfPresent(versionClass, "RELEASE_OR_PREVIEW_DISPLAY", values.currentRelease);
-            setStaticFieldIfPresent(versionClass, "SDK", String.valueOf(values.currentApi));
-            setStaticFieldIfPresent(versionClass, "SDK_INT", values.currentApi);
-            setStaticFieldIfPresent(versionClass, "RESOURCES_SDK_INT", values.currentApi);
             setStaticFieldIfPresent(versionClass, "DEVICE_INITIAL_SDK_INT", values.firstApi);
-            return true;
+            return sdkInt && release;
         } catch (Throwable error) {
             Log.e(TAG, "Failed applying profile Android version fields", error);
             return false;
@@ -77,12 +99,17 @@ public final class AndroidVersionSpoofer {
         }
     }
 
-    private static void setStaticFieldIfPresent(Class<?> clazz, String fieldName, Object value)
-            throws Throwable {
+    private static boolean setStaticFieldIfPresent(Class<?> clazz, String fieldName, Object value) {
         try {
             Field target = clazz.getDeclaredField(fieldName);
             StaticFieldWriter.set(target, value);
-        } catch (NoSuchFieldException ignored) { }
+            return true;
+        } catch (NoSuchFieldException ignored) {
+            return true;
+        } catch (Throwable error) {
+            Log.e(TAG, "Failed applying Build.VERSION." + fieldName + "=" + value, error);
+            return false;
+        }
     }
 
     static final class VersionValues {
@@ -145,6 +172,11 @@ public final class AndroidVersionSpoofer {
                 default:
                     return null;
             }
+        }
+
+        void normalize(Map<String, String> settings) {
+            settings.put("android.build.version", currentRelease);
+            settings.put("android.build.version.sdk", String.valueOf(currentApi));
         }
 
         private static String releaseForApi(int api) {

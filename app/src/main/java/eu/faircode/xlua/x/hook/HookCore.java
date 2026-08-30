@@ -56,6 +56,7 @@ public class HookCore {
             // Apply the selected firmware version before resolving any target-app
             // classes. A class resolver must never get a chance to initialize code
             // that can cache the real Build.VERSION values first.
+            AndroidVersionSpoofer.normalizeSettings(app.settings);
             AndroidVersionSpoofer.installSystemPropertyHooks(app.settings);
             AndroidVersionSpoofer.applyFrameworkFields(app.settings);
 
@@ -284,6 +285,12 @@ public class HookCore {
                     }
                 }
             }
+
+            // Field hooks run above and older saved configurations may contain a
+            // stale standalone SDK value. The firmware fingerprint is authoritative,
+            // so enforce the coherent current/launch versions one final time.
+            AndroidVersionSpoofer.normalizeSettings(app.settings);
+            AndroidVersionSpoofer.applyFrameworkFields(app.settings);
 
         }catch (Exception e) {
             Log.e(TAG, "Failed to InitHooks! UID=" + uid + " Error=" + e);
