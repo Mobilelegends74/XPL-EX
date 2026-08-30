@@ -116,7 +116,7 @@
 
     <!-- Основные экраны XPL-EX Next -->
     <string name="group_universalgaming_spoof_device">Подмена устройства</string>
-    <string name="menu_whats_new_button">Список изменений</string>
+    <string name="menu_whats_new_button">Что нового</string>
     <string name="menu_collections">Коллекции</string>
     <string name="menu_settings">Параметры подмены</string>
     <string name="menu_hooks">Хуки</string>

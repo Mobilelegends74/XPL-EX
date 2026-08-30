@@ -691,6 +691,7 @@ public class ActivityMain extends ActivityBase {
             tvLicence.setText(Html.fromHtml(getString(R.string.whats_new)));
 
             new AlertDialog.Builder(this)
+                    .setTitle(R.string.menu_whats_new_button)
                     .setView(view)
                     .setCancelable(true)
                     .setPositiveButton(R.string.option_thanks, null)
