@@ -34,6 +34,7 @@ import eu.faircode.xlua.x.hook.filter.HookRepository;
 import eu.faircode.xlua.x.hook.inlined.HashMapHooks;
 import eu.faircode.xlua.x.hook.inlined.UpTimeHooks;
 import eu.faircode.xlua.x.runtime.HiddenApi;
+import eu.faircode.xlua.x.runtime.AndroidVersionSpoofer;
 import eu.faircode.xlua.x.runtime.RuntimeUtils;
 import eu.faircode.xlua.x.runtime.reflect.DynamicField;
 import eu.faircode.xlua.x.runtime.reflect.ReflectUtil;
@@ -276,6 +277,11 @@ public class HookCore {
                     }
                 }
             }
+
+            // Apply profile versions after hook installation but before the target
+            // application starts. This is independent of persisted hook assignments.
+            AndroidVersionSpoofer.installSystemPropertyHooks(app.settings);
+            AndroidVersionSpoofer.applyFrameworkFields(app.settings);
 
         }catch (Exception e) {
             Log.e(TAG, "Failed to InitHooks! UID=" + uid + " Error=" + e);

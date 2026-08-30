@@ -170,6 +170,8 @@ public class DeviceProfileCatalogTest {
                 assertEquals(profile.cpuCount, count(cpuInfo, "processor\t:"));
                 assertEquals(build.release, values.get(RandomizersCache.SETTING_ANDROID_BUILD_VERSION));
                 assertEquals(String.valueOf(build.apiLevel), values.get(RandomizersCache.SETTING_ANDROID_BUILD_VERSION_SDK));
+                assertEquals(String.valueOf(profile.launchApiLevel),
+                        values.get(RandomizersCache.SETTING_ANDROID_BUILD_VERSION_MIN_SDK));
                 assertEquals(build.fingerprint, values.get(RandomizersCache.SETTING_ANDROID_BUILD_FINGERPRINT));
                 long buildEpoch = Long.parseLong(values.get(RandomizersCache.SETTING_ANDROID_BUILD_DATE_EPOC));
                 assertEquals(profile.id, buildEpoch, ProfileBuildMetadata.deriveEpochSeconds(

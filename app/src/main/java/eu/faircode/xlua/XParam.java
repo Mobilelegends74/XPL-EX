@@ -73,6 +73,7 @@ import eu.faircode.xlua.x.hook.interceptors.network.NetworkInfoInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.network.NetworkInterfaceInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.network.WifiInfoInterceptor;
 import eu.faircode.xlua.x.runtime.reflect.StaticFieldWriter;
+import eu.faircode.xlua.x.runtime.AndroidVersionSpoofer;
 import eu.faircode.xlua.x.xlua.settings.random.profile.ProfileBuildMetadata;
 import eu.faircode.xlua.random.randomizers.RandomMediaCodec;
 import eu.faircode.xlua.random.randomizers.RandomMediaCodecInfo;
@@ -486,36 +487,7 @@ public class XParam extends XParamExtra {
 
     @SuppressWarnings("unused")
     public boolean applyAndroidVersionFields() {
-        try {
-            Class<?> versionClass = Class.forName("android.os.Build$VERSION");
-            String release = getSetting("android.build.version");
-            String sdkText = getSetting("android.build.version.sdk");
-            String initialSdkText = getSetting("android.build.version.min.sdk");
-            if (release == null || sdkText == null || initialSdkText == null)
-                return false;
-
-            int sdk = Integer.parseInt(sdkText.trim());
-            int initialSdk = Integer.parseInt(initialSdkText.trim());
-            setStaticFieldIfPresent(versionClass, "RELEASE", release);
-            setStaticFieldIfPresent(versionClass, "RELEASE_OR_CODENAME", release);
-            setStaticFieldIfPresent(versionClass, "RELEASE_OR_PREVIEW_DISPLAY", release);
-            setStaticFieldIfPresent(versionClass, "SDK", String.valueOf(sdk));
-            setStaticFieldIfPresent(versionClass, "SDK_INT", sdk);
-            setStaticFieldIfPresent(versionClass, "RESOURCES_SDK_INT", sdk);
-            setStaticFieldIfPresent(versionClass, "DEVICE_INITIAL_SDK_INT", initialSdk);
-            return true;
-        } catch (Throwable error) {
-            Log.e(TAG, "Failed applying coherent Android version fields", error);
-            return false;
-        }
-    }
-
-    private static void setStaticFieldIfPresent(Class<?> clazz, String fieldName, Object value)
-            throws Throwable {
-        try {
-            Field target = clazz.getDeclaredField(fieldName);
-            StaticFieldWriter.set(target, value);
-        } catch (NoSuchFieldException ignored) { }
+        return AndroidVersionSpoofer.applyFrameworkFields(this.settings);
     }
 
     @SuppressWarnings("unused")
