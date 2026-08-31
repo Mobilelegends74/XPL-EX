@@ -5,7 +5,7 @@ import android.util.Log;
 
 import java.util.concurrent.Callable;
 
-import de.robv.android.xposed.XposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
 import eu.faircode.xlua.XPolicy;
 import eu.faircode.xlua.api.xstandard.QueryCommandHandler;
 
@@ -41,7 +41,7 @@ public class TryQueryWrapper implements Callable<Cursor> {
         }catch (Throwable e) {
             exception = e;
             Log.e(TAG, "Query Error: packet=" + packet + " command=" + handle.getName() + " \n" + e + "\n" + Log.getStackTraceString(e));
-            XposedBridge.log("Query Error");
+            ModernXposedBridge.log("Query Error");
             return null;
         }finally {
             policy.revert();

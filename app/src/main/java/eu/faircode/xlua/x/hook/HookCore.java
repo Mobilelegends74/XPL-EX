@@ -20,9 +20,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import eu.faircode.xlua.xposed.api101.ModernMethodHook;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernLoadPackage;
 import eu.faircode.xlua.BuildConfig;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.api.hook.XLuaHook;
@@ -48,7 +48,7 @@ public class HookCore {
     private static final String TAG = LibUtil.generateTag(HookCore.class);
 
 
-    public static void initHooks(final XC_LoadPackage.LoadPackageParam loadParam, int uid, final Context context) {
+    public static void initHooks(final ModernLoadPackage.LoadPackageParam loadParam, int uid, final Context context) {
         try {
             // Capture the host API before any profile data is applied. Hook
             // compatibility must always be decided by the Android runtime
@@ -117,7 +117,7 @@ public class HookCore {
                             if(DebugUtil.isDebug())
                                 Log.d(TAG, "Definition is a (ALL) Hook! " + definition);
 
-                            XposedBridge.hookAllMethods(definition.resolvedClazz, definition.getName(), new XC_MethodHook() {
+                            ModernXposedBridge.hookAllMethods(definition.resolvedClazz, definition.getName(), new ModernMethodHook() {
                                 private final WeakHashMap<Thread, Globals> threadGlobals = new WeakHashMap<>();
                                 @Override
                                 protected void beforeHookedMethod(MethodHookParam param)  { execute(param, "before"); }
@@ -227,7 +227,7 @@ public class HookCore {
 
                             if(DebugUtil.isDebug()) Log.d(TAG, "Deploying Member Hook! Definition:" + definition);
 
-                            XposedBridge.hookMethod(member, new XC_MethodHook() {
+                            ModernXposedBridge.hookMethod(member, new ModernMethodHook() {
                                 private final WeakHashMap<Thread, Globals> threadGlobals = new WeakHashMap<>();
                                 @Override
                                 protected void beforeHookedMethod(MethodHookParam param)  { execute(param, "before"); }

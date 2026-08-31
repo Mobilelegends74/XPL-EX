@@ -3,7 +3,7 @@ package eu.faircode.xlua.x.xlua.database.wrappers;
 import android.content.Context;
 import android.util.Log;
 
-import de.robv.android.xposed.XposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
 import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.xlua.LibUtil;
@@ -45,7 +45,7 @@ public class XLuaDatabaseManager implements IDatabaseManager {
         try {
             if(db == null) {
                 db = new SQLDatabase(SQLDatabase.DATABASE_X_LUA, context, true);
-                XposedBridge.log(Str.fm("Opened Database, Database=%s", Str.noNL(db)));
+                ModernXposedBridge.log(Str.fm("Opened Database, Database=%s", Str.noNL(db)));
                 reset(false);
                 if(!db.isOpen(true))
                     return false;
@@ -70,7 +70,7 @@ public class XLuaDatabaseManager implements IDatabaseManager {
 
     @Override
     public void reset(boolean setDatabaseNull) {
-        XposedBridge.log("Resetting Database (xl), Set Database to null: " + String.valueOf(setDatabaseNull));
+        ModernXposedBridge.log("Resetting Database (xl), Set Database to null: " + String.valueOf(setDatabaseNull));
         if(setDatabaseNull && db != null) {
             if(db.isOpen())
                 db.close();

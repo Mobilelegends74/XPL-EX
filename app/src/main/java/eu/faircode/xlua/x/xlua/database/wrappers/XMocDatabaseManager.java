@@ -2,7 +2,7 @@ package eu.faircode.xlua.x.xlua.database.wrappers;
 
 import android.content.Context;
 
-import de.robv.android.xposed.XposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.xlua.database.DatabaseUtils;
 import eu.faircode.xlua.x.xlua.database.IDatabaseManager;
@@ -33,7 +33,7 @@ public class XMocDatabaseManager implements IDatabaseManager  {
 
             if(db == null) {
                 db = new SQLDatabase(SQLDatabase.DATABASE_MOCK, context, true);
-                XposedBridge.log(Str.fm("Opened Database [2], Database=%s", Str.noNL(db)));
+                ModernXposedBridge.log(Str.fm("Opened Database [2], Database=%s", Str.noNL(db)));
                 reset(false);
                 if(!db.isOpen(true))
                     return false;
@@ -50,7 +50,7 @@ public class XMocDatabaseManager implements IDatabaseManager  {
 
     @Override
     public void reset(boolean setDatabaseNull) {
-        XposedBridge.log("Resetting Database (xm), Set Database to null: " + String.valueOf(setDatabaseNull));
+        ModernXposedBridge.log("Resetting Database (xm), Set Database to null: " + String.valueOf(setDatabaseNull));
         if(setDatabaseNull && db != null) {
             if(db.isOpen())
                 db.close();

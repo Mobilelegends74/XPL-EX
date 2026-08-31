@@ -13,7 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.robv.android.xposed.XposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XUtil;
 import eu.faircode.xlua.x.Str;
@@ -562,21 +562,21 @@ public class GlobalDatabaseResolver {
 
     public static void logI(String msg) {
         Log.i(TAG, msg);
-        XposedBridge.log(TAG + " " + msg);
+        ModernXposedBridge.log(TAG + " " + msg);
     }
 
     public static void logD(String msg) {
         Log.d(TAG, msg);
-        XposedBridge.log(TAG + " " + msg);
+        ModernXposedBridge.log(TAG + " " + msg);
     }
 
     public static void logE(String msg) {
         Log.e(TAG, msg);
-        XposedBridge.log(TAG + " " + msg);
+        ModernXposedBridge.log(TAG + " " + msg);
     }
 
     public static void logW(String msg) {
         Log.w(TAG, msg);
-        XposedBridge.log(TAG + " " + msg);
+        ModernXposedBridge.log(TAG + " " + msg);
     }
 }

@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import eu.faircode.xlua.xposed.api101.ModernMethodHook;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernLoadPackage;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.R;
 import eu.faircode.xlua.x.Str;
@@ -29,14 +29,14 @@ public class SubscriptionControllerHooks {
     private static final String METHOD_GET_SUBS = "getActiveSubscriptionInfoList";
 
 
-    public static List<SubscriptionInfo> getSubsResult(XC_MethodHook.MethodHookParam param) {
+    public static List<SubscriptionInfo> getSubsResult(ModernMethodHook.MethodHookParam param) {
         try {
             return  (List<SubscriptionInfo>) param.getResult();
         } catch (Exception ignored) {  }
         return null;
     }
 
-    public static void deployHook_getActiveSubscriptionInfoList(final XC_LoadPackage.LoadPackageParam lpparam, Context context) {
+    public static void deployHook_getActiveSubscriptionInfoList(final ModernLoadPackage.LoadPackageParam lpparam, Context context) {
         //com.android.internal.telephony.SubscriptionController.getActiveSubscriptionInfoList
         //https://android.googlesource.com/platform/frameworks/opt/telephony/+/aa1b0618a847ee1365c1e9810f085214c717a27e/src/java/com/android/internal/telephony/SubscriptionController.java
         /*
@@ -104,7 +104,7 @@ public class SubscriptionControllerHooks {
             try {
                 Class<?> clazz = Class.forName(className, false, lpparam.classLoader);
                 try {
-                    XposedBridge.hookAllMethods(clazz, METHOD_GET_SUBS, new XC_MethodHook() {
+                    ModernXposedBridge.hookAllMethods(clazz, METHOD_GET_SUBS, new ModernMethodHook() {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             List<SubscriptionInfo> subs = getSubsResult(param);
@@ -130,7 +130,7 @@ public class SubscriptionControllerHooks {
             if(PhoneHookUtils.isPhoneService(lpparam.packageName)) {
                 @SuppressLint("PrivateApi")
                 Class<?> clazz = Class.forName("com.android.internal.telephony.SubscriptionController", false, lpparam.classLoader);
-                XposedBridge.hookAllMethods(clazz, "getActiveSubscriptionInfoList", new XC_MethodHook() {
+                ModernXposedBridge.hookAllMethods(clazz, "getActiveSubscriptionInfoList", new ModernMethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         try {

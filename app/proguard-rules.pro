@@ -29,6 +29,13 @@
 # which provides most of the safe size/method-count reduction.
 -keep class eu.faircode.xlua.** { *; }
 
+# libxposed API 101 entry point and metadata.
+-dontwarn io.github.libxposed.annotation.**
+-adaptresourcefilecontents META-INF/xposed/java_init.list
+-keep public class eu.faircode.xlua.xposed.api101.ModernEntryPoint {
+    public <init>();
+}
+
 #LuaJ
 -dontwarn org.luaj.vm2.**
 -keepnames class org.luaj.vm2.** {*; }

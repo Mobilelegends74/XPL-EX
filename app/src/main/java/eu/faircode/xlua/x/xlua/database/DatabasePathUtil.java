@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import de.robv.android.xposed.XposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XposedUtil;
 import eu.faircode.xlua.x.Str;

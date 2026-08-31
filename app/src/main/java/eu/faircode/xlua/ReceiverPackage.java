@@ -30,7 +30,7 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.util.Log;
 
-import de.robv.android.xposed.XposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
 import eu.faircode.xlua.api.xstandard.UserIdentityPacket;
 import eu.faircode.xlua.api.xlua.XLuaCall;
 import eu.faircode.xlua.x.xlua.LibUtil;
@@ -123,7 +123,7 @@ public class ReceiverPackage extends BroadcastReceiver {
             }
         } catch (Throwable ex) {
             Log.e(TAG, Log.getStackTraceString(ex));
-            XposedBridge.log(ex);
+            ModernXposedBridge.log(ex);
         }
     }
 }

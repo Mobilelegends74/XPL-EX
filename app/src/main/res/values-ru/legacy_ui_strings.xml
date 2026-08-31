@@ -1,11 +1,12 @@
 <resources>
     <!-- Legacy UI resources were incorrectly marked non-translatable upstream. -->
-    <string name="app_name">XPL-EX-NEXT-1.5.7</string>
+    <string name="app_name">XPL-EX-NEXT-1.5.8</string>
+    <string name="xposed_module_description">Управление конфиденциальностью и согласованная подмена профиля устройства для LSPosed.</string>
     <string name="channel_privacy">XPrivacyLua</string>
     <string name="title_license">XPL-EX предназначен для защиты конфиденциальности. Это свободное программное обеспечение, распространяемое по лицензии GNU GPL версии 3 или более поздней. Copyright 2017–%1$d Marcel Bokhorst и участники проекта.</string>
     <string name="title_use_default">Использовать значение по умолчанию, если Null</string>
     <string name="title_delete_action">Удалить</string>
-    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.5.7</b><br><br>• Исправлен русский результат сохранения настроек: количество успешных и неуспешных хуков теперь форматируется правильно.<br>• Глобальный Spoof Device больше не выбирает и не рандомизирует параметры <b>zone.*</b>. Язык, локаль и часовой пояс доступны только при явном ручном включении.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX">GitHub: Mobilelegends74/XPL-EX</a>]]></string>
+    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.5.8</b><br><br>• Точка входа и диспетчер хуков перенесены на современный libxposed API 101 для LSPosed 2.1.1.<br>• Устаревшие метаданные Xposed заменены современной структурой META-INF/xposed.<br>• Поведение существующих Lua-хуков сохранено через адаптер цепочки перехватчиков API 101.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX">GitHub: Mobilelegends74/XPL-EX</a>]]></string>
 
     <string name="warning_bulk_check">Будут включены все доступные хуки. Это может вызвать сбои целевого приложения. Включайте только необходимые группы и проверяйте их по отдельности.</string>
     <string name="warning_bulk_check_title">Включить все хуки?</string>

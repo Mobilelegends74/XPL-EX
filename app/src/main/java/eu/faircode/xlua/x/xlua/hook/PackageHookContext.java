@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import eu.faircode.xlua.xposed.api101.ModernLoadPackage;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XParam;
 import eu.faircode.xlua.api.properties.MockPropConversions;
@@ -36,7 +36,7 @@ import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
 public class PackageHookContext {
     private static final String TAG = LibUtil.generateTag(PackageHookContext.class);
 
-    public static PackageHookContext create(final XC_LoadPackage.LoadPackageParam lpparam, int uid, final Context context) { return new PackageHookContext(lpparam.packageName, uid, context); }
+    public static PackageHookContext create(final ModernLoadPackage.LoadPackageParam lpparam, int uid, final Context context) { return new PackageHookContext(lpparam.packageName, uid, context); }
 
     public static final String RANDOM_VALUE = "%random%";
     public static final String RANDOMIZE_VALUE = "%randomize%";

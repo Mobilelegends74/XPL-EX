@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import de.robv.android.xposed.XC_MethodHook;
+import eu.faircode.xlua.xposed.api101.ModernMethodHook;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XSecurity;
 import eu.faircode.xlua.api.xstandard.CallCommandHandler;
@@ -92,7 +92,7 @@ public class CommandService {
         }
     }
 
-    public CallPacket tryCreateCallPacket(XC_MethodHook.MethodHookParam param, String packageName) {
+    public CallPacket tryCreateCallPacket(ModernMethodHook.MethodHookParam param, String packageName) {
         try {
             String commandPrefix = (String)param.args[0];               //Also known as 'method'
             if(!commandPrefix.equalsIgnoreCase(this.commandPrefix))
@@ -110,7 +110,7 @@ public class CommandService {
         }
     }
 
-    public QueryPacket tryCreateQueryPacket(XC_MethodHook.MethodHookParam param, String packageName) {
+    public QueryPacket tryCreateQueryPacket(ModernMethodHook.MethodHookParam param, String packageName) {
         try {
             String[] projection = (String[]) param.args[1];
             if (!(projection != null && projection.length > 0 && projection[0] != null) || !projection[0].startsWith(this.commandPrefix))

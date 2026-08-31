@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernMethodHook;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
 import eu.faircode.xlua.XParam;
 import eu.faircode.xlua.logger.XLog;
 
@@ -53,7 +53,7 @@ public class LuaHook extends VarArgFunction {
             final List<LuaValue> xargs = new ArrayList<>();               //Rest of Arguments are Args for the Invoke
             for (int i = 4; i <= args.narg(); i++) xargs.add(args.arg(i));//Append Args
 
-            XposedBridge.hookAllMethods(cls, m, new XC_MethodHook() {
+            ModernXposedBridge.hookAllMethods(cls, m, new ModernMethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) { execute("before", param); }
 

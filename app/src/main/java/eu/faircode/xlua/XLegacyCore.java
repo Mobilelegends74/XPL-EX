@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.robv.android.xposed.XposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
 import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.api.xstandard.database.SqlQuerySnake;
 import eu.faircode.xlua.api.xlua.provider.XLuaHookProvider;
@@ -431,20 +431,20 @@ public class XLegacyCore {
     public static void logE(String msg) { logE(msg, true); }
     public static void logW(String msg) { logW(msg, true); }
 
-    public static void logD(String msg, boolean xp) { if(xp) XposedBridge.log(tag_the_tag(TAG, "D" ) +  msg); Log.d(TAG, msg); }
-    public static void logI(String msg, boolean xp) { if(xp) XposedBridge.log(tag_the_tag(TAG, "I") + msg); Log.i(TAG, msg); }
-    public static void logE(String msg, boolean xp) { if(xp) XposedBridge.log(tag_the_tag(TAG, "E") + msg); Log.e(TAG, msg); }
-    public static void logW(String msg, boolean xp) { if(xp) XposedBridge.log(tag_the_tag(TAG, "W") + msg); Log.w(TAG, msg); }
+    public static void logD(String msg, boolean xp) { if(xp) ModernXposedBridge.log(tag_the_tag(TAG, "D" ) +  msg); Log.d(TAG, msg); }
+    public static void logI(String msg, boolean xp) { if(xp) ModernXposedBridge.log(tag_the_tag(TAG, "I") + msg); Log.i(TAG, msg); }
+    public static void logE(String msg, boolean xp) { if(xp) ModernXposedBridge.log(tag_the_tag(TAG, "E") + msg); Log.e(TAG, msg); }
+    public static void logW(String msg, boolean xp) { if(xp) ModernXposedBridge.log(tag_the_tag(TAG, "W") + msg); Log.w(TAG, msg); }
 
     public static void logD(String tag, String msg) { logD(tag, msg, true); }
     public static void logI(String tag, String msg) { logI(tag, msg, true); }
     public static void logE(String tag, String msg) { logE(tag, msg, true); }
     public static void logW(String tag, String msg) { logW(tag, msg, true); }
 
-    public static void logD(String tag, String msg, boolean xp) { if(xp) XposedBridge.log(tag_the_tag(tag, "D" ) +  msg); Log.d(TAG, msg); }
-    public static void logI(String tag, String msg, boolean xp) { if(xp) XposedBridge.log(tag_the_tag(tag, "I") + msg); Log.i(TAG, msg); }
-    public static void logE(String tag, String msg, boolean xp) { if(xp) XposedBridge.log(tag_the_tag(tag, "E") + msg); Log.e(TAG, msg); }
-    public static void logW(String tag, String msg, boolean xp) { if(xp) XposedBridge.log(tag_the_tag(tag, "W") + msg); Log.w(TAG, msg); }
+    public static void logD(String tag, String msg, boolean xp) { if(xp) ModernXposedBridge.log(tag_the_tag(tag, "D" ) +  msg); Log.d(TAG, msg); }
+    public static void logI(String tag, String msg, boolean xp) { if(xp) ModernXposedBridge.log(tag_the_tag(tag, "I") + msg); Log.i(TAG, msg); }
+    public static void logE(String tag, String msg, boolean xp) { if(xp) ModernXposedBridge.log(tag_the_tag(tag, "E") + msg); Log.e(TAG, msg); }
+    public static void logW(String tag, String msg, boolean xp) { if(xp) ModernXposedBridge.log(tag_the_tag(tag, "W") + msg); Log.w(TAG, msg); }
 
     @SuppressLint("WrongConstant")
     public static void writeHookFromCache(

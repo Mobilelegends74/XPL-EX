@@ -8,7 +8,7 @@ import android.util.Log;
 import java.io.File;
 import java.util.UUID;
 
-import de.robv.android.xposed.XposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
 import eu.faircode.xlua.XposedUtil;
 import eu.faircode.xlua.rootbox.XFileUtils;
 
@@ -19,7 +19,7 @@ public class DatabasePathUtil {
     //make a function to ensure not alot of copies ? find what has all the files
 
     public static void log(String data, boolean error) {
-        XposedBridge.log(data);
+        ModernXposedBridge.log(data);
         if(error)
             Log.e(TAG, data);
         else
@@ -78,31 +78,31 @@ public class DatabasePathUtil {
             return true;
 
         Log.i(TAG, "ensureDirectoryChange");
-        XposedBridge.log("ensureDirectoryChange");
+        ModernXposedBridge.log("ensureDirectoryChange");
         String originalDirectory = getOriginalDataLocationString(null);
         File oDir = new File(originalDirectory);
         Log.i(TAG, "Ensuring Directory does not exist: " + originalDirectory);
-        XposedBridge.log("Ensuring Directory does not exist: " + originalDirectory);
+        ModernXposedBridge.log("Ensuring Directory does not exist: " + originalDirectory);
 
         File nDir = getDatabaseDirectory(context);
         if (nDir == null) {
             String newDir = getDefaultLocationString(null) + "-" + UUID.randomUUID().toString();
             Log.i(TAG, "New Directory! =" + newDir);
             nDir = new File(newDir);
-            XposedBridge.log("New Directory: " + nDir.getAbsolutePath());
+            ModernXposedBridge.log("New Directory: " + nDir.getAbsolutePath());
             XFileUtils.mkdirs(nDir);
         }
 
         if(oDir.exists() && oDir.isDirectory()) {
             if (!XFileUtils.copyDirectories(oDir, nDir, true, Process.SYSTEM_UID)) {
                 Log.e(TAG, "Failed to Copy over the Database Files to the new Directory! new dir=" + nDir.getAbsolutePath());
-                XposedBridge.log("Failed to Copy over the Database Files to the new Directory! new dir=" + nDir.getAbsolutePath());
+                ModernXposedBridge.log("Failed to Copy over the Database Files to the new Directory! new dir=" + nDir.getAbsolutePath());
                 XFileUtils.forceDelete(nDir, true, Process.SYSTEM_UID);
                 return false;
             }
 
             if(!XFileUtils.forceDelete(oDir, true, Process.SYSTEM_UID)) {
-                XposedBridge.log("Failed to Delete Old Directory=" + oDir.getAbsolutePath());
+                ModernXposedBridge.log("Failed to Delete Old Directory=" + oDir.getAbsolutePath());
                 Log.e(TAG, "Failed to Delete Old Directory=" + oDir.getAbsolutePath());
             }
         }

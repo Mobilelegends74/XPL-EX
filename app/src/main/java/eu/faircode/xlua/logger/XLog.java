@@ -4,7 +4,7 @@ import android.util.Log;
 
 import org.luaj.vm2.Varargs;
 
-import de.robv.android.xposed.XposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
 import eu.faircode.xlua.api.hook.XLuaHook;
 
 public class XLog {
@@ -76,7 +76,7 @@ public class XLog {
         if(ENFORCE_CAT_LOG) {
             XBasicLog log = XBasicLog.create(tag, msg, e, className, methodName, dumpStack, getLastCall);
             Log.e(log.tag, log.message);
-            if(xposedLog) XposedBridge.log(log.toString());
+            if(xposedLog) ModernXposedBridge.log(log.toString());
         }
     }
 
@@ -101,7 +101,7 @@ public class XLog {
         if(ENFORCE_CAT_LOG) {
             XBasicLog log = XBasicLog.create(tag, msg, null, className, methodName, dumpStack, getLastCall);
             Log.i(log.tag, log.message);
-            if(xposedLog) XposedBridge.log(log.toString());
+            if(xposedLog) ModernXposedBridge.log(log.toString());
         }
     }
 
@@ -126,7 +126,7 @@ public class XLog {
         if(ENFORCE_CAT_LOG) {
             XBasicLog log = XBasicLog.create(tag, msg, null, className, methodName, dumpStack, getLastCall);
             Log.w(log.tag, log.message);
-            if(xposedLog) XposedBridge.log(log.toString());
+            if(xposedLog) ModernXposedBridge.log(log.toString());
         }
     }
 }

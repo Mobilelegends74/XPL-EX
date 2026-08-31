@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernMethodHook;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
@@ -49,7 +49,7 @@ public class HashMapHooks {
             if(DebugUtil.isDebug())
                 Log.d(TAG, "Found a HashMap / ArrayMap Hook for IDs! Deploying Fast Inlined Java hook Ignoring LUA Script! ID=" + id);
 
-            XposedBridge.hookMethod(member, new XC_MethodHook() {
+            ModernXposedBridge.hookMethod(member, new ModernMethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     if(param.args.length >= 2) {

@@ -12,7 +12,7 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-import de.robv.android.xposed.XC_MethodHook;
+import eu.faircode.xlua.xposed.api101.ModernMethodHook;
 import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.XParam;
 import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
@@ -32,7 +32,7 @@ public class LuaHookWrapper {
             Map<String, String> propMaps,
             Prototype compiledScript,
             String function,
-            XC_MethodHook.MethodHookParam param,
+            ModernMethodHook.MethodHookParam param,
             Globals globals,
             String key,
             boolean useDefault,
@@ -84,7 +84,7 @@ public class LuaHookWrapper {
             Map<String, String> propMaps,
             Prototype compiledScript,
             String function,
-            XC_MethodHook.MethodHookParam param,
+            ModernMethodHook.MethodHookParam param,
             Globals globals,
             String key,
             boolean useDefault,

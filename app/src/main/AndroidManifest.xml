@@ -14,25 +14,13 @@
         android:name="ApplicationEx"
         android:allowBackup="false"
         android:appCategory="productivity"
+        android:description="@string/xposed_module_description"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppThemeLight">
-
-        <meta-data
-            android:name="xposedmodule"
-            android:value="true" />
-        <meta-data
-            android:name="xposeddescription"
-            android:value="@string/app_name" />
-        <meta-data
-            android:name="xposedminversion"
-            android:value="82" />
-        <meta-data
-            android:name="xposedscope"
-            android:resource="@array/scopes" />
 
         <activity
             android:name=".ActivityMain"

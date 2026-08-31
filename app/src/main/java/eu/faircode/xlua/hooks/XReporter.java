@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernMethodHook;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
 import eu.faircode.xlua.XSecurity;
 
 import eu.faircode.xlua.api.hook.XLuaHook;
@@ -47,7 +47,7 @@ public class XReporter {
             XLuaHook hook,
             Member member,
             String function,
-            XC_MethodHook.MethodHookParam param) {
+            ModernMethodHook.MethodHookParam param) {
 
         StringBuilder sb = new StringBuilder();
         XReporter.writeExceptionHeader(sb, ex, context);
@@ -67,7 +67,7 @@ public class XReporter {
         sb.append("\n");
     }
 
-    public static void writeMethod(StringBuilder sb, Member member, String function, XC_MethodHook.MethodHookParam param) {
+    public static void writeMethod(StringBuilder sb, Member member, String function, ModernMethodHook.MethodHookParam param) {
         sb.append("\nMethod:\n");
         sb.append(function);
         sb.append(' ');
@@ -194,7 +194,7 @@ public class XReporter {
                                         .call(XSecurity.getURI(), "xlua", "report", args);
                             } catch (Throwable ex) {
                                 Log.e(TAG, Log.getStackTraceString(ex));
-                                XposedBridge.log(ex);
+                                ModernXposedBridge.log(ex);
                             }
                     }
                 }, 1000);

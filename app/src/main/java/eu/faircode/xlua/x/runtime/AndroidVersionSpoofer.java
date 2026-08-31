@@ -7,8 +7,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernMethodHook;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
 import eu.faircode.xlua.x.runtime.reflect.StaticFieldWriter;
 
 /** Keeps the current Android version native while exposing the profile's real launch version. */
@@ -70,7 +70,7 @@ public final class AndroidVersionSpoofer {
 
         try {
             Class<?> properties = Class.forName("android.os.SystemProperties");
-            XC_MethodHook callback = new XC_MethodHook() {
+            ModernMethodHook callback = new ModernMethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) {
                     if (param.args == null || param.args.length == 0 || !(param.args[0] instanceof String))
@@ -89,9 +89,9 @@ public final class AndroidVersionSpoofer {
                         param.setResult(replacement);
                 }
             };
-            XposedBridge.hookAllMethods(properties, "get", callback);
-            XposedBridge.hookAllMethods(properties, "getInt", callback);
-            XposedBridge.hookAllMethods(properties, "getLong", callback);
+            ModernXposedBridge.hookAllMethods(properties, "get", callback);
+            ModernXposedBridge.hookAllMethods(properties, "getInt", callback);
+            ModernXposedBridge.hookAllMethods(properties, "getLong", callback);
             propertyHooksInstalled = true;
             return true;
         } catch (Throwable error) {

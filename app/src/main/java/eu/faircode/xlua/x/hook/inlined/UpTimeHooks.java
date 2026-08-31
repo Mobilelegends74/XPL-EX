@@ -12,8 +12,8 @@ import eu.faircode.xlua.x.data.TypeMap;
 import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.xlua.LibUtil;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernMethodHook;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
@@ -40,7 +40,7 @@ public class UpTimeHooks {
                 return false;
             if(DebugUtil.isDebug())
                 Log.d(TAG, "Deploying [" + id + "] as a Fast Inlined Java Hook!");
-            XposedBridge.hookMethod(member, new XC_MethodHook() {
+            ModernXposedBridge.hookMethod(member, new ModernMethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param)  {
                     Object res = param.getResult();

@@ -20,7 +20,6 @@ allprojects {
 
         maven { url 'https://jitpack.io' } // Add JitPack repository
 
-        maven { url 'https://api.xposed.info' }
         maven { url 'https://maven.google.com' }
         maven {
             url("https://s01.oss.sonatype.org/content/repositories/releases/")

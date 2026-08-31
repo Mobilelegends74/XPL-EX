@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import de.robv.android.xposed.XposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
 import eu.faircode.xlua.BuildConfig;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XDatabaseOld;
@@ -87,7 +87,7 @@ public class XLuaHookProvider {
             return (b != null && pi.versionCode == b.getInt("version"));
         } catch (Throwable ex) {
             Log.e(TAG, Log.getStackTraceString(ex));
-            XposedBridge.log(ex);
+            ModernXposedBridge.log(ex);
             return false;
         }
     }

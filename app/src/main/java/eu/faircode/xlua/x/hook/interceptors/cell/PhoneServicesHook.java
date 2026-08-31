@@ -10,9 +10,9 @@ import android.util.Log;
 
 import java.util.List;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import eu.faircode.xlua.xposed.api101.ModernMethodHook;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernLoadPackage;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.hook.interceptors.cell.stubs.SubscriptionControllerHooks;
@@ -39,14 +39,14 @@ public class PhoneServicesHook {
 
     // public List<SubscriptionInfo> getActiveSubscriptionInfoList()
 
-    public static void deployHook(final XC_LoadPackage.LoadPackageParam lpparam, Context context) {
+    public static void deployHook(final ModernLoadPackage.LoadPackageParam lpparam, Context context) {
 
         SubscriptionControllerHooks.deployHook_getActiveSubscriptionInfoList(lpparam, context);
     }
 
 
 
-    public static void deployHook_getImeiForSlot(final XC_LoadPackage.LoadPackageParam lpparam, Context context) {
+    public static void deployHook_getImeiForSlot(final ModernLoadPackage.LoadPackageParam lpparam, Context context) {
         /*
 
             PHONE => *#06#
@@ -68,7 +68,7 @@ public class PhoneServicesHook {
             if("com.android.phone".equalsIgnoreCase(lpparam.packageName)) {
                 @SuppressLint("PrivateApi")
                 Class<?> clazz = Class.forName("com.android.phone.PhoneInterfaceManager", false, lpparam.classLoader);
-                XposedBridge.hookAllMethods(clazz, "getImeiForSlot", new XC_MethodHook() {
+                ModernXposedBridge.hookAllMethods(clazz, "getImeiForSlot", new ModernMethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         try {

@@ -28,16 +28,6 @@ public final class StaticFieldWriter {
             failure = append(failure, error);
         }
 
-        try {
-            setWithXposedHelpers(field, value);
-            if (sameValue(field.get(null), value))
-                return;
-            failure = append(failure, new IllegalStateException(
-                    "XposedHelpers write was ignored for " + field));
-        } catch (Throwable error) {
-            failure = append(failure, error);
-        }
-
         throw failure == null
                 ? new IllegalStateException("Failed writing " + field)
                 : failure;
@@ -82,46 +72,6 @@ public final class StaticFieldWriter {
                                   Class<?> valueType, Object base, long offset, Object value) throws Throwable {
         Method method = unsafeClass.getMethod(methodName, Object.class, long.class, valueType);
         method.invoke(unsafe, base, offset, value);
-    }
-
-    private static void setWithXposedHelpers(Field field, Object value) throws Throwable {
-        Class<?> helpers = Class.forName("de.robv.android.xposed.XposedHelpers");
-        Class<?> type = field.getType();
-        String methodName;
-        Class<?> valueType;
-        if (!type.isPrimitive()) {
-            methodName = "setStaticObjectField";
-            valueType = Object.class;
-        } else if (type == int.class) {
-            methodName = "setStaticIntField";
-            valueType = int.class;
-        } else if (type == long.class) {
-            methodName = "setStaticLongField";
-            valueType = long.class;
-        } else if (type == boolean.class) {
-            methodName = "setStaticBooleanField";
-            valueType = boolean.class;
-        } else if (type == byte.class) {
-            methodName = "setStaticByteField";
-            valueType = byte.class;
-        } else if (type == short.class) {
-            methodName = "setStaticShortField";
-            valueType = short.class;
-        } else if (type == char.class) {
-            methodName = "setStaticCharField";
-            valueType = char.class;
-        } else if (type == float.class) {
-            methodName = "setStaticFloatField";
-            valueType = float.class;
-        } else if (type == double.class) {
-            methodName = "setStaticDoubleField";
-            valueType = double.class;
-        } else {
-            throw new IllegalArgumentException("Unsupported field type " + type);
-        }
-        Method method = helpers.getMethod(methodName,
-                Class.class, String.class, valueType);
-        method.invoke(null, field.getDeclaringClass(), field.getName(), value);
     }
 
     private static Throwable append(Throwable previous, Throwable next) {

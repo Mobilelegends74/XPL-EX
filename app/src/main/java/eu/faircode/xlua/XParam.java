@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import de.robv.android.xposed.XC_MethodHook;
+import eu.faircode.xlua.xposed.api101.ModernMethodHook;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.StrConversionUtils;
 import eu.faircode.xlua.x.data.GroupedMap;
@@ -103,7 +103,7 @@ public class XParam extends XParamExtra {
 
     private final Context context;
     private final Field field;
-    private final XC_MethodHook.MethodHookParam param;
+    private final ModernMethodHook.MethodHookParam param;
     private final Class<?>[] paramTypes;
     private final Class<?> returnType;
     private final Map<String, String> settings;
@@ -147,7 +147,7 @@ public class XParam extends XParamExtra {
     // Method param
     public XParam(
             Context context,
-            XC_MethodHook.MethodHookParam param,
+            ModernMethodHook.MethodHookParam param,
             Map<String, String> settings,
             Map<String, Integer> propSettings,
             Map<String, String> propMaps,

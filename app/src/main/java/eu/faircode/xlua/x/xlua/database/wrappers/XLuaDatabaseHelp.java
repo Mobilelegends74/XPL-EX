@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.robv.android.xposed.XposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
 import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.xlua.database.sql.SQLDatabase;
@@ -163,7 +163,7 @@ public class XLuaDatabaseHelp {
 
         }catch (Throwable e) {
             Log.e(TAG, Str.fm("Error with X-LUA Init Database old, Error:%s", e));
-            XposedBridge.log(Str.fm("Error with X-LUA Init Database old, Error:%s", e));
+            ModernXposedBridge.log(Str.fm("Error with X-LUA Init Database old, Error:%s", e));
         } finally {
             database.writeUnlock();
         }
@@ -176,7 +176,7 @@ public class XLuaDatabaseHelp {
             long rows = _db.update("assignment", cv, "hook = ?", new String[]{oldId});
         } catch (Throwable ex) {
             Log.e(TAG, Str.fm("Error Renaming Hook ID, Old:%s  New%s  Error:%s", oldId, newId, ex));
-            XposedBridge.log(Str.fm("Error Renaming Hook ID, Old:%s  New%s  Error:%s", oldId, newId, ex));
+            ModernXposedBridge.log(Str.fm("Error Renaming Hook ID, Old:%s  New%s  Error:%s", oldId, newId, ex));
         }
     }
 }

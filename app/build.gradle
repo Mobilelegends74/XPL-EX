@@ -10,18 +10,22 @@ android {
     buildToolsVersion "35.0.0"
 
     compileOptions {
+        // Keep the legacy Lua sources compatible: they contain identifiers (for
+        // example `yield`) that became restricted in newer Java source levels.
+        // JDK 17 still compiles the project, while the source language remains 8.
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
     defaultConfig {
         applicationId "eu.faircode.xlua"
-        minSdk 23
+        // libxposed API 101 targets Android 8.0+; this branch is validated for Android 14+.
+        minSdk 26
         // The legacy AppCompat screens do not yet consume system-bar insets.
         // Target 35+ enforces edge-to-edge and places action items below the
         // status bar, so stay on 34 until the Material 3 UI migration is ready.
         targetSdk 34
         versionCode 155
-        versionName "1.5.7"
+        versionName "1.5.8"
         // Xposed bridge ABI is independent from the user-visible APK version.
         // Keep this compatible with the last known-good 1.5.5 bridge.
         buildConfigField "String", "BRIDGE_VERSION", '"1.5.5"'
@@ -90,6 +94,7 @@ android {
         resources {
             excludes += ['META-INF/kotlinx_coroutines_core.version', 'META-INF/versions/**', 'META-INF/*.kotlin_module']
             pickFirsts += ['META-INF/kotlinx_coroutines_core.version', 'META-INF/INDEX.LIST']
+            merges += ['META-INF/xposed/java_init.list', 'META-INF/xposed/module.prop', 'META-INF/xposed/scope.list']
         }
     }
 }
@@ -144,10 +149,8 @@ dependencies {
     annotationProcessor 'androidx.annotation:annotation:1.1.0'
     annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
 
-    // https://github.com/rovo89/XposedBridge/wiki/Using-the-Xposed-Framework-API
-    // https://bintray.com/rovo89/de.robv.android.xposed/api
-    compileOnly 'de.robv.android.xposed:api:82'
-    compileOnly 'de.robv.android.xposed:api:82:sources'
+    // Supplied by LSPosed 2.1.1 at runtime; never package the API implementation in the APK.
+    compileOnly 'io.github.libxposed:api:101.0.1'
     implementation 'org.lsposed.hiddenapibypass:hiddenapibypass:4.3'
 
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.14.0'

@@ -29,7 +29,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import de.robv.android.xposed.XposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
 
 public class VXP extends ContentProvider {
     private static final String TAG = "XLua.VXP";
@@ -47,7 +47,7 @@ public class VXP extends ContentProvider {
         }
         catch (Throwable ex) {
             Log.e(TAG, Log.getStackTraceString(ex));
-            XposedBridge.log(ex);
+            ModernXposedBridge.log(ex);
             return null;
         }
     }
@@ -73,7 +73,7 @@ public class VXP extends ContentProvider {
             //return XProvider.query(getContext(), projection[0].split("\\.")[1], selectionArgs);
         } catch (Throwable ex) {
             Log.e(TAG, Log.getStackTraceString(ex));
-            XposedBridge.log(ex);
+            ModernXposedBridge.log(ex);
             return null;
         }
     }

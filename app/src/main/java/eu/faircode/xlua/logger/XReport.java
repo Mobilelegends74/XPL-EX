@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import de.robv.android.xposed.XC_MethodHook;
+import eu.faircode.xlua.xposed.api101.ModernMethodHook;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.api.XProxyContent;
@@ -50,8 +50,8 @@ public class XReport {
                 FUNCTION_AFTER, context);
     }
 
-    public static void memberException(Context context, Exception exception, XHook hook, Member member, String function, XC_MethodHook.MethodHookParam param) { memberException(context, exception, hook, member, function, param.args, param.getResult()); }
-    public static void memberException(Context context, Exception exception, XHook hook, Member member, String function, XC_MethodHook.MethodHookParam param, boolean log) { memberException(context, exception, hook, member, function, param.args, param.getResult(), log); }
+    public static void memberException(Context context, Exception exception, XHook hook, Member member, String function, ModernMethodHook.MethodHookParam param) { memberException(context, exception, hook, member, function, param.args, param.getResult()); }
+    public static void memberException(Context context, Exception exception, XHook hook, Member member, String function, ModernMethodHook.MethodHookParam param, boolean log) { memberException(context, exception, hook, member, function, param.args, param.getResult(), log); }
 
     public static void memberException(Context context, Exception exception, XHook hook, Member member, String function, Object[] args, Object result) { memberException(context, exception, hook, member, function, args, result, true); }
     public static void memberException(Context context, Exception exception, XHook hook, Member member, String function, Object[] args, Object result, boolean log) {

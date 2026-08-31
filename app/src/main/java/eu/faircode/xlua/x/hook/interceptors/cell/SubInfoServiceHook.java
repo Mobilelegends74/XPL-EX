@@ -5,7 +5,7 @@ import android.util.Log;
 
 import java.util.List;
 
-import de.robv.android.xposed.XC_MethodHook;
+import eu.faircode.xlua.xposed.api101.ModernMethodHook;
 import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XParam;
 import eu.faircode.xlua.x.Str;
@@ -17,7 +17,7 @@ public class SubInfoServiceHook {
 
 
 
-    public static boolean handleGetActiveSubscriptionInfoList(XC_MethodHook.MethodHookParam param) {
+    public static boolean handleGetActiveSubscriptionInfoList(ModernMethodHook.MethodHookParam param) {
         try {
             List<SubscriptionInfo> subscriptions = (List<SubscriptionInfo>) param.getResult();
             String callingPackage = Str.ensureIsNotNullOrDefault(Str.toStringOrNull(param.args[0]), Str.EMPTY);

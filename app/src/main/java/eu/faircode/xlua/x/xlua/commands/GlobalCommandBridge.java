@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 
-import de.robv.android.xposed.XC_MethodHook;
+import eu.faircode.xlua.xposed.api101.ModernMethodHook;
 import eu.faircode.xlua.XLua;
 
 import eu.faircode.xlua.utilities.BundleUtil;
@@ -115,7 +115,7 @@ public class GlobalCommandBridge {
         return cService.handleQuery(packet);
     }
 
-    public static void handleQuery(XC_MethodHook.MethodHookParam param, String packageName) {
+    public static void handleQuery(ModernMethodHook.MethodHookParam param, String packageName) {
         QueryPacket packet = luaCommandService.tryCreateQueryPacket(param, packageName);
         if (packet != null) param.setResult(luaCommandService.handleQuery(packet));
         else {
@@ -124,7 +124,7 @@ public class GlobalCommandBridge {
         }
     }
 
-    public static void handeCall(XC_MethodHook.MethodHookParam param, String packageName)  {
+    public static void handeCall(ModernMethodHook.MethodHookParam param, String packageName)  {
         CallPacket packet = luaCommandService.tryCreateCallPacket(param, packageName);
         if(packet != null) {
             if(packet.getMethod().equalsIgnoreCase("getVersion")) param.setResult(BundleUtil.createSingleInt("version", XLua.version));

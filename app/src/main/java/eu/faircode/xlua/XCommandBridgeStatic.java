@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 
-import de.robv.android.xposed.XC_MethodHook;
+import eu.faircode.xlua.xposed.api101.ModernMethodHook;
 import eu.faircode.xlua.api.xlua.call.CleanHooksCommand;
 import eu.faircode.xlua.api.xlua.call.ClearSettingsCommand;
 import eu.faircode.xlua.api.xmock.call.ClearAppDataCommand;
@@ -134,7 +134,7 @@ public class XCommandBridgeStatic {
         return cService.handleQuery(packet);
     }
 
-    public static void handleQuery(XC_MethodHook.MethodHookParam param, String packageName) {
+    public static void handleQuery(ModernMethodHook.MethodHookParam param, String packageName) {
         QueryPacket_old packet = luaCommandService.tryCreateQueryPacket(param, packageName);
         if (packet != null) {
             //Lua Command (query)
@@ -147,7 +147,7 @@ public class XCommandBridgeStatic {
         }
     }
 
-    public static void handeCall(XC_MethodHook.MethodHookParam param, String packageName)  {
+    public static void handeCall(ModernMethodHook.MethodHookParam param, String packageName)  {
         CallPacket_old packet = luaCommandService.tryCreateCallPacket(param, packageName);
         if(packet != null) {
             //Lua commands (call)

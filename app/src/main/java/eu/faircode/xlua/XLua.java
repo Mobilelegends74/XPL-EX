@@ -49,11 +49,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import de.robv.android.xposed.IXposedHookLoadPackage;
-import de.robv.android.xposed.IXposedHookZygoteInit;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import eu.faircode.xlua.xposed.api101.ModernMethodHook;
+import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
+import eu.faircode.xlua.xposed.api101.ModernLoadPackage;
 import eu.faircode.xlua.loggers.LogHelper;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
@@ -99,19 +97,15 @@ import eu.faircode.xlua.x.xlua.settings.GroupStats;
         [>] Make a System for like "onDataEvent(Object o)"
  */
 
-public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
+public class XLua {
     private static final String TAG = LibUtil.generateTag(XLua.class);
     public XReporter report = new XReporter();
     public static int version = -1;
 
-    public void initZygote(final IXposedHookZygoteInit.StartupParam startupParam) throws Throwable {
-        Log.i(TAG, "initZygote system=" + startupParam.startsSystemServer + " debug=" + BuildConfig.DEBUG);
-    }
-
-    public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+    public void handleLoadPackage(final ModernLoadPackage.LoadPackageParam lpparam) throws Throwable {
         int uid = Process.myUid();
         Log.i(TAG, "Loaded " + lpparam.packageName + ":" + uid);
-        XposedBridge.log(TAG + " Loaded " + lpparam.packageName + ":" + uid);
+        ModernXposedBridge.log(TAG + " Loaded " + lpparam.packageName + ":" + uid);
 
         if ("android".equals(lpparam.packageName))
             hookAndroid(lpparam);
@@ -123,13 +117,13 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         }
     }
 
-    private void hookSettings(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+    private void hookSettings(final ModernLoadPackage.LoadPackageParam lpparam) throws Throwable {
         GetBridgeVersionCommand.init();
         // https://android.googlesource.com/platform/frameworks/base/+/master/packages/SettingsProvider/src/com/android/providers/settings/SettingsProvider.java
         Class<?> clsSet = Class.forName("com.android.providers.settings.SettingsProvider", false, lpparam.classLoader);
-        XposedBridge.hookMethod(
+        ModernXposedBridge.hookMethod(
                 clsSet.getMethod("call", String.class, String.class, Bundle.class),
-                new XC_MethodHook() {
+                new ModernMethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) {
                         GlobalCommandBridge.handeCall(param, lpparam.packageName);
@@ -137,9 +131,9 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 });
 
         // Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder)
-        XposedBridge.hookMethod(
+        ModernXposedBridge.hookMethod(
                 clsSet.getMethod("query", Uri.class, String[].class, String.class, String[].class, String.class),
-                new XC_MethodHook() {
+                new ModernMethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) {
                         GlobalCommandBridge.handleQuery(param, lpparam.packageName);
@@ -148,7 +142,7 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     }
 
 
-    private void hookSubscriptionManagerService(final XC_LoadPackage.LoadPackageParam lpparam) {
+    private void hookSubscriptionManagerService(final ModernLoadPackage.LoadPackageParam lpparam) {
         try {
             // Direct hook to the SubscriptionManagerService class
             Class<?> subManagerService = Class.forName(
@@ -170,7 +164,7 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
             };
 
             for (String methodName : methodsToHook) {
-                XposedBridge.hookAllMethods(subManagerService, methodName, new XC_MethodHook() {
+                ModernXposedBridge.hookAllMethods(subManagerService, methodName, new ModernMethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         XposedUtility.logI_xposed(TAG, "BEFORE [" + methodName + "] Called with " +
@@ -206,7 +200,7 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 };
 
                 for (String method : tmMethods) {
-                    XposedBridge.hookAllMethods(telephonyManagerClass, method, new XC_MethodHook() {
+                    ModernXposedBridge.hookAllMethods(telephonyManagerClass, method, new ModernMethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             XposedUtility.logI_xposed(TAG, "TM BEFORE [" + method + "] Called");
@@ -229,27 +223,27 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         }
     }
 
-    private void hookAndroid(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+    private void hookAndroid(final ModernLoadPackage.LoadPackageParam lpparam) throws Throwable {
         // https://android.googlesource.com/platform/frameworks/base/+/master/services/core/java/com/android/server/am/ActivityManagerService.java
         Class<?> clsAM = Class.forName("com.android.server.am.ActivityManagerService", false, lpparam.classLoader);
-        XposedBridge.hookAllMethods(clsAM, "systemReady", new XC_MethodHook() {
+        ModernXposedBridge.hookAllMethods(clsAM, "systemReady", new ModernMethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 try {
-                    XposedBridge.log(TAG + " Preparing system");
+                    ModernXposedBridge.log(TAG + " Preparing system");
                     Context context = getContext(param.thisObject);
                     GetBridgeVersionCommand.init();
                     hookPackage(lpparam, Process.myUid(), context);
                 } catch (Throwable ex) {
                     Log.e(TAG, Log.getStackTraceString(ex));
-                    XposedBridge.log(ex);
+                    ModernXposedBridge.log(ex);
                 }
             }
 
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 try {
-                    XposedBridge.log(TAG + " System ready");
+                    ModernXposedBridge.log(TAG + " System ready");
                     Context context = getContext(param.thisObject);
 
 
@@ -274,7 +268,7 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     }
                 } catch (Throwable ex) {
                     Log.e(TAG, Log.getStackTraceString(ex));
-                    XposedBridge.log(ex);
+                    ModernXposedBridge.log(ex);
                 }
             }
 
@@ -308,14 +302,14 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
 
 
-    public void hookApplication(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+    public void hookApplication(final ModernLoadPackage.LoadPackageParam lpparam) throws Throwable {
         final int uid = android.os.Process.myUid();
         final boolean tiramisuOrHigher = (Build.VERSION.SDK_INT >= 33);
         // https://android.googlesource.com/platform/frameworks/base/+/169aeafb2d97b810ae123ad036d0c58336961c55%5E%21/#F1
         Class<?> at = Class.forName(tiramisuOrHigher ? "android.app.Instrumentation" : "android.app.LoadedApk", false, lpparam.classLoader);
 
-        XposedBridge.hookAllMethods(at,
-                tiramisuOrHigher ? "newApplication" : "makeApplication", new XC_MethodHook() {
+        ModernXposedBridge.hookAllMethods(at,
+                tiramisuOrHigher ? "newApplication" : "makeApplication", new ModernMethodHook() {
                     private boolean made = false;
 
                     @Override
@@ -331,7 +325,7 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                             }
                         } catch (Throwable ex) {
                             Log.e(TAG, Log.getStackTraceString(ex));
-                            XposedBridge.log(ex);
+                            ModernXposedBridge.log(ex);
                         }
                     }
 
@@ -344,7 +338,7 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                             }
                         }catch (Throwable ex) {
                             Log.e(TAG, Log.getStackTraceString(ex));
-                            XposedBridge.log(ex);
+                            ModernXposedBridge.log(ex);
                         }
                     }
 
@@ -382,7 +376,7 @@ public class XLua implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 });
     }
 
-    public void hookPackage(final XC_LoadPackage.LoadPackageParam lpparam, int uid, final Context context) throws Throwable {
+    public void hookPackage(final ModernLoadPackage.LoadPackageParam lpparam, int uid, final Context context) throws Throwable {
         if(DebugUtil.isDebug())
             Log.d(TAG, "Starting Initializing Hooks for App: " + lpparam.packageName + " Uid: " + uid);
         HookCore.initHooks(lpparam, uid, context);
