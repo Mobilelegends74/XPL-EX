@@ -1,23 +1,23 @@
-name: Build and publish XPL-EX-NEXT v1.5.7
+name: Build and publish XPL-EX-NEXT v1.5.8
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - new-ui-1.5.8
+      - XPL-EX-NEXT-v1.5.8
 
 permissions:
   contents: write
 
 concurrency:
-  group: xpl-ex-next-v1.5.7-release
+  group: xpl-ex-next-v1.5.8-release
   cancel-in-progress: false
 
 env:
-  RELEASE_TAG: XPL-EX-NEXT-v1.5.7
-  RELEASE_TITLE: XPL-EX-NEXT v1.5.7
-  BUILD_APK: XPL-EX-NEXT-1.5.7-release.apk
-  RELEASE_APK: XPL-EX-NEXT-1.5.7.apk
+  RELEASE_TAG: XPL-EX-NEXT-v1.5.8
+  RELEASE_TITLE: XPL-EX-NEXT v1.5.8
+  BUILD_APK: XPL-EX-NEXT-1.5.8-release.apk
+  RELEASE_APK: XPL-EX-NEXT-1.5.8.apk
 
 jobs:
   build-and-release:
@@ -108,8 +108,8 @@ jobs:
           build_tools="${ANDROID_HOME}/build-tools/35.0.0"
           "${build_tools}/apksigner" verify --verbose --print-certs "${source_apk}"
           badging=$("${build_tools}/aapt" dump badging "${source_apk}")
-          grep -q "versionCode='155'" <<< "${badging}"
-          grep -q "versionName='1.5.7'" <<< "${badging}"
+          grep -q "versionCode='158'" <<< "${badging}"
+          grep -q "versionName='1.5.8'" <<< "${badging}"
 
           mkdir -p dist
           cp "${source_apk}" "dist/${RELEASE_APK}"
@@ -120,7 +120,7 @@ jobs:
       - name: Prepare release description
         run: |
           set -euo pipefail
-          cp docs/releases/xpl-ex-next-v1.5.7.md "${RUNNER_TEMP}/release-notes.md"
+          cp docs/releases/xpl-ex-next-v1.5.8.md "${RUNNER_TEMP}/release-notes.md"
 
       - name: Write build summary
         run: |
@@ -128,8 +128,10 @@ jobs:
             echo "# ${RELEASE_TITLE}"
             echo
             echo "- Tests: passed"
-            echo "- Version name: 1.5.7"
-            echo "- Version code: 155"
+            echo "- Version name: 1.5.8"
+            echo "- Version code: 158"
+            echo "- libxposed API: 101"
+            echo "- Bridge protocol: 1.5.5"
             echo "- R8 minification: disabled for Xposed/Lua hook compatibility"
             echo "- APK: ${RELEASE_APK}"
             echo "- SHA-256: ${{ steps.apk.outputs.sha256 }}"
@@ -139,7 +141,7 @@ jobs:
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: XPL-EX-NEXT-1.5.7
+          name: XPL-EX-NEXT-1.5.8
           path: dist/
           if-no-files-found: error
           retention-days: 30
@@ -159,20 +161,3 @@ jobs:
           make_latest: true
           fail_on_unmatched_files: true
           overwrite_files: true
-
-      - name: Remove superseded broken releases
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          for old_tag in v1.5.6-155 v1.5.6-155-new-ui-1.5.8; do
-            if gh release view "${old_tag}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
-              gh release delete "${old_tag}" \
-                --repo "${GITHUB_REPOSITORY}" \
-                --cleanup-tag \
-                --yes
-              echo "Removed superseded release and tag: ${old_tag}"
-            else
-              echo "Superseded release already absent: ${old_tag}"
-            fi
-          done
