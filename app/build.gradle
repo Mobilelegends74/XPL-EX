@@ -24,10 +24,10 @@ android {
         // Target 35+ enforces edge-to-edge and places action items below the
         // status bar, so stay on 34 until the Material 3 UI migration is ready.
         targetSdk 34
-        versionCode 155
+        versionCode 158
         versionName "1.5.8"
-        // Xposed bridge ABI is independent from the user-visible APK version.
-        // Keep this compatible with the last known-good 1.5.5 bridge.
+        // The Android package version and the XPL command protocol are separate.
+        // Changing versionCode must not silently change bridge compatibility.
         buildConfigField "String", "BRIDGE_VERSION", '"1.5.5"'
         archivesBaseName = "XPL-EX-NEXT-$versionName"
     }

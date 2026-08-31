@@ -23,7 +23,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -100,7 +99,9 @@ import eu.faircode.xlua.x.xlua.settings.GroupStats;
 public class XLua {
     private static final String TAG = LibUtil.generateTag(XLua.class);
     public XReporter report = new XReporter();
-    public static int version = -1;
+    // Report the version of the module code loaded by LSPosed. Do not read it
+    // back from PackageManager: that value can be cached across an APK update.
+    public static final int version = ModuleIdentity.apkVersionCode();
 
     public void handleLoadPackage(final ModernLoadPackage.LoadPackageParam lpparam) throws Throwable {
         int uid = Process.myUid();
@@ -246,10 +247,6 @@ public class XLua {
                     ModernXposedBridge.log(TAG + " System ready");
                     Context context = getContext(param.thisObject);
 
-
-                    // Store current module version
-                    PackageInfo pi = context.getPackageManager().getPackageInfo(BuildConfig.APPLICATION_ID, 0);
-                    version = pi.versionCode;
 
                     // public static UserManagerService getInstance()
                     Class<?> clsUM = Class.forName("com.android.server.pm.UserManagerService", false, param.thisObject.getClass().getClassLoader());

@@ -4,17 +4,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import eu.faircode.xlua.BuildConfig;
 import eu.faircode.xlua.DebugUtil;
-import eu.faircode.xlua.XLua;
+import eu.faircode.xlua.ModuleIdentity;
 import eu.faircode.xlua.api.XProxyContent;
-import eu.faircode.xlua.utilities.BundleUtil;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.commands.CallCommandHandlerEx;
 import eu.faircode.xlua.x.xlua.commands.packet.CallPacket;
-import eu.faircode.xlua.x.xlua.database.DatabasePathUtil;
-import eu.faircode.xlua.x.xlua.hook.AppProviderApi;
 
 
 public class GetBridgeVersionCommand extends CallCommandHandlerEx {
@@ -34,13 +30,13 @@ public class GetBridgeVersionCommand extends CallCommandHandlerEx {
 
     public static void init() {
         if(Str.isEmpty(LAST_VERSION))
-            LAST_VERSION = Str.createCopy(BuildConfig.BRIDGE_VERSION);
+            LAST_VERSION = Str.createCopy(ModuleIdentity.bridgeProtocolVersion());
     }
 
     @Override
     public Bundle handle(CallPacket commandData) throws Throwable {
         if(Str.isEmpty(LAST_VERSION))
-            LAST_VERSION = Str.createCopy(BuildConfig.BRIDGE_VERSION);
+            LAST_VERSION = Str.createCopy(ModuleIdentity.bridgeProtocolVersion());
 
         Bundle res = new Bundle();
         res.putString(FIELD_CURRENT, LAST_VERSION);
@@ -50,7 +46,7 @@ public class GetBridgeVersionCommand extends CallCommandHandlerEx {
     public static String get(Context context) {
         String result = Str.ensureIsNotNullOrDefault(internalGet(context), DEFAULT);
         if(DebugUtil.isDebug())
-            Log.d(TAG, "Bridge Version Check Result=" + result + " Required Bridge Version: " + BuildConfig.BRIDGE_VERSION);
+            Log.d(TAG, "Bridge Version Check Result=" + result + " Required Bridge Version: " + ModuleIdentity.bridgeProtocolVersion());
 
         return result;
     }

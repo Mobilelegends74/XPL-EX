@@ -1,7 +1,6 @@
 package eu.faircode.xlua.api.xlua.provider;
 
 import android.content.Context;
-import android.content.pm.PackageInfo;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,8 +12,8 @@ import java.util.Collections;
 import java.util.List;
 
 import eu.faircode.xlua.xposed.api101.ModernXposedBridge;
-import eu.faircode.xlua.BuildConfig;
 import eu.faircode.xlua.DebugUtil;
+import eu.faircode.xlua.ModuleIdentity;
 import eu.faircode.xlua.XDatabaseOld;
 import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.XUiGroup;
@@ -81,10 +80,11 @@ public class XLuaHookProvider {
 
     public static boolean isAvailable(Context context) {
         try {
-            PackageInfo pi = context.getPackageManager().getPackageInfo(BuildConfig.APPLICATION_ID, 0);
             Bundle b = GetVersionCommand.invoke(context);
-            //return XLuaCallApi.getVersion(context) == pi.versionCode;
-            return (b != null && pi.versionCode == b.getInt("version"));
+            // Compare the UI code with the code actually loaded in the LSPosed
+            // process. This intentionally requires a reboot after an APK update,
+            // but it no longer depends on a potentially cached PackageManager value.
+            return b != null && ModuleIdentity.apkVersionCode() == b.getInt("version", -1);
         } catch (Throwable ex) {
             Log.e(TAG, Log.getStackTraceString(ex));
             ModernXposedBridge.log(ex);

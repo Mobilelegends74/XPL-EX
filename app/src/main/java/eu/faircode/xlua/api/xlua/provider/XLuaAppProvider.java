@@ -3,7 +3,6 @@ package eu.faircode.xlua.api.xlua.provider;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Binder;
@@ -18,6 +17,7 @@ import java.util.Map;
 
 import eu.faircode.xlua.BuildConfig;
 import eu.faircode.xlua.DebugUtil;
+import eu.faircode.xlua.ModuleIdentity;
 import eu.faircode.xlua.XDatabaseOld;
 import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.api.XResult;
@@ -37,11 +37,7 @@ import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 public class XLuaAppProvider {
     private static final String TAG = "XLua.XAppProvider";
     public static int getVersion(Context context) throws Throwable {
-        if (XposedUtil.isVirtualXposed()) {
-            PackageInfo pi = context.getPackageManager().getPackageInfo(BuildConfig.APPLICATION_ID, 0);
-            return pi.versionCode;
-        } else
-            return -55;
+        return ModuleIdentity.apkVersionCode();
     }
 
     public static boolean clearAppData(Context context, String packageName) {

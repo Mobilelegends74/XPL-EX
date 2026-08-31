@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import eu.faircode.xlua.ModuleIdentity;
 import eu.faircode.xlua.XLua;
 import io.github.libxposed.api.XposedModule;
 
@@ -24,7 +25,9 @@ public final class ModernEntryPoint extends XposedModule {
         log(Log.INFO, TAG, "Module loaded: process=" + processName
                 + " framework=" + getFrameworkName()
                 + " version=" + getFrameworkVersion()
-                + " api=" + getApiVersion());
+                + " api=" + getApiVersion()
+                + " moduleCode=" + ModuleIdentity.apkVersionCode()
+                + " bridge=" + ModuleIdentity.bridgeProtocolVersion());
     }
 
     @Override

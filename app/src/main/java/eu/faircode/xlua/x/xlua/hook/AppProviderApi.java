@@ -3,7 +3,6 @@ package eu.faircode.xlua.x.xlua.hook;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.util.Log;
@@ -14,6 +13,7 @@ import java.util.Map;
 
 import eu.faircode.xlua.BuildConfig;
 import eu.faircode.xlua.DebugUtil;
+import eu.faircode.xlua.ModuleIdentity;
 import eu.faircode.xlua.XUtil;
 import eu.faircode.xlua.XposedUtil;
 import eu.faircode.xlua.x.Str;
@@ -118,11 +118,7 @@ public class AppProviderApi {
     }
 
     public static int getVersion(Context context) throws Throwable {
-        if (XposedUtil.isVirtualXposed()) {
-            PackageInfo pi = context.getPackageManager().getPackageInfo(BuildConfig.APPLICATION_ID, 0);
-            return pi.versionCode;
-        } else
-            return INVALID_VERSION;
+        return ModuleIdentity.apkVersionCode();
     }
 
     public static boolean clearAppData(Context context, String packageName) {
