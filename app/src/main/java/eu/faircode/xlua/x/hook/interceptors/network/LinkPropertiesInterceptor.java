@@ -189,10 +189,12 @@ public class LinkPropertiesInterceptor {
                     InetAddress adder = NetUtils.isIpv6OrInet6(dns) ?
                             NetUtils.parseIpv6ToInetAddress(dns) :
                             NetUtils.parseIpv4ToInetAddress(dns);
-                    if(adder != null && !newDnsList.contains(adder))
+                    if(adder == null) {
+                        Log.w(TAG, "Skipped invalid DNS address: " + dns);
+                    } else if(!newDnsList.contains(adder)) {
                         newDnsList.add(adder);
-                    else {
-                        Log.w(TAG, "Skipped Parsing DNS (is null or invalid) " + adder);
+                    } else if(DebugUtil.isDebug()) {
+                        Log.d(TAG, "Skipped duplicate DNS address: " + dns);
                     }
                 }
 

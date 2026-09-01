@@ -79,7 +79,10 @@ public class AssignmentApi {
                }
             }
 
-            if(!packet.isAction(ActionFlag.DELETE)) {
+            // The API101 assignments table does not require the legacy groups
+            // table. Existing installations may legitimately not have it, so
+            // only remove stale legacy group rows when that table is present.
+            if(!packet.isAction(ActionFlag.DELETE) && database.hasTable(GroupPacket.TABLE_NAME)) {
                 for(String group : groups) {
                     SQLSnake snake = SQLSnake.create()
                             .whereIdentity(packet.getUserId(true), packet.getCategory())

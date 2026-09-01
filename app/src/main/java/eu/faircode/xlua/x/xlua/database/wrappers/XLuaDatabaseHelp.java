@@ -136,29 +136,42 @@ public class XLuaDatabaseHelp {
             //deleteHook(_db, "Privacy.ContentResolver/query16");
             //deleteHook(_db, "Privacy.ContentResolver/query26");
 
-            renameHookId(_db, "TelephonyManager/getDeviceId", "TelephonyManager.getDeviceId");
-            renameHookId(_db, "TelephonyManager/getDeviceId/slot", "TelephonyManager.getDeviceId/slot");
-            renameHookId(_db, "TelephonyManager/getGroupIdLevel1", "TelephonyManager.getGroupIdLevel1");
-            renameHookId(_db, "TelephonyManager/getImei", "TelephonyManager.getImei");
-            renameHookId(_db, "TelephonyManager/getImei/slot", "TelephonyManager.getImei/slot");
-            renameHookId(_db, "TelephonyManager/getLine1Number", "TelephonyManager.getLine1Number");
-            renameHookId(_db, "TelephonyManager/getMeid", "TelephonyManager.getMeid");
-            renameHookId(_db, "TelephonyManager/getMeid/slot", "TelephonyManager.getMeid/slot");
-            renameHookId(_db, "TelephonyManager/getNetworkSpecifier", "TelephonyManager.getNetworkSpecifier");
-            renameHookId(_db, "TelephonyManager/getSimSerialNumber", "TelephonyManager.getSimSerialNumber");
-            renameHookId(_db, "TelephonyManager/getSubscriberId", "TelephonyManager.getSubscriberId");
-            renameHookId(_db, "TelephonyManager/getVoiceMailAlphaTag", "TelephonyManager.getVoiceMailAlphaTag");
-            renameHookId(_db, "TelephonyManager/getVoiceMailNumber", "TelephonyManager.getVoiceMailNumber");
-            renameHookId(_db, "Settings.Secure.getString", "Settings.Secure.getString/android_id");
-            renameHookId(_db, "SystemProperties.get", "SystemProperties.get/serial");
-            renameHookId(_db, "SystemProperties.get/default", "SystemProperties.get.default/serial");
+            String assignmentTable = getAssignmentTable(database);
+            if (assignmentTable != null) {
+                ModernXposedBridge.log(Str.fm(
+                        "API101 assignment migration: using table=%s count=%s",
+                        assignmentTable,
+                        database.tableEntries(assignmentTable)));
 
-            if(database.hasTable("assignment")) {
+                renameHookId(_db, assignmentTable, "TelephonyManager/getDeviceId", "TelephonyManager.getDeviceId");
+                renameHookId(_db, assignmentTable, "TelephonyManager/getDeviceId/slot", "TelephonyManager.getDeviceId/slot");
+                renameHookId(_db, assignmentTable, "TelephonyManager/getGroupIdLevel1", "TelephonyManager.getGroupIdLevel1");
+                renameHookId(_db, assignmentTable, "TelephonyManager/getImei", "TelephonyManager.getImei");
+                renameHookId(_db, assignmentTable, "TelephonyManager/getImei/slot", "TelephonyManager.getImei/slot");
+                renameHookId(_db, assignmentTable, "TelephonyManager/getLine1Number", "TelephonyManager.getLine1Number");
+                renameHookId(_db, assignmentTable, "TelephonyManager/getMeid", "TelephonyManager.getMeid");
+                renameHookId(_db, assignmentTable, "TelephonyManager/getMeid/slot", "TelephonyManager.getMeid/slot");
+                renameHookId(_db, assignmentTable, "TelephonyManager/getNetworkSpecifier", "TelephonyManager.getNetworkSpecifier");
+                renameHookId(_db, assignmentTable, "TelephonyManager/getSimSerialNumber", "TelephonyManager.getSimSerialNumber");
+                renameHookId(_db, assignmentTable, "TelephonyManager/getSubscriberId", "TelephonyManager.getSubscriberId");
+                renameHookId(_db, assignmentTable, "TelephonyManager/getVoiceMailAlphaTag", "TelephonyManager.getVoiceMailAlphaTag");
+                renameHookId(_db, assignmentTable, "TelephonyManager/getVoiceMailNumber", "TelephonyManager.getVoiceMailNumber");
+                renameHookId(_db, assignmentTable, "Settings.Secure.getString", "Settings.Secure.getString/android_id");
+                renameHookId(_db, assignmentTable, "SystemProperties.get", "SystemProperties.get/serial");
+                renameHookId(_db, assignmentTable, "SystemProperties.get/default", "SystemProperties.get.default/serial");
+
                 // Reset usage data
                 ContentValues cv = new ContentValues();
                 cv.put("installed", -1);
                 cv.putNull("exception");
-                long rows = _db.update("assignment", cv, null, null);
+                long rows = _db.update(assignmentTable, cv, null, null);
+                ModernXposedBridge.log(Str.fm(
+                        "API101 assignment migration: SUCCESS table=%s reset=%s",
+                        assignmentTable,
+                        rows));
+            } else {
+                ModernXposedBridge.log(
+                        "API101 assignment migration: no assignment table yet; skipping legacy ID rename");
             }
 
         }catch (Throwable e) {
@@ -169,14 +182,35 @@ public class XLuaDatabaseHelp {
         }
     }
 
-    private static void renameHookId(SQLiteDatabase _db, String oldId, String newId) {
+    private static String getAssignmentTable(SQLDatabase database) {
+        // API101 commands read the plural table. Prefer it when a transitional
+        // database happens to contain both layouts.
+        if (database.hasTable("assignments"))
+            return "assignments";
+        if (database.hasTable("assignment"))
+            return "assignment";
+        return null;
+    }
+
+    private static void renameHookId(SQLiteDatabase _db, String table, String oldId, String newId) {
         try {
             ContentValues cv = new ContentValues();
             cv.put("hook", newId);
-            long rows = _db.update("assignment", cv, "hook = ?", new String[]{oldId});
+            long rows = _db.updateWithOnConflict(
+                    table,
+                    cv,
+                    "hook = ?",
+                    new String[]{oldId},
+                    SQLiteDatabase.CONFLICT_REPLACE);
+            if (rows > 0)
+                ModernXposedBridge.log(Str.fm(
+                        "API101 Hook ID migration: %s -> %s rows=%s",
+                        oldId,
+                        newId,
+                        rows));
         } catch (Throwable ex) {
-            Log.e(TAG, Str.fm("Error Renaming Hook ID, Old:%s  New%s  Error:%s", oldId, newId, ex));
-            ModernXposedBridge.log(Str.fm("Error Renaming Hook ID, Old:%s  New%s  Error:%s", oldId, newId, ex));
+            Log.e(TAG, Str.fm("Error Renaming Hook ID, Table:%s Old:%s New:%s Error:%s", table, oldId, newId, ex));
+            ModernXposedBridge.log(Str.fm("Error Renaming Hook ID, Table:%s Old:%s New:%s Error:%s", table, oldId, newId, ex));
         }
     }
 }

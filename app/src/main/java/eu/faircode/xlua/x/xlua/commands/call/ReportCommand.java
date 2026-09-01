@@ -66,7 +66,7 @@ public class ReportCommand extends CallCommandHandlerEx {
 
         if(Str.isEmpty(hookId) || AssignmentUtils.isFilterHook(hookId)) {
             if(DebugUtil.isDebug())
-                Log.w(TAG, "Waring found a Filter Hook Report, take this with cation! Hook Id=" + hookId);
+                Log.d(TAG, "Ignoring usage report for filter hook, ID=" + hookId);
         }
 
         String event = bundle.getString("event");

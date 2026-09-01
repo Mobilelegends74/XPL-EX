@@ -706,7 +706,16 @@ public class RandomizersCache {
                                     throw new Exception("Object Value is not Instance of Class<?>");
 
                                 Class<?> classType = (Class<?>) value;
-                                IRandomizer randomizer = (IRandomizer) classType.newInstance();
+                                // Several legacy *_TYPE constants intentionally point to
+                                // unfinished marker classes. They are not randomizers and
+                                // must not make cache initialization look like a failure.
+                                if(!IRandomizer.class.isAssignableFrom(classType)) {
+                                    if(DebugUtil.isDebug())
+                                        Log.d(TAG, "Skipping non-randomizer type field: " + name + " Class=" + classType.getName());
+                                    continue;
+                                }
+
+                                IRandomizer randomizer = (IRandomizer) classType.getDeclaredConstructor().newInstance();
 
                                 for(String setting : randomizer.getSettings())
                                     randomizers.put(setting, randomizer);

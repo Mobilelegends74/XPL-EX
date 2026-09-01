@@ -1,4 +1,4 @@
-name: Build and publish XPL-EX-NEXT v1.5.8
+name: Build and publish XPL-EX-NEXT v1.5.8 FIX
 
 on:
   workflow_dispatch:
@@ -10,14 +10,14 @@ permissions:
   contents: write
 
 concurrency:
-  group: xpl-ex-next-v1.5.8-release
+  group: xpl-ex-next-v1.5.8-fix-release
   cancel-in-progress: false
 
 env:
-  RELEASE_TAG: XPL-EX-NEXT-v1.5.8
-  RELEASE_TITLE: XPL-EX-NEXT v1.5.8
+  RELEASE_TAG: XPL-EX-NEXT-v1.5.8-FIX
+  RELEASE_TITLE: XPL-EX-NEXT v1.5.8 FIX
   BUILD_APK: XPL-EX-NEXT-1.5.8-release.apk
-  RELEASE_APK: XPL-EX-NEXT-1.5.8.apk
+  RELEASE_APK: XPL-EX-NEXT-1.5.8-FIX.apk
 
 jobs:
   build-and-release:
@@ -120,7 +120,7 @@ jobs:
       - name: Prepare release description
         run: |
           set -euo pipefail
-          cp docs/releases/xpl-ex-next-v1.5.8.md "${RUNNER_TEMP}/release-notes.md"
+          cp docs/releases/xpl-ex-next-v1.5.8-fix.md "${RUNNER_TEMP}/release-notes.md"
 
       - name: Write build summary
         run: |
@@ -141,7 +141,7 @@ jobs:
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: XPL-EX-NEXT-1.5.8
+          name: XPL-EX-NEXT-1.5.8-FIX
           path: dist/
           if-no-files-found: error
           retention-days: 30

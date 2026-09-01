@@ -230,8 +230,14 @@ public class HookResolver {
                                         definitions.size(),
                                         hook.getObjectId()));
                         }
+                    }catch (ClassNotFoundException e) {
+                        // Optional SDK/vendor/library hooks are resolved against each
+                        // target app. A class not shipped by that app is an expected
+                        // non-match, not a hook installation failure.
+                        if(DebugUtil.isDebug())
+                            Log.d(TAG, "Optional class is not present: " + clazzName + " Hook=" + hook.getObjectId());
                     }catch (Exception e) {
-                        Log.e(TAG, "Error Parsing Clazz: " + clazzName + " For Hook: " + Str.ensureNoDoubleNewLines(Str.toStringOrNull(hook)));
+                        Log.e(TAG, "Error Parsing Clazz: " + clazzName + " For Hook: " + Str.ensureNoDoubleNewLines(Str.toStringOrNull(hook)) + " Error=" + e);
                     }
                 }
             }

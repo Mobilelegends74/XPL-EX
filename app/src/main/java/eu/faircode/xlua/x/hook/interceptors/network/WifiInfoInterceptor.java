@@ -293,21 +293,21 @@ public class WifiInfoInterceptor {
             //Set this to Null always, but I get that Integer Error expecting Mac
             //We Pretty much erase that it is a Multi Link Wifi 7 Network
 
-            MLO_LINK_MAC_PAIRS.setValueInstance(instance, null);
+            MLO_LINK_MAC_PAIRS.setValueInstance(instance, (Object) null);
             MLO_LINK_ID_PAIRS.setValueInstance(instance, 0);
             AFFILIATED_MO_LINKS_PAIRS.setValueInstance(instance, Collections.emptyList());
             TRUSTED_PAIRS.setValueInstance(instance, true);
             RESTRICTED_PAIRS.setValueInstance(instance, false);
             //OEM_PRIVATE_PAIRS.setValueInstance(instance, true);
             OSU_PAIRS.setValueInstance(instance, false);
-            FQDN_PAIRS.setValueInstance(instance, null);
-            PROVIDER_FRIENDLY_NAME_PAIRS.setValueInstance(instance, null);
-            REQUESTING_PACKAGE_PAIRS.setValueInstance(instance, null);
+            FQDN_PAIRS.setValueInstance(instance, (Object) null);
+            PROVIDER_FRIENDLY_NAME_PAIRS.setValueInstance(instance, (Object) null);
+            REQUESTING_PACKAGE_PAIRS.setValueInstance(instance, (Object) null);
             SUB_ID_PAIRS.setValueInstance(instance, -1);
             IS_HIDDEN_SSID_PAIRS.setValueInstance(instance, false);
             SUPPLICANT_STATE_PAIRS.setValueInstance(instance, SupplicantState.COMPLETED);   //Should we set to completed ?
             //OEM_PAID_PAIRS.setValueInstance(instance, false);   //true ? maybe
-            PASS_UNIQUE_PAIRS.setValueInstance(instance, null);
+            PASS_UNIQUE_PAIRS.setValueInstance(instance, (Object) null);
             USABLE_PAIRS.setValueInstance(instance, true);
             METERED_HINT_PAIRS.setValueInstance(instance, false);
             RSSI_PAIRS.setValueInstance(instance, WifiInfoDataGenerator.generateRandomRssi());

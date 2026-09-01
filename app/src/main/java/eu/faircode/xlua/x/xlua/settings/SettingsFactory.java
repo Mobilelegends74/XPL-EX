@@ -158,8 +158,9 @@ public class SettingsFactory {
         }
 
         if(DebugUtil.isDebug())
-            Log.d(TAG, Str.fm("Sorted Settings from Count (%s) to (%s) Parents (%s) Children (%) Singles and Unknown (%s). Now Organizing Parents first!",
+            Log.d(TAG, Str.fm("Sorted Settings from Count (%s) to (%s) Parents (%s) Children (%s) Singles (%s) Unknown (%s). Now Organizing Parents first!",
                     settings.size(),
+                    parents.size() + children.size() + single.size() + unknown,
                     parents.size(),
                     children.size(),
                     single.size(),
@@ -247,7 +248,7 @@ public class SettingsFactory {
                 }
 
                 if(DebugUtil.isDebug())
-                    Log.d(TAG, Str.fm("Finish Initializing and Creating Container [%s][%s][%s] From Parent [%s][%s] Total Container Count (%s) Total Children Count (%s) Total Settings Count (%s)",
+                    Log.d(TAG, Str.fm("Finish Initializing and Creating Container [%s][%s][%s] From Parent [%s] Total Container Count (%s) Total Children Count (%s) Total Settings Count (%s)",
                             container.getName(),
                             containerName,
                             name,
@@ -479,7 +480,6 @@ public class SettingsFactory {
     }
 
 }
-
 
 
 

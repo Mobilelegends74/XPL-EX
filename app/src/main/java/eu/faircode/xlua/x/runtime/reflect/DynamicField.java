@@ -35,6 +35,9 @@ public class DynamicField {
 
     public DynamicField bindInstance(Object instance) { this.mInstance = instance; return this; }
     public DynamicField setAccessible(boolean accessible) {
+        if (mField == null)
+            return this;
+
         try {
             mField.setAccessible(accessible);
             return this;
@@ -45,6 +48,9 @@ public class DynamicField {
     }
 
     public void trySetValueInstance(Object v) {
+        if (mField == null)
+            return;
+
         try {
             mField.set(mInstance, v);
         }catch (Exception e) {
@@ -54,6 +60,9 @@ public class DynamicField {
 
     public boolean trySetValueInstanceEx(Object instance, Object v) {
         //I call this when Im setting it to NULL (mApMldMacAddress)
+        if (mField == null)
+            return false;
+
         try {
             mField.set(instance, v);
             return true;
@@ -65,6 +74,9 @@ public class DynamicField {
 
     public <T> T getValueStatic() throws IllegalAccessException { return DynamicType.convertValue(mField.get(null)); }
     public <T> T tryGetValueStatic() {
+        if (mField == null)
+            return null;
+
         try {
             return  DynamicType.convertValue(mField.get(null));
         }catch (Exception e) {
@@ -75,6 +87,9 @@ public class DynamicField {
 
     public <T> T getValueInstance() throws IllegalAccessException { return  DynamicType.convertValue(mField.get(mInstance)); }
     public <T> T tryGetValueInstance() {
+        if (mField == null)
+            return null;
+
         try {
             return  DynamicType.convertValue(mField.get(mInstance));
         }catch (Exception e) {
@@ -85,6 +100,9 @@ public class DynamicField {
 
     public <T> T getValueInstanceEx(Object instance) throws IllegalAccessException { return  DynamicType.convertValue(mField.get(instance)); }
     public <T> T tryGetValueInstanceEx(Object instance) {
+        if (mField == null)
+            return null;
+
         try {
             return  DynamicType.convertValue(mField.get(instance));
         }catch (Exception e) {
@@ -94,6 +112,9 @@ public class DynamicField {
     }
 
     public <T> T tryGetValueInstanceEx(Object instance, T def) {
+        if (mField == null)
+            return def;
+
         try {
             return DynamicType.convertValue(mField.get(instance));
         }catch (Exception e) {

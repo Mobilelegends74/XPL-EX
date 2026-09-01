@@ -212,7 +212,9 @@ public class HookResolverUtils {
 
             return Class.forName(name, false, loader);
         }catch (Exception e) {
-            Log.e(TAG, "Error Resolving Class, Name=" + name + " Error=" + e);
+            // Parameter types can belong to optional vendor or third-party APIs.
+            // The caller treats a null result as a non-matching hook definition.
+            Log.d(TAG, "Class is not available, Name=" + name);
             return null;
             //Maybe late loading ?
         }

@@ -16,7 +16,7 @@
     "usage":true,
     "notify":false,
     "luaScript": "",
-    "settings":[".hardware.memory.total", "hardware.memory.available", "intercept.shell.meminfo.bool"]
+    "settings":["hardware.memory.total", "hardware.memory.available", "intercept.shell.meminfo.bool"]
   },
   {
     "builtin": false,

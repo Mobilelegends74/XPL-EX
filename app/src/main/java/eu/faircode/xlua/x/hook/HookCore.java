@@ -47,6 +47,16 @@ import eu.faircode.xlua.x.xlua.hook.PackageHookContext;
 public class HookCore {
     private static final String TAG = LibUtil.generateTag(HookCore.class);
 
+    private static boolean mustPreserveSystemFeatures(XHook hook) {
+        if (hook == null)
+            return false;
+
+        String id = hook.getObjectId();
+        return "PrivacyEx.PackageManager.hasSystemFeature(String)".equals(id)
+                || "PrivacyEx.PackageManager.hasSystemFeature(String, int)".equals(id)
+                || "PrivacyEx.PackageManager.getSystemAvailableFeatures".equals(id);
+    }
+
 
     public static void initHooks(final ModernLoadPackage.LoadPackageParam loadParam, int uid, final Context context) {
         try {
@@ -77,6 +87,17 @@ public class HookCore {
             PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 
             for(XHook hook :  HookRepository.create().initializeHooks(context, hooks, app.settings).getHooks()) {
+                // Legacy databases can retain the original Spoof.Features Lua
+                // scripts even after an APK update. Those scripts force every
+                // feature query to false and truncate the advertised feature
+                // array, hiding camera, Wi-Fi and telephony from target apps.
+                // Device profiles do not contain a verified feature catalog, so
+                // bypass these hooks and preserve PackageManager's real results.
+                if (mustPreserveSystemFeatures(hook)) {
+                    ModernXposedBridge.log("System feature passthrough: skipped legacy hook " + hook.getObjectId());
+                    continue;
+                }
+
                 // Old assignments can outlive an OS upgrade or an imported backup.
                 // Reject incompatible hooks before resolving their classes so an API
                 // from another Android generation is never touched.
@@ -96,10 +117,8 @@ public class HookCore {
                     continue;
 
                 for(HookDefinition definition : definitions) {
-                    //get time & Compile Script
                     definition.setAccessible(true);
                     final long install = SystemClock.elapsedRealtime();
-                    final Prototype compiledScript = XHookUtil.compileScript(scriptPrototype, hook);
                     if(!hook.isAvailable(pInfo.versionCode))
                         continue;
 
@@ -114,6 +133,7 @@ public class HookCore {
 
                     if(definition instanceof HookDefinitionAll) {
                         try {
+                            final Prototype compiledScript = XHookUtil.compileScript(scriptPrototype, hook);
                             if(DebugUtil.isDebug())
                                 Log.d(TAG, "Definition is a (ALL) Hook! " + definition);
 
@@ -158,8 +178,8 @@ public class HookCore {
                                                             app.packageName);
 
                                             if(!luaMember.isValid()) {
-                                                if(BuildConfig.DEBUG)
-                                                    Log.w(TAG, Str.fm("Lua Member(ALL) is Not Valid [%s] Most likely not a after or before, function=%s", definition.getName(), function));
+                                                if(BuildConfig.DEBUG && DebugUtil.isDebug())
+                                                    Log.d(TAG, Str.fm("Lua callback is not defined [%s], function=%s", definition.getName(), function));
                                                 return;
                                             }
                                         }
@@ -187,6 +207,7 @@ public class HookCore {
                     else if(definition instanceof HookDefinitionField) {
                         final HookDefinitionField hf = (HookDefinitionField) definition;
                         try {
+                            final Prototype compiledScript = XHookUtil.compileScript(scriptPrototype, hook);
                             long run = SystemClock.elapsedRealtime();
                             LuaHookWrapper luaField = LuaHookWrapper.createField(
                                     context,
@@ -225,6 +246,7 @@ public class HookCore {
                                 continue;
                             }
 
+                            final Prototype compiledScript = XHookUtil.compileScript(scriptPrototype, hook);
                             if(DebugUtil.isDebug()) Log.d(TAG, "Deploying Member Hook! Definition:" + definition);
 
                             ModernXposedBridge.hookMethod(member, new ModernMethodHook() {
@@ -268,8 +290,8 @@ public class HookCore {
                                                             app.packageName);
 
                                             if(!luaMember.isValid()) {
-                                                if(BuildConfig.DEBUG)
-                                                    Log.w(TAG, Str.fm("Lua Member is Not Valid [%s] Most likely not a after or before, function=%s", definition.getName(), function));
+                                                if(BuildConfig.DEBUG && DebugUtil.isDebug())
+                                                    Log.d(TAG, Str.fm("Lua callback is not defined [%s], function=%s", definition.getName(), function));
                                                 return;
                                             }
                                         }

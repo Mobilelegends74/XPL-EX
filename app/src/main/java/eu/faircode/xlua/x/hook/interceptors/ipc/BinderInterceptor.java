@@ -27,29 +27,33 @@ public class BinderInterceptor {
         InterfaceBinderData helper = InterfaceBinderData.create(param, getResult);
         if(!helper.hasInterfaceName()) {
             if(DebugUtil.isDebug())
-                Log.w(TAG, "Interface Name is NULL for IPC Call Returning...");
+                Log.d(TAG, "IPC call has no interface descriptor; skipping");
 
             return false;
         }
 
         if(!getResult) {
             if(!helper.hasData()) {
-                Log.w(TAG, "Data Parcel for IPC Call is Not Valid Size=" + helper.getDataSize() + " Name=" + helper.interfaceName);
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, "IPC data parcel is unavailable; skipping " + helper.interfaceName);
                 return false;
             }
 
             if(!InterfacesGlobal.APPSET_INTERFACE.equalsIgnoreCase(helper.interfaceName)) {
-                Log.w(TAG, "Black Listed Interface for an Before Hook: " + helper.interfaceName);
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, "IPC interface is not handled by the before interceptor: " + helper.interfaceName);
                 return false;
             }
         } else {
             if(InterfacesGlobal.APPSET_INTERFACE.equalsIgnoreCase(helper.interfaceName)) {
-                Log.w(TAG, "Black Listed Interface for an After Hook: " + helper.interfaceName);
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, "IPC interface is not handled by the after interceptor: " + helper.interfaceName);
                 return false;
             }
 
             if(!helper.hasReply()) {
-                Log.w(TAG, "Reply Parcel for IPC Call is Not Valid Size=" + helper.getReplySize() + " Name=" + helper.interfaceName);
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, "IPC reply parcel is unavailable; skipping " + helper.interfaceName);
                 return false;
             }
         }

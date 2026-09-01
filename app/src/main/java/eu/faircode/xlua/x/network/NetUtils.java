@@ -278,7 +278,7 @@ public class NetUtils {
     public static String joinInetAddresses(List<InetAddress> addresses) {
         if(addresses == null || addresses.isEmpty()) return "";
         StringBuilder sb = new StringBuilder();
-        int last = addresses.size();
+        int last = addresses.size() - 1;
         for(int i = 0; i < addresses.size(); i++) {
             InetAddress a = addresses.get(i);
             sb.append(a.getHostAddress());

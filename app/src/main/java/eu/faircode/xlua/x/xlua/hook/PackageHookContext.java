@@ -195,14 +195,14 @@ public class PackageHookContext {
                     holders.add(holder);
 
                     if(!Str.isEmpty(name) && !Str.isEmpty(value)) {
-                        if(!randomizers.containsKey(name)) {
-                            Log.w(TAG, Str.fm("Setting [%s] Does not have a Randomizer! Failed to Pre Randomize... ", name));
-                            continue;
-                        }
-
                         if(value.contains("%") && value.length() < 15) {
                             String low = value.toLowerCase();
                             if(RANDOM_INDICATORS.contains(low)) {
+                                if(!randomizers.containsKey(name)) {
+                                    Log.w(TAG, Str.fm("Setting [%s] requests randomization but has no randomizer", name));
+                                    continue;
+                                }
+
                                 sharedRegistry.setChecked(SharedRegistry.STATE_TAG_SETTINGS, RandomizerSessionContext.sharedSettingName(name), true);
                                 needToRandomize.add(holder);
                                 if(DebugUtil.isDebug())
@@ -211,7 +211,7 @@ public class PackageHookContext {
                         }
                     } else {
                         if(DebugUtil.isDebug())
-                            Log.w(TAG, Str.fm("Error Null or Empty ? Skipping Setting:" + name + " Value=" + value));
+                            Log.d(TAG, "Skipping empty setting: " + name);
                     }
                 }
 

@@ -167,7 +167,10 @@ public class FileInterceptor {
                             return true;
                         }
                     } else {
-                        Log.e(TAG, "Return Result from File.list() is null...");
+                        // File.list/listFiles are allowed to return null when the
+                        // path is inaccessible or is not a directory.
+                        if(DebugUtil.isDebug())
+                            Log.d(TAG, "File.list/listFiles returned null or an unsupported result");
                         return false;
                     }
                 }

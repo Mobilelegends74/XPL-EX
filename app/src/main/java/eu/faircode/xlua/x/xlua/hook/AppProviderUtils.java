@@ -132,12 +132,12 @@ public class AppProviderUtils {
                     continue;
 
                 if(!allowFilters && AssignmentUtils.isFilterHook(hookId)) {
-                    if(DebugUtil.isDebug()) Log.w(TAG, "Skipping Assignment as it is an Filter, ID=" + hookId); //We can delete it from here ?
+                    if(DebugUtil.isDebug()) Log.d(TAG, "Skipping filter assignment, ID=" + hookId); //We can delete it from here ?
                     continue;
                 }
 
                 if(!allowSpecial && AssignmentUtils.isSpecialSetting(hookId)) {
-                   if(DebugUtil.isDebug()) Log.w(TAG, "Skipping Assignment as it is an Special Setting, ID=" + hookId);
+                   if(DebugUtil.isDebug()) Log.d(TAG, "Skipping special-setting assignment, ID=" + hookId);
                    continue;
                 }
 
