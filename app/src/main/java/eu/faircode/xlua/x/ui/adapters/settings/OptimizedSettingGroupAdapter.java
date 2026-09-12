@@ -201,21 +201,20 @@ public class OptimizedSettingGroupAdapter
                     handleExpandClickForGroup(currentItem);
                     break;
                 case R.id.ivActionNeeded:
-                    if(groupStats.hasUnsaved()) {
-                        MessageDialog.create()
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .setName(context.getString(R.string.message_warning_hooks_title))
-                                .setMessage(context.getString(R.string.message_warning_hooks_message))
-                                .show(manager.getFragmentMan(), context.getString(R.string.menu_info));
-                    } else {
-                        HookInfoDialog.create()
-                                .setIcon(R.drawable.ic_finger_print18)
-                                .setHookGroupName(currentItem.getGroupName())
-                                .setHookGroupMessage(SettingGroupInfo.getMessage(
-                                        context,
-                                        currentItem.getGroupName()))
-                                .show(manager.getFragmentMan(), "setting_group_info");
-                    }
+                    MessageDialog.create()
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setName(context.getString(R.string.message_warning_hooks_title))
+                            .setMessage(context.getString(R.string.message_warning_hooks_message))
+                            .show(manager.getFragmentMan(), context.getString(R.string.menu_info));
+                    break;
+                case R.id.ivGroupInfo:
+                    HookInfoDialog.create()
+                            .setIcon(R.drawable.ic_question_square18)
+                            .setHookGroupName(currentItem.getGroupName())
+                            .setHookGroupMessage(SettingGroupInfo.getMessage(
+                                    context,
+                                    currentItem.getGroupName()))
+                            .show(manager.getFragmentMan(), "setting_group_info");
                     break;
             }
         }
@@ -229,9 +228,10 @@ public class OptimizedSettingGroupAdapter
                 int resId = 0;
                 switch (id) {
                     case R.id.ivActionNeeded:
-                        resId = groupStats.hasUnsaved()
-                                ? R.string.msg_hint_warning_save
-                                : R.string.description_setting_group_info_hint;
+                        resId = R.string.msg_hint_warning_save;
+                        break;
+                    case R.id.ivGroupInfo:
+                        resId = R.string.description_setting_group_info_hint;
                         break;
                     case R.id.tvStatsCount:
                         resId = R.string.msg_hint_settings_stat;
@@ -283,8 +283,9 @@ public class OptimizedSettingGroupAdapter
                 binding.tvSettingGroupName.setOnClickListener(wire ? this : null);
 
                 binding.ivActionNeeded.setOnClickListener(wire ? this : null);
-
                 binding.ivActionNeeded.setOnLongClickListener(wire ? this : null);
+                binding.ivGroupInfo.setOnClickListener(wire ? this : null);
+                binding.ivGroupInfo.setOnLongClickListener(wire ? this : null);
                 binding.tvStatsCount.setOnLongClickListener(wire ? this : null);
             }
         }
@@ -312,7 +313,7 @@ public class OptimizedSettingGroupAdapter
                         .updateLabel(binding.tvStatsCount)
                         .updateColor(binding.tvSettingGroupName, context,
                                 sharedRegistry.asSettingShared().hasAssignedHook(currentItem, context))
-                        .updateInfoIv(binding.ivActionNeeded);
+                        .updateIv(binding.ivActionNeeded);
             }
         }
 

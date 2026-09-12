@@ -45,22 +45,12 @@ public class GroupStats {
 
     public GroupStats updateIv(ImageView ivWarning) {
         if(ivWarning != null) {
-            ivWarning.setVisibility(hasUnsaved() ? View.VISIBLE : View.GONE);
-        }
-
-        return this;
-    }
-
-    /**
-     * The group-level action icon doubles as an unsaved warning and as the
-     * entry point for the Setting Values help text.
-     */
-    public GroupStats updateInfoIv(ImageView ivInfo) {
-        if(ivInfo != null) {
-            ivInfo.setVisibility(View.VISIBLE);
-            ivInfo.setImageResource(hasUnsaved()
-                    ? android.R.drawable.ic_dialog_alert
-                    : R.drawable.ic_finger_print18);
+            if(hasUnsaved()) {
+                ivWarning.setVisibility(View.VISIBLE);
+                ivWarning.setImageResource(android.R.drawable.ic_dialog_alert);
+            } else {
+                ivWarning.setVisibility(View.GONE);
+            }
         }
 
         return this;
@@ -91,10 +81,15 @@ public class GroupStats {
 
     public GroupStats updateIv(ImageView ivWarning, String name) {
         if(ivWarning != null) {
-            ivWarning.setVisibility(View.VISIBLE);
-            ivWarning.setImageResource(hasUnsaved()
-                    ? android.R.drawable.ic_dialog_alert
-                    : R.drawable.ic_finger_print18);
+            if(hasUnsaved()) {
+                ivWarning.setVisibility(View.VISIBLE);
+                ivWarning.setImageResource(android.R.drawable.ic_dialog_alert);
+            } else if(isSettingUnique(name)) {
+                ivWarning.setVisibility(View.VISIBLE);
+                ivWarning.setImageResource(R.drawable.ic_finger_print18);
+            } else {
+                ivWarning.setVisibility(View.GONE);
+            }
         }
 
         return this;

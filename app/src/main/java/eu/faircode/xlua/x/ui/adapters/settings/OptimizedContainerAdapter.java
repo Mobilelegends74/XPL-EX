@@ -39,7 +39,10 @@ import eu.faircode.xlua.x.ui.core.interfaces.IStateManager;
 import eu.faircode.xlua.x.ui.core.interfaces.IGenericElementEvent;
 import eu.faircode.xlua.x.ui.core.util.CoreUiUtils;
 import eu.faircode.xlua.x.ui.dialogs.HooksDialog;
+import eu.faircode.xlua.x.ui.dialogs.HookInfoDialog;
+import eu.faircode.xlua.x.ui.dialogs.MessageDialog;
 import eu.faircode.xlua.x.ui.dialogs.SettingDeleteDialog;
+import eu.faircode.xlua.x.ui.dialogs.SettingValueInfo;
 import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.database.A_CODE;
 import eu.faircode.xlua.x.xlua.hook.AppAssignmentInfo;
@@ -234,6 +237,28 @@ public class OptimizedContainerAdapter
                         o.notifyUpdate(settingShared.notifier);
                     });
                     break;
+                case R.id.ivActionNeeded:
+                    if(groupStats.hasUnsaved()) {
+                        MessageDialog.create()
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setName(res.getString(R.string.message_warning_hooks_title))
+                                .setMessage(res.getString(R.string.message_warning_hooks_message))
+                                .show(manager.getFragmentMan(), res.getString(R.string.menu_info));
+                    } else {
+                        MessageDialog.create()
+                                .setIcon(R.drawable.ic_finger_print18)
+                                .setName(res.getString(R.string.message_unique_title))
+                                .setMessage(res.getString(R.string.message_unique_message))
+                                .show(manager.getFragmentMan(), res.getString(R.string.menu_info));
+                    }
+                    break;
+                case R.id.ivSettingInfo:
+                    HookInfoDialog.create()
+                            .setIcon(R.drawable.ic_question_square18)
+                            .setHookGroupName(currentItem.getNameNice())
+                            .setHookGroupMessage(SettingValueInfo.getMessage(context, currentItem.getName()))
+                            .show(manager.getFragmentMan(), "setting_container_info");
+                    break;
             }
         }
 
@@ -263,6 +288,14 @@ public class OptimizedContainerAdapter
                         break;
                     case R.id.ivBtSettingContainerSave:
                         resId = R.string.msg_hint_save_container;
+                        break;
+                    case R.id.ivActionNeeded:
+                        resId = groupStats.hasUnsaved()
+                                ? R.string.msg_hint_warning_save
+                                : R.string.message_unique_message;
+                        break;
+                    case R.id.ivSettingInfo:
+                        resId = R.string.description_setting_value_info_hint;
                         break;
                 }
 
@@ -380,6 +413,9 @@ public class OptimizedContainerAdapter
                 binding.ivBtWildcard.setOnLongClickListener(wire ? this : null);
 
                 binding.ivActionNeeded.setOnClickListener(wire ? this : null);
+                binding.ivActionNeeded.setOnLongClickListener(wire ? this : null);
+                binding.ivSettingInfo.setOnClickListener(wire ? this : null);
+                binding.ivSettingInfo.setOnLongClickListener(wire ? this : null);
 
                 sharedRegistry.notifier.subscribeGroup(this);
                 sharedRegistry.notifier.subscribe(SettingSharedRegistry.NOTIFY_ACTIVE_HOOKS, this);

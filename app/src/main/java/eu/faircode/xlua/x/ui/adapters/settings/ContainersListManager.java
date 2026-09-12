@@ -121,6 +121,10 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
             binding.tvSettingContainerNameNice.setOnClickListener(null);
             binding.tvSettingContainerNameFull.setOnClickListener(null);
             binding.ivExpanderSettingContainer.setOnClickListener(null);
+            binding.ivActionNeeded.setOnClickListener(null);
+            binding.ivActionNeeded.setOnLongClickListener(null);
+            binding.ivSettingInfo.setOnClickListener(null);
+            binding.ivSettingInfo.setOnLongClickListener(null);
             binding.ivBtSettingContainerDelete.setOnClickListener(null);
             binding.ivBtSettingContainerRandomize.setOnClickListener(null);
             binding.ivBtSettingContainerReset.setOnClickListener(null);
@@ -425,15 +429,21 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                                 .setMessage(res.getString(R.string.message_warning_hooks_message))
                                 .show(manager.getFragmentMan(), res.getString(R.string.menu_info));
                     } else {
-                        HookInfoDialog.create()
+                        MessageDialog.create()
                                 .setIcon(R.drawable.ic_finger_print18)
-                                .setHookGroupName(currentItem.getNameNice())
-                                .setHookGroupMessage(SettingValueInfo.getMessage(
-                                        context,
-                                        currentItem.getName()))
-                                .show(manager.getFragmentMan(), "setting_container_info");
+                                .setName(res.getString(R.string.message_unique_title))
+                                .setMessage(res.getString(R.string.message_unique_message))
+                                .show(manager.getFragmentMan(), res.getString(R.string.menu_info));
                     }
-
+                    break;
+                case R.id.ivSettingInfo:
+                    HookInfoDialog.create()
+                            .setIcon(R.drawable.ic_question_square18)
+                            .setHookGroupName(currentItem.getNameNice())
+                            .setHookGroupMessage(SettingValueInfo.getMessage(
+                                    context,
+                                    currentItem.getName()))
+                            .show(manager.getFragmentMan(), "setting_container_info");
                     break;
             }
         }
@@ -471,7 +481,10 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                     case R.id.ivActionNeeded:
                         resId = groupStats.hasUnsaved()
                                 ? R.string.msg_hint_warning_save
-                                : R.string.description_setting_value_info_hint;
+                                : R.string.message_unique_message;
+                        break;
+                    case R.id.ivSettingInfo:
+                        resId = R.string.description_setting_value_info_hint;
                         break;
                 }
 
@@ -584,8 +597,9 @@ public class ContainersListManager extends ListViewManager<SettingsContainer, Se
                 binding.spSettingContainerRandomizer.setOnItemSelectedListener(res ? this : null);
 
                 binding.ivActionNeeded.setOnClickListener(wire ? this : null);
-
                 binding.ivActionNeeded.setOnLongClickListener(wire ? this : null);
+                binding.ivSettingInfo.setOnClickListener(wire ? this : null);
+                binding.ivSettingInfo.setOnLongClickListener(wire ? this : null);
 
                 binding.ivBtWildcard.setOnClickListener(wire ? this : null);
                 binding.ivBtWildcard.setOnLongClickListener(wire ? this : null);
