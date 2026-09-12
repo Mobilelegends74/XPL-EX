@@ -1,7 +1,7 @@
 [
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Spoof",
     "group": "Apps.Spoof.TimeStamps",
     "name": "PackageInfo.writeToParcel/Times",
     "author": "OBC",
@@ -21,7 +21,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Spoof",
     "group": "Apps.Spoof.TimeStamps",
     "name": "PackageInfo(Parcel)/Times",
     "author": "OBC",
@@ -40,7 +40,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Spoof",
     "group": "Apps.Spoof.TimeStamps",
     "name": "PackageManager(*)/PackageInfo/Times",
     "author": "OBC",

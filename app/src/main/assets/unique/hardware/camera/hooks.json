@@ -1,7 +1,7 @@
 [
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.Camera.Count",
     "name": "Camera.getNumberOfCameras/Spoof",
     "author": "OBC",

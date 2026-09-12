@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">XPL-EX-NEXT-1.5.8</string>
+    <string name="app_name" translatable="false">XPL-EX-NEXT-1.5.9</string>
     <string name="xposed_module_description">Privacy controls and coherent device-profile spoofing for LSPosed.</string>
     <string name="channel_privacy" translatable="false">XPrivacyLua</string>
 
@@ -53,7 +53,7 @@
 
     <string name="menu_whats_new_button" translatable="false">What\'s new</string>
 
-    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.5.8</b><br><br>• Migrated the module entry point and hook dispatcher to modern libxposed API 101 for LSPosed 2.1.1.<br>• Replaced legacy Xposed metadata with the modern META-INF/xposed module layout.<br>• Preserved the existing Lua hook behavior through an API 101 interceptor-chain adapter.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX">GitHub: Mobilelegends74/XPL-EX</a>]]></string>
+    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.5.9</b><br><br>• Closed the getPackagesForUid app-list leak while keeping virtual packages coherent.<br>• Added direct local IPv4/IPv6 interception for NetworkInterface, WifiInfo and manager API paths.<br>• Moved high-impact hooks into dedicated optional collections for safer initial setup.<br>• Restored immediate charging-cycle spoofing and limited cycle/boot randomization to 100–500.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX">GitHub: Mobilelegends74/XPL-EX</a>]]></string>
 
     <string name="warning_bulk_check" translatable="false">Selecting this will Enable Every Hook Possible (Super Highly NOT recommended). Why ? Why use a BOMB causing Chaos, when you should Enable what you think is best Needed for your situation.\n\nRemember, in Settings "unique" Filter is everything that can be used to Identify you, the rest does not matter. \n\nIf you Continue, you are NOT to ask for Help if Target App Crashes or acts abnormally, you accept such behaviour due to a lack of patience. (Do NOT ask for Help if App Crashes when you Select all at once) \n\nSelect what is NEEDED by Testing, Trying, or FAQ. \n\n\nOnce you click (ok) this Dialog will never Appear again hence the Long Timeout (READ THIS DAMN MESSAGE!!!)</string>
     <string name="warning_bulk_check_title" translatable="false">Select all Hooks ?</string>

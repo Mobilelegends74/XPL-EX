@@ -1,23 +1,20 @@
-name: Build and publish XPL-EX-NEXT v1.5.8 FIX
+name: Build and publish XPL-EX-NEXT v1.5.9
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - XPL-EX-NEXT-v1.5.8
 
 permissions:
   contents: write
 
 concurrency:
-  group: xpl-ex-next-v1.5.8-fix-release
+  group: xpl-ex-next-v1.5.9-release
   cancel-in-progress: false
 
 env:
-  RELEASE_TAG: XPL-EX-NEXT-v1.5.8-FIX
-  RELEASE_TITLE: XPL-EX-NEXT v1.5.8 FIX
-  BUILD_APK: XPL-EX-NEXT-1.5.8-release.apk
-  RELEASE_APK: XPL-EX-NEXT-1.5.8-FIX.apk
+  RELEASE_TAG: XPL-EX-NEXT-v1.5.9
+  RELEASE_TITLE: XPL-EX-NEXT v1.5.9
+  BUILD_APK: XPL-EX-NEXT-1.5.9-release.apk
+  RELEASE_APK: XPL-EX-NEXT-1.5.9.apk
 
 jobs:
   build-and-release:
@@ -108,8 +105,8 @@ jobs:
           build_tools="${ANDROID_HOME}/build-tools/35.0.0"
           "${build_tools}/apksigner" verify --verbose --print-certs "${source_apk}"
           badging=$("${build_tools}/aapt" dump badging "${source_apk}")
-          grep -q "versionCode='158'" <<< "${badging}"
-          grep -q "versionName='1.5.8'" <<< "${badging}"
+          grep -q "versionCode='159'" <<< "${badging}"
+          grep -q "versionName='1.5.9'" <<< "${badging}"
 
           mkdir -p dist
           cp "${source_apk}" "dist/${RELEASE_APK}"
@@ -120,7 +117,7 @@ jobs:
       - name: Prepare release description
         run: |
           set -euo pipefail
-          cp docs/releases/xpl-ex-next-v1.5.8-fix.md "${RUNNER_TEMP}/release-notes.md"
+          cp docs/releases/xpl-ex-next-v1.5.9.md "${RUNNER_TEMP}/release-notes.md"
 
       - name: Write build summary
         run: |
@@ -128,8 +125,8 @@ jobs:
             echo "# ${RELEASE_TITLE}"
             echo
             echo "- Tests: passed"
-            echo "- Version name: 1.5.8"
-            echo "- Version code: 158"
+            echo "- Version name: 1.5.9"
+            echo "- Version code: 159"
             echo "- libxposed API: 101"
             echo "- Bridge protocol: 1.5.5"
             echo "- R8 minification: disabled for Xposed/Lua hook compatibility"
@@ -141,7 +138,7 @@ jobs:
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: XPL-EX-NEXT-1.5.8-FIX
+          name: XPL-EX-NEXT-1.5.9
           path: dist/
           if-no-files-found: error
           retention-days: 30

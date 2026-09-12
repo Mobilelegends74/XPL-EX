@@ -1,7 +1,7 @@
 [
   {
     "builtin": false,
-    "collection": "PrivacyEx",
+    "collection": "Advanced",
     "group": "Spoof.Features",
     "name": "PackageManager.hasSystemFeature(String)",
     "author": "OBC",
@@ -21,7 +21,7 @@
   },
   {
     "builtin": false,
-    "collection": "PrivacyEx",
+    "collection": "Advanced",
     "group": "Spoof.Features",
     "name": "PackageManager.hasSystemFeature(String, int)",
     "author": "OBC",
@@ -41,7 +41,7 @@
   },
   {
     "builtin": false,
-    "collection": "PrivacyEx",
+    "collection": "Advanced",
     "group": "Spoof.Features",
     "name": "PackageManager.getSystemAvailableFeatures",
     "author": "OBC",

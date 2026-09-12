@@ -192,6 +192,42 @@ public class WifiInfoInterceptor {
             new DynamicField(WifiInfo.class, "mRxLinkSpeed").setAccessible(true),
             new DynamicField(WifiInfo.class, "mMaxSupportedRxLinkSpeed").setAccessible(true));
 
+    public static boolean interceptIpAddress(XParam param) {
+        try {
+            Object result = param.getResult();
+            if (!(result instanceof Integer))
+                return false;
+
+            int originalValue = (Integer) result;
+            InetAddress originalAddress = NetUtils.intToInetAddress(originalValue);
+            if (!(originalAddress instanceof Inet4Address) || originalAddress.isLoopbackAddress())
+                return false;
+
+            GroupedMap map = param.getGroupedMap(NetUtils.GROUP_NAME);
+            String fakeAddress = map.getValueOrSetting(
+                    NetUtils.ASSUMED_WIFI_NET_INF_NAME,
+                    originalAddress.getHostAddress(),
+                    param,
+                    "network.host.address");
+            InetAddress parsed = NetUtils.parseIpv4ToInetAddress(fakeAddress);
+            if (!(parsed instanceof Inet4Address))
+                return false;
+
+            int replacement = NetUtils.inetAddressToInt((Inet4Address) parsed);
+            if (replacement == originalValue)
+                return false;
+
+            param.setLogOld(originalAddress.getHostAddress());
+            param.setLogNew(parsed.getHostAddress());
+            param.setLogExtra("WifiInfo.getIpAddress");
+            param.setResult(replacement);
+            return true;
+        } catch (Throwable e) {
+            Log.e(TAG, "Failed to intercept WifiInfo.getIpAddress: " + e);
+            return false;
+        }
+    }
+
     public static boolean intercept(XParam param, boolean getResult) {
         if(param == null) return false;
         //System.nanoTime() spoof ?

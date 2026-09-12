@@ -35,6 +35,7 @@ public class RuntimeLogRegressionTest {
         assertTrue(loop >= 0);
         assertTrue(bypass > loop);
         assertTrue(resolve > bypass);
+        assertTrue(core.contains("\"Spoof.Features\".equals(hook.group)"));
         assertTrue(core.contains("PackageManager.hasSystemFeature(String)"));
         assertTrue(core.contains("PackageManager.hasSystemFeature(String, int)"));
         assertTrue(core.contains("PackageManager.getSystemAvailableFeatures"));

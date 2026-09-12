@@ -2,7 +2,7 @@
   {
     //https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/opengl/java/com/google/android/gles_jni/EGLImpl.java
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.GPU",
     "name": "GPU/EGLImpl.eglQueryString",
     "author": "OBC",
@@ -24,7 +24,7 @@
   {
     //https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/opengl/java/android/opengl/EGL15.java
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.GPU",
     "name": "GPU/EGL15.eglQueryString",
     "author": "OBC",
@@ -46,7 +46,7 @@
   {
     //https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/opengl/java/android/opengl/EGL14.java
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.GPU",
     "name": "GPU/EGL14.eglQueryString",
     "author": "OBC",
@@ -68,7 +68,7 @@
   {
     //https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/opengl/java/android/opengl/GLES32.java
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.GPU",
     "name": "GPU/GLES32.glGetString",
     "author": "OBC",
@@ -90,7 +90,7 @@
   {
     //https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/opengl/java/android/opengl/GLES31.java
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.GPU",
     "name": "GPU/GLES31.glGetString",
     "author": "OBC",
@@ -112,7 +112,7 @@
   {
     //https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/opengl/java/android/opengl/GLES30.java
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.GPU",
     "name": "GPU/GLES30.glGetString",
     "author": "OBC",
@@ -134,7 +134,7 @@
   {
     //https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/opengl/java/android/opengl/GLES20.java
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.GPU",
     "name": "GPU/GLES20.glGetString",
     "author": "OBC",
@@ -156,7 +156,7 @@
   {
     //https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/opengl/java/android/opengl/GLES10.java
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.GPU",
     "name": "GPU/GLES10.glGetString",
     "author": "OBC",
@@ -178,7 +178,7 @@
   {
     //https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/opengl/java/android/opengl/GLES11.java
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.GPU",
     "name": "GPU/GLES11.glGetString",
     "author": "OBC",
@@ -200,7 +200,7 @@
   {
     //https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/opengl/java/com/google/android/gles_jni/GLImpl.java
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.GPU",
     "name": "GPU/GLImpl.glGetString",
     "author": "OBC",

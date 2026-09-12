@@ -24,8 +24,8 @@ android {
         // Target 35+ enforces edge-to-edge and places action items below the
         // status bar, so stay on 34 until the Material 3 UI migration is ready.
         targetSdk 34
-        versionCode 158
-        versionName "1.5.8"
+        versionCode 159
+        versionName "1.5.9"
         // The Android package version and the XPL command protocol are separate.
         // Changing versionCode must not silently change bridge compatibility.
         buildConfigField "String", "BRIDGE_VERSION", '"1.5.5"'

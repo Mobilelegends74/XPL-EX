@@ -516,6 +516,11 @@ public class XParam extends XParamExtra {
     }
 
     @SuppressWarnings("unused")
+    public String[] filterPackagesForUid(int uid, Object result) {
+        return VirtualAppCatalog.packagesForUid(this, uid, result);
+    }
+
+    @SuppressWarnings("unused")
     public boolean interceptLastModified() { return StatCleaner.cleanFileLastModified(this); }
 
     @SuppressWarnings("unused")
@@ -658,6 +663,12 @@ public class XParam extends XParamExtra {
     public boolean interceptGetifaddrs() { return NetworkInterfaceInterceptor.interceptGetifaddrs(this); }
 
     @SuppressWarnings("unused")
+    public boolean interceptNetworkInterfaceAddresses() { return NetworkInterfaceInterceptor.interceptInetAddresses(this); }
+
+    @SuppressWarnings("unused")
+    public boolean interceptLocalInetAddress(String interfaceName) { return NetworkInterfaceInterceptor.interceptAddressResult(this, interfaceName); }
+
+    @SuppressWarnings("unused")
     public boolean interceptDhcpInfo(boolean isResult) { return DhcpInfoInterceptor.intercept(this, isResult); }
 
     @SuppressWarnings("unused")
@@ -665,6 +676,9 @@ public class XParam extends XParamExtra {
 
     @SuppressWarnings("unused")
     public boolean interceptWifiInfo(boolean isResult) { return WifiInfoInterceptor.intercept(this, isResult); }
+
+    @SuppressWarnings("unused")
+    public boolean interceptWifiIpAddress() { return WifiInfoInterceptor.interceptIpAddress(this); }
 
     @SuppressWarnings("unused")
     public int getFileDescriptorId(FileDescriptor fs) { return FileUtil.getDescriptorNumber(fs);  }

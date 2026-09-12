@@ -1,7 +1,7 @@
 [
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.CPU.Ex",
     "name": "Build.SOC_MODEL",
     "author": "OBC",
@@ -22,7 +22,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.CPU.Ex",
     "name": "SoC model properties/Rule",
     "author": "OBC",
@@ -52,7 +52,7 @@
 
  /* {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Spoof.SOC",
     "name": "Filter/Shell/cpuinfo",
     "author": "OBC",
@@ -72,7 +72,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.CPU",
     "name": "CPUINFO/Param",
     "author": "OBC",
@@ -93,7 +93,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.CPU",
     "name": "CPUINFO/Param/BlockGuardOs",
     "author": "OBC",
@@ -114,7 +114,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.CPU",
     "name": "CPUINFO/Return",
     "author": "OBC",
@@ -134,7 +134,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.CPU",
     "name": "CPU/IoUtils.setFdOwner",
     "author": "OBC",
@@ -154,7 +154,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.CPU",
     "name": "Runtime.availableProcessors",
     "author": "OBC",
@@ -175,7 +175,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.CPU",
     "name": "Os.uname",
     "author": "OBC",

@@ -1,7 +1,7 @@
 [
   {
     "builtin": false,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.GPS.Model",
     "name": "LocationManager.getGnssYearOfHardware",
     "author": "OBC",
@@ -23,7 +23,7 @@
 
   {
     "builtin": false,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.GPS.Model",
     "name": "LocationManager.getGnssHardwareModelName",
     "author": "OBC",

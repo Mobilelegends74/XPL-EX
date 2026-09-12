@@ -13,6 +13,6 @@ public class RandomBootCount extends RandomElement {
 
     @Override
     public void randomize(RandomizerSessionContext context) {
-        context.pushSpecial(context.stack.pop(), String.valueOf(RandomGenerator.nextInt(3, 9999)));
+        context.pushSpecial(context.stack.pop(), String.valueOf(RandomGenerator.nextInt(100, 501)));
     }
 }

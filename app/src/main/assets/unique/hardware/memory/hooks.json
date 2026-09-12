@@ -1,7 +1,7 @@
 [
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.Memory",
     "name": "Filter/Shell/meminfo",
     "author": "OBC",
@@ -20,7 +20,7 @@
   },
   {
     "builtin": false,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.Memory",
     "name": "MEMINFO/Param",
     "author": "OBC",
@@ -41,7 +41,7 @@
   },
   {
     "builtin": false,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.Memory",
     "name": "MEMINFO/Param/BlockGuardOs",
     "author": "OBC",
@@ -66,7 +66,7 @@
 
   {
     "builtin": false,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.Memory",
     "name": "ActivityManager.getMemoryInfo",
     "author": "OBC",
@@ -87,7 +87,7 @@
   }
   /*{
     "builtin": false,
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.Memory",
     "name": "MemoryInfo.writeToParcel",
     "author": "OBC",
@@ -109,7 +109,7 @@
 
 
   /*{
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.Memory",
     "name": "Runtime.maxMemory",
     "author": "OBC",
@@ -129,7 +129,7 @@
     "settings":["hardware.memory.total"]
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Hardware",
     "group": "Hardware.Spoof.Memory",
     "name": "Runtime.totalMemory",
     "author": "OBC",

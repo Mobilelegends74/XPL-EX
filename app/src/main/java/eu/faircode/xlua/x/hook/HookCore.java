@@ -48,13 +48,12 @@ public class HookCore {
     private static final String TAG = LibUtil.generateTag(HookCore.class);
 
     private static boolean mustPreserveSystemFeatures(XHook hook) {
-        if (hook == null)
+        if (hook == null || !"Spoof.Features".equals(hook.group))
             return false;
 
-        String id = hook.getObjectId();
-        return "PrivacyEx.PackageManager.hasSystemFeature(String)".equals(id)
-                || "PrivacyEx.PackageManager.hasSystemFeature(String, int)".equals(id)
-                || "PrivacyEx.PackageManager.getSystemAvailableFeatures".equals(id);
+        return "PackageManager.hasSystemFeature(String)".equals(hook.name)
+                || "PackageManager.hasSystemFeature(String, int)".equals(hook.name)
+                || "PackageManager.getSystemAvailableFeatures".equals(hook.name);
     }
 
 

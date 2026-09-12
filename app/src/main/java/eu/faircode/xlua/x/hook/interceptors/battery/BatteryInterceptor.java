@@ -20,6 +20,7 @@ import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
 
 public class BatteryInterceptor {
     private static final String TAG = LibUtil.generateTag(BatteryInterceptor.class);
+    public static final int DEFAULT_CHARGING_CYCLES = 120;
 
     public static final String ACTION_CHANGED = "android.intent.action.BATTERY_CHANGED";
     public static final String ACTION_CHANGED_NAME = "BATTERY_CHANGED";
@@ -258,7 +259,11 @@ public class BatteryInterceptor {
                 if(bundle.containsKey(fieldName)) {
                     int originalCycleCount = bundle.getInt(fieldName, -1);
                     if(originalCycleCount > -1 || param.isForceSetting(RandomizersCache.SETTING_BATTERY_CHARGING_CYCLES)) {
-                        int modifiedCycleCount = Math.max(0, param.getSettingInt(RandomizersCache.SETTING_BATTERY_CHARGING_CYCLES, 5));
+                        Integer configuredCycleCount = param.getSettingInt(
+                                RandomizersCache.SETTING_BATTERY_CHARGING_CYCLES,
+                                DEFAULT_CHARGING_CYCLES);
+                        int modifiedCycleCount = Math.max(0,
+                                configuredCycleCount == null ? DEFAULT_CHARGING_CYCLES : configuredCycleCount);
                         if(originalCycleCount != modifiedCycleCount) {
                             original.append("[CHARGE_CYCLES][" + originalCycleCount + "]");
                             modified.append("[CHARGE_CYCLES][" + modifiedCycleCount + "]");

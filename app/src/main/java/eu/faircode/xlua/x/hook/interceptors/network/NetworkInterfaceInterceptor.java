@@ -10,8 +10,11 @@ import java.lang.reflect.Array;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 
 import eu.faircode.xlua.DebugUtil;
@@ -116,6 +119,92 @@ public class NetworkInterfaceInterceptor {
 
     public static final long RETURN_NULL_HARDWARE_ADDRESS = 170188668L;
     private static final byte[] DEFAULT_MAC_ADDRESS = { 0x02, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
+    public static boolean interceptInetAddresses(XParam param) {
+        try {
+            Object owner = param.getThis();
+            Object result = param.getResult();
+            if (!(owner instanceof NetworkInterface) || !(result instanceof Enumeration<?>))
+                return false;
+
+            String interfaceName = ((NetworkInterface) owner).getName();
+            List<InetAddress> original = new ArrayList<>();
+            List<InetAddress> replacement = new ArrayList<>();
+            Enumeration<?> addresses = (Enumeration<?>) result;
+            while (addresses.hasMoreElements()) {
+                Object item = addresses.nextElement();
+                if (!(item instanceof InetAddress))
+                    continue;
+                InetAddress address = (InetAddress) item;
+                original.add(address);
+                replacement.add(spoofAddress(param, interfaceName, address));
+            }
+
+            param.setLogOld(original.toString());
+            param.setLogNew(replacement.toString());
+            param.setLogExtra(interfaceName);
+            param.setResult(Collections.enumeration(replacement));
+            return true;
+        } catch (Throwable e) {
+            Log.e(TAG, "Error intercepting NetworkInterface.getInetAddresses: " + e);
+            return false;
+        }
+    }
+
+    public static boolean interceptAddressResult(XParam param, String interfaceName) {
+        try {
+            Object result = param.getResult();
+            if (!(result instanceof InetAddress))
+                return false;
+
+            InetAddress original = (InetAddress) result;
+            InetAddress replacement = spoofAddress(param, interfaceName, original);
+            if (original.equals(replacement))
+                return false;
+
+            param.setLogOld(original.getHostAddress());
+            param.setLogNew(replacement.getHostAddress());
+            param.setLogExtra(interfaceName);
+            param.setResult(replacement);
+            return true;
+        } catch (Throwable e) {
+            Log.e(TAG, "Error intercepting local InetAddress result: " + e);
+            return false;
+        }
+    }
+
+    private static InetAddress spoofAddress(XParam param, String interfaceName, InetAddress address) {
+        if (address == null || address.isLoopbackAddress() || address.isAnyLocalAddress())
+            return address;
+
+        try {
+            String name = Str.isEmpty(interfaceName) ? NetUtils.ASSUMED_WIFI_NET_INF_NAME : interfaceName;
+            GroupedMap map = param.getGroupedMap(NetUtils.GROUP_NAME);
+            if (address instanceof Inet4Address) {
+                String fakeAddress = map.getValueOrSetting(
+                        name,
+                        address.getHostAddress(),
+                        param,
+                        "network.host.address");
+                InetAddress parsed = NetUtils.parseIpv4ToInetAddress(fakeAddress);
+                return parsed instanceof Inet4Address ? parsed : address;
+            }
+
+            if (address instanceof Inet6Address) {
+                Inet6Address original = (Inet6Address) address;
+                Inet6AddressInfo info = new Inet6AddressInfo(original);
+                String fakeAddress = map.getValueOrDefault(
+                        name,
+                        original.getHostAddress(),
+                        info.generateRandomAddress());
+                byte[] bytes = IPv6Converter.toBytes(fakeAddress);
+                return Inet6Address.getByAddress(null, bytes, original.getScopeId());
+            }
+        } catch (Throwable e) {
+            Log.e(TAG, "Error spoofing address " + address.getHostAddress() + ": " + e);
+        }
+        return address;
+    }
 
 
     public static boolean interceptGetifaddrs(XParam param) {

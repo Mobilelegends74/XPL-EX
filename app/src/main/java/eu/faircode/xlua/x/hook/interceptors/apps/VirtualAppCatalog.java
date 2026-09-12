@@ -212,6 +212,29 @@ public final class VirtualAppCatalog {
         return catalogFor(param).containsKey(packageName) ? stableUid(packageName) : null;
     }
 
+    /**
+     * Keep UID lookups consistent with the virtual package catalog without exposing the
+     * unfiltered package array returned by PackageManager#getPackagesForUid.
+     */
+    public static String[] packagesForUid(XParam param, int uid, Object original) {
+        LinkedHashMap<String, Boolean> result = new LinkedHashMap<>();
+
+        if (original instanceof String[]) {
+            for (String packageName : (String[]) original)
+                if (packageName != null && param.isPackageAllowed(packageName))
+                    result.put(packageName, Boolean.TRUE);
+        }
+
+        if (uid == param.getUid())
+            result.put(param.getPackageName(), Boolean.TRUE);
+
+        for (CatalogEntry entry : catalogFor(param).values())
+            if (stableUid(entry.packageName) == uid)
+                result.put(entry.packageName, Boolean.TRUE);
+
+        return result.keySet().toArray(new String[0]);
+    }
+
     public static boolean contains(XParam param, String packageName) {
         return packageName != null && catalogFor(param).containsKey(packageName);
     }

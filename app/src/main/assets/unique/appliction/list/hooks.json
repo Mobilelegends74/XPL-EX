@@ -1,6 +1,6 @@
 [
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "ActivityManager.getRecentTasks",
     "author": "M66B",
@@ -17,7 +17,7 @@
     "luaScript": "@generic_empty_list"
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "ActivityManager.getRunningAppProcesses",
     "author": "M66B",
@@ -30,7 +30,7 @@
     "luaScript": "@generic_filter_by_uid"
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "ActivityManager.getRunningServices",
     "author": "M66B",
@@ -46,7 +46,7 @@
     "luaScript": "@generic_filter_by_uid"
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "ActivityManager.getRunningTasks",
     "author": "M66B",
@@ -62,7 +62,7 @@
     "luaScript": "@generic_empty_list"
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "AppWidgetManager.getInstalledProviders",
     "author": "M66B",
@@ -75,7 +75,7 @@
     "luaScript": "@generic_empty_list"
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "AppWidgetManager.getInstalledProvidersForPackage",
     "author": "M66B",
@@ -90,7 +90,7 @@
     "luaScript": "@generic_empty_list"
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "AppWidgetManager.getInstalledProvidersForProfile",
     "author": "M66B",
@@ -105,7 +105,7 @@
   },
 
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "Intent.createFromParcel/package",
     "author": "M66B",
@@ -119,7 +119,29 @@
     "luaScript": "@intent_createfromparcel"
   },
   {
-    "collection": "PrivacyEx",
+    "builtin": true,
+    "collection": "Applist",
+    "group": "Apps.Spoof.List.Ex",
+    "name": "PackageManager.getPackagesForUid",
+    "author": "OBC, Mobilelegends74",
+    "className": "android.content.pm.PackageManager",
+    "methodName": "getPackagesForUid",
+    "parameterTypes": [
+      "int"
+    ],
+    "returnType": "[Ljava.lang.String;",
+    "minSdk": 1,
+    "maxSdk": 999,
+    "version": 1,
+    "description": "Return only permitted or virtual packages for the requested UID",
+    "optional": true,
+    "usage": true,
+    "notify": false,
+    "luaScript": "@pm_packages_for_uid",
+    "settings": ["apps.blacklist.mode.bool", "apps.block.list", "applications.allow.list", "apps.blacklist.allow.vital.apps.bool", "device.brand", "device.manufacturer", "device.model", "device.nick.name", "android.build.fingerprint"]
+  },
+  {
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "PackageManager.getInstalledApplications",
     "author": "M66B",
@@ -134,7 +156,7 @@
     "settings": ["device.brand", "device.manufacturer", "device.model", "device.nick.name", "android.build.fingerprint", "android.build.version.sdk", "android.build.date.utc"]
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "PackageManager.getInstalledApplications.33",
     "author": "M66B",
@@ -149,7 +171,7 @@
     "settings": ["device.brand", "device.manufacturer", "device.model", "device.nick.name", "android.build.fingerprint", "android.build.version.sdk", "android.build.date.utc"]
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "PackageManager.getInstalledPackages",
     "author": "M66B",
@@ -164,7 +186,7 @@
     "settings": ["device.brand", "device.manufacturer", "device.model", "device.nick.name", "android.build.fingerprint", "android.build.version.sdk", "android.build.date.utc"]
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "PackageManager.getInstalledPackages.33",
     "author": "M66B",
@@ -180,7 +202,7 @@
   },
 
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "PackageManager.getPackagesHoldingPermissions",
     "author": "M66B",
@@ -195,7 +217,7 @@
     "luaScript": "@generic_filter_by_uid"
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "PackageManager.getPackagesHoldingPermissions.33",
     "author": "M66B",
@@ -210,7 +232,7 @@
     "luaScript": "@generic_filter_by_uid"
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "PackageManager.queryIntentActivities",
     "author": "M66B",
@@ -225,7 +247,7 @@
     "luaScript": "@generic_filter_by_uid"
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "PackageManager.queryIntentActivities.33",
     "author": "M66B",
@@ -240,7 +262,7 @@
     "luaScript": "@generic_filter_by_uid"
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "PackageManager.getPreferredPackages",
     "author": "M66B",
@@ -254,7 +276,7 @@
     "luaScript": "@generic_filter_by_uid"
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "PackageManager.queryIntentActivityOptions",
     "author": "M66B",
@@ -271,7 +293,7 @@
     "luaScript": "@generic_filter_by_uid"
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "PackageManager.queryIntentActivityOptions.33",
     "author": "M66B",
@@ -288,7 +310,7 @@
     "luaScript": "@generic_filter_by_uid"
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "PackageManager.queryIntentContentProviders",
     "author": "M66B",
@@ -303,7 +325,7 @@
     "luaScript": "@generic_filter_by_uid"
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "PackageManager.queryIntentContentProviders.33",
     "author": "M66B",
@@ -318,7 +340,7 @@
     "luaScript": "@generic_filter_by_uid"
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "PackageManager.queryIntentServices",
     "author": "M66B",
@@ -333,7 +355,7 @@
     "luaScript": "@generic_filter_by_uid"
   },
   {
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List.Ex",
     "name": "PackageManager.queryIntentServices.33",
     "author": "M66B",
@@ -354,7 +376,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getApplicationBanner",
     "author": "OBC",
@@ -375,7 +397,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getApplicationLogo",
     "author": "OBC",
@@ -396,7 +418,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getArchivedPackage",
     "author": "OBC",
@@ -417,7 +439,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getDrawable",
     "author": "OBC",
@@ -438,7 +460,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getInstallSourceInfo",
     "author": "OBC",
@@ -460,7 +482,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getInstallerPackageName",
     "author": "OBC",
@@ -482,7 +504,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.isInstantApp",
     "author": "OBC",
@@ -504,7 +526,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.isPackageStopped",
     "author": "OBC",
@@ -526,7 +548,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.isPackageSuspended",
     "author": "OBC",
@@ -548,7 +570,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.queryInstrumentation",
     "author": "OBC",
@@ -570,7 +592,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getLaunchIntentForPackage",
     "author": "OBC",
@@ -591,7 +613,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getLaunchIntentSenderForPackage",
     "author": "OBC",
@@ -612,7 +634,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getLeanbackLaunchIntentForPackage",
     "author": "OBC",
@@ -633,7 +655,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getModuleInfo",
     "author": "OBC",
@@ -654,7 +676,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getPackageGids",
     "author": "OBC",
@@ -675,7 +697,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getPackageGids",
     "author": "OBC",
@@ -696,7 +718,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getPackageGids",
     "author": "OBC",
@@ -718,7 +740,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getApplicationIcon",
     "author": "OBC",
@@ -740,7 +762,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getPackageInfo",
     "author": "OBC",
@@ -761,7 +783,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getPackageInfo",
     "author": "OBC",
@@ -783,7 +805,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getPackageUid",
     "author": "OBC",
@@ -804,7 +826,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getPackageUid",
     "author": "OBC",
@@ -825,7 +847,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getProperty",
     "author": "OBC",
@@ -847,7 +869,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getResourcesForApplication",
     "author": "OBC",
@@ -869,7 +891,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getSyntheticAppDetailsActivityEnabled",
     "author": "OBC",
@@ -891,7 +913,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getTargetSdkVersion",
     "author": "OBC",
@@ -913,7 +935,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getText",
     "author": "OBC",
@@ -935,7 +957,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getWhitelistedRestrictedPermissions",
     "author": "OBC",
@@ -957,7 +979,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.removeWhitelistedRestrictedPermission",
     "author": "OBC",
@@ -979,7 +1001,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.setAutoRevokeWhitelisted",
     "author": "OBC",
@@ -1001,7 +1023,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getXml",
     "author": "OBC",
@@ -1023,7 +1045,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.hasSigningCertificate",
     "author": "OBC",
@@ -1045,7 +1067,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.isAppArchivable",
     "author": "OBC",
@@ -1067,7 +1089,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.isAutoRevokeWhitelisted",
     "author": "OBC",
@@ -1089,7 +1111,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getApplicationInfo",
     "author": "OBC",
@@ -1110,7 +1132,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getApplicationInfo",
     "author": "OBC",
@@ -1131,7 +1153,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Applist",
     "group": "Apps.Spoof.List",
     "name": "Apps/PackageManager.getApplicationEnabledSetting",
     "author": "OBC",

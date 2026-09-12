@@ -1,7 +1,7 @@
 [
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Advanced",
     "group": "Storage.Isolate",
     "name": "BlockGuardOs.open/Isolate",
     "author": "OBC x Fif_ x M66B",
@@ -20,7 +20,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Spoof",
     "group": "Storage.Spoof.Size",
     "name": "StructStatVfs/AvailableSize(Blocks)",
     "author": "OBC",
@@ -40,7 +40,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Spoof",
     "group": "Storage.Spoof.Size",
     "name": "StorageStatsManager.getFreeBytes(UUID)",
     "author": "OBC",
@@ -61,7 +61,7 @@
 
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Spoof",
     "group": "Storage.Spoof.Size",
     "name": "File.getFreeSpace",
     "author": "OBC",
@@ -80,7 +80,7 @@
   },
   {
     "builtin": true,
-    "collection": "PrivacyEx",
+    "collection": "Spoof",
     "group": "Storage.Spoof.Size",
     "name": "FileSystem.getSpace",
     "author": "OBC",
