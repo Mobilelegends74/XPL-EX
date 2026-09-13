@@ -17,6 +17,7 @@ import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
 import eu.faircode.xlua.x.xlua.settings.random.RandomNullElement;
 import eu.faircode.xlua.x.xlua.settings.random.interfaces.IRandomizer;
 import eu.faircode.xlua.x.xlua.settings.random.RandomOptionNullElement;
+import eu.faircode.xlua.x.xlua.settings.random.randomizers.RandomizersCache;
 
 /*
     ToDo: Make a Randomizer that pops up with a Prompt like to set the longitue lattitude in pro app like that one!
@@ -91,6 +92,12 @@ public class UiRandomUtils {
 
             adapterRandomizer.clear();
             IRandomizer targetRandomizer = sharedRegistry.getRandomizer(container.getSettings());
+            List<IRandomizer> valueSelectorOptions = new ArrayList<>();
+            for(SettingHolder setting : container.getSettings()) {
+                valueSelectorOptions = RandomizersCache.getValueSelectorOptions(setting.getName());
+                if(!valueSelectorOptions.isEmpty())
+                    break;
+            }
             if(DebugUtil.isDebug())
                 Log.d(TAG, Str.fm("Starting Spinner Logic Loop Target Randomizer=%s  Setting Container=%s", Str.noNL(targetRandomizer) , container.getContainerName()));
 
@@ -98,7 +105,11 @@ public class UiRandomUtils {
             //PS we can add the "null" fillers here
             //So other spots do not need to Consider it
 
-            if(targetRandomizer == null || !targetRandomizer.hasOptions()) {
+            if(!valueSelectorOptions.isEmpty()) {
+                adapterRandomizer.addAll(valueSelectorOptions);
+                selectCurrentValue(adapterRandomizer, spSelector, container, sharedRegistry);
+            }
+            else if(targetRandomizer == null || !targetRandomizer.hasOptions()) {
                 adapterRandomizer.add(RandomNullElement.create());
                 adapterRandomizer.addAll(sharedRegistry.getRandomizersMap().values());
 
@@ -116,39 +127,49 @@ public class UiRandomUtils {
                 }
             }
             else if(targetRandomizer.hasOptions()) {
-                String targetValue = null;
-                boolean allSame = true;
-                for(SettingHolder holder : getSettingHolders(container.getSettings(), sharedRegistry)) {
-                    if(targetValue != null) {
-                        if(!targetValue.equalsIgnoreCase(holder.getNewValue())) {
-                            allSame = false;
-                            break;
-                        }
-                    } else {
-                        targetValue = holder.getNewValue();
-                    }
-                }
-
                 adapterRandomizer.addAll(targetRandomizer.getOptions());
-                if(targetValue != null && allSame) {
-                    for(int i = 0; i < adapterRandomizer.getCount(); i++) {
-                        IRandomizer op = adapterRandomizer.getItem(i);
-                        if(op == null || op instanceof RandomOptionNullElement)
-                            continue;
-
-                        String val = op.getRawValue();
-                        if(targetValue.equalsIgnoreCase(val)) {
-                            spSelector.setSelection(i);
-                            if(DebugUtil.isDebug())
-                                Log.d(TAG, "Set Randomizer Adapter Option Position to=" + i + " Val=" + val + " Display Name=" + op.getDisplayName());
-
-                            break;
-                        }
-                    }
-                }
+                selectCurrentValue(adapterRandomizer, spSelector, container, sharedRegistry);
             }
         }catch (Exception e) {
             Log.e(TAG, "Failed to Init Randomizer, Container=" + container.getContainerName() + " Error=" + e);
+        }
+    }
+
+    private static void selectCurrentValue(
+            ArrayAdapter<IRandomizer> adapter,
+            Spinner spinner,
+            SettingsContainer container,
+            SettingSharedRegistry sharedRegistry) {
+        String targetValue = null;
+        boolean allSame = true;
+        for(SettingHolder holder : getSettingHolders(container.getSettings(), sharedRegistry)) {
+            if(targetValue != null) {
+                if(!targetValue.equalsIgnoreCase(holder.getNewValue())) {
+                    allSame = false;
+                    break;
+                }
+            } else {
+                targetValue = holder.getNewValue();
+            }
+        }
+
+        if(targetValue == null || !allSame)
+            return;
+
+        for(int i = 0; i < adapter.getCount(); i++) {
+            IRandomizer option = adapter.getItem(i);
+            if(option == null || option instanceof RandomOptionNullElement)
+                continue;
+
+            String value = option.getRawValue();
+            if(targetValue.equalsIgnoreCase(value)) {
+                spinner.setSelection(i);
+                if(DebugUtil.isDebug())
+                    Log.d(TAG, "Set value selector position to=" + i +
+                            " Value=" + value +
+                            " Display Name=" + option.getDisplayName());
+                break;
+            }
         }
     }
 

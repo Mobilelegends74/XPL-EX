@@ -4,7 +4,9 @@ import android.util.Log;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import eu.faircode.xlua.DebugUtil;
@@ -18,6 +20,9 @@ import eu.faircode.xlua.x.xlua.LibUtil;
 import eu.faircode.xlua.x.xlua.settings.SettingsContainer;
 import eu.faircode.xlua.x.xlua.settings.random.RandomGenericBool;
 import eu.faircode.xlua.x.xlua.settings.random.RandomGenericBoolInt;
+import eu.faircode.xlua.x.xlua.settings.random.RandomOptionInt;
+import eu.faircode.xlua.x.xlua.settings.random.RandomOptionNullElement;
+import eu.faircode.xlua.x.xlua.settings.random.RandomOptionString;
 import eu.faircode.xlua.x.xlua.settings.random.interfaces.IRandomizer;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.RandomDeviceProfile;
 import eu.faircode.xlua.x.xlua.settings.random.randomizers.android_device.kernel.RandomAndroidKernelNodeName;
@@ -669,6 +674,7 @@ public class RandomizersCache {
 
 
     private static final Map<String, IRandomizer> randomizers = new HashMap<>();
+    private static final Map<String, IRandomizer> valueSelectors = new HashMap<>();
 
     //Use View Registry or something Store Copy of Randomizers
     //WHENEVER the Container Binds, it find it in the copy
@@ -686,6 +692,60 @@ public class RandomizersCache {
         copy.putAll(randomizers);
         //add the more unique ones ?
         return copy;
+    }
+
+    /**
+     * Returns the finite choices intended for direct UI selection without
+     * changing the randomizer used by coherent device-profile generation.
+     */
+    public static List<IRandomizer> getValueSelectorOptions(String settingName) {
+        List<IRandomizer> builtInOptions = createBuiltInValueSelectorOptions(settingName);
+        if(!builtInOptions.isEmpty())
+            return builtInOptions;
+
+        init();
+        IRandomizer selector = valueSelectors.get(settingName);
+        return selector == null
+                ? new ArrayList<>()
+                : new ArrayList<>(selector.getOptions());
+    }
+
+    private static List<IRandomizer> createBuiltInValueSelectorOptions(String settingName) {
+        List<IRandomizer> options = new ArrayList<>();
+        if(SETTING_BATTERY_STATUS.equalsIgnoreCase(settingName)) {
+            options.add(RandomOptionNullElement.create());
+            options.add(RandomOptionInt.create("Charging", 2));
+            options.add(RandomOptionInt.create("Discharging", 3));
+            options.add(RandomOptionInt.create("Full", 5));
+            options.add(RandomOptionInt.create("Not Charging", 4));
+            options.add(RandomOptionInt.create("Unknown", 1));
+        } else if(isBooleanSetting(settingName)) {
+            options.add(RandomOptionNullElement.create());
+            options.add(RandomOptionString.create("True"));
+            options.add(RandomOptionString.create("False"));
+        }
+
+        return options;
+    }
+
+    private static boolean isBooleanSetting(String settingName) {
+        if(settingName == null)
+            return false;
+        String lowered = settingName.toLowerCase();
+        return lowered.endsWith(".bool") ||
+                lowered.contains(".bool.") ||
+                lowered.startsWith("bool.");
+    }
+
+    private static void registerValueSelector(IRandomizer candidate) {
+        if(candidate == null || !candidate.hasOptions())
+            return;
+
+        for(String setting : candidate.getSettings()) {
+            IRandomizer current = valueSelectors.get(setting);
+            if(current == null || candidate.getSettings().size() < current.getSettings().size())
+                valueSelectors.put(setting, candidate);
+        }
     }
 
     public static void init() {
@@ -716,6 +776,8 @@ public class RandomizersCache {
                                 }
 
                                 IRandomizer randomizer = (IRandomizer) classType.getDeclaredConstructor().newInstance();
+
+                                registerValueSelector(randomizer);
 
                                 for(String setting : randomizer.getSettings())
                                     randomizers.put(setting, randomizer);
