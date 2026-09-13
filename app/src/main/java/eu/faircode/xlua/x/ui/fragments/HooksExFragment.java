@@ -59,6 +59,7 @@ public class HooksExFragment
         CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = LibUtil.generateTag(HooksExFragment.class);
+    private static final String HOOK_EDIT_DIALOG_TAG = "xpl_ex_hook_editor";
     public static HooksExFragment newInstance(UserClientAppContext context) { return ListFragmentUtils.newInstance(HooksExFragment.class, context); }
 
     private final SettingSharedRegistry sharedRegistry = new SettingSharedRegistry();
@@ -81,7 +82,8 @@ public class HooksExFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         super.ensureHasUserContext();
-        super.setAdapter(new HookAdapter(requireContext(), null, this, getUserContext().bindShared(sharedRegistry)));
+        super.setAdapter(new HookAdapter(requireContext(), null, this,
+                getUserContext().bindShared(sharedRegistry), this::showHookEditor));
 
         super.initFloatingActions(
                 binding.flSettingsButtonOne,
@@ -96,6 +98,27 @@ public class HooksExFragment
 
         super.startObserver();
         wire();
+    }
+
+    /** Opens row editors in the Hooks screen's own lifecycle and navigation scope. */
+    private void showHookEditor(XHook source) {
+        if (source == null || !isAdded() || getChildFragmentManager().isStateSaved()
+                || getChildFragmentManager().findFragmentByTag(HOOK_EDIT_DIALOG_TAG) != null)
+            return;
+
+        HookEditDialog.create()
+                .setHook(XHook.copy(source))
+                .setEditListener((hook) -> {
+                    Context context = getContext();
+                    HookAdapter adapter = (HookAdapter) getAdapter().getAsListAdapterOrNull();
+                    if (context == null || adapter == null)
+                        return;
+
+                    ResultRequest result = PutHookExCommand.putEx(context, hook, false);
+                    if (result.successful())
+                        adapter.onHookEdited(source, result.hook, false);
+                })
+                .show(getChildFragmentManager(), HOOK_EDIT_DIALOG_TAG);
     }
 
     @Override

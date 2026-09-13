@@ -49,7 +49,6 @@ import eu.faircode.xlua.x.ui.core.view_registry.CheckBoxState;
 import eu.faircode.xlua.x.ui.core.view_registry.IIdentifiableObject;
 import eu.faircode.xlua.x.ui.core.view_registry.IStateChanged;
 import eu.faircode.xlua.x.ui.core.view_registry.SharedRegistry;
-import eu.faircode.xlua.x.ui.dialogs.HookEditDialog;
 import eu.faircode.xlua.x.ui.dialogs.MessageDialog;
 import eu.faircode.xlua.x.ui.fragments.ConfUtils;
 import eu.faircode.xlua.x.xlua.LibUtil;
@@ -117,16 +116,23 @@ public class HookAdapter
     private static final int PREFETCH_COUNT = 10;
     private final RecyclerView.RecycledViewPool sharedPool;
     private final UserClientAppContext userContext;
+    private final OnHookEditRequested hookEditRequested;
+
+    public interface OnHookEditRequested {
+        void onHookEditRequested(XHook hook);
+    }
 
     public HookAdapter(Context context,
                                         IGenericElementEvent<XHook, HooksExItemBinding> events,
                                         IStateManager stateManager,
-                                        UserClientAppContext userContext) {
+                                        UserClientAppContext userContext,
+                                        OnHookEditRequested hookEditRequested) {
         super(context, events, stateManager, new RecyclerView.RecycledViewPool());
         setHasStableIds(true);
         this.sharedPool = new RecyclerView.RecycledViewPool();
         this.sharedPool.setMaxRecycledViews(0, 15); // Adjust pool size as needed
         this.userContext = userContext;
+        this.hookEditRequested = hookEditRequested;
     }
 
 
@@ -271,6 +277,7 @@ public class HookAdapter
                 stateManager,
                 sharedPool,
                 userContext,
+                hookEditRequested,
                 this);
     }
 
@@ -284,6 +291,7 @@ public class HookAdapter
 
         private boolean isInitialized = false;
         private final UserClientAppContext userContext;
+        private final OnHookEditRequested hookEditRequested;
         private final HookAdapter adapter;
 
         private final GroupStats groupStats = new GroupStats();
@@ -294,9 +302,11 @@ public class HookAdapter
                                IStateManager stateManager,
                                RecyclerView.RecycledViewPool sharedPool,
                                UserClientAppContext userContext,
+                               OnHookEditRequested hookEditRequested,
                                HookAdapter adapter) {
             super(binding, events, stateManager);
             this.userContext = userContext;
+            this.hookEditRequested = hookEditRequested;
             this.adapter = adapter;
             initializeViews();
         }
@@ -448,47 +458,42 @@ public class HookAdapter
             if (currentItem == null)
                 return;
 
-            if(manager != null && manager.getFragmentMan() != null && currentItem != null) {
-                final XHook copy = XHook.copy(currentItem);
-                switch (index) {
-                    case 0:
-                        HookEditDialog.create()
-                                .setHook(copy)
-                                .setEditListener((hook) -> {
-                                    ResultRequest res = PutHookExCommand.putEx(context, hook, false);
-                                    if(res.successful()) {
-                                        adapter.onHookEdited(currentItem, res.hook, false);
-                                    }
-                                }).show(manager.getFragmentMan(), context.getString(R.string.title_hook_edit));
-                        break;
-                    case 1:
-                        TryRun.background(() -> {
-                            //Do a "are you sure" prompt...
-                            ResultRequest res =  PutHookExCommand.putEx(context, copy, true);
-                            if(DebugUtil.isDebug())
-                                Log.d(TAG, Str.fm("Deletion Result! Result Flag [%s] Result [%s] Copy [%s] Current [%s]",
-                                        res.successful(),
-                                        Str.ensureNoDoubleNewLines(XHookIO.toJsonString(res.hook)),
-                                        Str.ensureNoDoubleNewLines(XHookIO.toJsonString(copy)),
-                                        Str.ensureNoDoubleNewLines(XHookIO.toJsonString(currentItem))));
-                            Snackbar.make(itemView, Str.fm(context.getString(
-                                    res.flag ? R.string.hook_delete_success : R.string.hook_delete_error),
-                                    res.flag ? res.exception : copy.getObjectId()), Snackbar.LENGTH_LONG).show();
-                            TryRun.onMain(() -> {
-                                adapter.onHookDeleted(currentItem, res);
-                            });
-                        });
-                        break;
-                    case 2:
-                        TryRun.onMain(() -> {
-                            //This came in clutch ?
-                            sharedRegistry.push(currentItem);
-                            ConfUtils.startConfigSavePicker(manager.getAsFragment(),
-                                    Str.replaceAll(Str.replaceAll(currentItem.getObjectId(),
-                                            Str.FORWARD_SLASH, "_"), Str.WHITE_SPACE, "_"));
-                        });
-                        break;
-                }
+            final XHook source = currentItem;
+            final XHook copy = XHook.copy(source);
+            switch (index) {
+                case 0:
+                    if (hookEditRequested != null)
+                        hookEditRequested.onHookEditRequested(source);
+                    break;
+                case 1:
+                    if (manager == null)
+                        return;
+                    TryRun.background(() -> {
+                        //Do a "are you sure" prompt...
+                        ResultRequest res =  PutHookExCommand.putEx(context, copy, true);
+                        if(DebugUtil.isDebug())
+                            Log.d(TAG, Str.fm("Deletion Result! Result Flag [%s] Result [%s] Copy [%s] Current [%s]",
+                                    res.successful(),
+                                    Str.ensureNoDoubleNewLines(XHookIO.toJsonString(res.hook)),
+                                    Str.ensureNoDoubleNewLines(XHookIO.toJsonString(copy)),
+                                    Str.ensureNoDoubleNewLines(XHookIO.toJsonString(currentItem))));
+                        Snackbar.make(itemView, Str.fm(context.getString(
+                                res.flag ? R.string.hook_delete_success : R.string.hook_delete_error),
+                                res.flag ? res.exception : copy.getObjectId()), Snackbar.LENGTH_LONG).show();
+                        TryRun.onMain(() -> adapter.onHookDeleted(source, res));
+                    });
+                    break;
+                case 2:
+                    if (manager == null || manager.getAsFragment() == null)
+                        return;
+                    TryRun.onMain(() -> {
+                        //This came in clutch ?
+                        sharedRegistry.push(source);
+                        ConfUtils.startConfigSavePicker(manager.getAsFragment(),
+                                Str.replaceAll(Str.replaceAll(source.getObjectId(),
+                                        Str.FORWARD_SLASH, "_"), Str.WHITE_SPACE, "_"));
+                    });
+                    break;
             }
         }
 

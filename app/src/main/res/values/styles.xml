@@ -270,4 +270,18 @@
         <item name="colorControlNormal">@android:color/white</item>
         <item name="android:tint">@android:color/white</item>
     </style>
+
+    <!-- The hook form contains Material TextInputLayout views and therefore needs a Material
+         dialog context even though the surrounding legacy activity intentionally uses AppCompat. -->
+    <style name="HookEditorDialogThemeLight" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="expander">@drawable/expander_black</item>
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="colorSecondary">@color/colorAccent</item>
+    </style>
+
+    <style name="HookEditorDialogThemeDark" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="expander">@drawable/expander_white</item>
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="colorSecondary">@color/colorAccent</item>
+    </style>
 </resources>

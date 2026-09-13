@@ -1,9 +1,11 @@
 package eu.faircode.xlua.x.ui.dialogs;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import eu.faircode.xlua.ActivityBase;
 import eu.faircode.xlua.R;
 import eu.faircode.xlua.x.Str;
 import eu.faircode.xlua.x.data.utils.ListUtil;
@@ -58,8 +61,9 @@ public class HookEditDialog extends AppCompatDialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.define, null);
+        Context themedContext = new ContextThemeWrapper(requireContext(), resolveEditorTheme());
+        AlertDialog.Builder builder = new AlertDialog.Builder(themedContext);
+        View view = LayoutInflater.from(themedContext).inflate(R.layout.define, null);
 
         initializeViews(view);
         populateFields();
@@ -79,6 +83,14 @@ public class HookEditDialog extends AppCompatDialogFragment {
                 .setNegativeButton(R.string.option_cancel, null);
 
         return builder.create();
+    }
+
+    private int resolveEditorTheme() {
+        if (requireActivity() instanceof ActivityBase
+                && ActivityBase.THEME_LIGHT.equals(
+                ((ActivityBase) requireActivity()).getCurrentResolvedTheme()))
+            return R.style.HookEditorDialogThemeLight;
+        return R.style.HookEditorDialogThemeDark;
     }
 
     @Override
