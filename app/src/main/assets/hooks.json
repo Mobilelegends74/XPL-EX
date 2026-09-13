@@ -2746,7 +2746,7 @@
   },
   {
     "collection": "Privacy",
-    "group": "Use.Tracking",
+    "group": "Spoof.Telephony.Operator",
     "name": "TelephonyManager/getNetworkOperator",
     "author": "M66B",
     "className": "android.telephony.TelephonyManager",
@@ -2755,11 +2755,16 @@
     ],
     "returnType": "java.lang.String",
     "minSdk": 1,
-    "luaScript": "@generic_operator_value"
+    "luaScript": "@telephony_operator_numeric",
+    "settings": [
+      "cell.operator.numeric.id",
+      "cell.operator.mcc",
+      "cell.operator.mnc"
+    ]
   },
   {
     "collection": "Privacy",
-    "group": "Use.Tracking",
+    "group": "Spoof.Telephony.Operator",
     "name": "TelephonyManager/getNetworkOperatorName",
     "author": "M66B",
     "className": "android.telephony.TelephonyManager",
@@ -2768,7 +2773,10 @@
     ],
     "returnType": "java.lang.String",
     "minSdk": 1,
-    "luaScript": "@generic_unknown_value"
+    "luaScript": "@telephony_operator_name",
+    "settings": [
+      "cell.operator.name"
+    ]
   },
   {
     "collection": "Privacy",
@@ -2785,7 +2793,7 @@
   },
   {
     "collection": "Privacy",
-    "group": "Use.Tracking",
+    "group": "Spoof.Telephony.Operator",
     "name": "TelephonyManager/getSimOperator",
     "author": "M66B",
     "className": "android.telephony.TelephonyManager",
@@ -2794,11 +2802,16 @@
     ],
     "returnType": "java.lang.String",
     "minSdk": 1,
-    "luaScript": "@generic_operator_value"
+    "luaScript": "@telephony_operator_numeric",
+    "settings": [
+      "cell.operator.numeric.id",
+      "cell.operator.mcc",
+      "cell.operator.mnc"
+    ]
   },
   {
     "collection": "Privacy",
-    "group": "Use.Tracking",
+    "group": "Spoof.Telephony.Operator",
     "name": "TelephonyManager/getSimOperatorName",
     "author": "M66B",
     "className": "android.telephony.TelephonyManager",
@@ -2807,7 +2820,10 @@
     ],
     "returnType": "java.lang.String",
     "minSdk": 1,
-    "luaScript": "@generic_unknown_value"
+    "luaScript": "@telephony_operator_name",
+    "settings": [
+      "cell.operator.name"
+    ]
   },
 
   {

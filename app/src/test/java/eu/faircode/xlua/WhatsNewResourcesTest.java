@@ -33,7 +33,7 @@ public class WhatsNewResourcesTest {
 
     private static void assertChangelog(String changelog) {
         assertNotNull(changelog);
-        assertTrue(changelog.contains("XPL-EX-NEXT v1.5.12"));
+        assertTrue(changelog.contains("XPL-EX-NEXT v1.6.0"));
         assertTrue(changelog.contains(REPOSITORY));
         assertEquals(1, occurrences(changelog, "https://"));
 

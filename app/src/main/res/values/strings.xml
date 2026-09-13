@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">XPL-EX-NEXT-1.5.12</string>
+    <string name="app_name" translatable="false">XPL-EX-NEXT-1.6.0</string>
     <string name="xposed_module_description">Privacy controls and coherent device-profile spoofing for LSPosed.</string>
     <string name="channel_privacy" translatable="false">XPrivacyLua</string>
 
@@ -53,7 +53,9 @@
 
     <string name="menu_whats_new_button" translatable="false">What\'s new</string>
 
-    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.5.12</b><br><br>• Fixed the Edit action for every item in the Hooks menu.<br>• The hook form now uses a compatible Material dialog theme and no longer crashes back to the main screen.<br>• Editor navigation is tied to the Hooks screen and repeated taps cannot open duplicate dialogs.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX">GitHub: Mobilelegends74/XPL-EX</a>]]></string>
+    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.6.0</b><br><br>• Fixed getSimOperator, getSimOperatorName, getNetworkOperator and getNetworkOperatorName spoofing from Cell settings.<br>• Added a built-in check for newer signed releases.<br>• Releases now use one permanent signing certificate. Migrating from v1.5.12 requires one uninstall/reinstall; future versions install over v1.6.0.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX">GitHub: Mobilelegends74/XPL-EX</a>]]></string>
+    <string name="module_update_available_title">XPL-EX-NEXT update</string>
+    <string name="module_update_available_message">Version %1$s is available. Download and install the signed update?</string>
 
     <string name="warning_bulk_check" translatable="false">Selecting this will Enable Every Hook Possible (Super Highly NOT recommended). Why ? Why use a BOMB causing Chaos, when you should Enable what you think is best Needed for your situation.\n\nRemember, in Settings "unique" Filter is everything that can be used to Identify you, the rest does not matter. \n\nIf you Continue, you are NOT to ask for Help if Target App Crashes or acts abnormally, you accept such behaviour due to a lack of patience. (Do NOT ask for Help if App Crashes when you Select all at once) \n\nSelect what is NEEDED by Testing, Trying, or FAQ. \n\n\nOnce you click (ok) this Dialog will never Appear again hence the Long Timeout (READ THIS DAMN MESSAGE!!!)</string>
     <string name="warning_bulk_check_title" translatable="false">Select all Hooks ?</string>

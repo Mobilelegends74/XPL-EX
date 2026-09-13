@@ -1,4 +1,4 @@
-name: Build and publish XPL-EX-NEXT v1.5.12
+name: Build and publish XPL-EX-NEXT v1.6.0
 
 on:
   workflow_dispatch:
@@ -7,14 +7,14 @@ permissions:
   contents: write
 
 concurrency:
-  group: xpl-ex-next-v1.5.12-release
+  group: xpl-ex-next-v1.6.0-release
   cancel-in-progress: false
 
 env:
-  RELEASE_TAG: XPL-EX-NEXT-v1.5.12
-  RELEASE_TITLE: XPL-EX-NEXT v1.5.12
-  BUILD_APK: XPL-EX-NEXT-1.5.12-release.apk
-  RELEASE_APK: XPL-EX-NEXT-1.5.12.apk
+  RELEASE_TAG: XPL-EX-NEXT-v1.6.0
+  RELEASE_TITLE: XPL-EX-NEXT v1.6.0
+  BUILD_APK: XPL-EX-NEXT-1.6.0-release.apk
+  RELEASE_APK: XPL-EX-NEXT-1.6.0.apk
 
 jobs:
   build-and-release:
@@ -49,36 +49,26 @@ jobs:
           RELEASE_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           RELEASE_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           RELEASE_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          SIGNING_CERT_SHA256: ${{ secrets.SIGNING_CERT_SHA256 }}
         run: |
           set -euo pipefail
-          if [[ -n "${KEYSTORE_BASE64}" \
-                && -n "${RELEASE_STORE_PASSWORD}" \
-                && -n "${RELEASE_KEY_ALIAS}" \
-                && -n "${RELEASE_KEY_PASSWORD}" ]]; then
-            printf '%s' "${KEYSTORE_BASE64}" | base64 --decode > "${GITHUB_WORKSPACE}/KEYSTORE.JKS"
-            {
-              printf 'KEYSTORE_PASSWORD=%s\n' "${RELEASE_STORE_PASSWORD}"
-              printf 'KEY_ALIAS=%s\n' "${RELEASE_KEY_ALIAS}"
-              printf 'KEY_PASSWORD=%s\n' "${RELEASE_KEY_PASSWORD}"
-            } >> "${GITHUB_ENV}"
-            echo "Using the configured release signing key."
-          else
-            keytool -genkeypair \
-              -keystore "${GITHUB_WORKSPACE}/KEYSTORE.JKS" \
-              -storepass android \
-              -keypass android \
-              -alias androiddebugkey \
-              -keyalg RSA \
-              -keysize 2048 \
-              -validity 10000 \
-              -dname "CN=XPL-EX CI,OU=Mobilelegends74,O=Android,C=US"
-            {
-              echo 'KEYSTORE_PASSWORD=android'
-              echo 'KEY_ALIAS=androiddebugkey'
-              echo 'KEY_PASSWORD=android'
-            } >> "${GITHUB_ENV}"
-            echo "No release key secrets were configured; using a temporary CI signing key."
-          fi
+          for required in KEYSTORE_BASE64 RELEASE_STORE_PASSWORD RELEASE_KEY_ALIAS RELEASE_KEY_PASSWORD SIGNING_CERT_SHA256; do
+            if [[ -z "${!required}" ]]; then
+              echo "Required permanent signing secret ${required} is missing." >&2
+              exit 1
+            fi
+          done
+          printf '%s' "${KEYSTORE_BASE64}" | base64 --decode > "${GITHUB_WORKSPACE}/KEYSTORE.JKS"
+          keytool -list \
+            -keystore "${GITHUB_WORKSPACE}/KEYSTORE.JKS" \
+            -storepass "${RELEASE_STORE_PASSWORD}" \
+            -alias "${RELEASE_KEY_ALIAS}" > /dev/null
+          {
+            printf 'KEYSTORE_PASSWORD=%s\n' "${RELEASE_STORE_PASSWORD}"
+            printf 'KEY_ALIAS=%s\n' "${RELEASE_KEY_ALIAS}"
+            printf 'KEY_PASSWORD=%s\n' "${RELEASE_KEY_PASSWORD}"
+          } >> "${GITHUB_ENV}"
+          echo "Using the permanent XPL-EX release signing key."
 
       - name: Test and build Xposed-compatible release APK
         run: |
@@ -103,21 +93,27 @@ jobs:
           test -f "${source_apk}"
 
           build_tools="${ANDROID_HOME}/build-tools/35.0.0"
-          "${build_tools}/apksigner" verify --verbose --print-certs "${source_apk}"
+          signer_output=$("${build_tools}/apksigner" verify --verbose --print-certs "${source_apk}")
+          printf '%s\n' "${signer_output}"
+          signer_sha256=$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' <<< "${signer_output}" | head -n 1 | tr '[:upper:]' '[:lower:]' | tr -d ':')
+          expected_sha256=$(tr '[:upper:]' '[:lower:]' <<< "${{ secrets.SIGNING_CERT_SHA256 }}" | tr -d ':')
+          test -n "${signer_sha256}"
+          test "${signer_sha256}" = "${expected_sha256}"
           badging=$("${build_tools}/aapt" dump badging "${source_apk}")
-          grep -q "versionCode='162'" <<< "${badging}"
-          grep -q "versionName='1.5.12'" <<< "${badging}"
+          grep -q "versionCode='163'" <<< "${badging}"
+          grep -q "versionName='1.6.0'" <<< "${badging}"
 
           mkdir -p dist
           cp "${source_apk}" "dist/${RELEASE_APK}"
           (cd dist && sha256sum "${RELEASE_APK}") | tee "dist/${RELEASE_APK}.sha256"
           apk_sha256=$(cut -d' ' -f1 "dist/${RELEASE_APK}.sha256")
           echo "sha256=${apk_sha256}" >> "${GITHUB_OUTPUT}"
+          echo "signer_sha256=${signer_sha256}" >> "${GITHUB_OUTPUT}"
 
       - name: Prepare release description
         run: |
           set -euo pipefail
-          cp docs/releases/xpl-ex-next-v1.5.12.md "${RUNNER_TEMP}/release-notes.md"
+          cp docs/releases/xpl-ex-next-v1.6.0.md "${RUNNER_TEMP}/release-notes.md"
 
       - name: Write build summary
         run: |
@@ -125,20 +121,21 @@ jobs:
             echo "# ${RELEASE_TITLE}"
             echo
             echo "- Tests: passed"
-            echo "- Version name: 1.5.12"
-            echo "- Version code: 162"
+            echo "- Version name: 1.6.0"
+            echo "- Version code: 163"
             echo "- libxposed API: 101"
             echo "- Bridge protocol: 1.5.5"
             echo "- R8 minification: disabled for Xposed/Lua hook compatibility"
             echo "- APK: ${RELEASE_APK}"
             echo "- SHA-256: ${{ steps.apk.outputs.sha256 }}"
+            echo "- Signing certificate SHA-256: ${{ steps.apk.outputs.signer_sha256 }}"
             echo "- Release tag: ${RELEASE_TAG}"
           } >> "${GITHUB_STEP_SUMMARY}"
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: XPL-EX-NEXT-1.5.12
+          name: XPL-EX-NEXT-1.6.0
           path: dist/
           if-no-files-found: error
           retention-days: 30

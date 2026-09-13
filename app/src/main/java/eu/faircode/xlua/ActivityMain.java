@@ -343,6 +343,7 @@ public class ActivityMain extends ActivityBase {
         drawerList.setAdapter(drawerArray);
         //whatsNew
         initCore();
+        ModuleUpdateChecker.check(this);
     }
 
     public void handleCodeToSnack(A_CODE code, String extraIfSucceeded) {

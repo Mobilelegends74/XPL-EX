@@ -60,6 +60,7 @@ import eu.faircode.xlua.x.hook.filter.kinds.IPCCallFilterContainer;
 import eu.faircode.xlua.x.hook.interceptors.battery.BatteryInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.apps.VirtualAppCatalog;
 import eu.faircode.xlua.x.hook.interceptors.cell.SubscriptionInfoInterceptor;
+import eu.faircode.xlua.x.hook.interceptors.cell.TelephonyManagerInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.devices.InputDeviceInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.file.FileInterceptor;
 import eu.faircode.xlua.x.hook.interceptors.file.StatCleaner;
@@ -343,6 +344,9 @@ public class XParam extends XParamExtra {
 
     @SuppressWarnings("unused")
     public boolean interceptSubscriptionInfo(boolean isResult, int indexOverride) { return SubscriptionInfoInterceptor.interceptObject(this, isResult, indexOverride, null); }
+
+    @SuppressWarnings("unused")
+    public boolean interceptTelephonyOperator(boolean operatorName) { return TelephonyManagerInterceptor.intercept(this, operatorName); }
 
     @SuppressWarnings("unused")
     public boolean interceptNetworkInfo(boolean isResult) { return NetworkInfoInterceptor.intercept(this, isResult); }
