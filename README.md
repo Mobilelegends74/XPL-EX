@@ -1,211 +1,150 @@
-# XPL-EX
-Hooking + Privacy Framework For Android 6.0 +<br>
+<div align="center">
 
-![photo_2025-04-18_17-47-14](https://github.com/user-attachments/assets/a8ba4b6d-7ba0-4371-9f27-578ae5a16234)
+<img src="https://github.com/user-attachments/assets/a8ba4b6d-7ba0-4371-9f27-578ae5a16234" alt="XPL-EX" width="720">
 
+# XPL-EX-NEXT
 
-XPL-EX
-------------
-XPL-EX (XPrivacy Lua EX) based on original (XPrivacy Lua) by M66B will prevent most if not all Installed Applications on your Device from tracking and or Identifying you. You have the ability to Define your hook Hook Definitions onto Applications and utilizing LUA Scripts to define the behaviour of the Hook allowing you to have Full Control over your Applications. Powwered by the Community it will forever remain Full Open Source (FOSS), Never bundled with Trackers, Analytics, or Advertisements lastly never ever needing to connect or to communicate to any Server.<br><br>
+Расширенный модуль конфиденциальности и согласованной подмены профиля устройства для Android и LSPosed.
 
-When Comparing with GrapheneOS like Projects, XPL-EX will give you more Anti Tracking Abilities. Say bye bye to Data Brokers, buying and Selling of useful user Data in their activities.
-> Running such Tracking Applications Such as  [Fingerprint Pro](https://play.google.com/store/apps/details?id=com.fingerprintjs.android.fpjs_pro_demo&hl=en_US) will have a very high success Rate at tracking users on GOS and compared to other Solutions as well. XPL-EX was the first too achieve a Visitor Never Found result from FingerprintPro ensuring you are not to be tracked.
+[![CI](https://img.shields.io/github/actions/workflow/status/Mobilelegends74/XPL-EX/app-on-push.yml?label=CI&style=flat-square)](https://github.com/Mobilelegends74/XPL-EX/actions/workflows/app-on-push.yml)
+[![Release](https://img.shields.io/github/v/release/Mobilelegends74/XPL-EX?label=release&style=flat-square)](https://github.com/Mobilelegends74/XPL-EX/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/Mobilelegends74/XPL-EX/total?label=downloads&style=flat-square)](https://github.com/Mobilelegends74/XPL-EX/releases)
+[![License](https://img.shields.io/github/license/Mobilelegends74/XPL-EX?label=license&style=flat-square)](LICENSE)
+[![Android](https://img.shields.io/badge/Android-8.1%2B-3DDC84?logo=android&logoColor=white&style=flat-square)](#требования)
+[![LSPosed API](https://img.shields.io/badge/libxposed-API%20101-167C80?style=flat-square)](https://github.com/libxposed/api)
 
-<br>
+**Русская версия** · [English version](README_EN.md)
 
-> * *Supports Android 6+ (Android Marshmellow+, SDK 23+)*, *Virtual / ThaiChi Supported (Rootless Solution Not Stable)*,  *Requires NO Internet Connection, No Logins*
+[Скачать последнюю версию](https://github.com/Mobilelegends74/XPL-EX/releases/latest) · [Сообщить о проблеме](https://github.com/Mobilelegends74/XPL-EX/issues) · [История релизов](https://github.com/Mobilelegends74/XPL-EX/releases)
 
-<br>
+</div>
 
-Motivation
-------------
+## О проекте
+
+XPL-EX-NEXT позволяет управлять тем, какие сведения Android-приложения получают об устройстве. Модуль перехватывает выбранные Java API и возвращает значения из индивидуального профиля приложения: идентификаторы, характеристики устройства, параметры сети, SIM-карты и другие данные.
+
+Проект является развитием [XPL-EX от ObbedCode](https://github.com/0bbedCode/XPL-EX), который, в свою очередь, основан на оригинальном [XPrivacyLua от M66B](https://github.com/M66B/XPrivacyLua). Мы сохраняем открытый исходный код, авторство и лицензию исходных проектов.
+
+XPL-EX-NEXT не содержит рекламы, аналитики или трекеров. Для работы хуков интернет не требуется; подключение к GitHub используется только для необязательной проверки обновлений.
+
+## Возможности
+
+- Раздельные профили подмены для каждого выбранного приложения.
+- Согласованная подмена модели, производителя, Build-параметров и версии Android.
+- Android ID, Advertising ID, GSF ID, IMEI/MEID, ICCID, IMSI, серийные и другие идентификаторы.
+- Параметры SIM и оператора: имя, MCC, MNC, numeric ID, номера и состояние сети.
+- CPU, GPU, память, экран, хранилище, камера, сенсоры и аппаратные возможности.
+- Wi-Fi, MAC/BSSID/SSID, IP-адреса, интерфейсы сети, VPN и сетевые свойства.
+- Фильтрация списка приложений, временных меток, файлов, shell-команд, properties, Binder и ContentResolver.
+- Автоматическое назначение необходимых хуков при сохранении связанных настроек.
+- Импорт и экспорт конфигурации, русская локализация и встроенная проверка новых релизов.
+- Modern Xposed API 101 при сохранённом bridge-протоколе совместимости `1.5.5`.
+
+## Требования
+
+- Android 8.1 или новее.
+- Root-доступ и установленный LSPosed с поддержкой Modern Xposed API.
+- Разрешение установки APK из выбранного браузера или файлового менеджера.
+
+Проект ориентирован на актуальные версии Android. Совместимость конкретного хука зависит от прошивки, версии Android и реализации API в целевом приложении.
+
+## Установка
+
+1. Установите и настройте [Magisk](https://github.com/topjohnwu/Magisk) и [LSPosed](https://github.com/LSPosed/LSPosed).
+2. Скачайте APK со страницы [последнего релиза](https://github.com/Mobilelegends74/XPL-EX/releases/latest).
+3. Установите APK, включите XPL-EX-NEXT в LSPosed и выберите нужные приложения в области действия модуля.
+4. Откройте XPL-EX-NEXT, выберите приложение и настройте только необходимые группы хуков.
+5. Перезапустите целевое приложение. После обновления самого модуля рекомендуется перезагрузить устройство.
+
+### Переход на единую подпись
+
+Релизы до `1.6.0` собирались GitHub Actions с временной подписью. Android не разрешает установить APK с новым сертификатом поверх такой версии.
+
+При первом переходе с `1.5.12` или более ранней сборки:
+
+1. Экспортируйте настройки XPL-EX.
+2. Удалите установленную старую сборку.
+3. Установите `1.6.0` или более новую версию и импортируйте настройки.
+
+Начиная с `1.6.0`, все официальные релизы подписываются одним постоянным сертификатом и устанавливаются поверх предыдущей версии.
+
+## Обновления
+
+При открытии XPL-EX-NEXT не чаще одного раза в 12 часов проверяет [последний релиз этого репозитория](https://github.com/Mobilelegends74/XPL-EX/releases/latest). Если опубликована более новая версия, приложение предложит скачать подписанный APK.
+
+LSPosed показывает обновления из собственного официального каталога. Пакет `eu.faircode.xlua` в этом каталоге принадлежит оригинальному XPrivacyLua, поэтому обновления нашей ветки проверяются самим XPL-EX-NEXT.
+
+## Важные ограничения
+
+- Модуль изменяет ответы локальных API, но не делает устройство полностью анонимным.
+- Серверные проверки и нативный код могут получать данные другими способами.
+- Не включайте все хуки одновременно без необходимости: несовместимая комбинация может нарушить работу целевого приложения.
+- Создавайте резервную копию конфигурации перед крупным обновлением.
+- Используйте проект только на устройствах и в приложениях, которыми вы вправе управлять.
+
+## Скриншоты
 
 <details>
-<summary>Click here for Blah Blah ....  </summary>
-  Some reason I have always been Schizo from a young age. That being Said when Growing up I always wanted an Application for Xposed that would be the ultimate All in One Solutions for manipulating your Device Identifiers from Applications. During these Times many years ago I would Layer as Many Xposed Modules over to Spoof as Many IDs, rendering a lot of instability, all the while these Applications to Spoof your Device Identifiers also had Advertisements and Tracking built into the App how Ironic.<br><br>
-Many years later here I am, following in the path of the Computer, Ive become less paranoid now as I am trying to be a more open person. I still had a vision and when I Seen M66B will Discontinue XPrivacyLua my I seized the moment to use this app for a base of what I visioned.<br>
-Now with the support from the Community, I shall build a Powerful Application that will ensure tracking from Applications, all the while being FOSS, Free, No Analytics, No Ads...<br>
-Many changes were made (100k+ Lines of Code Contributed many more Modified) to make it into the monster it is Now. If an Application Somehow Slips through, I spend many Hours and Days Reverse Engineering these Applications to ensure XPL-EX will always succeed in making you un identifiable.<br><br><br>
+<summary>Открыть галерею интерфейса</summary>
 
-<div align="center"> My name is ObbedCode, join me on this Adventure giving Privacy back to the Users, and giving a big F*ck you to Big Data, and the Three letter agencies. Much love <3 </div><br>
-</details>
-
-<br><br>
-Installation / Requirements
-------------
-
-* Install [Magisk](https://www.xda-developers.com/how-to-install-magisk/)
-* Android 6-7: download, install, and activate [Xposed](http://forum.xda-developers.com/xposed)
-* Android 8.1-12: download, install, and activate [LSPosed](https://forum.xda-developers.com/t/lsposed-xposed-framework-8-0-11-0-edxposed-alternetive.4228973/) ~~or [EdXposed](https://forum.xda-developers.com/t/official-edxposed-the-successor-of-xposed-oreo-pie-q-r-2020-07-19.4070199)~~
-* Download, install, and activate [XPL-EX]()
-
-LSPosed: please make sure that any app you want to restrict is [in the 'scope'](https://github.com/LSPosed/LSPosed/wiki/How-to-use-it#install--activate-modules) of LSposed.
-<br><br>
-Targeted APIs:
-
-<details>
-
-<summary style="font-size: 54px;"> Click here to See the Identifier Coverage</summary>
-
-<br><br>These are the list of SOME of the Data that is and can be Spoofed via XPL-EX. Within each Item being Spoofed will also tell you at what Level the Hooks are at.<br>
-
-- Android ID
-    - Api Hook
-        - Settings (Secure)
-    - Cache Hook
-        - Named Value Cache
-    - IPC Hook
-        - Content Resolver (Call + Query)
-- Advertising ID (Google)
-    - Api Hook
-        - Constructor & "getId"
-    - IPC Hook
-        - Binder Proxy
-- GSF ID (Google Services Framework ID)
-    - IPC Hook
-        - Content Resolver (query)
-- AppSetId
-    - Api Hook
-        - Constructor & "getId"
-    - IPC Hook
-        - Binder "execTransact"
-- DRM
-    - Api Hook
-        - MediaDRM
-- Open Anonymous IDs (OAID) and (VAID, AAID, UDID)
-    - Api Hook
-        - Settings (Secure, System, Global) & MiuiSettings
-        - KeyguardManager
-    - IPC Hook
-        - IdProviderImpl
-        - Facebook
-        - Amazon
-        - Samsung
-        - Asus
-        - Lenovo
-        - Xiaomi
-- Boot ID (proc/sys/kernel/random/boot_id)
-    - Api Hook
-        - Libcore
-        - Shell "exec" with "cat"
-- Serial Numbers
-    - Api Hook
-        - build.prop Properties (shell & apis)
-        - Build Field
-- MAC Address, SSID, BSSID, IP Addresses (IPv4 & IPv6) and Network Info
-    - Parcel and Constructor
-- IMEI/MEID, SIM Serial, ICC ID, Phone Numbers (LAC & CID) (Currently Unavailable in the 1.5.3 Version)
-    - Service Hook
-- Time Stamps (File and Application Install & Update TimeStamps)
-    - STAT (Shell & Apis)
-    - File (Android & Java NIO)
-- Sensors (Hide)
-    - For more Control please Refer to use [Sensor Disabler](https://github.com/wardellbagby/sensor-disabler)
-- UUID Named Files with UUIDs
-- Charging Cycles
-- Boot Count
-
-
-
-<br><br>Many More things as well not yet defined!!!<br><br>
-
-
-
-To have a more Fine Tuning over Controlling the List of Applications that Certain apps Can see please refer to use [HMA (HideMyAppList)](https://github.com/Dr-TSNG/Hide-My-Applist)<br>
-To Spoof your GPS Location please use [GPS Setter](https://github.com/jqssun/android-gps-setter)<br>
-For best Android Ad Blocker [AdAway](https://adaway.org/)<br>
-For great Firewall Solution stronger than as Simple Permission Based Firewall (cough cough *GOS*) use [InviZible](https://github.com/Gedsh/InviZible)<br>
-For the best App Manager (Block Services, Startup and Much More) use [AppManager](https://github.com/MuntashirAkon/AppManager)<br>
-To Freeze and or Disable Apps / Block use [Hail](https://github.com/aistra0528/Hail)<br>
-To Block Microphone Access [PilferShush Jammer](https://github.com/kaputnikGo/PilferShushJammer)<br>
-To Turn off All Sensors on the Device at Once use [Sensors Off](https://github.com/LinerSRT/SensorsOff)<br>
-To Check Information on your Apps including Tracking SDK and Libraries use [LibChecker](https://github.com/LibChecker/LibChecker)<br>
-Chromium based Browser [Cromite](https://github.com/uazo/cromite)<br>
-Favorite Wallet (No KYC and has Swaps) [Cake Wallet](https://github.com/cake-tech/cake_wallet)<br>
-For the best Secure Chatting App (Signal Fork) [Molly](https://molly.im/)<br>
-PlayStore Alternative (Aurora Store)[https://github.com/whyorean/AuroraStore]
-Modifying your Router Firmware use of course [OpenWRT](https://openwrt.org/)<br>
-
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/52bf2d05-05ae-42a7-aa41-be357c6e88b5" alt="XPL-EX screen 1" width="240">
+  <img src="https://github.com/user-attachments/assets/ec717fb0-c1f4-47f9-ac36-b6c71bd6538c" alt="XPL-EX screen 2" width="240">
+  <img src="https://github.com/user-attachments/assets/f06808fa-bb44-4c84-801b-8a0590c6f702" alt="XPL-EX screen 3" width="240">
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c4f7580b-d183-4baf-96e0-fc1ed5877b69" alt="XPL-EX screen 4" width="240">
+  <img src="https://github.com/user-attachments/assets/06553558-1a92-4db2-b9ea-04fbeab48c7b" alt="XPL-EX screen 5" width="240">
+  <img src="https://github.com/user-attachments/assets/e20caed3-87cc-4fb6-b65d-0656c9714321" alt="XPL-EX screen 6" width="240">
+</p>
 
 </details>
 
+## Документация и обратная связь
 
-<br><br><br>
+- [Релизы и описания изменений](https://github.com/Mobilelegends74/XPL-EX/releases)
+- [Сообщения об ошибках и предложения](https://github.com/Mobilelegends74/XPL-EX/issues)
+- [FAQ исходного проекта](FAQ.md)
+- [Справка по API](APIHELP.md)
+- [Сборки GitHub Actions](https://github.com/Mobilelegends74/XPL-EX/actions)
 
+При создании issue укажите версию XPL-EX-NEXT, версию Android и LSPosed, название проблемного API или хука и приложите обезличенный журнал воспроизведения.
 
-Demo/Pictures
-------------
-<img src="https://github.com/user-attachments/assets/52bf2d05-05ae-42a7-aa41-be357c6e88b5" width="311" height="640">
-<img src="https://github.com/user-attachments/assets/ec717fb0-c1f4-47f9-ac36-b6c71bd6538c" width="311" height="640">
-<img src="https://github.com/user-attachments/assets/f06808fa-bb44-4c84-801b-8a0590c6f702" width="311" height="640">
-<img src="https://github.com/user-attachments/assets/c4f7580b-d183-4baf-96e0-fc1ed5877b69" width="311" height="640">
-<img src="https://github.com/user-attachments/assets/06553558-1a92-4db2-b9ea-04fbeab48c7b" width="311" height="640">
-<img src="https://github.com/user-attachments/assets/e20caed3-87cc-4fb6-b65d-0656c9714321" width="311" height="640">
+## Авторы и благодарности
 
+- [M66B](https://github.com/M66B) — автор оригинального [XPrivacyLua](https://github.com/M66B/XPrivacyLua).
+- [ObbedCode / 0bbedCode](https://github.com/0bbedCode) — автор расширенного [XPL-EX](https://github.com/0bbedCode/XPL-EX), на котором основана эта ветка.
+- [VD-8](https://github.com/VD171/VD-Infos) — проект VD-Infos и связанные наработки.
+- [HUBERTH](https://t.me/HubertHub) — исследования методов обнаружения и помощь проекту.
+- [LSPosed](https://github.com/LSPosed/LSPosed) и [libxposed](https://github.com/libxposed) — инфраструктура Xposed API.
+- [Mobilelegends74](https://github.com/Mobilelegends74) — сопровождение XPL-EX-NEXT, исправления и выпуск актуальных сборок.
 
-Donations
-------------
-<br>
+## Поддержать разработку
 
-*BTC:*
-<br>
-bc1q0znz3vqcpg6q9c34w78uk7yqsjz3gu2sh6apg7
-<br><br>
+Если проект оказался полезен, вы можете поддержать его дальнейшую разработку. Перед отправкой обязательно проверьте выбранную сеть.
 
-*LTC:*
-<br>
-ltc1qvy7e4k26gwuj0kvuugsc8mextj9vkyu3tlrefy
-<br><br>
+### XPL-EX-NEXT / Mobilelegends74
 
-*ETH:*
-<br>
-0x4282Bc864B29Dbd62B9A9960A71e8343eDA44707
-<br><br>
+**BEP-20**
 
-*XMR:*
-<br>
-89WiRBYaYcKa947MD8SNNe7Jkag5mvZruRFnVEDmqD5rRonTsEMr7KJ4PeYByDZAGjM2XJUgAsMniLiwcq4vSirDQvf8sT9
-<br><br>
+```text
+0xafe2e8f8eb4792885026dd0296aae72311f00777
+```
 
-*SOL*
-<br>
-2Y7fAzrByFCUaAP8JMYBgbfN1YveVVX1xgfktFtvUmBx
-<br><br>
+**TRC-20**
 
-*TRX*
-<br>
+```text
+TJREgqMhwGa2z47nJN4dRG5VEYM1P7sHx3
+```
+
+### Исходный XPL-EX / ObbedCode
+
+**TRX (TRON)**
+
+```text
 TRk5a1C4U5fTgMbZQBi7wRM1hjvguPnqBb
-<br><br>
+```
 
-*BCH:*
-<br>
-bitcoincash:qz5scaha4gyh92pjw5z5uhuy33sm2rdh5v0tpw2ggm
-<br><br>
+## Лицензия
 
-
-Resources
-------------
-*FAQ, See [here](https://github.com/0bbedCode/XPL-EX/blob/master/FAQ.md) for a list of often asked questions. (XPrivacy-Lua)* <br>
-*API Usage, See [here](https://github.com/0bbedCode/XPL-EX/blob/new/APIHELP.md)*
-
-<br>
-
-*Telegram, [Announcement Channel](https://t.me/xpl_ex)*
-<br>
-*Telegram, [Discussion Group](https://t.me/XPL_EX_CHAT)*
-<br><br>
-
-Credits / Help
-------------
-
-<br>
-
-*Original Dev [M66B](https://github.com/M66B)*
-<br>
-*VDInfos Dev [VD-8](https://github.com/VD171/VD-Infos)*
-<br>
-*Detections research etc. [HUBERTH](https://t.me/HubertHub)*
-
-
-
-
+Проект распространяется по лицензии [GNU General Public License v3.0](LICENSE). Производные работы должны сохранять условия лицензии и уведомления об авторстве исходных проектов.
