@@ -1,12 +1,12 @@
 <resources>
     <!-- Legacy UI resources were incorrectly marked non-translatable upstream. -->
-    <string name="app_name">XPL-EX-NEXT-1.6.0</string>
+    <string name="app_name">XPL-EX-NEXT-1.6.1</string>
     <string name="xposed_module_description">Управление конфиденциальностью и согласованная подмена профиля устройства для LSPosed.</string>
     <string name="channel_privacy">XPrivacyLua</string>
     <string name="title_license">XPL-EX предназначен для защиты конфиденциальности. Это свободное программное обеспечение, распространяемое по лицензии GNU GPL версии 3 или более поздней. Copyright 2017–%1$d Marcel Bokhorst и участники проекта.</string>
     <string name="title_use_default">Использовать значение по умолчанию, если Null</string>
     <string name="title_delete_action">Удалить</string>
-    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.6.0</b><br><br>• Исправлена подмена getSimOperator, getSimOperatorName, getNetworkOperator и getNetworkOperatorName из параметров Cell.<br>• Добавлена встроенная проверка новых подписанных релизов.<br>• Для релизов закреплён единый сертификат. При переходе с v1.5.12 потребуется один раз удалить и установить модуль; следующие версии ставятся поверх v1.6.0.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX">GitHub: Mobilelegends74/XPL-EX</a>]]></string>
+    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.6.1</b><br><br>• Исправлено применение профиля «Подмена устройства» в Universal Gaming Spoof: теперь подменяются процессор, видеопроцессор, память и камера, даже если коллекция Hardware ранее была выключена.<br>• Общий переключатель включает только необходимую коллекцию Hardware и правильно показывает неполные назначения старой версии.<br>• Сохранён постоянный сертификат v1.6.0, поэтому обновление устанавливается поверх v1.6.0.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX">GitHub: Mobilelegends74/XPL-EX</a>]]></string>
     <string name="module_update_available_title">Обновление XPL-EX-NEXT</string>
     <string name="module_update_available_message">Доступна версия %1$s. Скачать и установить подписанное обновление?</string>
 

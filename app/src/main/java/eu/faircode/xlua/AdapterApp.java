@@ -47,10 +47,12 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -388,6 +390,9 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
                     deviceBrand = Build.BRAND;
                 if (Str.isEmpty(deviceManufacturer))
                     deviceManufacturer = Build.MANUFACTURER;
+
+                ensureUniversalGamingSpoofCollections(
+                        context, pkgName, deviceBrand, deviceManufacturer);
             }
 
             for (XHook hook : hooks) {
@@ -450,6 +455,44 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
             ivExpander.setImageLevel(isExpanded ? 1 : 0);
             ivExpander.setVisibility(group == null ? View.VISIBLE : View.INVISIBLE);
             grpExpanded.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    private void ensureUniversalGamingSpoofCollections(
+            Context context,
+            String packageName,
+            String deviceBrand,
+            String deviceManufacturer) {
+        Set<String> enabledCollections = new LinkedHashSet<>(collection);
+        boolean changed = false;
+
+        for (XHook hook : hooks) {
+            if (hook == null
+                    || Str.isEmpty(hook.collection)
+                    || !UniversalGamingSpoof.requiresCollectionActivation(hook.collection)
+                    || !UniversalGamingSpoof.includesGroup(
+                    hook.group, deviceBrand, deviceManufacturer)
+                    || !hook.isAvailable(packageName, null, false, true))
+                continue;
+
+            if (enabledCollections.add(hook.collection))
+                changed = true;
+        }
+
+        if (!changed)
+            return;
+
+        List<String> updatedCollections = new ArrayList<>(enabledCollections);
+        A_CODE result = PutSettingExCommand.putGen(
+                context,
+                GetSettingExCommand.SETTING_COLLECTION,
+                TextUtils.join(",", updatedCollections));
+        if (A_CODE.isSuccessful(result)) {
+            collection = updatedCollections;
+            Log.i(TAG, "Enabled required Spoof Device collections="
+                    + TextUtils.join(",", updatedCollections));
+        } else {
+            Log.e(TAG, "Failed to enable required Spoof Device collections, result=" + result);
         }
     }
 
@@ -885,10 +928,19 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
         holder.ivPersistent.setVisibility(app.persistent ? View.VISIBLE : View.GONE);
 
         List<XHook> selectedHooks = new ArrayList<>();
-        for (XHook hook : hooks)
-            if (hook.isAvailable(app.packageName, collection) &&
-                    (group == null || group.equals(hook.group)))
+        List<XHook> universalGamingSpoofHooks = new ArrayList<>();
+        for (XHook hook : hooks) {
+            boolean isActive = hook.isAvailable(app.packageName, collection);
+            if (isActive && (group == null || group.equals(hook.group)))
                 selectedHooks.add(hook);
+
+            // Keep required profile-backed hardware in the virtual group's expected
+            // hook count even before its opt-in collection has been activated. This
+            // prevents an old partial assignment from looking complete after upgrade.
+            if (isActive || (UniversalGamingSpoof.requiresCollectionActivation(hook.collection)
+                    && hook.isAvailable(app.packageName, null, false, true)))
+                universalGamingSpoofHooks.add(hook);
+        }
 
         // Assignment info
         holder.cbAssigned.setChecked(!app.getAssignments(group).isEmpty());
@@ -900,7 +952,12 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
         holder.tvAndroid.setVisibility("android".equals(app.packageName) ? View.VISIBLE : View.GONE);
         holder.cbForceStop.setChecked(app.forceStop);
         holder.cbForceStop.setEnabled(!app.persistent);
-        holder.adapter.set(app, selectedHooks, holder.itemView.getContext(), () -> {
+        holder.adapter.set(
+                app,
+                selectedHooks,
+                universalGamingSpoofHooks,
+                holder.itemView.getContext(),
+                () -> {
             holder.updateExpand();
             holder.wire();
         });

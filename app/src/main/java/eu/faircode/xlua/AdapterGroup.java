@@ -208,7 +208,12 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
     AdapterGroup(ILoader loader) { this(); this.fragmentLoader = loader; }
 
     @SuppressLint("NotifyDataSetChanged")
-    void set(AppXpPacket app, List<XHook> hooks, Context context, IFinished onFinished) {
+    void set(
+            AppXpPacket app,
+            List<XHook> hooks,
+            List<XHook> universalHooks,
+            Context context,
+            IFinished onFinished) {
         this.app = app;
         TryRun.silent(() -> {
             Map<String, LuaHooksGroup> map = new HashMap<>();
@@ -229,14 +234,20 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
             if (Str.isEmpty(deviceManufacturer))
                 deviceManufacturer = Build.MANUFACTURER;
 
+            for (XHook hook : universalHooks) {
+                if(!Str.isEmpty(hook.group) &&
+                        !hook.group.toLowerCase().startsWith("intercept.") &&
+                        (hook.enabled == null || Boolean.TRUE.equals(hook.enabled)) &&
+                        UniversalGamingSpoof.includesGroup(
+                                hook.group, deviceBrand, deviceManufacturer) &&
+                        hook.isAvailable(app.packageName, null, true, true))
+                    universalGamingSpoof.hooks.add(hook);
+            }
+
             for (XHook hook : hooks) {
                 if(!Str.isEmpty(hook.group) &&
                         !hook.group.toLowerCase().startsWith("intercept.") &&
                         (hook.enabled == null || Boolean.TRUE.equals(hook.enabled))) {
-                    if(UniversalGamingSpoof.includesGroup(hook.group, deviceBrand, deviceManufacturer)
-                            && hook.isAvailable(app.packageName, null, true, true))
-                        universalGamingSpoof.hooks.add(hook);
-
                     LuaHooksGroup group = map.get(hook.group);
                     if(group == null) {
                         group = new LuaHooksGroup();

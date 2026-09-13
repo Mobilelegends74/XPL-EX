@@ -9,6 +9,7 @@ import java.util.Set;
 public final class UniversalGamingSpoof {
     public static final String GROUP_NAME = "UniversalGaming.Spoof.Device";
     public static final String CATEGORY_TITLE = "Universal Gaming Spoof";
+    public static final String REQUIRED_HARDWARE_COLLECTION = "Hardware";
 
     private static final Set<String> INCLUDED_GROUPS = new HashSet<>(Arrays.asList(
             "ad.analytics.spoof",
@@ -76,6 +77,16 @@ public final class UniversalGamingSpoof {
 
     public static boolean isVirtualGroup(String groupName) {
         return GROUP_NAME.equalsIgnoreCase(groupName);
+    }
+
+    /**
+     * Hardware profile hooks live in an opt-in collection. Spoof Device must make that
+     * collection available when selected, otherwise its CPU/GPU profile values have no
+     * consumers and the master switch can incorrectly appear fully enabled.
+     */
+    public static boolean requiresCollectionActivation(String collectionName) {
+        return collectionName != null
+                && REQUIRED_HARDWARE_COLLECTION.equalsIgnoreCase(collectionName.trim());
     }
 
     public static boolean includesGroup(String groupName) {

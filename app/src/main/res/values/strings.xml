@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">XPL-EX-NEXT-1.6.0</string>
+    <string name="app_name" translatable="false">XPL-EX-NEXT-1.6.1</string>
     <string name="xposed_module_description">Privacy controls and coherent device-profile spoofing for LSPosed.</string>
     <string name="channel_privacy" translatable="false">XPrivacyLua</string>
 
@@ -53,7 +53,7 @@
 
     <string name="menu_whats_new_button" translatable="false">What\'s new</string>
 
-    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.6.0</b><br><br>• Fixed getSimOperator, getSimOperatorName, getNetworkOperator and getNetworkOperatorName spoofing from Cell settings.<br>• Added a built-in check for newer signed releases.<br>• Releases now use one permanent signing certificate. Migrating from v1.5.12 requires one uninstall/reinstall; future versions install over v1.6.0.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX">GitHub: Mobilelegends74/XPL-EX</a>]]></string>
+    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.6.1</b><br><br>• Fixed Universal Gaming Spoof device profiles not applying CPU, GPU, memory and camera values when the Hardware collection was disabled.<br>• Spoof Device now enables only its required Hardware collection and shows incomplete legacy assignments correctly.<br>• The permanent v1.6.0 signing certificate is preserved, so this update installs over v1.6.0.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX">GitHub: Mobilelegends74/XPL-EX</a>]]></string>
     <string name="module_update_available_title">XPL-EX-NEXT update</string>
     <string name="module_update_available_message">Version %1$s is available. Download and install the signed update?</string>
 
