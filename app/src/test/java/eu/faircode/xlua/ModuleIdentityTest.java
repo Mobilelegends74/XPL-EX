@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 public class ModuleIdentityTest {
     @Test
     public void appVersionAndBridgeProtocolAreIndependent() {
-        assertEquals(164, ModuleIdentity.apkVersionCode());
+        assertEquals(165, ModuleIdentity.apkVersionCode());
         assertEquals("1.5.5", ModuleIdentity.bridgeProtocolVersion());
     }
 }

@@ -39,10 +39,10 @@ public class SettingFragmentUtils {
     //We can also make this templated so as long as it inherts shit
     public static List<SettingHolder> getAllSettingsFromFragment(Fragment fragment) { return RandomizerSessionContext.getAllSettings(fragment); }
 
-    public static void initializeFragment(SettingSharedRegistry sharedRegistry, Context context, UserClientAppContext appCtx) {
+    public static boolean initializeFragment(SettingSharedRegistry sharedRegistry, Context context, UserClientAppContext appCtx) {
         prepareAssignments(sharedRegistry, context, appCtx);
         prepareAppBind(sharedRegistry, context, appCtx);
-        prepareChecked(sharedRegistry, context, appCtx);
+        return prepareChecked(sharedRegistry, context, appCtx);
     }
 
     public static void prepareAssignments(SettingSharedRegistry sharedRegistry, Context context, UserClientAppContext appCtx) {
@@ -109,7 +109,8 @@ public class SettingFragmentUtils {
         }
     }
 
-    public static void prepareChecked(SettingSharedRegistry sharedRegistry, Context context, UserClientAppContext appCtx) {
+    public static boolean prepareChecked(SettingSharedRegistry sharedRegistry, Context context, UserClientAppContext appCtx) {
+        boolean hasUserDefinedGlobalTemplate = false;
         try {
             if(sharedRegistry == null)
                 throw new Exception("Shared Registry is null...");
@@ -128,12 +129,13 @@ public class SettingFragmentUtils {
                 Log.d(TAG, "Shared Preferences Opened!");
 
             List<String> globalChecked = prefManager.getStringList(PrefManager.nameForChecked(true), ListUtil.emptyList(), false);
+            hasUserDefinedGlobalTemplate = GlobalContextSelectionPolicy.hasUserDefinedTemplate(globalChecked);
             populateSharedRegistryChecked(sharedRegistry, globalChecked);
             if(DebugUtil.isDebug())
                 Log.d(TAG, "Global Checked Size=" + ListUtil.size(globalChecked));
 
             if(appCtx.isGlobal())
-                return;  //Ignore global
+                return hasUserDefinedGlobalTemplate;  //Ignore app-specific values in global context
 
             List<String> appChecked = prefManager.getStringList(PrefManager.nameForChecked(false, appCtx.appPackageName), ListUtil.emptyList(), false);
             populateSharedRegistryChecked(sharedRegistry, appChecked);
@@ -144,6 +146,8 @@ public class SettingFragmentUtils {
         }catch (Exception e) {
             Log.e(TAG, "Error Preparing the checks, Error=" + e);
         }
+
+        return hasUserDefinedGlobalTemplate;
     }
 
 

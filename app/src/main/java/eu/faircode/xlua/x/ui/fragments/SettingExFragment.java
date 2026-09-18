@@ -106,6 +106,7 @@ public class SettingExFragment
 
     private boolean isViewOpen = true;
     private boolean didPreselectAssignedSettings = false;
+    private boolean hasUserDefinedGlobalTemplate = false;
     private final SettingSharedRegistry sharedRegistry = new SettingSharedRegistry();
     private SettingsExActivity.enumShow show = SettingsExActivity.enumShow.none;
 
@@ -157,7 +158,10 @@ public class SettingExFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         super.ensureHasUserContext();
-        SettingFragmentUtils.initializeFragment(sharedRegistry, tryGetContext(), getUserContext());
+        hasUserDefinedGlobalTemplate = SettingFragmentUtils.initializeFragment(
+                sharedRegistry,
+                tryGetContext(),
+                getUserContext());
         super.setAdapter(new OptimizedSettingGroupAdapter(requireContext(), null, this,
                 getUserContext()
                         .bindShared(sharedRegistry)));
@@ -272,10 +276,18 @@ public class SettingExFragment
         if(didPreselectAssignedSettings || !ListUtil.isValid(settingsGroups))
             return;
 
+        didPreselectAssignedSettings = true;
+        if(!GlobalContextSelectionPolicy.shouldAutoSelectAssignedSettings(
+                getUserContext().isGlobal(),
+                hasUserDefinedGlobalTemplate)) {
+            if(DebugUtil.isDebug())
+                Log.d(TAG, "Preserved user-defined Global Context selection");
+            return;
+        }
+
         int selected = sharedRegistry.selectAssignedHookSettings(
                 settingsGroups,
                 tryGetContext());
-        didPreselectAssignedSettings = true;
 
         if(DebugUtil.isDebug())
             Log.d(TAG, "Preselected settings used by assigned hooks: " + selected);
