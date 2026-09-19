@@ -106,7 +106,7 @@ public class SettingsApi {
                     name,
                     defaultValue,
                     ActionPacket.create(ActionFlag.PUSH, false),
-                    UserIdentity.fromUid(Process.myUid(), category));
+                    UserIdentity.from(userId, Process.myUid(), category));
 
             ContentValues cv = packet.toContentValues();
             db.beginTransaction();
