@@ -59,7 +59,7 @@ public class PackageHookContext {
         this.useDefault = GetSettingExCommand.getBool(context, GetSettingExCommand.SETTING_USE_DEFAULT, uid, packageName);
 
         Map<String, String> local = GetSettingsExCommand.getAsMap(context, true, uid, packageName, GetSettingsExCommand.FLAG_ONE);
-        Map<String, String> global = GetSettingsExCommand.getAsMap(context, true, UserIdentity.DEFAULT_USER, UserIdentity.GLOBAL_NAMESPACE, GetSettingsExCommand.FLAG_ONE);
+        Map<String, String> global = GetSettingsExCommand.getAsMap(context, true, uid, UserIdentity.GLOBAL_NAMESPACE, GetSettingsExCommand.FLAG_ONE); // PATCH G: query THIS profile's global store (uid resolves to the app's user server-side); DEFAULT_USER hard-wired user 0 for every profile
 
         if(ListUtil.isValid(global)) {
             for(Map.Entry<String, String> entry : global.entrySet()) {

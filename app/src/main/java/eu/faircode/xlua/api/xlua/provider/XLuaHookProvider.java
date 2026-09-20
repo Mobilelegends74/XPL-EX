@@ -41,7 +41,7 @@ public class XLuaHookProvider {
 
         if(!StringUtil.isValidString(value)) {
             value = LuaSettingsManager.DEFAULT_COLLECTIONS;
-            LuaSettingsManager.putSetting(context, db, "collection", value);
+            LuaSettingsManager.putSetting(context, db, userId, UserIdentityPacket.GLOBAL_NAMESPACE, "collection", value); // PATCH G: default-write to the REQUESTING profile's global row, not user 0's
         }
 
         if(value.contains(",")) Collections.addAll(result, value.split(","));

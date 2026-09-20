@@ -85,7 +85,7 @@ public class LuaSettingsManager {
             }else if(!packet.isGlobal()) {
                 v = SqlQuerySnake
                         .create(db, LuaSetting.Table.NAME)
-                        .whereColumn(LuaSetting.Table.FIELD_USER, UserIdentityPacket.GLOBAL_USER)
+                        .whereColumn(LuaSetting.Table.FIELD_USER, packet.getUser()) // PATCH G: fall back to the REQUESTING profile's global rows, not hard-wired user 0
                         .whereColumn(LuaSetting.Table.FIELD_CATEGORY, UserIdentityPacket.GLOBAL_NAMESPACE)
                         .whereColumn(LuaSetting.Table.FIELD_NAME, packet.getName())
                         .queryGetFirstString(LuaSetting.Table.FIELD_VALUE, true);
