@@ -137,7 +137,7 @@ public class UserClientAppContext implements IValidator {
         if(context == null || TextUtils.isEmpty(packageName) || GLOBAL_NAME_SPACE.equalsIgnoreCase(packageName)) {
             this.appName = UserIdentityPacket.GLOBAL_NAMESPACE;
             this.appPackageName = UserIdentityPacket.GLOBAL_NAMESPACE;
-            this.appUid = UserIdentityPacket.GLOBAL_USER;
+            this.appUid = getCurrentProfileUserId() * 100000 + UserIdentityPacket.GLOBAL_USER; // PATCH F: encode this instance's profile so UserIdentity.fromUid resolves the correct user for global-scope reads/writes
             return true;
         } else {
             try {
@@ -208,7 +208,7 @@ public class UserClientAppContext implements IValidator {
             } else {
                 this.icon = bundle.getInt(FIELD_ICON, 0);
                 this.profileUserId = bundle.getInt(FIELD_USER_ID, DEFAULT_PROFILE_USER_ID);
-                this.appUid = bundle.getInt(FIELD_APP_UID, UserIdentityPacket.GLOBAL_USER);
+                this.appUid = bundle.getInt(FIELD_APP_UID, getCurrentProfileUserId() * 100000 + UserIdentityPacket.GLOBAL_USER); // PATCH F: profile-correct default for global-scope launches
                 this.appName = bundle.getString(FIELD_APP_NAME);
                 this.appPackageName = bundle.getString(FIELD_APP_PACKAGE_NAME);
                 this.kill = bundle.getBoolean(FIELD_KILL);
@@ -217,7 +217,8 @@ public class UserClientAppContext implements IValidator {
     }
 
     public static int getCurrentProfileUserId() {
-        return DEFAULT_PROFILE_USER_ID;
+        // PATCH F: derive the running instance's profile user instead of hard-coded 0
+        return android.os.Process.myUid() / 100000;
     }
 
     public static void attachIcon(Context context, int iconSize, ImageView imageView, String packageName, int icon) { attachIcon(context, iconSize, imageView, getIconUriFromAndroidResource(packageName, icon)); }
