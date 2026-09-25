@@ -96,7 +96,9 @@ public final class UniversalGamingSpoof {
         String normalized = groupName.trim().toLowerCase(Locale.ROOT);
         if (isEnvironmentGroup(normalized))
             return false;
-        if ("apps.spoof.timestamps".equals(normalized))
+        if ("apps.spoof.timestamps".equals(normalized)
+                || "apps.spoof.list".equals(normalized)
+                || "apps.spoof.list.ex".equals(normalized))
             return false;
         return normalized.startsWith("apps.spoof.")
                 || normalized.startsWith("device.id.")

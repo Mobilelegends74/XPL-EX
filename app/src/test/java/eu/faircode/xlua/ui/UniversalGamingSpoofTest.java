@@ -27,7 +27,8 @@ public class UniversalGamingSpoofTest {
         assertTrue(UniversalGamingSpoof.includesGroup("Hardware.Spoof.CPU.Ex"));
         assertTrue(UniversalGamingSpoof.includesGroup("Hardware.Spoof.CPU"));
         assertTrue(UniversalGamingSpoof.includesGroup("Network.Wifi.Information.Spoof"));
-        assertTrue(UniversalGamingSpoof.includesGroup("Apps.Spoof.List.Ex"));
+        assertFalse(UniversalGamingSpoof.includesGroup("Apps.Spoof.List.Ex"));
+        assertFalse(UniversalGamingSpoof.includesGroup("Apps.Spoof.List"));
         assertTrue(UniversalGamingSpoof.includesGroup("Spoof.SOC"));
         assertTrue(UniversalGamingSpoof.includesGroup("Intercept.Properties"));
         assertFalse(UniversalGamingSpoof.includesGroup("Apps.Spoof.TimeStamps"));
