@@ -1,12 +1,12 @@
 <resources>
     <!-- Legacy UI resources were incorrectly marked non-translatable upstream. -->
-    <string name="app_name">XPL-EX-NEXT-1.6.2-issue6-test2</string>
+    <string name="app_name">XPL-EX-NEXT-1.6.2</string>
     <string name="xposed_module_description">Управление конфиденциальностью и согласованная подмена профиля устройства для LSPosed.</string>
     <string name="channel_privacy">XPrivacyLua</string>
     <string name="title_license">XPL-EX предназначен для защиты конфиденциальности. Это свободное программное обеспечение, распространяемое по лицензии GNU GPL версии 3 или более поздней. Copyright 2017–%1$d Marcel Bokhorst и участники проекта.</string>
     <string name="title_use_default">Использовать значение по умолчанию, если Null</string>
     <string name="title_delete_action">Удалить</string>
-    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.6.2 — тест issue #6, сборка 2</b><br><br>• Сохранённый Global Context остаётся главным даже если в нём нет отмеченных полей.<br>• Глобальные значения без галочки остаются фиксированными, а в рандомизации приложения участвуют только отмеченные поля.<br>• Отдельный пункт позволяет удалить сохранённый глобальный шаблон и вернуть автоматический выбор по хукам.<br>• Это тестовая сборка только из artifact GitHub Actions, не опубликованная в Releases; она подписана постоянным сертификатом проекта.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX/issues/6">GitHub issue #6</a>]]></string>
+    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.6.2</b><br><br>• Сохранённый выбор Global Context имеет приоритет над автоматическим выбором по назначенным хукам, даже когда список отметок пуст.<br>• Глобальные значения без галочки остаются значениями по умолчанию; в рандомизации приложения участвуют только отмеченные поля.<br>• Пункт «Удалить глобальный шаблон» возвращает автоматический выбор по хукам. Старые непустые шаблоны сохраняются автоматически.<br>• APK подписан постоянным сертификатом проекта и устанавливается поверх предыдущих релизов.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX/issues/6">GitHub issue #6</a>]]></string>
     <string name="module_update_available_title">Обновление XPL-EX-NEXT</string>
     <string name="module_update_available_message">Доступна версия %1$s. Скачать и установить подписанное обновление?</string>
 

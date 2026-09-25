@@ -1,23 +1,24 @@
-name: "Build XPL-EX-NEXT v1.6.2 issue #6 test"
+name: Build and publish XPL-EX-NEXT v1.6.2
 
 on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
-  group: xpl-ex-next-v1.6.2-issue6-test2
+  group: xpl-ex-next-v1.6.2-release
   cancel-in-progress: false
 
 env:
-  BUILD_TITLE: "XPL-EX-NEXT v1.6.2 issue #6 test 2"
-  BUILD_APK: XPL-EX-NEXT-1.6.2-issue6-test2-release.apk
-  ARTIFACT_APK: XPL-EX-NEXT-1.6.2-issue6-test2.apk
+  RELEASE_TAG: XPL-EX-NEXT-v1.6.2
+  RELEASE_TITLE: XPL-EX-NEXT v1.6.2
+  BUILD_APK: XPL-EX-NEXT-1.6.2-release.apk
+  RELEASE_APK: XPL-EX-NEXT-1.6.2.apk
 
 jobs:
-  build:
-    name: Test, build and verify APK
+  build-and-release:
+    name: Build, verify and publish APK
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -101,37 +102,58 @@ jobs:
           test -n "${signer_sha256}"
           test "${signer_sha256}" = "${expected_sha256}"
           badging=$("${build_tools}/aapt" dump badging "${source_apk}")
-          grep -q "versionCode='166'" <<< "${badging}"
-          grep -q "versionName='1.6.2-issue6-test2'" <<< "${badging}"
+          grep -q "versionCode='167'" <<< "${badging}"
+          grep -q "versionName='1.6.2'" <<< "${badging}"
 
           mkdir -p dist
-          cp "${source_apk}" "dist/${ARTIFACT_APK}"
-          (cd dist && sha256sum "${ARTIFACT_APK}") | tee "dist/${ARTIFACT_APK}.sha256"
-          apk_sha256=$(cut -d' ' -f1 "dist/${ARTIFACT_APK}.sha256")
+          cp "${source_apk}" "dist/${RELEASE_APK}"
+          (cd dist && sha256sum "${RELEASE_APK}") | tee "dist/${RELEASE_APK}.sha256"
+          apk_sha256=$(cut -d' ' -f1 "dist/${RELEASE_APK}.sha256")
           echo "sha256=${apk_sha256}" >> "${GITHUB_OUTPUT}"
           echo "signer_sha256=${signer_sha256}" >> "${GITHUB_OUTPUT}"
+
+      - name: Prepare release description
+        run: |
+          set -euo pipefail
+          cp docs/releases/xpl-ex-next-v1.6.2.md "${RUNNER_TEMP}/release-notes.md"
 
       - name: Write build summary
         run: |
           {
-            echo "# ${BUILD_TITLE}"
+            echo "# ${RELEASE_TITLE}"
             echo
             echo "- Tests: passed"
-            echo "- Version name: 1.6.2-issue6-test2"
-            echo "- Version code: 166"
+            echo "- Version name: 1.6.2"
+            echo "- Version code: 167"
             echo "- libxposed API: 101"
             echo "- Bridge protocol: 1.5.5"
             echo "- R8 minification: disabled for Xposed/Lua hook compatibility"
-            echo "- APK: ${ARTIFACT_APK}"
+            echo "- APK: ${RELEASE_APK}"
             echo "- SHA-256: ${{ steps.apk.outputs.sha256 }}"
             echo "- Signing certificate SHA-256: ${{ steps.apk.outputs.signer_sha256 }}"
-            echo "- Distribution: workflow artifact only (no GitHub Release)"
+            echo "- Release tag: ${RELEASE_TAG}"
           } >> "${GITHUB_STEP_SUMMARY}"
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: XPL-EX-NEXT-1.6.2-issue6-test2
+          name: XPL-EX-NEXT-1.6.2
           path: dist/
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          target_commitish: ${{ github.sha }}
+          name: ${{ env.RELEASE_TITLE }}
+          body_path: ${{ runner.temp }}/release-notes.md
+          files: |
+            dist/${{ env.RELEASE_APK }}
+            dist/${{ env.RELEASE_APK }}.sha256
+          draft: false
+          prerelease: false
+          make_latest: true
+          fail_on_unmatched_files: true
+          overwrite_files: true
