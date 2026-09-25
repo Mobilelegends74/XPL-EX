@@ -27,6 +27,7 @@ import eu.faircode.xlua.x.xlua.database.TableInfo;
 import eu.faircode.xlua.x.xlua.database.sql.SQLDatabase;
 import eu.faircode.xlua.x.xlua.database.sql.SQLSnake;
 import eu.faircode.xlua.x.xlua.hook.AssignmentPacket;
+import eu.faircode.xlua.x.xlua.hook.GroupPacket;
 import eu.faircode.xlua.x.xlua.interfaces.ICursorType;
 import eu.faircode.xlua.x.xlua.interfaces.IJsonType;
 import eu.faircode.xlua.x.xlua.settings.SettingReMappedItem;
@@ -613,6 +614,7 @@ public class DatabaseUpdater<T extends IIdentifiableObject & ICursorType & IJson
 
             if(database.isXLua()) {
                 try {
+                    DatabaseHelpEx.prepareDatabase(database, GroupPacket.TABLE_INFO);
                     //Just have it so the main fucking legacy item has a function like "readFromOld(Cursor c)" or something
                     //And have a function "ensureTableIsMoved(From, To)
 

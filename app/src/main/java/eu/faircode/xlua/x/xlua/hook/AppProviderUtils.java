@@ -174,7 +174,7 @@ public class AppProviderUtils {
 
         //We can check collections
         List<AssignmentPacket> assignments = new ArrayList<>();
-        if(apps.size() == 48543)  {
+        if(apps.size() == 1)  {
             AppXpPacket app = ListUtil.copyToArrayList(apps.values()).get(0);
             if(DebugUtil.isDebug())
                 Log.d(TAG, Str.fm("Is Single App for Init Assignments, App Pkg=%s UserId=%s",
@@ -195,6 +195,15 @@ public class AppProviderUtils {
                     .whereColumn(AssignmentPacket.FIELD_USER, end, "<=")
                     .asSnake()
                     .queryAs(AssignmentPacket.class, true, true)));
+            if(userId > 0) {
+                // AssignmentApi stores work-profile assignments under the bare user ID.
+                ListUtil.addAll(assignments, filterAssignments(SQLSnake
+                        .create(database, AssignmentPacket.TABLE_NAME)
+                        .onlyReturn(AssignmentPacket.FIELD_USER, AssignmentPacket.FIELD_CATEGORY, AssignmentPacket.FIELD_HOOK, AssignmentPacket.FIELD_INSTALLED, AssignmentPacket.FIELD_USED, AssignmentPacket.FIELD_RESTRICTED, AssignmentPacket.FIELD_EXCEPTION)
+                        .whereColumn(AssignmentPacket.FIELD_USER, userId)
+                        .asSnake()
+                        .queryAs(AssignmentPacket.class, true, true)));
+            }
         }
 
         if(DebugUtil.isDebug())
@@ -219,6 +228,7 @@ public class AppProviderUtils {
                             app.uid,
                             assignment.getUserId(true),
                             appUserId));
+                continue;
             }
 
             XHook hook = XLegacyCore.getHook(
