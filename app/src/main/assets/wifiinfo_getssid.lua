@@ -21,7 +21,14 @@ function after(hook, param)
         return false
     end
 
-    local fake = '"private"'
+    local fake = param:getSetting('unique.network.ssid', 'Starbucks Free-Wifi')
+    if fake == nil or fake == '' then
+        fake = '"private"'
+    end
+    -- Android WifiInfo.getSSID returns a quoted SSID.
+    if string.sub(fake, 1, 1) ~= '"' then
+        fake = '"' .. fake .. '"'
+    end
     param:setResult(fake)
     return true, result, fake
 end

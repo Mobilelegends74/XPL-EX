@@ -21,7 +21,10 @@ function after(hook, param)
         return false
     end
 
-    local fake = '00:00:00:00:00:00'
+    local fake = param:getSetting('unique.network.bssid', '00:00:00:00:00:00')
+    if fake == nil or fake == '' then
+        fake = '00:00:00:00:00:00'
+    end
     param:setResult(fake)
     return true, result, fake
 end
