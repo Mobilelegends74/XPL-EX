@@ -161,6 +161,7 @@
     <string name="option_close">Закрыть</string>
     <string name="option_create">Создать</string>
     <string name="option_delete">Удалить</string>
+    <string name="option_clear_global_template">Удалить глобальный шаблон</string>
     <string name="option_edit">Изменить</string>
     <string name="option_export">Экспортировать</string>
     <string name="option_not_ask">Больше не спрашивать</string>

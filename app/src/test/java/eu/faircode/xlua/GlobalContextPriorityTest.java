@@ -38,6 +38,18 @@ public class GlobalContextPriorityTest {
     }
 
     @Test
+    public void explicitlySavedEmptyTemplateStillBlocksHookDerivedSelections() {
+        boolean hasTemplate = GlobalContextSelectionPolicy.hasUserDefinedTemplate(
+                true,
+                Collections.emptyList());
+
+        assertTrue(hasTemplate);
+        assertFalse(GlobalContextSelectionPolicy.shouldAutoSelectAssignedSettings(
+                false,
+                hasTemplate));
+    }
+
+    @Test
     public void globalEditorNeverUsesPerAppHookPattern() {
         assertFalse(GlobalContextSelectionPolicy.shouldAutoSelectAssignedSettings(
                 true,
@@ -48,6 +60,7 @@ public class GlobalContextPriorityTest {
     public void perAppScreenConsultsGlobalTemplateBeforeHookPattern() throws Exception {
         String fragment = source("src/main/java/eu/faircode/xlua/x/ui/fragments/SettingExFragment.java");
         String utils = source("src/main/java/eu/faircode/xlua/x/ui/fragments/SettingFragmentUtils.java");
+        String prefs = source("src/main/java/eu/faircode/xlua/x/data/PrefManager.java");
 
         int policyCheck = fragment.indexOf(
                 "GlobalContextSelectionPolicy.shouldAutoSelectAssignedSettings(");
@@ -59,6 +72,10 @@ public class GlobalContextPriorityTest {
         assertTrue(hookPattern > policyCheck);
         assertTrue(utils.contains(
                 "GlobalContextSelectionPolicy.hasUserDefinedTemplate(globalChecked)"));
+        assertTrue(utils.contains(
+                "PrefManager.SETTING_SETTINGS_GLOBAL_TEMPLATE_DEFINED"));
+        assertTrue(fragment.contains("clearGlobalCheckedTemplate()"));
+        assertTrue(prefs.contains("SETTING_SETTINGS_GLOBAL_TEMPLATE_DEFINED"));
     }
 
     private static String source(String relativePath) throws Exception {

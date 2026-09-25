@@ -465,7 +465,10 @@ public class SettingExFragment
                 if(DebugUtil.isDebug())
                     Log.d(TAG, "AppIsland Save Checked button Invoked, Checked Count=" + ListUtil.size(checked) + " Package=" + getAppPackageName());
 
-                final List<String> options = Arrays.asList(getString(R.string.title_global), getString(R.string.title_app));
+                final List<String> options = new ArrayList<>(Arrays.asList(
+                        getString(R.string.title_global),
+                        getString(R.string.title_app),
+                        getString(R.string.option_clear_global_template)));
                 OptionsListDialog.create()
                         .setTitle(getString(R.string.title_save_options))
                         .setMessage(Str.combineEx(getString(R.string.msg_confirm_save_options_config), Str.WHITE_SPACE, checked.isEmpty() ? getString(R.string.option_delete) : String.valueOf(checked.size())))
@@ -474,11 +477,24 @@ public class SettingExFragment
                         .setDefaultCheck(options.get(1))
                         .setAllowMultiple(false)
                         .onConfirm((c, d) -> {
-                            if(ListUtil.isValid(c))
-                                sharedRegistry
-                                        .ensurePrefsOpen(context, PrefManager.SETTINGS_NAMESPACE)
-                                        .putStringList(
-                                                PrefManager.nameForChecked(options.get(0).equalsIgnoreCase(c.get(0)), getAppPackageName()), checked);
+                            if(ListUtil.isValid(c)) {
+                                boolean clearGlobal = options.get(2).equalsIgnoreCase(c.get(0));
+                                boolean saveGlobal = options.get(0).equalsIgnoreCase(c.get(0));
+                                PrefManager preferences = sharedRegistry.ensurePrefsOpen(
+                                        context,
+                                        PrefManager.SETTINGS_NAMESPACE);
+                                if(clearGlobal)
+                                    preferences.clearGlobalCheckedTemplate();
+                                else {
+                                    preferences.putStringList(
+                                            PrefManager.nameForChecked(saveGlobal, getAppPackageName()),
+                                            checked);
+                                    if(saveGlobal)
+                                        preferences.putBoolean(
+                                                PrefManager.SETTING_SETTINGS_GLOBAL_TEMPLATE_DEFINED,
+                                                true);
+                                }
+                            }
 
                             Snackbar.make(v, !ListUtil.isValid(c) ?
                                     getString(R.string.msg_error_bad_options) :

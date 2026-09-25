@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">XPL-EX-NEXT-1.6.2-issue6-test</string>
+    <string name="app_name" translatable="false">XPL-EX-NEXT-1.6.2-issue6-test2</string>
     <string name="xposed_module_description">Privacy controls and coherent device-profile spoofing for LSPosed.</string>
     <string name="channel_privacy" translatable="false">XPrivacyLua</string>
 
@@ -53,7 +53,7 @@
 
     <string name="menu_whats_new_button" translatable="false">What\'s new</string>
 
-    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.6.2 issue #6 test</b><br><br>• A saved Global Context template now takes priority over hook-derived per-app selections.<br>• Automatic hook-based selection remains available as a fallback when no global template exists.<br>• This test build is distributed only through a GitHub Actions artifact, outside the Releases channel, and is signed with the permanent project certificate.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX/issues/6">GitHub issue #6</a>]]></string>
+    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.6.2 issue #6 test 2</b><br><br>• A saved Global Context template now remains authoritative even when it contains zero checked fields.<br>• Unchecked global values remain fixed defaults, while only checked fields participate in per-app randomization.<br>• A separate action can clear the saved Global template and restore automatic hook selection.<br>• This test build is distributed only through a GitHub Actions artifact, outside the Releases channel, and is signed with the permanent project certificate.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX/issues/6">GitHub issue #6</a>]]></string>
     <string name="module_update_available_title">XPL-EX-NEXT update</string>
     <string name="module_update_available_message">Version %1$s is available. Download and install the signed update?</string>
 
@@ -314,6 +314,7 @@
        • Only when opening this screen for this specific app\n
        • Or when opening this screen for any app\n\n
        Your current selection will be saved as the default configuration.\n\n
+        An empty Global selection is also saved intentionally: its unmarked global values remain fixed defaults and are not added to per-app randomization.\n\n
         Settings Checked:
     </string>
 
@@ -436,6 +437,7 @@
     <string name="msg_error_saving_backup" translatable="false">Error saving backup</string>
 
     <string name="option_delete" translatable="false">Delete</string>
+    <string name="option_clear_global_template" translatable="false">Clear Global Template</string>
     <string name="option_cancel" translatable="false">Cancel</string>
     <string name="option_add" translatable="false">Add</string>
     <string name="option_not_ask" translatable="false">Do not ask Again</string>

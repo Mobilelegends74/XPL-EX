@@ -1,12 +1,12 @@
 <resources>
     <!-- Legacy UI resources were incorrectly marked non-translatable upstream. -->
-    <string name="app_name">XPL-EX-NEXT-1.6.2-issue6-test</string>
+    <string name="app_name">XPL-EX-NEXT-1.6.2-issue6-test2</string>
     <string name="xposed_module_description">Управление конфиденциальностью и согласованная подмена профиля устройства для LSPosed.</string>
     <string name="channel_privacy">XPrivacyLua</string>
     <string name="title_license">XPL-EX предназначен для защиты конфиденциальности. Это свободное программное обеспечение, распространяемое по лицензии GNU GPL версии 3 или более поздней. Copyright 2017–%1$d Marcel Bokhorst и участники проекта.</string>
     <string name="title_use_default">Использовать значение по умолчанию, если Null</string>
     <string name="title_delete_action">Удалить</string>
-    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.6.2 — тест issue #6</b><br><br>• Сохранённый шаблон Global Context теперь имеет приоритет над автоматическим выбором параметров для хуков приложения.<br>• Если глобальный шаблон не создан, автоматический выбор параметров продолжает работать как запасной вариант.<br>• Это тестовая сборка только из artifact GitHub Actions, не опубликованная в Releases; она подписана постоянным сертификатом проекта.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX/issues/6">GitHub issue #6</a>]]></string>
+    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.6.2 — тест issue #6, сборка 2</b><br><br>• Сохранённый Global Context остаётся главным даже если в нём нет отмеченных полей.<br>• Глобальные значения без галочки остаются фиксированными, а в рандомизации приложения участвуют только отмеченные поля.<br>• Отдельный пункт позволяет удалить сохранённый глобальный шаблон и вернуть автоматический выбор по хукам.<br>• Это тестовая сборка только из artifact GitHub Actions, не опубликованная в Releases; она подписана постоянным сертификатом проекта.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX/issues/6">GitHub issue #6</a>]]></string>
     <string name="module_update_available_title">Обновление XPL-EX-NEXT</string>
     <string name="module_update_available_message">Доступна версия %1$s. Скачать и установить подписанное обновление?</string>
 
@@ -129,7 +129,7 @@
     <string name="msg_na_randomizer">Для этой настройки генератор ещё не реализован или выбран вариант N/A. Укажите подходящее значение вручную, используя описание и требуемый формат.</string>
     <string name="msg_delete_property">Удалить сопоставление системного свойства и связанное управляющее значение?</string>
     <string name="msg_old_group">Обнаружена устаревшая коллекция Privacy. Она будет отключена, поскольку больше не поддерживается и может конфликтовать с актуальными хуками.</string>
-    <string name="msg_confirm_save_options_config">Сохранить текущие отметки как предустановку? Это не сохраняет сами значения настроек в базе данных.</string>
+    <string name="msg_confirm_save_options_config">Сохранить текущие отметки как предустановку? Это не сохраняет сами значения настроек в базе данных. Пустой глобальный список тоже сохраняется: заданные без галочки глобальные значения остаются фиксированными и не добавляются в рандомизацию приложения.</string>
     <string name="msg_confirm_force_stop">Принудительно остановить выбранное приложение? Несохранённая работа в нём может быть потеряна.</string>
     <string name="msg_confirm_clear_data">Очистить данные выбранного приложения? Аккаунты и данные будут удалены без возможности восстановления, если нет резервной копии.</string>
     <string name="msg_confirm_delete_all_settings">Удалить все сохранённые настройки выбранного приложения?</string>

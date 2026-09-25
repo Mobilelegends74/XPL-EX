@@ -57,6 +57,8 @@ public class PrefManager {
     public static final String SETTINGS_MAIN = "settings_main";
 
     public static final String SETTING_SETTINGS_CHECKED = "_checked_settings_1_";
+    /** Marks that the user explicitly saved a Global checked-settings template. */
+    public static final String SETTING_SETTINGS_GLOBAL_TEMPLATE_DEFINED = "_global_checked_template_defined_1_";
 
     public static final String SETTING_APPS_SHOW = "appShow";
     public static final String SETTING_SETTINGS_SHOW = "settingsShow";
@@ -235,6 +237,16 @@ public class PrefManager {
             Log.e(TAG, "Error Putting String List! Key=" + key + " Error=" + e);
             return ListUtil.emptyList();
         }
+    }
+
+    public void clearGlobalCheckedTemplate() {
+        if(preferences == null)
+            return;
+
+        preferences.edit()
+                .remove(SETTING_SETTINGS_CHECKED)
+                .remove(SETTING_SETTINGS_GLOBAL_TEMPLATE_DEFINED)
+                .apply();
     }
 
     public int getInteger(String key) { return getInteger(key, -1, false); }

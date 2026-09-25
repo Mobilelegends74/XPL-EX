@@ -7,13 +7,13 @@ permissions:
   contents: read
 
 concurrency:
-  group: xpl-ex-next-v1.6.2-issue6-test
+  group: xpl-ex-next-v1.6.2-issue6-test2
   cancel-in-progress: false
 
 env:
-  BUILD_TITLE: "XPL-EX-NEXT v1.6.2 issue #6 test"
-  BUILD_APK: XPL-EX-NEXT-1.6.2-issue6-test-release.apk
-  ARTIFACT_APK: XPL-EX-NEXT-1.6.2-issue6-test.apk
+  BUILD_TITLE: "XPL-EX-NEXT v1.6.2 issue #6 test 2"
+  BUILD_APK: XPL-EX-NEXT-1.6.2-issue6-test2-release.apk
+  ARTIFACT_APK: XPL-EX-NEXT-1.6.2-issue6-test2.apk
 
 jobs:
   build:
@@ -101,8 +101,8 @@ jobs:
           test -n "${signer_sha256}"
           test "${signer_sha256}" = "${expected_sha256}"
           badging=$("${build_tools}/aapt" dump badging "${source_apk}")
-          grep -q "versionCode='165'" <<< "${badging}"
-          grep -q "versionName='1.6.2-issue6-test'" <<< "${badging}"
+          grep -q "versionCode='166'" <<< "${badging}"
+          grep -q "versionName='1.6.2-issue6-test2'" <<< "${badging}"
 
           mkdir -p dist
           cp "${source_apk}" "dist/${ARTIFACT_APK}"
@@ -117,8 +117,8 @@ jobs:
             echo "# ${BUILD_TITLE}"
             echo
             echo "- Tests: passed"
-            echo "- Version name: 1.6.2-issue6-test"
-            echo "- Version code: 165"
+            echo "- Version name: 1.6.2-issue6-test2"
+            echo "- Version code: 166"
             echo "- libxposed API: 101"
             echo "- Bridge protocol: 1.5.5"
             echo "- R8 minification: disabled for Xposed/Lua hook compatibility"
@@ -131,7 +131,7 @@ jobs:
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: XPL-EX-NEXT-1.6.2-issue6-test
+          name: XPL-EX-NEXT-1.6.2-issue6-test2
           path: dist/
           if-no-files-found: error
           retention-days: 30

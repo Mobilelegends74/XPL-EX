@@ -129,7 +129,16 @@ public class SettingFragmentUtils {
                 Log.d(TAG, "Shared Preferences Opened!");
 
             List<String> globalChecked = prefManager.getStringList(PrefManager.nameForChecked(true), ListUtil.emptyList(), false);
-            hasUserDefinedGlobalTemplate = GlobalContextSelectionPolicy.hasUserDefinedTemplate(globalChecked);
+            boolean templateDefined = prefManager.getBoolean(
+                    PrefManager.SETTING_SETTINGS_GLOBAL_TEMPLATE_DEFINED,
+                    false,
+                    false);
+            hasUserDefinedGlobalTemplate = GlobalContextSelectionPolicy.hasUserDefinedTemplate(
+                    templateDefined,
+                    globalChecked);
+            // Migrate templates saved before the explicit marker existed.
+            if(!templateDefined && GlobalContextSelectionPolicy.hasUserDefinedTemplate(globalChecked))
+                prefManager.putBoolean(PrefManager.SETTING_SETTINGS_GLOBAL_TEMPLATE_DEFINED, true);
             populateSharedRegistryChecked(sharedRegistry, globalChecked);
             if(DebugUtil.isDebug())
                 Log.d(TAG, "Global Checked Size=" + ListUtil.size(globalChecked));
