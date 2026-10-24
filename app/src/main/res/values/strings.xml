@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">XPL-EX-NEXT-1.6.6</string>
+    <string name="app_name" translatable="false">XPL-EX-NEXT-1.6.7</string>
     <string name="xposed_module_description">Privacy controls and coherent device-profile spoofing for LSPosed.</string>
     <string name="channel_privacy" translatable="false">XPrivacyLua</string>
 
@@ -53,7 +53,7 @@
 
     <string name="menu_whats_new_button" translatable="false">What\'s new</string>
 
-    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.6.6</b><br><br>• Fixed filter panel alignment, popup behaviour and filter state restoration.<br>• Fixed combined search/app-mode filtering and list update races.<br>• Fixed CPU and battery hook errors with missing profile values.<br>• Batch saving now stops the target app once after saving, not for every field.<br>• Theme selection uses larger vector icons without clipped labels.<br>• Improved file handling, UI lifecycle and registry notifications.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX/releases/tag/XPL-EX-NEXT-v1.6.6">GitHub release</a>]]></string>
+    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.6.7</b><br><br>• Assigned apps now request addition to the LSPosed scope; approval may be required.<br>• Removing the last assigned hook removes the app from scope; partial removal keeps it enabled.<br>• System Framework scope is retained for the settings bridge.<br>• Added request queuing and duplicate-request protection. Thanks to HankAviator for PR #11.<br><br>If LSPosed blocks requests, long-press XPL-EX in its module list and select Reset scope request setting.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX/releases/tag/XPL-EX-NEXT-v1.6.7">GitHub release</a>]]></string>
     <string name="module_update_available_title">XPL-EX-NEXT update</string>
     <string name="module_update_available_message">Version %1$s is available. Download and install the signed update?</string>
 

@@ -1,4 +1,4 @@
-name: Build and publish XPL-EX-NEXT v1.6.6
+name: Build and publish XPL-EX-NEXT v1.6.7
 
 on:
   workflow_dispatch:
@@ -7,14 +7,14 @@ permissions:
   contents: write
 
 concurrency:
-  group: xpl-ex-next-v1.6.6-release
+  group: xpl-ex-next-v1.6.7-release
   cancel-in-progress: false
 
 env:
-  RELEASE_TAG: XPL-EX-NEXT-v1.6.6
-  RELEASE_TITLE: XPL-EX-NEXT v1.6.6
-  BUILD_APK: XPL-EX-NEXT-1.6.6-release.apk
-  RELEASE_APK: XPL-EX-NEXT-1.6.6.apk
+  RELEASE_TAG: XPL-EX-NEXT-v1.6.7
+  RELEASE_TITLE: XPL-EX-NEXT v1.6.7
+  BUILD_APK: XPL-EX-NEXT-1.6.7-release.apk
+  RELEASE_APK: XPL-EX-NEXT-1.6.7.apk
 
 jobs:
   build-and-release:
@@ -102,8 +102,9 @@ jobs:
           test -n "${signer_sha256}"
           test "${signer_sha256}" = "${expected_sha256}"
           badging=$("${build_tools}/aapt" dump badging "${source_apk}")
-          grep -q "versionCode='172'" <<< "${badging}"
-          grep -q "versionName='1.6.6'" <<< "${badging}"
+          grep -q "versionCode='173'" <<< "${badging}"
+          grep -q "versionName='1.6.7'" <<< "${badging}"
+          grep -q "package: name='eu.faircode.xlua'" <<< "${badging}"
 
           mkdir -p dist
           cp "${source_apk}" "dist/${RELEASE_APK}"
@@ -115,7 +116,7 @@ jobs:
       - name: Prepare release description
         run: |
           set -euo pipefail
-          cp docs/releases/xpl-ex-next-v1.6.6.md "${RUNNER_TEMP}/release-notes.md"
+          cp docs/releases/xpl-ex-next-v1.6.7.md "${RUNNER_TEMP}/release-notes.md"
 
       - name: Write build summary
         run: |
@@ -123,8 +124,8 @@ jobs:
             echo "# ${RELEASE_TITLE}"
             echo
             echo "- Tests: passed"
-            echo "- Version name: 1.6.6"
-            echo "- Version code: 172"
+            echo "- Version name: 1.6.7"
+            echo "- Version code: 173"
             echo "- libxposed API: 101"
             echo "- Bridge protocol: 1.5.5"
             echo "- R8 minification: disabled for Xposed/Lua hook compatibility"
@@ -137,7 +138,7 @@ jobs:
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: XPL-EX-NEXT-1.6.6
+          name: XPL-EX-NEXT-1.6.7
           path: dist/
           if-no-files-found: error
           retention-days: 30

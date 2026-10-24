@@ -37,6 +37,7 @@ XPL-EX-NEXT contains no advertising, analytics, or trackers. Hooks work without 
 - Wi-Fi, MAC/BSSID/SSID, IP addresses, network interfaces, VPN, and network properties.
 - Application-list, timestamp, file, shell, property, Binder, and ContentResolver filtering.
 - Automatic assignment of required hooks when related settings are saved.
+- Requests to add selected applications to LSPosed scope and removal after the last hook is disabled.
 - Configuration import/export, Russian localization, and a built-in release update check.
 - Modern Xposed API 101 with the compatibility bridge protocol kept at `1.5.5`.
 
@@ -55,6 +56,8 @@ The project targets current Android versions. Individual hook compatibility depe
 3. Install the APK, enable XPL-EX-NEXT in LSPosed, and select the required target applications in its scope.
 4. Open XPL-EX-NEXT, select an application, and configure only the hook groups you need.
 5. Restart the target application. Rebooting the device is recommended after updating the module itself.
+
+Since 1.6.7, assigning hooks requests addition of the target app to LSPosed scope. Approve the request if prompted; keep System Framework enabled. If requests are blocked, long-press XPL-EX in the LSPosed module list and select **Reset scope request setting**. Other Android profiles must be configured separately.
 
 ### Migration to the permanent signing certificate
 

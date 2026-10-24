@@ -1,12 +1,12 @@
 <resources>
     <!-- Legacy UI resources were incorrectly marked non-translatable upstream. -->
-    <string name="app_name">XPL-EX-NEXT-1.6.6</string>
+    <string name="app_name">XPL-EX-NEXT-1.6.7</string>
     <string name="xposed_module_description">Управление конфиденциальностью и согласованная подмена профиля устройства для LSPosed.</string>
     <string name="channel_privacy">XPrivacyLua</string>
     <string name="title_license">XPL-EX предназначен для защиты конфиденциальности. Это свободное программное обеспечение, распространяемое по лицензии GNU GPL версии 3 или более поздней. Copyright 2017–%1$d Marcel Bokhorst и участники проекта.</string>
     <string name="title_use_default">Использовать значение по умолчанию, если Null</string>
     <string name="title_delete_action">Удалить</string>
-    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.6.6</b><br><br>• Исправлены выравнивание верхней панели, выпадающее меню и восстановление фильтров.<br>• Исправлены совместная работа поиска с режимами приложений и гонки обновления списка.<br>• Устранены ошибки CPU и батарейных хуков при незаданных значениях профиля.<br>• Пакетное сохранение останавливает приложение один раз после записи, а не для каждого поля.<br>• Выбор темы: увеличенные векторные иконки вместо обрезанных подписей.<br>• Исправлены обработка файлов, жизненный цикл интерфейса и уведомления реестра.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX/releases/tag/XPL-EX-NEXT-v1.6.6">GitHub release</a>]]></string>
+    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.6.7</b><br><br>• При назначении хуков приложение запрашивает добавление в область действия LSPosed; может потребоваться подтверждение.<br>• После отключения последнего хука приложение удаляется из области действия; при частичном отключении остаётся.<br>• System Framework сохраняется для работы моста настроек.<br>• Добавлены очередь запросов и защита от повторных запросов. Спасибо HankAviator за PR #11.<br><br>Если LSPosed блокирует запросы, удерживайте XPL-EX в списке модулей и выберите Reset scope request setting.<br><br><a href="https://github.com/Mobilelegends74/XPL-EX/releases/tag/XPL-EX-NEXT-v1.6.7">GitHub release</a>]]></string>
     <string name="module_update_available_title">Обновление XPL-EX-NEXT</string>
     <string name="module_update_available_message">Доступна версия %1$s. Скачать и установить подписанное обновление?</string>
 
