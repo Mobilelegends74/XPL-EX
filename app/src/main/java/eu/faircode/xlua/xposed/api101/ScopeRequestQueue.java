@@ -41,7 +41,18 @@ final class ScopeRequestQueue {
     }
 
     void retryRemovals(Set<String> request) {
-        removals.addAll(request);
+        for (String scope : request)
+            if (Boolean.FALSE.equals(desired.get(scope)))
+                removals.add(scope);
+    }
+
+    void reconcile(Set<String> currentScope) {
+        // An approval may succeed even if its callback was lost. Never keep
+        // such a package stuck inFlight after a later manual scope removal.
+        inFlight.removeAll(currentScope);
+        for (String scope : currentScope)
+            if (Boolean.FALSE.equals(desired.get(scope)))
+                removals.add(scope);
     }
 
     Set<String> take(Set<String> currentScope) {

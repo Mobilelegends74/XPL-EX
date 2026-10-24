@@ -60,6 +60,7 @@ public class GlobalCommandBridge {
                 .registerCall(GetBridgeVersionCommand.class)
 
                 .registerCall(ReportCommand.class)
+                .registerCall(eu.faircode.xlua.x.xlua.commands.call.ScopeDiagnosticCommand.class)
 
                 .registerCall(DropTableCommand.class)
                 .registerCall(PutHookExCommand.class)

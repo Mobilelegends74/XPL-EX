@@ -22,6 +22,13 @@ public class AssignmentsPacket extends PacketBase {
     private final String id = UUID.randomUUID().toString();
 
     public final List<String> hookIds = new ArrayList<>();
+    public boolean clearAll;
+
+    public static AssignmentsPacket clearAll(int uid, String packageName, boolean kill) {
+        AssignmentsPacket packet = create(uid, packageName, new ArrayList<>(), true, kill);
+        packet.clearAll = true;
+        return packet;
+    }
 
     public static AssignmentsPacket create(int uid, String packageName, List<String> hookIds, boolean delete, boolean kill) { return new AssignmentsPacket(uid, packageName, hookIds, delete, kill); }
 
@@ -44,6 +51,7 @@ public class AssignmentsPacket extends PacketBase {
         if(b != null) {
             super.populateBundle(b);
             b.putStringArrayList("hooks", new ArrayList<>(this.hookIds));
+            b.putBoolean("clearAllAssignments", clearAll);
         }
     }
 
@@ -52,6 +60,7 @@ public class AssignmentsPacket extends PacketBase {
         if(b != null) {
             super.populateFromBundle(b);
             ListUtil.addAll(this.hookIds, b.getStringArrayList("hooks"));
+            clearAll = b.getBoolean("clearAllAssignments", false);
         }
     }
 

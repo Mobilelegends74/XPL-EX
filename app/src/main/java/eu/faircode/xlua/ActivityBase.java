@@ -131,6 +131,7 @@ public class ActivityBase extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        eu.faircode.xlua.xposed.api101.LsposedScope.refresh(this);
         applyUserAccent();
         String selected = readThemePreference();
         String resolved = resolveTheme(selected);

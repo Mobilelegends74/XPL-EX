@@ -11,6 +11,7 @@ import eu.faircode.xlua.DebugUtil;
 import eu.faircode.xlua.XLegacyCore;
 import eu.faircode.xlua.api.hook.XLuaHook;
 import eu.faircode.xlua.x.Str;
+import eu.faircode.xlua.x.xlua.identity.UserIdentity;
 import eu.faircode.xlua.x.data.utils.ListUtil;
 import eu.faircode.xlua.x.ui.adapters.hooks.elements.XHook;
 import eu.faircode.xlua.x.xlua.LibUtil;
@@ -40,6 +41,20 @@ public class AssignmentApi {
                 Log.d(TAG,  Str.fm("Assigning Hooks, Delete=%s  Assignment Table Entries=%s  Packet=%s  Table Info=%s", packet.isAction(ActionFlag.DELETE), database.tableEntries(AssignmentPacket.TABLE_NAME), Str.noNL(packet), Str.toStringOrNull(AssignmentPacket.TABLE_INFO)));
 
             List<String> groups = new ArrayList<>();
+
+            if (packet.clearAll) {
+                if (!packet.isAction(ActionFlag.DELETE))
+                    return A_CODE.GENERIC_INVALID_INPUT;
+                if (packet.getUid() < 0 || Str.isEmpty(packet.getCategory())
+                        || UserIdentity.GLOBAL_NAMESPACE.equals(packet.getCategory()))
+                    return A_CODE.GENERIC_INVALID_INPUT;
+                SQLSnake identity = SQLSnake.create()
+                        .whereIdentity(packet.getUserId(true), packet.getCategory()).asSnake();
+                if (!database.delete(AssignmentPacket.TABLE_NAME,
+                        identity.getWhereClause(), identity.getWhereArgs()))
+                    return A_CODE.GENERIC_DB_ERROR_X;
+                Log.i("XLua.Scope", "Cleared all assignments for " + packet.getCategory());
+            }
 
             for(String hookId : packet.hookIds) {
                 XHook hook = XLegacyCore.getHook(hookId);

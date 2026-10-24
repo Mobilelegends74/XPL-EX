@@ -10,6 +10,59 @@ import org.junit.Test;
 
 public class ScopeRequestQueueTest {
     @Test
+    public void lostApprovalCallbackDoesNotBlockExplicitReaddAfterManualRemoval() {
+        ScopeRequestQueue queue = new ScopeRequestQueue();
+        queue.add("com.example.target");
+        queue.take(Collections.emptySet());
+        queue.reconcile(Collections.singleton("com.example.target"));
+        queue.reconcile(Collections.emptySet());
+        assertTrue(queue.take(Collections.emptySet()).isEmpty());
+        queue.add("com.example.target");
+        assertEquals(Collections.singleton("com.example.target"), queue.take(Collections.emptySet()));
+    }
+
+    @Test
+    public void observingManualRemovalDoesNotSilentlyRequestItAgain() {
+        ScopeRequestQueue queue = new ScopeRequestQueue();
+        queue.add("com.example.target");
+        queue.take(Collections.singleton("com.example.target"));
+        queue.reconcile(Collections.emptySet());
+        assertTrue(queue.take(Collections.emptySet()).isEmpty());
+    }
+
+    @Test
+    public void observedLateApprovalIsRemovedEvenAfterCompletionWasLost() {
+        ScopeRequestQueue queue = new ScopeRequestQueue();
+        queue.add("com.example.target");
+        queue.take(Collections.emptySet());
+        queue.remove("com.example.target");
+        queue.takeRemovals();
+        queue.reconcile(Collections.singleton("com.example.target"));
+        assertEquals(Collections.singleton("com.example.target"), queue.takeRemovals());
+    }
+
+    @Test
+    public void staleFailedRemovalCannotOverrideReenabledHooks() {
+        ScopeRequestQueue queue = new ScopeRequestQueue();
+        queue.remove("com.example.target");
+        Set<String> old = queue.takeRemovals();
+        queue.add("com.example.target");
+        queue.retryRemovals(old);
+        assertTrue(queue.takeRemovals().isEmpty());
+    }
+
+    @Test
+    public void timeoutCompletionAllowsExplicitRetryWithoutAutoRepeat() {
+        ScopeRequestQueue queue = new ScopeRequestQueue();
+        queue.add("com.example.target");
+        Set<String> old = queue.take(Collections.emptySet());
+        queue.complete(old);
+        assertTrue(queue.take(Collections.emptySet()).isEmpty());
+        queue.add("com.example.target");
+        assertEquals(old, queue.take(Collections.emptySet()));
+    }
+
+    @Test
     public void queuesUntilServiceArrivesAndSkipsAlreadyScopedPackages() {
         ScopeRequestQueue queue = new ScopeRequestQueue();
         queue.add("com.example.scoped");

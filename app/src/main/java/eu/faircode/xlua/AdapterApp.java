@@ -387,6 +387,13 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
             final ArrayList<String> assignIds = new ArrayList<>();
             final ArrayList<String> removeIds = new ArrayList<>();
             final boolean isUniversalGamingSpoof = UniversalGamingSpoof.isVirtualGroup(groupName);
+            if (groupName == null && !assign) {
+                // Clear persisted rows too, including hooks from disabled collections.
+                app.assignments.clear();
+                executor.submit(() -> AssignHooksCommand.call(context,
+                        AssignmentsPacket.clearAll(app.uid, pkgName, app.forceStop)));
+                return;
+            }
             String deviceBrand = null;
             String deviceManufacturer = null;
             if (isUniversalGamingSpoof && assign) {
@@ -456,6 +463,9 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
                         AssignHooksCommand.call(context, AssignmentsPacket.create(
                                 app.uid, app.packageName, assignIds, false, app.forceStop));
                 });
+            else
+                // Explicit retry must also work when assignments did not change.
+                eu.faircode.xlua.xposed.api101.LsposedScope.synchronize(context, app.uid, pkgName);
         }
 
         void updateExpand() {
@@ -678,6 +688,13 @@ public class AdapterApp extends RecyclerView.Adapter<AdapterApp.ViewHolder> impl
         Log.i(TAG, "revert=" + revert);
 
         for (AppXpPacket app : filtered) {
+            if (group == null && revert) {
+                app.assignments.clear();
+                AssignHooksCommand.call(context,
+                        AssignmentsPacket.clearAll(app.uid, app.packageName, app.forceStop));
+                notifyDataSetChanged();
+                continue;
+            }
             ArrayList<String> hookIds = new ArrayList<>();
 
             for (XHook hook : hooks)

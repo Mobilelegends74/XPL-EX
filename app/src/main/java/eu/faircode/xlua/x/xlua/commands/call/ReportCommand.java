@@ -67,6 +67,7 @@ public class ReportCommand extends CallCommandHandlerEx {
         if(Str.isEmpty(hookId) || AssignmentUtils.isFilterHook(hookId)) {
             if(DebugUtil.isDebug())
                 Log.d(TAG, "Ignoring usage report for filter hook, ID=" + hookId);
+            return null;
         }
 
         String event = bundle.getString("event");
@@ -74,8 +75,9 @@ public class ReportCommand extends CallCommandHandlerEx {
         int userId = UserIdentityUtils.getUserId(uid);
         AssignmentPacket packet = database.executeWithReadLock(() -> AssignmentApi.getAssignment(database, userId, pkg, hookId));
         if(packet == null || Str.isEmpty(packet.getHookId())) {
-            packet = new AssignmentPacket();
-            packet.hook = hookId;
+            // A still-running target may report after the user disabled its hooks.
+            // Reports are telemetry, never an instruction to assign a hook again.
+            return null;
         }
 
         packet.setUserIdentity(UserIdentity.from(userId, uid, pkg));
@@ -163,7 +165,26 @@ public class ReportCommand extends CallCommandHandlerEx {
                 packet.exception = sub.getString("exception");
         }
 
-        A_CODE result = DatabaseHelpEx.execute_one_locked_name(database, packet, AssignmentPacket.TABLE_INFO);
+        // UPDATE only: even if deletion races the read above, no INSERT can
+        // resurrect a disabled assignment. Update only the fields in this report.
+        ContentValues update = new ContentValues();
+        if (event != null && sub != null) {
+            update.put(AssignmentPacket.FIELD_RESTRICTED, packet.restricted);
+            if (event.equalsIgnoreCase("use")) {
+                update.put(AssignmentPacket.FIELD_USED, time);
+                update.put(AssignmentPacket.FIELD_NEW, packet.newValue);
+                update.put(AssignmentPacket.FIELD_OLD, packet.oldValue);
+            } else if (event.equalsIgnoreCase("install")) {
+                update.put(AssignmentPacket.FIELD_INSTALLED, time);
+            }
+            if (sub.containsKey("exception"))
+                update.put(AssignmentPacket.FIELD_EXCEPTION, packet.exception);
+        }
+        A_CODE result = update.size() == 0 ? A_CODE.SUCCESS : database.executeWithWriteLock(() ->
+                A_CODE.result(database.update(AssignmentPacket.TABLE_NAME, update,
+                        eu.faircode.xlua.x.xlua.database.sql.SQLSnake.create()
+                                .whereIdentity(userId, pkg)
+                                .whereColumn(AssignmentPacket.FIELD_HOOK, hookId).asSnake())));
         if(DebugUtil.isDebug())
             Log.d(TAG, "Result=" + result.name() + " Hook ID=" + hookId);
 
