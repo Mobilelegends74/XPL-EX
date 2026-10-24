@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">XPL-EX-NEXT-1.6.6</string>
+    <string name="app_name" translatable="false">XPL-EX-NEXT-1.6.6 TEST-SCOPE</string>
     <string name="xposed_module_description">Privacy controls and coherent device-profile spoofing for LSPosed.</string>
     <string name="channel_privacy" translatable="false">XPrivacyLua</string>
 
