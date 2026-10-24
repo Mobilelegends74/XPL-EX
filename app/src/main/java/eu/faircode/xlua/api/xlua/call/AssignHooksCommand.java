@@ -10,6 +10,7 @@ import eu.faircode.xlua.api.xstandard.CallCommandHandler;
 import eu.faircode.xlua.api.xstandard.command.CallPacket_old;
 import eu.faircode.xlua.api.xlua.database.LuaHookManager;
 import eu.faircode.xlua.api.hook.assignment.LuaAssignmentPacket;
+import eu.faircode.xlua.xposed.api101.LsposedScope;
 
 public class AssignHooksCommand extends CallCommandHandler {
     public AssignHooksCommand() {
@@ -28,9 +29,12 @@ public class AssignHooksCommand extends CallCommandHandler {
     }
 
     public static Bundle invoke(Context context, LuaAssignmentPacket packet) {
-        return XProxyContent.luaCall(
+        Bundle result = XProxyContent.luaCall(
                 context,
                 "assignHooks",
                 packet.toBundle());
+        if (XResult.from(result).succeeded())
+            LsposedScope.synchronize(context, packet.getUser(), packet.getCategory());
+        return result;
     }
 }

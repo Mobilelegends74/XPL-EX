@@ -151,6 +151,7 @@ dependencies {
 
     // Supplied by LSPosed 2.1.1 at runtime; never package the API implementation in the APK.
     compileOnly 'io.github.libxposed:api:101.0.1'
+    implementation 'io.github.libxposed:service:101.0.0'
     implementation 'org.lsposed.hiddenapibypass:hiddenapibypass:4.3'
 
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.14.0'

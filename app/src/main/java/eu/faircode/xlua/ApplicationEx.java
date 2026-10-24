@@ -27,6 +27,8 @@ import android.util.Log;
 
 import java.util.Locale;
 
+import eu.faircode.xlua.xposed.api101.LsposedScope;
+
 public class ApplicationEx extends Application {
     private static final String TAG = "XLua.App";
 
@@ -34,6 +36,7 @@ public class ApplicationEx extends Application {
     public void onCreate() {
         //setLocale();
         super.onCreate();
+        LsposedScope.initialize();
         //setLocale();
         Log.i(TAG, "Create version=" + BuildConfig.VERSION_NAME);
         Log.w(TAG, "SHA1 Fingerprint For [" + XCommandBridgeStatic.PRO_PACKAGE + "] package equals=[" + XSecurity.getProFingerPrint(getApplicationContext()) + "]");
