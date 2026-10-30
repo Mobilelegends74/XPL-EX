@@ -1,16 +1,16 @@
-name: XPL-EX NEXT 1.6.7 test-detect
+name: XPL-EX NEXT 1.6.7 diagnostic nohook
 
 on:
   push:
     branches:
-      - XPL-EX-NEXT-v1.6.7-test-detect
+      - XPL-EX-NEXT-v1.6.7-test-nohook
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: test-detect-${{ github.ref }}
+  group: test-nohook-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -70,7 +70,7 @@ jobs:
       - name: Validate signature and package
         run: |
           set -euo pipefail
-          apk="app/build/outputs/apk/release/XPL-EX-NEXT-1.6.7-test-detect-release.apk"
+          apk="app/build/outputs/apk/release/XPL-EX-NEXT-1.6.7-test-nohook-release.apk"
           test -s "${apk}"
           bt="${ANDROID_HOME}/build-tools/35.0.0"
           signed=$("${bt}/apksigner" verify --verbose --print-certs "${apk}")
@@ -80,8 +80,8 @@ jobs:
           test -n "${actual}"
           test "${actual}" = "${expected}"
           badging=$("${bt}/aapt" dump badging "${apk}")
-          grep -q "versionCode='174'" <<< "${badging}"
-          grep -q "versionName='1.6.7-test-detect'" <<< "${badging}"
+          grep -q "versionCode='175'" <<< "${badging}"
+          grep -q "versionName='1.6.7-test-nohook'" <<< "${badging}"
           grep -q "package: name='eu.faircode.xlua'" <<< "${badging}"
           mkdir -p dist
           cp "${apk}" dist/
@@ -90,7 +90,7 @@ jobs:
       - name: Upload unsigned-release-container test artifact
         uses: actions/upload-artifact@v4
         with:
-          name: XPL-EX-NEXT-1.6.7-test-detect-signed
+          name: XPL-EX-NEXT-1.6.7-test-nohook-signed
           path: dist/
           if-no-files-found: error
           retention-days: 30
