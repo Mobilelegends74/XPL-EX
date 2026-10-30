@@ -84,6 +84,7 @@ import eu.faircode.xlua.x.xlua.commands.query.GetAssignedHooksExCommand;
 import eu.faircode.xlua.x.xlua.database.DatabasePathUtil;
 import eu.faircode.xlua.x.xlua.hook.PackageHookContext;
 import eu.faircode.xlua.x.xlua.settings.GroupStats;
+import eu.faircode.xlua.x.systemlab.SettingsProviderIdentityLab;
 
 /*
     ToDO:
@@ -127,7 +128,13 @@ public class XLua {
                 new ModernMethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) {
+                        SettingsProviderIdentityLab.beforeCall(param);
                         GlobalCommandBridge.handeCall(param, lpparam.packageName);
+                    }
+
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) {
+                        SettingsProviderIdentityLab.afterCall(param);
                     }
                 });
 
