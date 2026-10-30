@@ -59,13 +59,21 @@ public class HookCore {
 
     public static void initHooks(final ModernLoadPackage.LoadPackageParam loadParam, int uid, final Context context) {
         try {
-            // Capture the host API before any profile data is applied. Hook
-            // compatibility must always be decided by the Android runtime
-            // that actually owns this process.
-            final int runtimeSdk = Build.VERSION.SDK_INT;
-            //Ask to Force Bypass
-            boolean bypassed = HiddenApi.bypassHiddenApiRestrictionsClassLoader(loadParam.classLoader);
+            // Read assigned rules first. An empty assignment set must not trigger
+            // unrelated API and framework hooks in a manually scoped application.
+            final Collection<XHook> hooks = GetAssignedHooksExCommand.get(
+                    context, true, uid, loadParam.packageName);
             final PackageHookContext app = PackageHookContext.create(loadParam, uid, context);
+            if ((hooks == null || hooks.isEmpty()) &&
+                    !app.settings.containsKey("android.build.version.min.sdk")) {
+                if (DebugUtil.isDebug())
+                    Log.d(TAG, "No active assignments: " + loadParam.packageName);
+                return;
+            }
+
+            // Capture the host API before applying any profile data.
+            final int runtimeSdk = Build.VERSION.SDK_INT;
+            boolean bypassed = HiddenApi.bypassHiddenApiRestrictionsClassLoader(loadParam.classLoader);
 
             // Normalize legacy/cross-version saved settings back to the host
             // Android generation before resolving any target-app classes.
@@ -73,19 +81,20 @@ public class HookCore {
             AndroidVersionSpoofer.installSystemPropertyHooks(app.settings);
             AndroidVersionSpoofer.applyFrameworkFields(app.settings);
 
-            final Collection<XHook> hooks = GetAssignedHooksExCommand.get(context, true, uid, loadParam.packageName);
             if(DebugUtil.isDebug())
                 Log.d(TAG, Str.fm("Loading Hooks for Package=%s UID=%s Hooks Count=%s Settings Count=%s Bypassed Hidden Api=%s",
                         loadParam.packageName,
                         uid,
-                        hooks.size(),
+                        (hooks == null ? 0 : hooks.size()),
                         app.settings.size(),
                         bypassed));
 
             Map<LuaScriptHolder, Prototype> scriptPrototype = new HashMap<>();
             PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 
-            for(XHook hook :  HookRepository.create().initializeHooks(context, hooks, app.settings).getHooks()) {
+            for(XHook hook : HookRepository.create().initializeHooks(
+                    context, hooks == null ? java.util.Collections.emptyList() : hooks,
+                    app.settings).getHooks()) {
                 // Legacy databases can retain the original Spoof.Features Lua
                 // scripts even after an APK update. Those scripts force every
                 // feature query to false and truncate the advertised feature
