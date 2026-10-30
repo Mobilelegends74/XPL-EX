@@ -1,0 +1,96 @@
+name: XPL-EX NEXT 1.6.7 test-detect
+
+on:
+  push:
+    branches:
+      - XPL-EX-NEXT-v1.6.7-test-detect
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-detect-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build and verify test APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v5
+
+      - name: Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: corretto
+          java-version: "17"
+
+      - name: Install Android SDK
+        run: |
+          set -euo pipefail
+          sdk_root="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-/usr/local/lib/android/sdk}}"
+          echo "ANDROID_HOME=${sdk_root}" >> "${GITHUB_ENV}"
+          echo "ANDROID_SDK_ROOT=${sdk_root}" >> "${GITHUB_ENV}"
+          "${sdk_root}/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "build-tools;35.0.0"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Prepare existing release signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          RELEASE_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          SIGNING_CERT_SHA256: ${{ secrets.SIGNING_CERT_SHA256 }}
+        run: |
+          set -euo pipefail
+          for key in KEYSTORE_BASE64 RELEASE_STORE_PASSWORD RELEASE_KEY_ALIAS RELEASE_KEY_PASSWORD SIGNING_CERT_SHA256; do
+            if [[ -z "${!key}" ]]; then
+              echo "Missing existing signing secret ${key}" >&2
+              exit 1
+            fi
+          done
+          printf '%s' "${KEYSTORE_BASE64}" | base64 --decode > "${GITHUB_WORKSPACE}/KEYSTORE.JKS"
+          keytool -list -keystore "${GITHUB_WORKSPACE}/KEYSTORE.JKS" -storepass "${RELEASE_STORE_PASSWORD}" -alias "${RELEASE_KEY_ALIAS}" > /dev/null
+          {
+            printf 'KEYSTORE_PASSWORD=%s\n' "${RELEASE_STORE_PASSWORD}"
+            printf 'KEY_ALIAS=%s\n' "${RELEASE_KEY_ALIAS}"
+            printf 'KEY_PASSWORD=%s\n' "${RELEASE_KEY_PASSWORD}"
+          } >> "${GITHUB_ENV}"
+
+      - name: Test and assemble APK
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          ./gradlew --no-daemon clean testReleaseUnitTest assembleRelease
+
+      - name: Validate signature and package
+        run: |
+          set -euo pipefail
+          apk="app/build/outputs/apk/release/XPL-EX-NEXT-1.6.7-test-detect-release.apk"
+          test -s "${apk}"
+          bt="${ANDROID_HOME}/build-tools/35.0.0"
+          signed=$("${bt}/apksigner" verify --verbose --print-certs "${apk}")
+          printf '%s\n' "${signed}"
+          actual=$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' <<< "${signed}" | head -n 1 | tr '[:upper:]' '[:lower:]' | tr -d ':')
+          expected=$(printf '%s' "${{ secrets.SIGNING_CERT_SHA256 }}" | tr '[:upper:]' '[:lower:]' | tr -d ':')
+          test -n "${actual}"
+          test "${actual}" = "${expected}"
+          badging=$("${bt}/aapt" dump badging "${apk}")
+          grep -q "versionCode='174'" <<< "${badging}"
+          grep -q "versionName='1.6.7-test-detect'" <<< "${badging}"
+          grep -q "package: name='eu.faircode.xlua'" <<< "${badging}"
+          mkdir -p dist
+          cp "${apk}" dist/
+          (cd dist && sha256sum "$(basename "${apk}")") > "dist/$(basename "${apk}").sha256"
+
+      - name: Upload unsigned-release-container test artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: XPL-EX-NEXT-1.6.7-test-detect-signed
+          path: dist/
+          if-no-files-found: error
+          retention-days: 30
