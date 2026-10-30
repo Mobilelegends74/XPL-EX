@@ -299,78 +299,46 @@ public class XLua {
 
 
 
+    /**
+     * Experimental bootstrap for the test-detect branch.
+     *
+     * Obtain the target app Context from Application.attach(Context), instead
+     * of intercepting Instrumentation.newApplication / LoadedApk.makeApplication.
+     * This callback fires after Application construction, before onCreate.
+     */
     public void hookApplication(final ModernLoadPackage.LoadPackageParam lpparam) throws Throwable {
         final int uid = android.os.Process.myUid();
-        final boolean tiramisuOrHigher = (Build.VERSION.SDK_INT >= 33);
-        // https://android.googlesource.com/platform/frameworks/base/+/169aeafb2d97b810ae123ad036d0c58336961c55%5E%21/#F1
-        Class<?> at = Class.forName(tiramisuOrHigher ? "android.app.Instrumentation" : "android.app.LoadedApk", false, lpparam.classLoader);
+        final java.lang.reflect.Method attach =
+                Application.class.getDeclaredMethod("attach", Context.class);
 
-        ModernXposedBridge.hookAllMethods(at,
-                tiramisuOrHigher ? "newApplication" : "makeApplication", new ModernMethodHook() {
-                    private boolean made = false;
+        ModernXposedBridge.hookMethod(attach, new ModernMethodHook() {
+            private boolean initialized;
 
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        try {
-                            // Instrumentation.newApplication receives the app Context before it
-                            // loads/instantiates the target Application class. Install the hooks
-                            // here so static initializers cannot cache the real Build.VERSION.
-                            if (tiramisuOrHigher && !made) {
-                                Context context = findContextArgument(param.args);
-                                if (context != null)
-                                    initialize(context);
-                            }
-                        } catch (Throwable ex) {
-                            Log.e(TAG, Log.getStackTraceString(ex));
-                            ModernXposedBridge.log(ex);
-                        }
-                    }
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                if (initialized || param.args == null || param.args.length != 1 ||
+                        !(param.args[0] instanceof Context))
+                    return;
 
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        try {
-                            if(!made) {
-                                Context context = (Application) param.getResult();
-                                initialize(context);
-                            }
-                        }catch (Throwable ex) {
-                            Log.e(TAG, Log.getStackTraceString(ex));
-                            ModernXposedBridge.log(ex);
-                        }
-                    }
+                Context context = (Context) param.args[0];
+                if (!lpparam.packageName.equals(context.getPackageName()))
+                    return;
 
-                    private Context findContextArgument(Object[] args) {
-                        if (args == null)
-                            return null;
-                        for (Object arg : args)
-                            if (arg instanceof Context)
-                                return (Context) arg;
-                        return null;
-                    }
-
-                    private void initialize(Context context) throws Throwable {
-                        if (made || context == null)
-                            return;
-                        made = true;
-
-                        // Check for isolate process
-                        int userid = XUtil.getUserId(uid);
-                        int start = XUtil.getUserUid(userid, 99000);
-                        int end = XUtil.getUserUid(userid, 99999);
-                        boolean isolated = (uid >= start && uid <= end);
-                        if (isolated) {
-                            Log.i(TAG, "Skipping isolated " + lpparam.packageName + ":" + uid);
-                            return;
-                        }
-
-                        if(lpparam.packageName.equalsIgnoreCase("com.android.phone")) {
-                            //XposedUtility.logI_xposed(TAG, "!!! Phone App! =" + lpparam.packageName);
-                            //PhoneServicesHook.deployHook(lpparam, context);
-                        } else {
-                            hookPackage(lpparam, uid, context);
-                        }
-                    }
-                });
+                initialized = true;
+                try {
+                    int userId = XUtil.getUserId(uid);
+                    int isolatedStart = XUtil.getUserUid(userId, 99000);
+                    int isolatedEnd = XUtil.getUserUid(userId, 99999);
+                    if (uid >= isolatedStart && uid <= isolatedEnd)
+                        return;
+                    if (!"com.android.phone".equalsIgnoreCase(lpparam.packageName))
+                        hookPackage(lpparam, uid, context);
+                } catch (Throwable ex) {
+                    Log.e(TAG, "Application bootstrap failed for " + lpparam.packageName, ex);
+                    ModernXposedBridge.log(ex);
+                }
+            }
+        });
     }
 
     public void hookPackage(final ModernLoadPackage.LoadPackageParam lpparam, int uid, final Context context) throws Throwable {
