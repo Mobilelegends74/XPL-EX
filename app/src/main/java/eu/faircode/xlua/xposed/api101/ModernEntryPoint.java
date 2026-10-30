@@ -32,16 +32,17 @@ public final class ModernEntryPoint extends XposedModule {
 
     @Override
     public void onPackageReady(@NonNull PackageReadyParam param) {
-        // API 101 loads Settings Provider code into system_server. Its callback
-        // is deliberately not the first package callback in that process.
-        if (systemServer) {
-            if (!"com.android.providers.settings".equals(param.getPackageName()))
-                return;
-        } else if (!param.isFirstPackage()) {
-            // XPL-EX installs process-wide application hooks only for the main
-            // scoped package, not packages loaded later via createPackageContext.
+        // DIAGNOSTIC CONTROL BUILD — intentionally no application hooks.
+        // LSPosed still loads this module and executes onModuleLoaded(),
+        // but no callback intercepts or patches any application methods.
+        // Keep system-server handlers unchanged to isolate only in-app hooks.
+        if (!systemServer) {
+            log(Log.INFO, TAG, "Diagnostic NOHOOK: module is loaded; no application hooks registered: "
+                    + param.getPackageName());
             return;
         }
+        if (!"com.android.providers.settings".equals(param.getPackageName()))
+            return;
         dispatch(new ModernLoadPackage.LoadPackageParam(
                 param.getPackageName(), processName, param.getClassLoader(),
                 param.getApplicationInfo(), param.isFirstPackage()));
