@@ -911,4 +911,8 @@
     <string name="module_status_title">WARNING</string>
     <string name="module_status_continue">Continue Anyway</string>
     <string name="module_status_unavailable">The XPL-EX module is not active. Enable it in LSPosed and restart the device.</string>
+    <string name="filter_cd_user">User apps</string>
+    <string name="filter_cd_all">All apps</string>
+    <string name="filter_cd_hook">Apps with hooks</string>
+    <string name="filter_cd_system">System apps</string>
 </resources>

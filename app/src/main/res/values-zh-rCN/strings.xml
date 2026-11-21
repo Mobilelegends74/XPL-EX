@@ -699,4 +699,8 @@
         <item>Русский</item>
         <item>简体中文</item>
     </string-array>
+    <string name="filter_cd_user">用户应用</string>
+    <string name="filter_cd_all">全部应用</string>
+    <string name="filter_cd_hook">已启用 Hook 的应用</string>
+    <string name="filter_cd_system">系统应用</string>
 </resources>

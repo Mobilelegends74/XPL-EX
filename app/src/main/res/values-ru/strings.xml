@@ -223,4 +223,8 @@
     <string name="msg_error_randomizer_none">Для этого параметра нет генератора</string>
     <string name="msg_result_randomized">Значения сгенерированы</string>
     <string name="msg_result_deleted">Удалено</string>
+    <string name="filter_cd_user">Пользовательские приложения</string>
+    <string name="filter_cd_all">Все приложения</string>
+    <string name="filter_cd_hook">Приложения с хуками</string>
+    <string name="filter_cd_system">Системные приложения</string>
 </resources>
