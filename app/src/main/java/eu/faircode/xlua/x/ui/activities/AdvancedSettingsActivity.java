@@ -232,6 +232,7 @@ public class AdvancedSettingsActivity extends ActivityBase {
         String selected = AppLanguage.getSelection(this);
         int checked = AppLanguage.ENGLISH.equals(selected) ? R.id.btn_language_english
                 : AppLanguage.RUSSIAN.equals(selected) ? R.id.btn_language_russian
+                : AppLanguage.CHINESE.equals(selected) ? R.id.btn_language_chinese
                 : R.id.btn_language_system;
         group.check(checked);
         group.addOnButtonCheckedListener((buttonGroup, checkedId, isChecked) -> {
@@ -239,6 +240,7 @@ public class AdvancedSettingsActivity extends ActivityBase {
                 return;
             String value = checkedId == R.id.btn_language_english ? AppLanguage.ENGLISH
                     : checkedId == R.id.btn_language_russian ? AppLanguage.RUSSIAN
+                    : checkedId == R.id.btn_language_chinese ? AppLanguage.CHINESE
                     : AppLanguage.SYSTEM;
             if (value.equals(AppLanguage.getSelection(this)))
                 return;

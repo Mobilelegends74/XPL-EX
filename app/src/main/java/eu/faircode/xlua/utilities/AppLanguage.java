@@ -14,17 +14,27 @@ public final class AppLanguage {
     public static final String SYSTEM = "system";
     public static final String ENGLISH = "en";
     public static final String RUSSIAN = "ru";
+    public static final String CHINESE = "zh";
 
     private AppLanguage() { }
 
     public static Context wrap(Context base) {
         if (base == null)
             return null;
-        Locale locale = new Locale(resolveLanguage(base));
+        Locale locale = toLocale(resolveLanguage(base));
         Configuration configuration = new Configuration(base.getResources().getConfiguration());
         configuration.setLocale(locale);
         configuration.setLayoutDirection(locale);
         return base.createConfigurationContext(configuration);
+    }
+
+    /**
+     * Maps an app language code to the locale used for resource selection.
+     * Simplified Chinese must carry the CN region to match values-zh-rCN,
+     * because values-zh alone is not present in this project.
+     */
+    static Locale toLocale(String language) {
+        return CHINESE.equals(language) ? Locale.SIMPLIFIED_CHINESE : new Locale(language);
     }
 
     public static String getSelection(Context context) {
@@ -56,13 +66,28 @@ public final class AppLanguage {
         return RUSSIAN.equals(resolveLanguage(context));
     }
 
+    public static boolean isChinese(Context context) {
+        return CHINESE.equals(resolveLanguage(context));
+    }
+
     static String normalizeSelection(String selection) {
-        return ENGLISH.equals(selection) || RUSSIAN.equals(selection)
+        return ENGLISH.equals(selection) || RUSSIAN.equals(selection) || CHINESE.equals(selection)
                 ? selection : SYSTEM;
     }
 
     static String languageForSystem(String language) {
-        return RUSSIAN.equalsIgnoreCase(language) ? RUSSIAN : ENGLISH;
+        if (language == null)
+            return ENGLISH;
+        // Callers may pass either a bare code ("zh") or a full tag ("zh_CN",
+        // "zh-Hans-CN"), so compare on the leading language subtag only.
+        String tag = language.replace('_', '-');
+        int dash = tag.indexOf('-');
+        String base = dash < 0 ? tag : tag.substring(0, dash);
+        if (RUSSIAN.equalsIgnoreCase(base))
+            return RUSSIAN;
+        if ("zh".equalsIgnoreCase(base))
+            return CHINESE;
+        return ENGLISH;
     }
 
     private static Locale systemLocale(Context context) {

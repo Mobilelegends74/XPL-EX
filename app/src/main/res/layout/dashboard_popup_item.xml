@@ -8,5 +8,5 @@
     android:maxLines="1"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
-    android:textColor="@color/dashboard_text"
+    android:textColor="?attr/colorOnSurface"
     android:textSize="16sp" />

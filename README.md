@@ -13,7 +13,7 @@
 [![Android](https://img.shields.io/badge/Android-8.1%2B-3DDC84?logo=android&logoColor=white&style=flat-square)](#требования)
 [![LSPosed API](https://img.shields.io/badge/libxposed-API%20101-167C80?style=flat-square)](https://github.com/libxposed/api)
 
-**Русская версия** · [English version](README_EN.md)
+**Русская версия** · [English version](README_EN.md) · [简体中文](README_ZH.md)
 
 [Скачать последнюю версию](https://github.com/Mobilelegends74/XPL-EX/releases/latest) · [Сообщить о проблеме](https://github.com/Mobilelegends74/XPL-EX/issues) · [История релизов](https://github.com/Mobilelegends74/XPL-EX/releases)
 

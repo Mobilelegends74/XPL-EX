@@ -1,42 +1,443 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title_accept">接受</string>
-    <string name="title_deny">拒绝</string>
+    <!-- Simplified Chinese translation. Keep in sync with values/strings.xml. -->
+    <string name="app_name">XPL-EX-NEXT-1.6.7</string>
+    <string name="xposed_module_description">为 LSPosed 提供隐私控制与一致的设备档案伪装。</string>
+    <string name="channel_privacy">XPrivacyLua</string>
+    <string name="title_license">
+        本应用用于保护你的隐私。基于 ObbedCode 的作品修改并扩展，在此致谢。
+        <![CDATA[<br><br>]]>这不是你创造的力量！！
+        <![CDATA[<br><br>]]>Copyright 2017-%1$d Marcel Bokhorst. All rights reserved.
+        <![CDATA[<br><br>]]>本程序是自由软件：你可以按照自由软件基金会发布的 GNU 通用公共许可证的条款（第 3 版，或你选择的任何更新版本）重新分发和/或修改它。
+        <![CDATA[<br><br>]]>本程序的分发是希望它有用，但不提供任何担保，甚至不包括适销性或特定用途适用性的默示担保。详见 <![CDATA[<a href="http://www.gnu.org/licenses/gpl.txt">GNU 通用公共许可证</a>]]>。
+        <![CDATA[<br><br><strong>LuaJ</strong><br>]]>Copyright 2007-2013 LuaJ. All rights reserved. 详见 <![CDATA[<a href="http://luaj.sourceforge.net/license.txt">许可证</a>]]>。
+        <![CDATA[<br><br><b>Glide</b><br>]]>Copyright 2014 Google, Inc. All rights reserved. 详见 <![CDATA[<a href="https://raw.githubusercontent.com/bumptech/glide/master/LICENSE">许可证</a>]]>。
+        <![CDATA[<br><br><b>Android Support Library</b><br>]]>Copyright 2011 The Android Open Source Project. 详见 <![CDATA[<a href="https://android.googlesource.com/platform/frameworks/support/+/master/LICENSE.txt">许可证</a>]]>。
+    </string>
+    <string name="title_accept">同意</string>
+    <string name="title_deny">不同意</string>
     <string name="title_fix">修复</string>
     <string name="title_all">全部</string>
-    <string name="title_restrict">受限</string>
-    <string name="title_bootloop">限制可能导致bootloop问题</string>
-    <string name="title_force_stop">强制自动停止</string>
-    <string name="title_help_instructions">        点击应用程序的图标或名称来勾选并应用限制选项。
-        如可行, 应用程序会自动停止以立即应用 (或解除) 该限制，但对某些应用程序，应用限制需要重启(参见下面的图标)。
-        <![CDATA[<br><br>]]>长按应用程序名称或图标来启动应用程序。
-        <![CDATA[<br><br>]]>参见 <![CDATA[<a href="https://github.com/M66B/XPrivacyLua/blob/master/README.md"> 这份文档 </a>]]>;
-        以及 <![CDATA[<a href="https://github.com/M66B/XPrivacyLua/blob/master/FAQ.md">常见问答</a>]]>; 以了解更多信息。
-    </string>
-    <string name="title_help_installed">已限制</string>
-    <string name="title_help_system">应用限制可能会导致出错</string>
+    <string name="title_restrict">限制</string>
+    <string name="title_bootloop">限制可能导致设备反复重启（bootloop）</string>
+    <string name="title_force_stop">自动强制停止</string>
+    <string name="title_use_default">为空时使用默认值</string>
+    <string name="button_reset_settings">重置设置</string>
+    <string name="title_hooks_assign">分配 Hook</string>
+    <string name="title_delete_action">删除</string>
+    <string name="button_terminate">终止</string>
+    <string name="button_properties">属性</string>
+    <string name="button_configs">配置</string>
+    <string name="button_profiles">档案</string>
+    <string name="button_create_config">创建配置</string>
+    <string name="button_create_profile">创建档案</string>
+    <string name="button_logs">日志</string>
+    <string name="button_force_stop">强制停止</string>
+    <string name="button_clear_app_data">清除应用数据</string>
+    <string name="title_help_instructions"><![CDATA[点击应用图标或名称，勾选要应用的限制。
+      如可行，应用会被自动停止，以便立即生效（或解除）限制，
+      但对部分应用，应用限制需要重启设备（见下方图标）。
+<br><br>长按应用名称或图标可启动该应用。
+<br><br>参见<a href="https://github.com/M66B/XPrivacyLua/blob/master/README.md">文档</a>
+      以及<a href="https://github.com/M66B/XPrivacyLua/blob/master/FAQ.md">常见问题</a>了解更多。]]></string>
+    <string name="menu_whats_new_button">更新内容</string>
+    <string name="whats_new"><![CDATA[<b>XPL-EX-NEXT v1.6.7</b><br><br>• 现在分配应用后会请求将其加入 LSPosed 作用域，可能需要手动确认。<br>• 移除最后一个已分配的 Hook 会将应用移出作用域；部分移除则仍保持启用。<br>• 为设置桥保留 System Framework 作用域。<br>• 新增请求排队与重复请求保护。感谢 HankAviator 提交 PR #11。<br><br>如果 LSPosed 阻止了请求，请在模块列表中长按 XPL-EX，然后选择 Reset scope request setting。<br><br><a href="https://github.com/Mobilelegends74/XPL-EX/releases/tag/XPL-EX-NEXT-v1.6.7">GitHub release</a>]]></string>
+    <string name="module_update_available_title">XPL-EX-NEXT 更新</string>
+    <string name="module_update_available_message">版本 %1$s 可用。是否下载并安装已签名的更新？</string>
+    <string name="warning_bulk_check">选中此项将启用所有可能的 Hook（极不推荐）。为什么？明明只该启用当前场景真正需要的 Hook，为何要用一颗炸弹制造混乱。
+
+记住，设置里的“唯一”过滤器涵盖一切可用于识别你的信息，其余都不重要。
+
+如果继续，当目标应用崩溃或行为异常时，请不要寻求帮助——这是你缺乏耐心的后果，你需要接受。（一次性全选导致应用崩溃时，不要来求助）
+
+请通过测试、尝试或查看 FAQ，只选真正需要的。
+
+
+点击（确定）后，此对话框将不再出现，所以停留时间很长（认真读完这段文字！！！）</string>
+    <string name="warning_bulk_check_title">启用全部 Hook？</string>
+    <string name="warning_hook_ad_analytics">此 Hook 会尝试阻止广告与分析库加载到应用中。目前并不支持全部（80 多个）库，请耐心等待我逐一处理。如果分析库仍在加载或广告仍会出现，说明这些库暂不支持。若应用严重依赖广告/分析库，也可能导致其崩溃。如果应用崩溃，请进入新的 Hook 界面，逐个禁用广告分析 Hook，反复测试，直到找出导致崩溃的那个 Hook。我不会为此提供帮助：禁用广告和分析可能导致部分应用崩溃，请自行排查并禁用。</string>
+    <string name="warning_hook_ad_analytics_spoof">此 Hook 不会阻止广告/分析库加载，而是伪装库中的唯一/关键 ID 和密钥，让分析更难进行。</string>
+    <string name="warning_hook_embed_paypal">此 Hook 会尝试伪装运行环境，使应用内嵌的 PayPal 支付网关误以为手机未 root、也不是模拟器。这只是尝试，并不保证万无一失。</string>
+    <string name="warning_hook_get_app">此 Hook 会阻止获取单个应用数据的操作。它不过滤应用列表，而是拦截那些能取得目标应用单项数据的函数——否则应用会暴露自身存在。HMA（Hide My App List）负责拦截和过滤列表。此 Hook 覆盖其余所有“不列举应用、但从应用读取数据”的途径。可在设置中切换白名单或黑名单模式。</string>
+    <string name="warning_hook_get_apps_ex">使用此 Hook 通常会屏蔽除当前被 Hook 的应用之外的所有应用。坦白说，我还没来得及把 M66B 的那些 API 全部移植到新系统，所以你可以选择用这个，而不用我做的 Get.Apps Hook。不必同时使用，因为此 Hook 很可能会覆盖另一个，结果是什么都看不到，而另一个是通过过滤器显示。不要再问这个 Hook 或要求我更新它——我清楚情况并正在处理，请耐心等待，或者把 Get.Apps 与 HMA（Hide My App List）配合使用，谢谢！</string>
+    <string name="warning_hook_get_location">Get Location 让目标应用获得定位许可，但仍可控制其能否真的取得位置；Spoof Location 则表示允许应用获取位置，但要把位置伪装掉。</string>
+    <string name="warning_hook_gsm_status">这些 Hook 只伪装移动数据的状态，即使数据已关闭也会显示为开启。</string>
+    <string name="warning_hook_hide_environment">此 Hook 会尝试隐藏系统是模拟器或已 root 的迹象。这绝非万无一失，效果甚至可能很差，尤其是目标应用使用原生检测手段时。若某些应用仍未被隐藏，请勿抱怨。为确保最佳效果，请勾选（Intercept Shell、Intercept Properties 和 Get Apps）Hook，并将 Get Apps 与 HMA（Hide My App List）配合使用。启用白名单模式时，Get Apps Hook 会自动屏蔽我硬编码的 root 包列表；为增强效果，可在设置中添加你自己的列表。最后，请在设置中启用（hide.root）和（hide.emulator）。</string>
+    <string name="warning_hook_id_user">启用后会通过 Activity Manager 伪装用户身份，但不会伪装 `whoami` 命令。为确保生效，请在设置中启用 `whoami` 命令拦截，然后选中 Intercept Shell Hook 组。Activity Manager 方式仅对通过系统或 root 获得较高权限的应用有用。</string>
+    <string name="warning_hook_intercept_shell">可在含 shell 的设置界面控制它要拦截的命令（硬编码）。如果应用使用原生 shell，此 Hook 不会生效。</string>
+    <string name="warning_hook_language">此功能并非总能生效，有时还不稳定，因为它针对的是许多可用于正当用途的 API。若发现应用行为异常，请禁用此 Hook。</string>
+    <string name="warning_hook_properties">要控制拦截过滤条件，请使用 Properties 界面。此 Hook 目前不支持拦截原生 Build 属性读取。如果配好过滤规则后属性仍被拦截，说明对方用的是原生方法。</string>
+    <string name="warning_hook_soc_ex">在某些 Android 版本和/或设备上，此 Hook 可能导致应用崩溃。如果应用出现崩溃，请禁用它。可先只启用此 Hook、打开应用，观察是否导致崩溃。</string>
+    <string name="warning_hook_spoof_features">启用此 Hook 可能导致应用行为异常，例如连接问题。此过滤器目前会移除所有设备功能。当应用通过该功能检查是否有相机或 Wi-Fi 芯片时，会显示为没有——因为这些都算作功能。</string>
+    <string name="warning_hook_user_agent">如果设备安装了自定义 WebView（如 BroMite），此 Hook 可能无法按预期工作。它对使用 OkHttp3、HttpUrlConnection 以及 Firefox 的 GeckoWebView 的应用仍然有效。这些 Hook 对基于 Chromium 的浏览器（如 Chrome 和 Brave）无效，因为它们用原生代码构造 User-Agent。另外，不建议在 DoorDash 之类的应用上使用，因为 DoorDash 使用自家的 User-Agent 类型；伪装不正确可能被 DoorDash 标记。</string>
+    <string name="warning_hook_vpn_state">此 Hook 会隐藏你已启用并连接 VPN 的事实。但如果目标应用通过服务端手段检测 VPN，Hook 无法绕过。此 Hook 通过四种方法绕过本地检测。</string>
+    <string name="save_setting_success">设置已保存！ </string>
+    <string name="save_setting_error">设置保存失败！ </string>
+    <string name="msg_export_hook_error">导出 Hook 到文件失败！</string>
+    <string name="msg_export_hook_success">已成功将 Hook 导出到文件！</string>
+    <string name="msg_create_hook_error">创建 Hook 失败！</string>
+    <string name="msg_create_hook_success">成功创建 Hook！</string>
+    <string name="msg_error_processing">处理设置时出错，请重试。</string>
+    <string name="msg_error_no_description">此设置容器没有描述（%s）</string>
+    <string name="text_backup_name">备份名称：</string>
+    <string name="text_enter_backup_name">输入备份名称</string>
+    <string name="text_definitions_count">定义 (%d)</string>
+    <string name="text_all_hooks">全部 Hook (%d)</string>
+    <string name="text_settings_count">设置（%d）</string>
+    <string name="text_assignments_count">分配 (%d)</string>
+    <string name="text_delete_old_database">删除旧的数据库表项，以便用勾选的项替换为新项！</string>
+    <string name="title_backup">备份管理</string>
+    <string name="title_settings_search">设置搜索</string>
+    <string name="task_status_dropping_tables">正在删除旧表…</string>
+    <string name="task_status_applying_settings">正在应用 %1$d 项设置</string>
+    <string name="task_status_progress">进度：%1$d/%2$d</string>
+    <string name="task_status_settings_completed">已完成 %1$d/%2$d 项设置</string>
+    <string name="task_status_processing_scripts">正在处理脚本</string>
+    <string name="task_status_applying_hooks">正在应用 %1$d 个 Hook</string>
+    <string name="task_status_hooks_completed">已完成 %1$d/%2$d 个 Hook</string>
+    <string name="task_status_applying_assignments">正在应用 %1$d 项分配</string>
+    <string name="task_status_assignments_completed">已完成 %1$d/%2$d 项分配</string>
+    <string name="cancelling">正在取消……</string>
+    <string name="task_cancelled">已取消</string>
+    <string name="title_applying_backup">正在应用备份</string>
+    <string name="task_applying_settings">正在应用设置</string>
+    <string name="task_applying_definitions">正在应用定义</string>
+    <string name="task_applying_assignments">正在应用分配</string>
+    <string name="task_complete">完成</string>
+    <string name="task_progress_format">进度：%1$d/%2$d</string>
+    <string name="task_detail_dropping_settings">正在删除旧设置</string>
+    <string name="task_detail_dropping_settings_table">正在删除旧设置表…</string>
+    <string name="task_detail_dropping_hooks">正在删除旧 Hook</string>
+    <string name="task_detail_dropping_hooks_table">正在删除旧 Hook 表…</string>
+    <string name="task_detail_dropping_assignments">正在删除旧分配</string>
+    <string name="task_detail_dropping_assignments_table">正在删除旧分配表…</string>
+    <string name="task_detail_processing_scripts_status">正在处理脚本</string>
+    <string name="task_detail_processing_scripts">正在为 Hook 定义准备 Lua 脚本…</string>
+    <string name="task_detail_applying_setting">设置：%1$s</string>
+    <string name="task_detail_applying_hook">Hook：%1$s</string>
+    <string name="task_detail_applying_assignment">Hook：%1$s，包：%2$s</string>
+    <string name="task_detail_settings_complete">已完成 %1$d/%2$d 项设置</string>
+    <string name="task_detail_definitions_complete">已完成 %1$d/%2$d 项定义</string>
+    <string name="task_detail_assignments_complete">已完成 %1$d/%2$d 项分配</string>
+    <string name="title_hook_edit">编辑 Hook</string>
+    <string name="title_hook_target">目标包</string>
+    <string name="title_wifi_networks">Wi-Fi 网络</string>
+    <string name="title_edit_wifi_network">编辑 Wi-Fi 网络</string>
+    <string name="btn_create_network">新建网络</string>
+    <string name="msg_error_mismatch_bridge_version" formatted="false">Service Bridge 版本 [%s] 与当前已安装的应用版本 [%s] 不匹配。请确保在 LSPosed 中为 XPL-EX 勾选（SettingsStorage），然后重启设备！</string>
+    <string name="msg_error_service">无法联系服务以进行数据库检查！\n\n请确认你已在 LSPosed 中为 XPL-EX 勾选（SettingsStorage）。\n\n如果它在 LSPosed 中被取消勾选（这没关系），只需确保你至少勾选过一次，然后重启设备（再试一次也无妨）。\n\n最后，如果你更新或安装了 XPL-EX，请务必再次勾选 SettingsSecure 并重启手机！！！</string>
+    <string name="msg_error_service_bridge">无法联系用于检查 Service Bridge 更新的命令！\n\n请再次在 LSPosed 中为 XPL-EX 勾选（SettingsStorage）。\n\n然后重启手机！届时 Command Service Bridge 及相关命令都会更新！\n\n如果仍然出错，请联系开发者！</string>
+    <string name="msg_error_generic_global">抱歉，不允许在全局上下文中执行此操作！</string>
+    <string name="msg_error_global_limit">错误：此操作无法完成，因为它属于全局上下文</string>
+    <string name="msg_error_generic">执行操作出错！</string>
+    <string name="msg_error_generic_null">执行操作出错！空指针</string>
+    <string name="msg_error_no_hooks">错误：此操作没有对应的 Hook！</string>
+    <string name="msg_error_no_hooks_global">错误：此操作没有对应的 Hook！全局上下文中 Hook 已禁用！</string>
+    <string name="msg_finished_applying_config">配置应用完成！</string>
+    <string name="msg_task_finished_command">命令执行成功！</string>
+    <string name="msg_task_failure">命令执行失败！</string>
+    <string name="result_prefix_notify">通知</string>
+    <string name="result_prefix_restrict">限制</string>
+    <string name="result_prefix_theme">主题</string>
+    <string name="result_prefix_debug">调试</string>
+    <string name="result_prefix_force_stop">应用已被强制关闭！</string>
+    <string name="result_prefix_cleared_app_data">应用数据已清除！</string>
+    <string name="result_settings_update">已更新 %1$d 项设置！失败 %2$d 项</string>
+    <string name="result_settings_update_empty">没有需要保存的设置！</string>
+    <string name="search_settings_hint">搜索设置…</string>
+    <string name="search_log_hint">搜索日志…</string>
+    <string name="search_config_hint">搜索配置…</string>
+    <string name="hint_input_value">输入值……</string>
+    <string name="hook_button_edit">编辑</string>
+    <string name="hook_button_delete">删除</string>
+    <string name="hook_button_export">导出</string>
+    <string name="hook_label_name">名称：</string>
+    <string name="hook_label_author">作者：</string>
+    <string name="hook_label_class">类：</string>
+    <string name="hook_label_method">方法：</string>
+    <string name="hook_label_sdk">SDK：</string>
+    <string name="hook_label_version">版本：</string>
+    <string name="hook_label_description">说明：</string>
+    <string name="hook_label_optional">可选</string>
+    <string name="hook_label_usage">使用情况</string>
+    <string name="hook_label_notify">通知</string>
+    <string name="hook_delete_error">删除 Hook 失败！错误=%s</string>
+    <string name="hook_delete_success">Hook 删除成功！%s</string>
+    <string name="hook_update_error">更新 Hook 失败！错误=%s</string>
+    <string name="hook_update_success">Hook 更新成功！%s</string>
+    <string name="msg_hint_create_profile">为目标应用创建档案！</string>
+    <string name="msg_hint_clear_app">清除目标应用数据！</string>
+    <string name="msg_hint_logs">目标应用日志！</string>
+    <string name="msg_hint_force_stop">强制停止目标应用！</string>
+    <string name="msg_hint_reset_settings">将 XPL-EX 设置重置为默认值（即全部清空）！</string>
+    <string name="msg_hint_create_configs">创建配置，还有什么可说的？</string>
+    <string name="msg_hint_manage_configs">编辑和管理配置</string>
+    <string name="msg_hint_save_checked">保存勾选状态，供下次打开界面时预选</string>
+    <string name="msg_shared_prefs_saved">共享偏好设置已保存！</string>
+    <string name="msg_hint_wild_card">在应用事件发生时随机化，彩蛋式随机生成器</string>
+    <string name="msg_hint_reset_container">将值重置为上次保存的值</string>
+    <string name="msg_hint_randomize_container">随机化设置</string>
+    <string name="msg_hint_save_container">保存未保存的设置</string>
+    <string name="msg_hint_delete_container">删除设置</string>
+    <string name="msg_hint_warning_save">有未保存的设置！</string>
+    <string name="msg_hint_settings_stat">已保存的设置占全部设置的比例</string>
+    <string name="title_save_file">保存文件</string>
+    <string name="msg_no_config_selected">请先选择一个配置</string>
+    <string name="title_time_pairs">时间对</string>
+    <string name="title_time_input">时间输入</string>
+    <string name="text_time_value">值</string>
+    <string name="text_time_unit">时间单位</string>
+    <string name="text_enter_time_value">输入数值</string>
+    <string name="msg_hint_setting_description">指定设置容器的描述。</string>
+    <string name="msg_hint_hook_control" formatted="false">Hook 控制：已启用 %s，总计 %s</string>
+    <string name="msg_result_randomized">设置已随机化！请务必保存新值！</string>
+    <string name="msg_error_randomizer_none">无随机生成器</string>
+    <string name="msg_result_deleted">删除成功</string>
+    <string name="msg_error_result_generic">操作失败，原因：</string>
+    <string name="msg_error_nothing_deleted">未删除任何内容</string>
+    <string name="msg_error_bad_app">无效应用</string>
+    <string name="msg_error_bad_options">未选择要应用的选项……</string>
+    <string name="title_hook_warning">Hook 组警告！</string>
+    <string name="title_help_installed">限制已安装</string>
+    <string name="title_help_system">应用限制可能导致问题</string>
     <string name="title_help_settings">应用限制设置</string>
-    <string name="title_help_persistent">限制在重启后生效</string>
-    <string name="title_help_exception">应用限制失败 (点击图标查看原因)</string>
+    <string name="title_help_persistent">应用限制需要重启设备</string>
+    <string name="title_help_exception">应用限制失败（点击图标查看原因）</string>
+    <string name="title_delete_property">删除属性</string>
+    <string name="title_delete_setting">删除设置</string>
+    <string name="title_add_property">添加属性</string>
+    <string name="title_delete_config">删除配置</string>
+    <string name="title_no_groups">分组错误</string>
+    <string name="title_error_generic">错误</string>
+    <string name="title_error_database_service">数据库服务错误！</string>
+    <string name="title_error_service_version">服务版本过旧错误（请重启）！</string>
+    <string name="title_global">全局</string>
+    <string name="title_app">应用</string>
+    <string name="title_tag_cell">蜂窝</string>
+    <string name="title_tag_hardware">硬件</string>
+    <string name="title_tag_unique">唯一</string>
+    <string name="title_tag_rom">ROM</string>
+    <string name="title_tag_device">设备</string>
+    <string name="title_tag_etc">其他</string>
+    <string name="title_tag_custom">自定义</string>
+    <string name="title_new_to_old">从新到旧</string>
+    <string name="title_show_installed">显示已安装</string>
+    <string name="menu_clean_privacy_ex_hooks">清理 PEX Hook</string>
+    <string name="title_select_file">选择文件</string>
+    <string name="title_no_random">该设置没有随机生成器</string>
+    <string name="title_collection_privacy">隐私</string>
+    <string name="title_check_all">全选</string>
+    <string name="title_uncheck_all">取消全选</string>
+    <string name="title_select_tags">选择标签</string>
+    <string name="msg_config_push">已推送配置！结果 = </string>
+    <string name="msg_delete_config">确定要删除整个配置吗？</string>
+    <string name="msg_na_randomizer">此设置没有随机生成器，或者你把随机生成器设为 N/A。最可能的原因是设置数量实在太多，要为所有设置都做随机生成器，就如同要求朝鲜释放其人民一样不现实。不过每次更新都会加入更多随机生成器；在此期间，请用 Google 查找你认为最适合该设置的值，并参考描述中给出的可能格式。谢谢！</string>
+    <string name="msg_delete_property">确定要删除该属性吗？这会删除映射（把属性名关联到设置的对象）以及属性设置值本身（不是被关联的设置，而是控制该属性的设置）。</string>
+    <string name="msg_no_groups">错误：返回的分组数为 0。若你是首次安装 APK，请确认已经重启手机；并确认要么你没有选择/启用任何集合，要么存在相互冲突的集合。同时启用（旧的）（Privacy）集合和（新的）（PrivacyEx）集合会导致此问题，请禁用其中一个（建议禁用 Privacy）后重试。你可以在 XPL-EX 频道置顶消息提供的 Pro 应用中控制这些设置：打开 Pro 伴侣应用后，首个界面会显示集合列表，同时启用（Privacy）和（PrivacyEx）集合会引发问题。</string>
+    <string name="msg_old_group" formatted="false">嘿，我注意到你启用了原始 M66B 的集合（Privacy）。我会在未经你同意的情况下禁用它，以免有人困惑或抱怨多年前就已解决的问题。话虽如此，如果你之后又启用它，遇到问题我不会帮忙，因为我不再支持或维护该集合。任何与该过时集合相关的问题都将被 100% 忽略！</string>
+    <string name="msg_confirm_save_options_config">这会将当前勾选的选项保存为预设配置。\n\n这与将设置的实际值保存到数据库无关。\n\n你可以选择让这些勾选自动应用：\n\n• 仅在为这个特定应用打开此界面时\n\n• 或为任何应用打开此界面时\n\n当前选择将保存为默认配置。\n\n空的全局选择也会被有意保存：其中未勾选的全局值保持为固定默认值，不会被加入按应用的随机化。\n\n已勾选的设置：</string>
+    <string name="msg_confirm_force_stop">确定要强制停止目标应用吗？\n\n这通常不会造成问题，但会强制目标应用停止运行；如果应用中有未保存的任务，请先保存！</string>
+    <string name="msg_confirm_clear_data">确定要清除该目标应用的数据吗？\n\n除非已备份，否则无法恢复。你将退出所有账号，并丢失该应用的全部数据。</string>
+    <string name="msg_confirm_delete_all_settings">确定要删除该目标应用的所有已保存设置吗？</string>
+    <string name="msg_confirm_delete_config">确定要删除此配置吗？名称：</string>
+    <string name="msg_confirm_delete_settings">确定要删除这些设置吗？数量：</string>
+    <string name="result_update_setting_success">设置更新成功</string>
+    <string name="result_delete_setting_success">设置删除成功</string>
+    <string name="result_delete_setting_failed">删除设置失败</string>
+    <string name="result_delete_setting_null">参数为空或未填写，请勾选或输入内容！</string>
+    <string name="result_property_added_success">属性映射添加成功！</string>
+    <string name="result_property_added_failed">属性映射添加失败！</string>
+    <string name="result_open_directory_failed">无法获取目标文件夹的访问权限</string>
+    <string name="result_open_file_failed">无法获取目标文件的访问权限</string>
+    <string name="result_config_read_failed">无法读取或解析目标配置文件</string>
+    <string name="result_config_read_success">已读取配置：</string>
+    <string name="result_config_parse_failed">配置解析失败，请确认格式和扩展名/类型正确</string>
+    <string name="result_file_save_success">文件保存成功！</string>
+    <string name="result_file_save_failed">文件保存失败！</string>
+    <string name="result_config_failed_delete_settings">删除设置/配置失败，请先保存配置！</string>
+    <string name="result_config_finish_applying">配置值已应用到设置！</string>
+    <string name="menu_setting_delete_hint">删除设置值或映射。</string>
+    <string name="menu_setting_save_hint">将修改后的设置值保存到数据库</string>
+    <string name="menu_setting_reset_hint">将界面中的设置值重置为上次保存的值。</string>
+    <string name="menu_setting_random_hint">随机化设置值。（除非选择保存，否则不会保存）</string>
+    <string name="menu_setting_add_prop_hint">向设置分组添加 Build 属性，并将该属性关联到某项设置。</string>
+    <string name="menu_setting_selecting_all_hint">全选或取消全选目标分组中的所有设置</string>
+    <string name="menu_property_setting_delete_hint">从设置分组中删除 Build 属性</string>
+    <string name="menu_property_add_hint">向分组添加 Build 属性</string>
+    <string name="menu_config_import_hint">从文件导入配置</string>
+    <string name="menu_config_export_hint">将配置导出为文件</string>
+    <string name="menu_config_delete_settings_hint">删除配置中选定的设置</string>
+    <string name="menu_config_save_hint">将修改后的配置保存到数据库（不是设置！！）</string>
+    <string name="menu_config_apply_hint">将修改后的配置应用到设置</string>
+    <string name="menu_config_delete_hint">删除配置</string>
+    <string name="menu_settings_use_default_hint">启用后，如果你作为用户没有为 Hook 设置值，则使用开发者提供的默认设置值；否则未设置时返回 NULL。</string>
+    <string name="menu_settings_randomize_hint">随机化选中的设置值</string>
+    <string name="menu_settings_add_hint">添加新设置</string>
+    <string name="menu_settings_save_hint">将未保存的设置保存到数据库</string>
+    <string name="menu_settings_delete_hint">删除选中的设置</string>
+    <string name="menu_settings_hint">选项</string>
+    <string name="menu_settings_reset_hint">将所有设置重置为空值</string>
+    <string name="msg_settings_reset">确定要重置所有设置吗？这只会把值恢复为空或 Null，不会删除任何映射。</string>
+    <string name="title_settings_reset">重置所有设置</string>
+    <string name="title_config_rename_config">重命名配置</string>
+    <string name="text_config_name">配置名称</string>
+    <string name="text_enter_config_name">输入配置名称</string>
+    <string name="text_config_author">作者名称</string>
+    <string name="text_enter_config_author">输入作者名称</string>
+    <string name="text_config_version">版本</string>
+    <string name="text_enter_config_version">输入版本字符串</string>
+    <string name="text_label_settings">设置：</string>
+    <string name="text_label_hooks">Hook：</string>
+    <string name="text_bulk_select">批量选择</string>
+    <string name="msg_delete_app_data">确定要清除应用数据吗？这只会删除应用数据，不会删除 Hook 设置或分配。</string>
+    <string name="msg_backup_exported">XLua 备份已导出！</string>
+    <string name="msg_backup_exported_failed">XLua 备份导出失败！</string>
+    <string name="msg_settings_imported">设置已导入！</string>
+    <string name="menu_config_hint">选项</string>
+    <string name="menu_add_property_name">属性名称</string>
+    <string name="menu_add_property_setting_name">设置名称</string>
+    <string name="option_close">关闭</string>
+    <string name="option_apply">应用</string>
+    <string name="option_update">更新</string>
+    <string name="option_create">创建</string>
+    <string name="option_open">打开</string>
+    <string name="option_save">保存</string>
+    <string name="option_edit">编辑</string>
+    <string name="option_export">导出</string>
+    <string name="menu_import_settings">导入设置</string>
+    <string name="menu_export_settings">导出设置</string>
+    <string name="msg_error_reading_backup">读取备份文件出错</string>
+    <string name="msg_backup_saved">备份保存成功</string>
+    <string name="msg_error_saving_backup">保存备份出错</string>
+    <string name="option_delete">删除</string>
+    <string name="option_clear_global_template">清除全局模板</string>
+    <string name="option_cancel">取消</string>
+    <string name="option_add">添加</string>
+    <string name="option_not_ask">不再询问</string>
+    <string name="option_thanks">好，谢谢</string>
+    <string name="option_ok">确定</string>
+    <string name="option_rename">重命名</string>
+    <string name="option_clear">清除</string>
+    <string name="title_help">帮助指南</string>
+    <string name="title_groups">分组</string>
+    <string name="title_delete_appdata">清除应用数据</string>
+    <string name="menu_filter">搜索筛选</string>
+    <string name="menu_filter_settings">设置</string>
+    <string name="menu_filter_groups">分组</string>
+    <string name="menu_filter_hooks">Hook</string>
+    <string name="menu_filter_all">全部</string>
+    <string name="menu_force_english">强制使用英语</string>
     <string name="menu_show">显示</string>
     <string name="menu_show_user">显示用户应用</string>
     <string name="menu_show_icon">显示有图标的应用</string>
     <string name="menu_show_all">显示所有应用</string>
+    <string name="menu_show_settings_all">全部</string>
+    <string name="menu_show_settings_unique">唯一</string>
+    <string name="menu_show_settings_android">Android</string>
+    <string name="menu_show_hook">显示已 Hook 的应用</string>
+    <string name="menu_show_system">显示系统应用</string>
     <string name="menu_search">搜索</string>
     <string name="menu_help">帮助</string>
-    <string name="menu_notify_new">提示新应用</string>
+    <string name="menu_notify_new">新应用时通知</string>
     <string name="menu_restrict_new">限制新应用</string>
-    <string name="menu_companion">专业版功能</string>
+    <string name="menu_companion">Pro 功能</string>
     <string name="menu_readme">文档</string>
     <string name="menu_faq">常见问题</string>
     <string name="menu_donate">捐赠</string>
+    <string name="menu_show_priv">隐私</string>
+    <string name="menu_show_rev">逆向工程</string>
+    <string name="menu_show_byp">绕过/隐藏</string>
+    <string name="button_config_from_file">从文件导入</string>
+    <string name="button_config_to_file">导出到文件</string>
+    <string name="button_config_create">创建配置</string>
+    <string name="button_select_config">选择或创建配置</string>
+    <string name="button_hooks_group_hint">应用 Hook 组视图，查看所有已分配的 Hook 和组及其设置</string>
+    <string name="button_configs_hint">配置菜单，通过配置修改应用设置</string>
+    <string name="button_settings_ex_hint">高级设置界面，独立于 Pro 版应用</string>
+    <string name="button_props_hint">属性界面，用于控制属性拦截</string>
+    <string name="button_reset_settings_hint">将设置值重置为 Null 或无</string>
+    <string name="button_settings_reset_data_hint">重置应用数据：清除实际数据，不涉及 Hook 或设置</string>
+    <string name="button_settings_reset_data">清除数据</string>
+    <string name="button_settings_save_checked_hint">保存已勾选的项，下次打开该界面时仍会保持勾选。</string>
+    <string name="button_settings_save_checked">保存勾选项</string>
+    <string name="button_settings_export_to_config_hint">将所选设置导出为配置，以便在“配置”界面中使用或用于其他用途</string>
+    <string name="button_settings_export_to_config">导出到配置</string>
+    <string name="msg_settings_to_config_exporting">正在将设置导出为配置</string>
+    <string name="msg_imported_hooks_success">成功导入 [%s] 个 Hook！</string>
+    <string name="check_prop_hide_hint">在 Build 属性中隐藏指定属性</string>
+    <string name="check_prop_skip_hint">在 Build 属性中跳过或忽略指定属性</string>
+    <string name="check_prop_force_hint">强制返回 Build 属性，即使系统中不存在该属性。</string>
+    <string name="text_hide">隐藏</string>
+    <string name="text_skip">跳过</string>
+    <string name="text_force">强制</string>
+    <string name="title_add_dialog_setting_builder">设置构建器</string>
+    <string name="error_add_dialog_bad_name">设置名称无效，请用点号代替空格，避免使用空白字符</string>
+    <string name="error_add_dialog_bad_input">设置名称输入无效</string>
+    <string name="error_add_dialog_no_checks">错误：未选择任何选项，请选择设置映射或设置值</string>
+    <string name="text_add_dialog_setting_name">设置名称</string>
+    <string name="text_add_dialog_setting_value">设置值</string>
+    <string name="text_add_dialog_setting_description">设置默认描述</string>
+    <string name="text_add_dialog_setting_help">设置映射会被视为默认设置。添加映射或默认映射会把该设置加入默认设置，这样即使删除设置值，它仍会作为可修改的设置显示；同时也能在不同应用设置场景中看到该设置。不添加映射时，设置值一旦删除，该设置就会消失。注意：设置名称和映射应始终使用点号，不要使用空格！</string>
+    <string name="error_no_activity">应用没有可启动的 Activity……</string>
+    <string name="error_no_description_hook">抱歉，此 Hook 没有说明……</string>
+    <string name="error_no_description_setting">抱歉，此设置没有说明……</string>
+    <string name="error_no_settings_hook">此 Hook 没有任何设置……</string>
+    <string name="error_no_input_property">属性构建器缺少属性名称或设置名称，请确认已填写……</string>
+    <string name="title_hook_script">Lua 脚本</string>
+    <string name="title_hook_collection">集合</string>
+    <string name="title_hook_group">Hook 组</string>
+    <string name="title_hook_name">名称</string>
+    <string name="title_hook_author">作者</string>
+    <string name="title_hook_version">版本</string>
+    <string name="title_hook_description">描述</string>
+    <string name="title_hook_enabled">已启用</string>
+    <string name="title_hook_optional">可选</string>
+    <string name="title_hook_usage">用法</string>
+    <string name="title_hook_notify">通知</string>
+    <string name="title_hook_class">类</string>
+    <string name="title_hook_method">方法</string>
+    <string name="title_hook_params">参数类型</string>
+    <string name="title_hook_return">返回类型</string>
+    <string name="title_hook_minsdk">最小 SDK</string>
+    <string name="title_hook_maxsdk">最大 SDK</string>
+    <string name="title_hook_minapk">最小 APK</string>
+    <string name="title_hook_maxapk">最大 APK</string>
+    <string name="title_hook_exclude">排除的包</string>
+    <string name="title_hook_settings">设置</string>
+    <string name="title_deploy_hooks">正在更新 Hook 分配……</string>
+    <string name="title_deploy_settings">正在更新设置……</string>
+    <string name="title_profile_manager">档案管理</string>
+    <string name="title_config_modify">修改配置</string>
+    <string name="title_logs">日志</string>
+    <string name="title_confirm">确认</string>
+    <string name="title_save_options">保存选中的设置</string>
+    <string name="title_config_manager">配置管理</string>
+    <string name="menu_hooks">Hook</string>
+    <string name="menu_props">属性值</string>
+    <string name="menu_settings">设置值</string>
+    <string name="menu_configs">配置编辑器</string>
+    <string name="menu_dark">深色模式</string>
+    <string name="menu_debug_logs">调试日志</string>
+    <string name="menu_database">数据库</string>
+    <string name="menu_save">保存</string>
+    <string name="menu_cpumaps">CPU 映射</string>
+    <string name="menu_collections">集合</string>
+    <string name="menu_info">信息</string>
+    <string name="message_warning_hooks_title">警告！</string>
+    <string name="message_warning_hooks_message">警告！此分组或容器中有设置尚未保存！除非你不打算保存新值，否则请务必保存修改！</string>
+    <string name="message_unique_title">唯一数据</string>
+    <string name="message_unique_message">此图标标记应用可用来再次识别手机或用户的值。请特别注意 Android ID、广告标识符、序列号、UUID 及其他持久值。</string>
     <string name="msg_no_service">模块未运行或未更新</string>
-    <string name="msg_review_settings">查看隐私设定</string>
-    <string name="msg_usage">受限于\'%1$s\'</string>
-    <string name="msg_exception" comment="msg_exception&#10;Error in &lt;hook name&gt;">错误：%1$s</string>
-    <string name="msg_restrict_sure">你确定要对所有应用切换\"%1$s\"吗？</string>
+    <string name="msg_review_settings">查看隐私设置</string>
+    <string name="msg_usage">受限于 \'%1$s\'</string>
+    <string name="msg_exception">%1$s 出错</string>
+    <string name="msg_restrict_sure">确定要为所有应用切换 \'%1$s\' 吗？</string>
     <string name="msg_no_browser">没有可用于打开链接的浏览器</string>
-    <string name="group_determine_activity">确定活动状态</string>
+    <string name="msg_deploy_succeeded">Hook 分配更新成功！</string>
+    <string name="msg_succeeded_count">成功：</string>
+    <string name="msg_failed_count">失败：</string>
+    <string name="group_universalgaming_spoof_device">伪装设备</string>
+    <string name="group_determine_activity">判断活动状态</string>
     <string name="group_get_applications">读取应用列表</string>
     <string name="group_get_calendars">读取日历</string>
     <string name="group_get_call_log">读取通话记录</string>
@@ -44,17 +445,266 @@
     <string name="group_get_location">读取位置信息</string>
     <string name="group_get_messages">读取短信</string>
     <string name="group_get_sensors">读取传感器</string>
-    <string name="group_read_account">获取帐户名</string>
+    <string name="group_read_account">读取账户名</string>
     <string name="group_read_clipboard">读取剪贴板</string>
     <string name="group_read_identifiers">读取标识符</string>
     <string name="group_read_network">读取网络数据</string>
     <string name="group_read_notifications">读取通知</string>
-    <string name="group_read_sync">读取同步的数据</string>
+    <string name="group_read_sync">读取同步数据</string>
     <string name="group_read_telephony">读取电话数据</string>
-    <string name="group_record_audio">录音</string>
+    <string name="group_record_audio">录制音频</string>
     <string name="group_record_video">录制视频</string>
-    <string name="group_send_messages">发送信息​​​​​​​​</string>
-    <string name="group_use_analytics">使用分析（Google/Firebase Analytics等）</string>
+    <string name="group_send_messages">发送消息</string>
+    <string name="group_use_analytics">使用分析服务</string>
     <string name="group_use_camera">使用相机</string>
     <string name="group_use_tracking">使用跟踪</string>
+    <string name="description_hook_group_apps_spoof_list">
+    通过拦截包查询并过滤应用列表来控制应用可见性。启用后，此 Hook 会按你配置的过滤规则阻止目标应用看到其他已安装应用。配合 HMA（Hide My App List）设置使用效果最佳。
+</string>
+    <string name="description_hook_group_apps_spoof_timestamps">
+    管理并修改返回给目标应用的应用时间戳，包括安装时间、最后更新时间和首次安装时间。这有助于防止应用追踪安装模式或检测到新安装的应用。
+</string>
+    <string name="description_hook_group_apps_spoof_list_ex">
+    应用列表伪装的扩展版本，覆盖更多 API。此实现提供更强大的包管理器拦截和额外过滤能力。相比基础版本，它更适合隐藏应用，尤其是在较新的 Android 版本上。
+</string>
+    <string name="description_hook_group_device_id_lenovo">
+    拦截并伪装 Lenovo 专有的设备标识符和 API 调用。这阻止应用获取唯一标识符或识别 Lenovo 设备的独有特征，有助于保持设备匿名。
+</string>
+    <string name="description_hook_group_device_id_asus">
+    控制并修改 ASUS 设备的标识方式。此 Hook 阻止应用访问 ASUS 专有的设备 ID 和系统信息，这些信息可能被用于设备指纹识别。
+</string>
+    <string name="description_hook_group_device_id_meizu">
+    通过拦截 Meizu 专有的系统调用来管理其设备标识。这有助于防止应用通过 Meizu 独有的设备标识符和系统属性进行设备指纹识别。
+</string>
+    <string name="description_hook_group_device_id_xiaomi">
+    处理 Xiaomi 设备标识，包括 MIUI 专有标识符。此 Hook 拦截对 Xiaomi 设备 ID、MIUI 版本信息及其他可能用于追踪的唯一标识符的访问。
+</string>
+    <string name="description_hook_group_device_id_vivo">
+    通过拦截 Vivo 专有的系统调用和标识符，抵御对 Vivo 设备的识别。这阻止应用获取 Vivo 设备的唯一信息和系统属性。
+</string>
+    <string name="description_hook_group_device_id_samsung">
+    控制对 Samsung 专有设备标识符和 Knox API 的访问。此 Hook 阻止应用获取 Samsung 设备的唯一信息，也阻止其访问 Samsung 专有的系统属性。
+</string>
+    <string name="description_hook_group_devices_hide_driver_files">
+    向试图检测特定硬件或系统修改的应用隐藏设备驱动文件和路径。这有助于防止应用通过文件系统查询发现自定义驱动或系统修改。
+</string>
+    <string name="description_hook_group_devices_hide_external">
+    控制外部设备连接的可见性，包括蓝牙、USB 及其他外设。此 Hook 阻止应用检测或枚举已连接的设备及其特征。
+</string>
+    <string name="description_hook_group_devices_spoof_info">
+    管理指纹传感器、蓝牙适配器等硬件组件的设备信息伪装。此 Hook 会修改设备描述符、名称和特征，防止应用准确进行设备指纹识别。
+</string>
+    <string name="description_hook_group_get_sensors">
+    控制对设备传感器（加速度计、陀螺仪等）的访问。此 Hook 阻止应用读取传感器数据，这些数据可能被用于设备指纹识别或活动监测。
+</string>
+    <string name="description_hook_group_get_call_log">
+    通过控制对通话记录的访问来保护你的通话历史。启用后，此 Hook 阻止应用读取来电、去电和未接通话记录。
+</string>
+    <string name="description_hook_group_get_calendars">
+    管理对日历数据的访问。此 Hook 阻止应用读取你的日历事件、日程及相关详情，保护你的日程隐私。
+</string>
+    <string name="description_hook_group_get_contacts">
+    控制对联系人数据库的访问。此 Hook 阻止应用读取你的联系人列表，保护你的人际关系及其详情信息。
+</string>
+    <string name="description_hook_group_get_account">
+    管理对设备上账户信息的访问。此 Hook 阻止应用获取已配置账户的详情，包括电子邮件及其他服务账户。
+</string>
+    <string name="description_hook_group_get_messages">
+    通过控制对短信数据库的访问保护 SMS 和 MMS 消息。此 Hook 阻止应用读取你的短信内容和消息元数据。
+</string>
+    <string name="description_hook_group_get_user">
+    控制对用户档案信息的访问。此 Hook 阻止应用从系统获取用户账户详情和档案数据。
+</string>
+    <string name="description_hook_group_get_bluetooth">
+    管理对蓝牙信息和操作的访问。此 Hook 控制应用可访问的蓝牙相关数据，包括已配对设备和连接历史。
+</string>
+    <string name="description_hook_group_get_activity">
+    控制对活动识别的访问。此 Hook 阻止应用通过设备传感器和 Google Play Services 监测你的身体活动。
+</string>
+    <string name="description_hook_group_get_clipboard">
+    通过控制读取权限保护剪贴板数据。此 Hook 阻止应用监视或读取你复制到剪贴板的文本和数据。
+</string>
+    <string name="description_hook_group_hardware_spoof_cpu_ex">
+    扩展的 CPU 信息伪装。此 Hook 修改上报的 CPU 特征、核心数和硬件能力，防止应用通过处理器识别进行设备指纹识别。
+</string>
+    <string name="description_hook_group_hardware_spoof_gps_model">
+    控制上报给应用的 GPS 硬件信息。此 Hook 修改 GPS 型号详情和规格，防止应用通过 GPS 硬件特征识别设备。
+</string>
+    <string name="description_hook_group_hardware_spoof_camera_count">
+    管理上报的相机硬件信息。此 Hook 可修改上报的相机数量及其规格，防止应用通过相机硬件特征进行设备识别。
+</string>
+    <string name="description_hook_group_hardware_spoof_gpu">
+    控制并修改上报给应用的 GPU 信息。此 Hook 伪装显卡硬件详情，包括厂商、渲染器和能力，防止应用通过 GPU 识别进行设备指纹识别。
+</string>
+    <string name="description_hook_group_hardware_spoof_cpu">
+    管理暴露给应用的 CPU 信息。此 Hook 修改处理器详情、架构信息和特性标志，防止应用通过 CPU 特征识别设备。
+</string>
+    <string name="description_hook_group_hardware_spoof_memory">
+    控制上报给应用的内存相关信息。此 Hook 修改上报的 RAM 容量、内存特征和可用空间等详情，防止应用通过内存规格进行设备指纹识别。
+</string>
+    <string name="description_hook_group_hide_vpn_state">
+    对应用隐藏 VPN 连接状态。此 Hook 通过多种检测方式阻止应用发现已连接的 VPN，在使用 VPN 服务时帮助保护隐私。
+</string>
+    <string name="description_hook_group_id_build">
+    控制对设备 Build 信息的访问。此 Hook 修改可能被用来识别你的设备型号、厂商和硬件详情的系统 Build 属性。
+</string>
+    <string name="description_hook_group_id_boot">
+    管理启动相关的标识信息。此 Hook 控制对启动参数、引导程序信息及相关标识符的访问，这些信息可能暴露设备特征。
+</string>
+    <string name="description_hook_group_id_file_stat">
+    控制文件统计和元数据信息。此 Hook 修改可能被用来识别系统修改或特定设备特征的文件系统信息。
+</string>
+    <string name="description_hook_group_id_unique">
+    管理对设备唯一标识符的访问。此 Hook 阻止应用获取各类唯一 ID，包括 IMEI、序列号及其他设备专属标识符。
+</string>
+    <string name="description_hook_group_id_telephony">
+    控制对电话相关标识符的访问。此 Hook 阻止应用获取手机专属 ID、IMEI 号码及其他电话相关唯一标识符。
+</string>
+    <string name="description_hook_group_network_spoof_wifi_list">
+    控制 WiFi 网络列表信息。此 Hook 修改可见和已保存的 WiFi 网络列表，防止通过识别网络进行位置追踪。
+</string>
+    <string name="description_hook_group_network_information_spoof">
+    管理上报给应用的常规网络信息。此 Hook 控制对网络详情、连接类型及其他可用于追踪的网络数据的访问。
+</string>
+    <string name="description_hook_group_network_wifi_information_spoof">
+    控制详细的 WiFi 网络信息。此 Hook 修改具体的 WiFi 连接详情、信号强度及其他 WiFi 相关数据，防止基于网络的设备追踪。
+</string>
+    <string name="description_hook_group_read_notifications">
+   控制对系统和应用通知的访问。此 Hook 阻止应用读取通知内容和元数据，保护通知中出现的敏感信息。
+</string>
+    <string name="description_hook_group_read_sync_data">
+   管理对同步适配器数据和同步操作的访问。此 Hook 控制应用能读取哪些同步相关信息，保护数据同步隐私。
+</string>
+    <string name="description_hook_group_spoof_battery">
+   控制上报给应用的电池信息。此 Hook 修改电池状态、电量和充电信息，防止通过电池特征进行设备指纹识别。
+</string>
+    <string name="description_hook_group_spoof_status_cell">
+   管理蜂窝网络状态信息。此 Hook 修改上报的蜂窝连接状态、信号强度及相关蜂窝网络数据。
+</string>
+    <string name="description_hook_group_spoof_timezone">
+   控制向应用暴露的时区信息。此 Hook 修改上报的时区及相关时间设置，防止通过时区检测进行位置追踪。
+</string>
+    <string name="description_hook_group_spoof_location">
+   管理上报给应用的位置信息。此 Hook 可修改或阻止 GPS 坐标及其他位置数据，防止精确定位追踪。
+</string>
+    <string name="description_hook_group_spoof_useragent">
+   控制浏览器和网络的 User-Agent 字符串。此 Hook 修改 User-Agent 信息，防止通过 Web 请求和 API 调用进行设备指纹识别。
+</string>
+    <string name="description_hook_group_spoof_features">
+   管理上报给应用的设备功能信息。此 Hook 控制应用可见的设备能力和功能，防止通过功能检测识别设备。
+</string>
+    <string name="description_hook_group_spoof_location_cell">
+   控制蜂窝网络位置信息。此 Hook 修改基站位置数据及相关蜂窝定位信息，防止通过蜂窝网络进行位置追踪。
+</string>
+    <string name="description_hook_group_spoof_display">
+   管理显示屏和屏幕信息。此 Hook 修改上报的屏幕特征，包括分辨率、密度及其他显示属性，防止设备指纹识别。
+</string>
+    <string name="description_hook_group_spoof_language">
+   控制语言和区域信息。此 Hook 修改上报的系统语言设置和区域数据，防止通过语言设置识别设备。
+</string>
+    <string name="description_hook_group_storage_isolate">
+   管理应用存储隔离。此 Hook 控制应用访问存储的方式，帮助防止未经授权访问文件和目录。
+</string>
+    <string name="description_hook_group_storage_spoof_volume_uuid">
+   控制存储卷标识。此 Hook 修改存储卷 UUID 及相关标识符，防止通过存储设备指纹识别进行追踪。
+</string>
+    <string name="description_hook_group_use_camera">
+   控制应用对相机的访问和使用。此 Hook 可阻止应用访问和使用设备相机，防止未经授权的拍照和录像。
+</string>
+    <string name="description_hook_group_record_audio">
+   管理录音功能。此 Hook 控制应用对麦克风和录音功能的访问，防止未经授权的录音和监听。
+</string>
+    <string name="description_hook_group_record_video">
+   控制录像功能。此 Hook 管理应用对录像功能的访问，防止未经授权通过设备相机录像。
+</string>
+    <string name="description_hook_group_send_messages">
+   控制短信功能。此 Hook 管理应用发送 SMS/MMS 消息的尝试，防止未经授权发送消息，避免产生短信费用。
+</string>
+    <string name="help_delete_title">删除设置</string>
+    <string name="help_delete_description">此按钮会从数据库中删除选中的设置，并将其值重置为空值或 Null。此操作会移除所有先前保存的值。</string>
+    <string name="help_save_title">保存设置</string>
+    <string name="help_save_description">将选中的设置保存到数据库。无论是随机生成器产生的还是手动输入的新值，都会永久保存，直到再次修改。</string>
+    <string name="help_reset_title">重置设置</string>
+    <string name="help_reset_description">将选中的设置重置为数据库中最后一次保存的值。如果你已修改但未保存新值，将恢复为之前的状态；若从未保存过值，结果可能为 Null 或空。</string>
+    <string name="help_randomize_title">随机化设置值</string>
+    <string name="help_randomize_description">对选中且已配置随机生成器的设置，将按其随机生成器格式生成新的随机值。新值不会自动保存到数据库，你可以在保存前重置不想要的结果。</string>
+    <string name="help_super_random_title">超级随机</string>
+    <string name="help_super_random_description" formatted="false">将选中的设置为使用 \"%random%\" 绑定标志。XPL-EX 在运行时为目标应用加载设置时，会为该应用实例生成全新的随机值。这些运行时值在应用停止后清除，下次启动时重新生成。</string>
+    <string name="help_hook_title">Hook 控制</string>
+    <string name="help_hook_description">打开对话框，显示与此设置关联的所有 Hook。你可以直接启用或禁用这些 Hook，无需在 Hook 组中逐一查找。注意：如果你不熟悉这个概念，此应用可能不适合你的需求。</string>
+    <string name="help_warning_title">警告！</string>
+    <string name="help_warning_description">这是一个警告标志，用于提示某些情况；在此处或大多数情况下，用于警告某个设置值尚未保存到数据库。\n因此请保存未保存的设置值，或忽略此警告标志。</string>
+    <string name="help_color_unsaved_title">未保存的设置</string>
+    <string name="help_color_unsaved_description">以此颜色显示的设置已被修改，但尚未保存。</string>
+    <string name="help_color_saved_title">生效中的设置</string>
+    <string name="help_color_saved_description">以此颜色显示的设置当前已生效，并已分配值。</string>
+    <string name="help_color_hook_db_title">非内置（数据库保存）Hook</string>
+    <string name="help_color_hook_db_description"> 数据库中已保存的 Hook 与服务缓存中的 Hook。服务缓存中的 Hook 视为内置（由我定义和制作）；一旦你编辑其中任意一个，它就会以这种颜色显示（除非在编辑菜单中点击 OK，否则无需保存）。这些通常是你编辑过、导入过或来自你数据库的 Hook。</string>
+    <string name="pro_fingerprint">1062ae961d78854f6c9cd872c4388232849c799</string>
+    <string name="menu_advanced_settings">高级设置</string>
+    <string name="menu_language">语言</string>
+    <string name="language_system">跟随系统</string>
+    <string name="language_english">English</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_chinese">简体中文</string>
+    <string name="advanced_language_summary">选择应用语言，无需更改 Android 系统语言设置</string>
+    <string name="app_language_choices">system,en,ru,zh</string>
+    <string name="advanced_theme">主题</string>
+    <string name="advanced_theme_auto">自动</string>
+    <string name="advanced_theme_light">浅色</string>
+    <string name="advanced_theme_dark">深色</string>
+    <string name="advanced_monet">Monet</string>
+    <string name="advanced_monet_summary">在 Android 12 及更高版本上使用壁纸颜色</string>
+    <string name="advanced_primary_color">主色</string>
+    <string name="advanced_interface">界面</string>
+    <string name="advanced_gray_system_apps">系统应用灰色背景</string>
+    <string name="advanced_gray_system_apps_summary">以中性灰色背景显示系统应用</string>
+    <string name="advanced_snackbar_duration">提示条显示时长</string>
+    <string name="advanced_snackbar_duration_summary">通知保持可见的时长</string>
+    <string name="advanced_force_english">强制使用英文</string>
+    <string name="advanced_force_english_summary">不论系统语言为何，均使用英文</string>
+    <string name="advanced_hide_fab">滚动时隐藏悬浮按钮</string>
+    <string name="advanced_hide_fab_summary">向下滚动时隐藏悬浮操作按钮</string>
+    <string name="advanced_developer">开发者选项</string>
+    <string name="advanced_debug_logs">调试日志</string>
+    <string name="advanced_debug_logs_summary">启用详细日志以排查问题</string>
+    <string name="advanced_skip_warnings">跳过警告</string>
+    <string name="advanced_skip_warnings_summary">启动时不显示模块状态警告</string>
+    <string name="advanced_navigation">导航</string>
+    <string name="advanced_transparent_navbar">透明导航栏</string>
+    <string name="advanced_transparent_navbar_summary">将应用绘制到导航区域下方</string>
+    <string name="advanced_experimental">实验性</string>
+    <string name="msg_settings_applied_summary">已应用设置：%1$d；失败：%2$d</string>
+    <string name="task_no_tasks">没有可执行的任务</string>
+    <string name="task_executing">正在执行：%1$s (%2$d/%3$d)</string>
+    <string name="task_all_completed">所有任务已完成</string>
+    <string name="advanced_custom_color">自定义主题颜色</string>
+    <string name="advanced_custom_color_summary">覆盖主界面颜色</string>
+    <string name="advanced_custom_color_hint">#RRGGBB</string>
+    <string name="advanced_apply">应用</string>
+    <string name="advanced_reset">重置</string>
+    <string name="advanced_hide_experimental">隐藏实验性选项</string>
+    <string name="advanced_easter_unlocked">已解锁实验性界面选项</string>
+    <string name="advanced_setting_applied">设置已应用</string>
+    <string name="advanced_restart_applied">设置已应用。正在重新打开界面……</string>
+    <string name="advanced_invalid_color">请输入 #RRGGBB 格式的颜色</string>
+    <string name="module_status_title">警告</string>
+    <string name="module_status_continue">仍要继续</string>
+    <string name="module_status_unavailable">XPL-EX 模块未激活。请在 LSPosed 中启用它并重启设备。</string>
+    <string name="description_setting_group_info_hint">点击查看此设置分组的说明。</string>
+    <string name="description_setting_value_info_hint">点击查看此参数的说明。</string>
+    <string-array name="app_language_options">
+        <item>System language</item>
+        <item>English</item>
+        <item>Русский</item>
+        <item>简体中文</item>
+    </string-array>
+    <string name="filter_cd_user">用户应用</string>
+    <string name="filter_cd_all">全部应用</string>
+    <string name="filter_cd_hook">已启用 Hook 的应用</string>
+    <string name="filter_cd_system">系统应用</string>
+    <string name="menu_filter_panel_hide">隐藏筛选</string>
+    <string name="menu_filter_panel_show">显示筛选</string>
+    <string name="help_usage_instructions">使用说明</string>
+    <string name="help_license_info">许可证信息</string>
 </resources>

@@ -701,8 +701,6 @@
     <string name="description_hook_group_get_clipboard" translatable="false">
     Protects clipboard data by controlling read access. This hook prevents applications from monitoring or reading text and data that youve copied to the clipboard.
 </string>
-    Hardware Groups:
-    ```xml
     <string name="description_hook_group_hardware_spoof_cpu_ex" translatable="false">
     Extended CPU information spoofing. This hook modifies reported CPU characteristics, core counts, and hardware capabilities to prevent device fingerprinting through processor identification.
 </string>
@@ -860,12 +858,15 @@
     <string name="menu_language">Language</string>
     <string name="language_system">System</string>
     <string name="language_english">English</string>
-    <string name="language_russian">Russian</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_chinese">简体中文</string>
     <string name="advanced_language_summary">Choose the application language without changing Android language settings</string>
+    <string name="app_language_choices" translatable="false">system,en,ru,zh</string>
     <string-array name="app_language_options">
         <item>System language</item>
         <item>English</item>
         <item>Русский</item>
+        <item>简体中文</item>
     </string-array>
     <string name="advanced_theming">THEMING</string>
     <string name="advanced_theme">Theme</string>
@@ -910,4 +911,12 @@
     <string name="module_status_title">WARNING</string>
     <string name="module_status_continue">Continue Anyway</string>
     <string name="module_status_unavailable">The XPL-EX module is not active. Enable it in LSPosed and restart the device.</string>
+    <string name="filter_cd_user">User apps</string>
+    <string name="filter_cd_all">All apps</string>
+    <string name="filter_cd_hook">Apps with hooks</string>
+    <string name="filter_cd_system">System apps</string>
+    <string name="menu_filter_panel_hide">Hide filters</string>
+    <string name="menu_filter_panel_show">Show filters</string>
+    <string name="help_usage_instructions">Usage instructions</string>
+    <string name="help_license_info">License info</string>
 </resources>

@@ -23,13 +23,15 @@ public final class SettingValueInfo {
 
         String normalizedName = normalizeSettingName(settingName);
         boolean russian = AppLanguage.isRussian(context);
+        boolean chinese = AppLanguage.isChinese(context);
         if (!Str.isEmpty(normalizedName)) {
-            String cacheKey = (russian ? "ru:" : "en:") + normalizedName;
+            String cacheKey = (chinese ? "zh:" : russian ? "ru:" : "en:") + normalizedName;
             String cached = MESSAGE_CACHE.get(cacheKey);
             if (cached != null)
                 return cached;
 
-            String resourceName = (russian ? "description_ru_setting_value_"
+            String resourceName = (chinese ? "description_zh_setting_value_"
+                    : russian ? "description_ru_setting_value_"
                     : "description_en_setting_value_") + normalizedName;
             int resourceId = context.getResources().getIdentifier(
                     resourceName,
@@ -47,8 +49,8 @@ public final class SettingValueInfo {
             }
         }
 
-        return context.getString(russian
-                ? R.string.description_ru_setting_value_unknown
+        return context.getString(chinese ? R.string.description_zh_setting_value_unknown
+                : russian ? R.string.description_ru_setting_value_unknown
                 : R.string.description_en_setting_value_unknown);
     }
 

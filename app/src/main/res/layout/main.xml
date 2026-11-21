@@ -57,10 +57,10 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:visibility="gone">
-            <androidx.appcompat.widget.AppCompatImageButton android:id="@+id/filter_user" style="@style/DashboardBottomImageItem" android:layout_width="64dp" android:layout_height="56dp" android:src="@drawable/ic_filter_user" android:contentDescription="Пользовательские приложения" />
-            <androidx.appcompat.widget.AppCompatImageButton android:id="@+id/filter_all" style="@style/DashboardBottomImageItem" android:layout_width="64dp" android:layout_height="56dp" android:src="@drawable/ic_filter_all" android:contentDescription="Все приложения" />
-            <androidx.appcompat.widget.AppCompatImageButton android:id="@+id/filter_hook" style="@style/DashboardBottomImageItem" android:layout_width="64dp" android:layout_height="56dp" android:src="@drawable/ic_filter_hook" android:contentDescription="Приложения с хуками" />
-            <androidx.appcompat.widget.AppCompatImageButton android:id="@+id/filter_system" style="@style/DashboardBottomImageItem" android:layout_width="64dp" android:layout_height="56dp" android:src="@drawable/ic_filter_system" android:contentDescription="Системные приложения" />
+            <androidx.appcompat.widget.AppCompatImageButton android:id="@+id/filter_user" style="@style/DashboardBottomImageItem" android:layout_width="64dp" android:layout_height="56dp" android:src="@drawable/ic_filter_user" android:contentDescription="@string/filter_cd_user" />
+            <androidx.appcompat.widget.AppCompatImageButton android:id="@+id/filter_all" style="@style/DashboardBottomImageItem" android:layout_width="64dp" android:layout_height="56dp" android:src="@drawable/ic_filter_all" android:contentDescription="@string/filter_cd_all" />
+            <androidx.appcompat.widget.AppCompatImageButton android:id="@+id/filter_hook" style="@style/DashboardBottomImageItem" android:layout_width="64dp" android:layout_height="56dp" android:src="@drawable/ic_filter_hook" android:contentDescription="@string/filter_cd_hook" />
+            <androidx.appcompat.widget.AppCompatImageButton android:id="@+id/filter_system" style="@style/DashboardBottomImageItem" android:layout_width="64dp" android:layout_height="56dp" android:src="@drawable/ic_filter_system" android:contentDescription="@string/filter_cd_system" />
         </LinearLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

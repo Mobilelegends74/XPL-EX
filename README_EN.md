@@ -13,7 +13,7 @@ An advanced privacy and coherent device-profile spoofing module for Android and 
 [![Android](https://img.shields.io/badge/Android-8.1%2B-3DDC84?logo=android&logoColor=white&style=flat-square)](#requirements)
 [![LSPosed API](https://img.shields.io/badge/libxposed-API%20101-167C80?style=flat-square)](https://github.com/libxposed/api)
 
-[Русская версия](README.md) · **English version**
+[Русская версия](README.md) · **English version** · [简体中文](README_ZH.md)
 
 [Download latest release](https://github.com/Mobilelegends74/XPL-EX/releases/latest) · [Report an issue](https://github.com/Mobilelegends74/XPL-EX/issues) · [Release history](https://github.com/Mobilelegends74/XPL-EX/releases)
 

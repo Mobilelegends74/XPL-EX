@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Setting group help text, Simplified Chinese translation. -->
+    <string name="description_zh_setting_group_android">Android 系统身份：OS 版本、Build 号、指纹及相关 Build 数据。请使用同一份真实固件中的一致取值。</string>
+    <string name="description_zh_setting_group_apps">控制哪些已安装应用可见，以及上报的安装/更新时间。</string>
+    <string name="description_zh_setting_group_battery">电池容量、电量、温度、健康度与循环次数数据。保持所有取值在物理上合理。</string>
+    <string name="description_zh_setting_group_bluetooth">蓝牙适配器身份与可见的已配对设备信息。不会打开或关闭真实的蓝牙射频。</string>
+    <string name="description_zh_setting_group_cell">移动网络与基站标识符、信号数据以及签约状态。</string>
+    <string name="description_zh_setting_group_clipboard">控制向所选应用上报的剪贴板内容。</string>
+    <string name="description_zh_setting_group_device">设备型号、厂商、品牌与代号。优先使用完整的真实设备档案，而不是混搭取值。</string>
+    <string name="description_zh_setting_group_display">所选设备档案的屏幕分辨率、密度、尺寸与刷新特性。</string>
+    <string name="description_zh_setting_group_files">上报的文件创建、修改、访问时间戳及相关文件元数据。</string>
+    <string name="description_zh_setting_group_hardware">CPU、GPU、内存、相机、GPS 及其他硬件特性。必须与所选型号匹配。</string>
+    <string name="description_zh_setting_group_network">上报的 Wi-Fi、IP、DNS、网络名称、MAC 地址与连接数据。</string>
+    <string name="description_zh_setting_group_notification">控制所选应用可见的通知信息。</string>
+    <string name="description_zh_setting_group_props">用于识别固件、引导程序与系统状态的 Android Build 属性与 SystemProperties。</string>
+    <string name="description_zh_setting_group_settings">从 Android 的 System、Secure 与 Global 设置中读取的取值。</string>
+    <string name="description_zh_setting_group_soc">SoC 型号、平台、厂商与基带数据。需与 CPU 和 GPU 取值保持一致。</string>
+    <string name="description_zh_setting_group_unique">Android ID、广告 ID、序列号、UUID 及其他用于识别设备的标识符。</string>
+    <string name="description_zh_setting_group_user">Android 用户/档案信息，例如档案创建时间。</string>
+    <string name="description_zh_setting_group_xplex">XPL-EX 内部行为设置。仅在明确了解其效果时才修改。</string>
+    <string name="description_zh_setting_group_zone">国家、语言、时区等区域性取值。这些不受“伪装设备”自动激活的影响。</string>
+    <string name="description_zh_setting_group_info_hint">点击可查看此“设置值”分区的简明说明。</string>
+</resources>
