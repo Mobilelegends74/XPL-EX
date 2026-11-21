@@ -858,8 +858,8 @@
     <string name="menu_language">Language</string>
     <string name="language_system">System</string>
     <string name="language_english">English</string>
-    <string name="language_russian">Russian</string>
-    <string name="language_chinese">Simplified Chinese</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_chinese">简体中文</string>
     <string name="advanced_language_summary">Choose the application language without changing Android language settings</string>
     <string name="app_language_choices" translatable="false">system,en,ru,zh</string>
     <string-array name="app_language_options">
@@ -917,4 +917,6 @@
     <string name="filter_cd_system">System apps</string>
     <string name="menu_filter_panel_hide">Hide filters</string>
     <string name="menu_filter_panel_show">Show filters</string>
+    <string name="help_usage_instructions">Usage instructions</string>
+    <string name="help_license_info">License info</string>
 </resources>

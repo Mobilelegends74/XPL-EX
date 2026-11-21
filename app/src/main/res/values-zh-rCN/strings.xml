@@ -644,8 +644,8 @@
     <string name="menu_advanced_settings">高级设置</string>
     <string name="menu_language">语言</string>
     <string name="language_system">跟随系统</string>
-    <string name="language_english">英语</string>
-    <string name="language_russian">俄语</string>
+    <string name="language_english">English</string>
+    <string name="language_russian">Русский</string>
     <string name="language_chinese">简体中文</string>
     <string name="advanced_language_summary">选择应用语言，无需更改 Android 系统语言设置</string>
     <string name="app_language_choices">system,en,ru,zh</string>
@@ -705,4 +705,6 @@
     <string name="filter_cd_system">系统应用</string>
     <string name="menu_filter_panel_hide">隐藏筛选</string>
     <string name="menu_filter_panel_show">显示筛选</string>
+    <string name="help_usage_instructions">使用说明</string>
+    <string name="help_license_info">许可证信息</string>
 </resources>
