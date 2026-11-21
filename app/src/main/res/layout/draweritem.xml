@@ -22,7 +22,7 @@
         android:paddingEnd="8dp"
         android:text="Menu item"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
-        android:textColor="@color/dashboard_text"
+        android:textColor="?attr/colorOnSurface"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/cbItem"
         app:layout_constraintStart_toStartOf="parent"

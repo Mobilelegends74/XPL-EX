@@ -646,6 +646,7 @@
     <string name="language_system">跟随系统</string>
     <string name="language_english">英语</string>
     <string name="language_russian">俄语</string>
+    <string name="language_chinese">简体中文</string>
     <string name="advanced_language_summary">选择应用语言，无需更改 Android 系统语言设置</string>
     <string name="app_language_choices">system,en,ru,zh</string>
     <string name="advanced_theme">主题</string>

@@ -66,6 +66,7 @@
     <string name="language_system">Система</string>
     <string name="language_english">English</string>
     <string name="language_russian">Русский</string>
+    <string name="language_chinese">Упрощённый китайский</string>
     <string name="advanced_language_summary">Выберите язык приложения, не изменяя системный язык Android</string>
     <string name="description_setting_group_info_hint">Нажмите, чтобы прочитать описание этого раздела параметров.</string>
     <string name="description_setting_value_info_hint">Нажмите, чтобы прочитать описание этого параметра.</string>

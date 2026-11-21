@@ -859,6 +859,7 @@
     <string name="language_system">System</string>
     <string name="language_english">English</string>
     <string name="language_russian">Russian</string>
+    <string name="language_chinese">Simplified Chinese</string>
     <string name="advanced_language_summary">Choose the application language without changing Android language settings</string>
     <string name="app_language_choices" translatable="false">system,en,ru,zh</string>
     <string-array name="app_language_options">
