@@ -800,6 +800,8 @@ public class ActivityMain extends ActivityBase {
      * clickable/focusable flag is not enough here.
      */
     private void enableToolbarTitleMarquee() {
+        // toolbar is a local variable in onCreate, not a field, so resolve it again.
+        Toolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar == null)
             return;
 
