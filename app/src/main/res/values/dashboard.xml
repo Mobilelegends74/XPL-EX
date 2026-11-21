@@ -9,6 +9,9 @@
     <color name="dashboard_primary_bright">#9D74FF</color>
     <color name="dashboard_primary_dark">#6D43D6</color>
     <color name="dashboard_text">#F5F7FA</color>
+    <!-- Bottom navigation bar keeps a fixed dark background, so its icons need a
+         light tint regardless of the light/dark theme. -->
+    <color name="dashboard_bottom_icon">#F5F7FA</color>
     <color name="dashboard_text_secondary">#9299A6</color>
     <color name="dashboard_border">#12FFFFFF</color>
     <color name="dashboard_success">#4ADE80</color>
