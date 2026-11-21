@@ -915,4 +915,6 @@
     <string name="filter_cd_all">All apps</string>
     <string name="filter_cd_hook">Apps with hooks</string>
     <string name="filter_cd_system">System apps</string>
+    <string name="menu_filter_panel_hide">Hide filters</string>
+    <string name="menu_filter_panel_show">Show filters</string>
 </resources>

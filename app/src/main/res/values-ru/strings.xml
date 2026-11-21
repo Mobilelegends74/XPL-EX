@@ -227,4 +227,6 @@
     <string name="filter_cd_all">Все приложения</string>
     <string name="filter_cd_hook">Приложения с хуками</string>
     <string name="filter_cd_system">Системные приложения</string>
+    <string name="menu_filter_panel_hide">Скрыть фильтры</string>
+    <string name="menu_filter_panel_show">Показать фильтры</string>
 </resources>

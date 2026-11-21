@@ -167,6 +167,11 @@ public class ActivityMain extends ActivityBase {
         UiInsets.applyDrawerInsets(findViewById(R.id.drawer_header_spacer), findViewById(R.id.drawer_content));
         customScrim.setOnClickListener(view -> drawerLayout.closeDrawer(drawerContainer));
 
+        // Let the toolbar title scroll instead of being cut off with an ellipsis.
+        // app_name carries the version suffix, so it does not fit between the
+        // navigation icon and the action buttons on a phone in portrait.
+        enableToolbarTitleMarquee();
+
         // Create drawer toggle
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name) {
             public void onDrawerClosed(View view) {
@@ -736,7 +741,7 @@ public class ActivityMain extends ActivityBase {
             panelToggle.setIcon(filterPanelExpanded
                     ? R.drawable.ic_expand_less_white_24dp
                     : R.drawable.ic_expand_more_white_24dp);
-            panelToggle.setTitle(filterPanelExpanded ? "Скрыть фильтры" : "Показать фильтры");
+            panelToggle.setTitle(filterPanelExpanded ? getString(R.string.menu_filter_panel_hide) : getString(R.string.menu_filter_panel_show));
         }
         MenuItem menuSearch = menu.findItem(R.id.menu_search);
         final SearchView searchView = (SearchView) menuSearch.getActionView();
@@ -759,7 +764,7 @@ public class ActivityMain extends ActivityBase {
                 panelToggle.setIcon(expanded
                         ? R.drawable.ic_expand_less_white_24dp
                         : R.drawable.ic_expand_more_white_24dp);
-                panelToggle.setTitle(expanded ? "Скрыть фильтры" : "Показать фильтры");
+                panelToggle.setTitle(expanded ? getString(R.string.menu_filter_panel_hide) : getString(R.string.menu_filter_panel_show));
             }
         }
     }
@@ -784,6 +789,36 @@ public class ActivityMain extends ActivityBase {
                     .setPositiveButton(R.string.option_thanks, null)
                     .show();
         } catch (Exception ignored) { }
+    }
+
+    /**
+     * Makes the toolbar title scroll (marquee) when it is wider than the space
+     * left between the navigation icon and the action buttons. MaterialToolbar
+     * builds its title as a plain AppCompatTextView with a single line and
+     * ellipsis, so the title has to be reconfigured after the toolbar inflated
+     * it. setSelected(true) is what actually starts a marquee, which is why a
+     * clickable/focusable flag is not enough here.
+     */
+    private void enableToolbarTitleMarquee() {
+        if (toolbar == null)
+            return;
+
+        for (int i = 0; i < toolbar.getChildCount(); i++) {
+            View child = toolbar.getChildAt(i);
+            if (!(child instanceof TextView))
+                continue;
+            // Only the title, not the subtitle or any custom view the toolbar may hold.
+            CharSequence text = ((TextView) child).getText();
+            if (text == null || !text.equals(getString(R.string.app_name)))
+                continue;
+
+            TextView title = (TextView) child;
+            title.setSingleLine(true);
+            title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+            title.setMarqueeRepeatLimit(-1); // marquee_forever
+            title.setHorizontallyScrolling(true);
+            title.setSelected(true);
+        }
     }
 
     private void showLanguageDialog() {
