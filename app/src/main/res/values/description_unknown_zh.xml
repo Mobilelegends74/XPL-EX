@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Fallback help text when no specific description exists. -->
+    <string name="description_zh_hook_group_unknown">此项控制一个 XPL-EX Hook 组。新的或自定义的组尚未添加详细说明。启用前建议先备份应用设置。</string>
+    <string name="description_zh_setting_group_unknown">此分区汇集相关的伪装参数。修改数值本身不会改变真实的手机：XPL-EX 只会向被勾选的应用显示所选数据。</string>
+    <string name="description_zh_setting_value_unknown">伪装 Android 传递给所选应用的值。</string>
+</resources>

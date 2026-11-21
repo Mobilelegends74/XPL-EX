@@ -787,10 +787,11 @@ public class ActivityMain extends ActivityBase {
     }
 
     private void showLanguageDialog() {
-        String[] values = { AppLanguage.SYSTEM, AppLanguage.ENGLISH, AppLanguage.RUSSIAN };
+        String[] values = { AppLanguage.SYSTEM, AppLanguage.ENGLISH, AppLanguage.RUSSIAN, AppLanguage.CHINESE };
         String selected = AppLanguage.getSelection(this);
         int checked = AppLanguage.ENGLISH.equals(selected) ? 1
-                : AppLanguage.RUSSIAN.equals(selected) ? 2 : 0;
+                : AppLanguage.RUSSIAN.equals(selected) ? 2
+                : AppLanguage.CHINESE.equals(selected) ? 3 : 0;
         new AlertDialog.Builder(this)
                 .setTitle(R.string.menu_language)
                 .setSingleChoiceItems(R.array.app_language_options, checked, (dialog, which) -> {

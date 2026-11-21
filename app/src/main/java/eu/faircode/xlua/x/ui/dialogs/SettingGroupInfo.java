@@ -22,22 +22,31 @@ public final class SettingGroupInfo {
 
         String normalizedName = normalizeGroupName(groupName);
         boolean russian = AppLanguage.isRussian(context);
-        int unknown = russian ? R.string.description_ru_setting_group_unknown
+        boolean chinese = AppLanguage.isChinese(context);
+        int unknown = chinese ? R.string.description_zh_setting_group_unknown
+                : russian ? R.string.description_ru_setting_group_unknown
                 : R.string.description_en_setting_group_unknown;
         if (Str.isEmpty(normalizedName))
             return context.getString(unknown);
 
-        String cacheKey = (russian ? "ru:" : "en:") + normalizedName;
+        String cacheKey = (chinese ? "zh:" : russian ? "ru:" : "en:") + normalizedName;
         String cached = MESSAGE_CACHE.get(cacheKey);
         if (cached != null)
             return cached;
 
-        String resourceName = (russian ? "description_ru_setting_group_"
+        String resourceName = (chinese ? "description_zh_setting_group_"
+                : russian ? "description_ru_setting_group_"
                 : "description_en_setting_group_") + normalizedName;
         int resourceId = context.getResources().getIdentifier(
                 resourceName,
                 "string",
                 context.getPackageName());
+        // Chinese falls back to the English help text, not the Russian one.
+        if (resourceId == 0 && chinese)
+            resourceId = context.getResources().getIdentifier(
+                    "description_en_setting_group_" + normalizedName,
+                    "string",
+                    context.getPackageName());
         String message = context.getString(resourceId == 0 ? unknown : resourceId);
         MESSAGE_CACHE.put(cacheKey, message);
         return message;

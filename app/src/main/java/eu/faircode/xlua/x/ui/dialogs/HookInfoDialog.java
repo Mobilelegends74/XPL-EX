@@ -33,8 +33,11 @@ public class HookInfoDialog extends AppCompatDialogFragment {
     public static String getMessage(Context context, String groupName) {
         if(context == null)
             return Str.EMPTY;
-        boolean russian = AppLanguage.isRussian(context);
-        int unknown = russian ? R.string.description_ru_hook_group_unknown
+        String language = AppLanguage.resolveLanguage(context);
+        boolean russian = AppLanguage.RUSSIAN.equals(language);
+        boolean chinese = AppLanguage.CHINESE.equals(language);
+        int unknown = chinese ? R.string.description_zh_hook_group_unknown
+                : russian ? R.string.description_ru_hook_group_unknown
                 : R.string.description_hook_group_unknown;
         if(Str.isEmpty(groupName))
             return context.getString(unknown);
@@ -43,7 +46,7 @@ public class HookInfoDialog extends AppCompatDialogFragment {
         String normalizedName = groupName.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9_]", "_");
 
         // Check cache first
-        String cacheKey = (russian ? "ru:" : "en:") + normalizedName;
+        String cacheKey = (chinese ? "zh:" : russian ? "ru:" : "en:") + normalizedName;
         String cached = MAPPED_CACHE.get(cacheKey);
         if(cached != null) {
             if(DebugUtil.isDebug())
@@ -52,9 +55,20 @@ public class HookInfoDialog extends AppCompatDialogFragment {
         }
 
         // Build resource name from group name
-        String resourceName = (russian ? "description_ru_hook_group_"
-                : "description_hook_group_") + normalizedName;
-        int resId = context.getResources().getIdentifier(resourceName, "string", context.getPackageName());
+        int resId = 0;
+        if (chinese) {
+            resId = context.getResources().getIdentifier(
+                    "description_zh_hook_group_" + normalizedName, "string", context.getPackageName());
+            // Fall back to the English text before the Russian one, so Chinese
+            // users never get untranslated Cyrillic help text.
+            if (resId == 0)
+                resId = context.getResources().getIdentifier(
+                        "description_hook_group_" + normalizedName, "string", context.getPackageName());
+        } else {
+            String resourceName = (russian ? "description_ru_hook_group_"
+                    : "description_hook_group_") + normalizedName;
+            resId = context.getResources().getIdentifier(resourceName, "string", context.getPackageName());
+        }
 
         if(resId == 0) {
             if(DebugUtil.isDebug())

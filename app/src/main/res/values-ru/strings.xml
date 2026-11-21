@@ -73,6 +73,7 @@
         <item>Язык системы</item>
         <item>English</item>
         <item>Русский</item>
+        <item>简体中文</item>
     </string-array>
     <string name="advanced_theming">ОФОРМЛЕНИЕ</string>
     <string name="advanced_theme">Тема</string>
