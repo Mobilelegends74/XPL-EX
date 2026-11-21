@@ -5,14 +5,14 @@
     <string name="xposed_module_description">为 LSPosed 提供隐私控制与一致的设备档案伪装。</string>
     <string name="channel_privacy">XPrivacyLua</string>
     <string name="title_license">
-        This app is meant to be used to protect your privacy. Modified and Extended from ObbedCode much love.
-        <![CDATA[<br><br>]]>This is not the POWER OF YOUR CREATION!!
+        本应用用于保护你的隐私。基于 ObbedCode 的作品修改并扩展，在此致谢。
+        <![CDATA[<br><br>]]>这不是你创造的力量！！
         <![CDATA[<br><br>]]>Copyright 2017-%1$d Marcel Bokhorst. All rights reserved.
-        <![CDATA[<br><br>]]>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-        <![CDATA[<br><br>]]>This program is distributed in the hope that it will be useful but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the <![CDATA[<a href="http://www.gnu.org/licenses/gpl.txt">GNU General Public License</a>]]> for more details.
-        <![CDATA[<br><br><strong>LuaJ</strong><br>]]>Copyright 2007-2013 LuaJ. All rights reserved. See the <![CDATA[<a href="http://luaj.sourceforge.net/license.txt">license</a>]]>.
-        <![CDATA[<br><br><b>Glide</b><br>]]>Copyright 2014 Google, Inc. All rights reserved. See the <![CDATA[<a href="https://raw.githubusercontent.com/bumptech/glide/master/LICENSE">license</a>]]>.
-        <![CDATA[<br><br><b>Android Support Library</b><br>]]>Copyright 2011 The Android Open Source Project. See the <![CDATA[<a href="https://android.googlesource.com/platform/frameworks/support/+/master/LICENSE.txt">license</a>]]>.
+        <![CDATA[<br><br>]]>本程序是自由软件：你可以按照自由软件基金会发布的 GNU 通用公共许可证的条款（第 3 版，或你选择的任何更新版本）重新分发和/或修改它。
+        <![CDATA[<br><br>]]>本程序的分发是希望它有用，但不提供任何担保，甚至不包括适销性或特定用途适用性的默示担保。详见 <![CDATA[<a href="http://www.gnu.org/licenses/gpl.txt">GNU 通用公共许可证</a>]]>。
+        <![CDATA[<br><br><strong>LuaJ</strong><br>]]>Copyright 2007-2013 LuaJ. All rights reserved. 详见 <![CDATA[<a href="http://luaj.sourceforge.net/license.txt">许可证</a>]]>。
+        <![CDATA[<br><br><b>Glide</b><br>]]>Copyright 2014 Google, Inc. All rights reserved. 详见 <![CDATA[<a href="https://raw.githubusercontent.com/bumptech/glide/master/LICENSE">许可证</a>]]>。
+        <![CDATA[<br><br><b>Android Support Library</b><br>]]>Copyright 2011 The Android Open Source Project. 详见 <![CDATA[<a href="https://android.googlesource.com/platform/frameworks/support/+/master/LICENSE.txt">许可证</a>]]>。
     </string>
     <string name="title_accept">同意</string>
     <string name="title_deny">不同意</string>
